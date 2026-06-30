@@ -2,7 +2,7 @@
 
 > **TL;DR** — Build the missing piece of the football-analytics web stack: a TypeScript-native, framework-agnostic visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser, with first-class React/Next.js bindings, responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
-*Status: Draft v0.2 · Owner: Yohahn Ribeiro · Last updated: 28 Jun 2026*
+_Status: Draft v0.2 · Owner: Yohahn Ribeiro · Last updated: 28 Jun 2026_
 
 ---
 
@@ -25,13 +25,13 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 
 ## 3. Competitive Landscape
 
-| Library | Lang | Scope | Render | Maintained | Gap vs this project |
-|---------|------|-------|--------|-----------|-------------------|
-| **mplsoccer** | Python | Full (pitch + stats + radar/pizza/bumpy + data) | matplotlib (static) | ✅ Active | Not web; static; Python-only |
-| **RabonaJS** | JS | Pitch + event layers (passes) | D3/SVG | Low activity | Narrow; no TS types; no radar/pizza/heatmap depth |
-| **d3-soccer** | JS | Pitch + heatmap + SPADL actions | D3/SVG | Stale (~1yr) | D3-coupled; no TS; partial feature set |
-| **football-lineup-generator** | TS | Lineups/formations only | Canvas | Low activity | No event data, no stats layers |
-| **Pitch.js** | JS | Pitch rendering | DOM/SVG | Minimal | Pitch only, no analytics layer |
+| Library                       | Lang   | Scope                                           | Render              | Maintained   | Gap vs this project                               |
+| ----------------------------- | ------ | ----------------------------------------------- | ------------------- | ------------ | ------------------------------------------------- |
+| **mplsoccer**                 | Python | Full (pitch + stats + radar/pizza/bumpy + data) | matplotlib (static) | ✅ Active    | Not web; static; Python-only                      |
+| **RabonaJS**                  | JS     | Pitch + event layers (passes)                   | D3/SVG              | Low activity | Narrow; no TS types; no radar/pizza/heatmap depth |
+| **d3-soccer**                 | JS     | Pitch + heatmap + SPADL actions                 | D3/SVG              | Stale (~1yr) | D3-coupled; no TS; partial feature set            |
+| **football-lineup-generator** | TS     | Lineups/formations only                         | Canvas              | Low activity | No event data, no stats layers                    |
+| **Pitch.js**                  | JS     | Pitch rendering                                 | DOM/SVG             | Minimal      | Pitch only, no analytics layer                    |
 
 **Conclusion:** there is a clear, unoccupied niche for a comprehensive, TypeScript-first, framework-agnostic library with a proper React story. Nobody has built "mplsoccer for the web."
 
@@ -78,40 +78,40 @@ Mapped directly from mplsoccer's modules so parity is auditable. Phase tags: **M
 
 ### 7.1 Pitch drawing & geometry
 
-| Feature | mplsoccer ref | Phase |
-|---------|---------------|-------|
-| Horizontal pitch | `Pitch` | M |
-| Vertical pitch | `VerticalPitch` | M |
-| Half-pitch / padding / crop | `half`, `pad_*` | M |
-| Pitch types: StatsBomb, Opta, Wyscout, UEFA/metric, Tracab, SkillCorner, SecondSpectrum, MetricaSports, custom | `pitch_type` (9 types) | M (SB/Opta/UEFA) → 1 (rest) |
-| Styling: grass/stripes, line colour/width/alpha, goal types (line/box/circle) | `pitch_color`, `stripe`, `goal_type` | M→1 |
-| Coordinate standardizer (provider→provider) | `Standardizer` | 1 |
+| Feature                                                                                                        | mplsoccer ref                        | Phase                       |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------- |
+| Horizontal pitch                                                                                               | `Pitch`                              | M                           |
+| Vertical pitch                                                                                                 | `VerticalPitch`                      | M                           |
+| Half-pitch / padding / crop                                                                                    | `half`, `pad_*`                      | M                           |
+| Pitch types: StatsBomb, Opta, Wyscout, UEFA/metric, Tracab, SkillCorner, SecondSpectrum, MetricaSports, custom | `pitch_type` (9 types)               | M (SB/Opta/UEFA) → 1 (rest) |
+| Styling: grass/stripes, line colour/width/alpha, goal types (line/box/circle)                                  | `pitch_color`, `stripe`, `goal_type` | M→1                         |
+| Coordinate standardizer (provider→provider)                                                                    | `Standardizer`                       | 1                           |
 
 ### 7.2 Plotting primitives (per-event marks)
 
-| Feature | mplsoccer ref | Phase |
-|---------|---------------|-------|
-| Scatter (incl. football marker, rotation, custom markers) | `scatter` | M |
-| Arrows / quiver | `arrows` | M |
-| Comet lines (tapered, gradient) | `lines` | M |
-| Annotate / text labels | `annotate` | M |
-| Polygon | `polygon` | 1 |
-| Convex hull | `convexhull` | 1 |
-| Voronoi | `voronoi` | 1 |
-| Goal angle / shot cone | `goal_angle` | 1 |
-| Angle & distance helpers | `calculate_angle_and_distance` | 1 |
+| Feature                                                   | mplsoccer ref                  | Phase |
+| --------------------------------------------------------- | ------------------------------ | ----- |
+| Scatter (incl. football marker, rotation, custom markers) | `scatter`                      | M     |
+| Arrows / quiver                                           | `arrows`                       | M     |
+| Comet lines (tapered, gradient)                           | `lines`                        | M     |
+| Annotate / text labels                                    | `annotate`                     | M     |
+| Polygon                                                   | `polygon`                      | 1     |
+| Convex hull                                               | `convexhull`                   | 1     |
+| Voronoi                                                   | `voronoi`                      | 1     |
+| Goal angle / shot cone                                    | `goal_angle`                   | 1     |
+| Angle & distance helpers                                  | `calculate_angle_and_distance` | 1     |
 
 ### 7.3 Statistical / aggregate layers
 
-| Feature | mplsoccer ref | Phase |
-|---------|---------------|-------|
-| Heatmap (binned) | `bin_statistic` • `heatmap` | M |
-| Positional heatmap (Juego de Posición zones) | `bin_statistic_positional` • `heatmap_positional` | 1 |
-| Heatmap labels | `label_heatmap` | 1 |
-| Hexbin | `hexbin` | 1 |
-| KDE (kernel density) | `kdeplot` | 1 |
-| Pass/flow diagram (binned direction+magnitude) | `flow` | 1 |
-| Sonars / sonar grid | `sonar`, `sonar_grid` | L |
+| Feature                                        | mplsoccer ref                                     | Phase |
+| ---------------------------------------------- | ------------------------------------------------- | ----- |
+| Heatmap (binned)                               | `bin_statistic` • `heatmap`                       | M     |
+| Positional heatmap (Juego de Posición zones)   | `bin_statistic_positional` • `heatmap_positional` | 1     |
+| Heatmap labels                                 | `label_heatmap`                                   | 1     |
+| Hexbin                                         | `hexbin`                                          | 1     |
+| KDE (kernel density)                           | `kdeplot`                                         | 1     |
+| Pass/flow diagram (binned direction+magnitude) | `flow`                                            | 1     |
+| Sonars / sonar grid                            | `sonar`, `sonar_grid`                             | L     |
 
 ### 7.4 Composite recipes (docs-level, built on primitives)
 
@@ -119,21 +119,21 @@ Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expect
 
 ### 7.5 Non-pitch charts
 
-| Feature | mplsoccer ref | Phase |
-|---------|---------------|-------|
-| Radar chart (with range bands, lower-is-better flip) | `Radar` | 1 |
-| Pizza / percentile (Nightingale) chart, incl. comparison mode | `PyPizza` | 1 |
-| Bumpy chart (rank-over-time) | `Bumpy` | L |
+| Feature                                                       | mplsoccer ref | Phase |
+| ------------------------------------------------------------- | ------------- | ----- |
+| Radar chart (with range bands, lower-is-better flip)          | `Radar`       | 1     |
+| Pizza / percentile (Nightingale) chart, incl. comparison mode | `PyPizza`     | 1     |
+| Bumpy chart (rank-over-time)                                  | `Bumpy`       | L     |
 
 ### 7.6 Supporting utilities
 
-| Feature | mplsoccer ref | Phase |
-|---------|---------------|-------|
-| Grid / jointgrid layout (pitch + title + endnote + marginals) | `grid`, `jointgrid` | 1 |
-| Inset axes / inset image (e.g. badges, mini-charts on pitch) | `inset_axes`, `inset_image` | L |
-| Font management | `FontManager` | M (web fonts are trivial; document the pattern) |
-| StatsBomb open-data adapter | `Sbopen` | 1 |
-| (Out of scope) authenticated StatsBomb API/local | `Sbapi`, `Sblocal` | — |
+| Feature                                                       | mplsoccer ref               | Phase                                           |
+| ------------------------------------------------------------- | --------------------------- | ----------------------------------------------- |
+| Grid / jointgrid layout (pitch + title + endnote + marginals) | `grid`, `jointgrid`         | 1                                               |
+| Inset axes / inset image (e.g. badges, mini-charts on pitch)  | `inset_axes`, `inset_image` | L                                               |
+| Font management                                               | `FontManager`               | M (web fonts are trivial; document the pattern) |
+| StatsBomb open-data adapter                                   | `Sbopen`                    | 1                                               |
+| (Out of scope) authenticated StatsBomb API/local              | `Sbapi`, `Sblocal`          | —                                               |
 
 ## 8. Technical Architecture
 
@@ -141,7 +141,7 @@ Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expect
 
 - **SVG** for pitch geometry and discrete marks (scatter, arrows, lines, annotations, hulls, Voronoi). Rationale: crisp at any DPI, trivially scalable/responsive, DOM-addressable for hover/tooltip/selection/accessibility, SSR-friendly.
 - **Canvas (2D, optional WebGL later)** for dense raster layers (heatmaps, KDE, hexbins, and large tracking-frame scatter with thousands of points) where per-element DOM nodes would tank performance.
-- A **renderer abstraction** sits behind a single scene/layer API so a layer declares *what* to draw; the renderer decides SVG vs Canvas. This keeps the public API identical regardless of backend and leaves room for a pure-Canvas or WebGL renderer later.
+- A **renderer abstraction** sits behind a single scene/layer API so a layer declares _what_ to draw; the renderer decides SVG vs Canvas. This keeps the public API identical regardless of backend and leaves room for a pure-Canvas or WebGL renderer later.
 
 > **Decision to ratify:** SVG-first wins on interactivity, accessibility, and SSR; Canvas handles the heavy raster cases. Recommendation: **hybrid, SVG-primary.**
 
@@ -214,17 +214,17 @@ The theming model is **CSS variables only** — the same mechanism shadcn uses i
 
 ```css
 :root {
-  --pitch-surface:        #1a472a;
-  --pitch-stripe:         #1d4f30;
-  --pitch-lines:          rgba(255, 255, 255, 0.8);
+  --pitch-surface: #1a472a;
+  --pitch-stripe: #1d4f30;
+  --pitch-lines: rgba(255, 255, 255, 0.8);
   --pitch-marker-primary: #3b82f6;
-  --pitch-marker-goal:    #f59e0b;
-  --pitch-marker-miss:    rgba(255, 255, 255, 0.4);
+  --pitch-marker-goal: #f59e0b;
+  --pitch-marker-miss: rgba(255, 255, 255, 0.4);
 }
 
 .dark {
   --pitch-surface: #0f2819;
-  --pitch-lines:   rgba(255, 255, 255, 0.6);
+  --pitch-lines: rgba(255, 255, 255, 0.6);
 }
 ```
 
@@ -232,9 +232,9 @@ The theming model is **CSS variables only** — the same mechanism shadcn uses i
 
 ```css
 @theme inline {
-  --color-pitch-surface:        var(--pitch-surface);
+  --color-pitch-surface: var(--pitch-surface);
   --color-pitch-marker-primary: var(--pitch-marker-primary);
-  --color-pitch-marker-goal:    var(--pitch-marker-goal);
+  --color-pitch-marker-goal: var(--pitch-marker-goal);
 }
 ```
 
@@ -243,8 +243,7 @@ SVG marks can now use `className="fill-pitch-marker-goal"` exactly like any othe
 **Layer 3 — Canvas reads the same vars at draw time:**
 
 ```typescript
-const surface = getComputedStyle(containerEl)
-  .getPropertyValue('--pitch-surface').trim();
+const surface = getComputedStyle(containerEl).getPropertyValue("--pitch-surface").trim();
 ctx.fillStyle = surface;
 ```
 
@@ -274,12 +273,12 @@ fill={d => d.shot.outcome.name === 'Goal'
 
 ```typescript
 export const pitchTokens = {
-  surface:       '--pitch-surface',
-  stripe:        '--pitch-stripe',
-  lines:         '--pitch-lines',
-  markerPrimary: '--pitch-marker-primary',
-  markerGoal:    '--pitch-marker-goal',
-  markerMiss:    '--pitch-marker-miss',
+  surface: "--pitch-surface",
+  stripe: "--pitch-stripe",
+  lines: "--pitch-lines",
+  markerPrimary: "--pitch-marker-primary",
+  markerGoal: "--pitch-marker-goal",
+  markerMiss: "--pitch-marker-miss",
 } as const;
 ```
 
@@ -386,7 +385,7 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ## 14. Naming
 
-Working name: **PitchKit** / npm scope `@pitchkit`. Needs final npm + GitHub availability check. Shortlist: *Pitchwright, Touchline, Chalkboard, Footwork, Tifo*. Criteria: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
+Working name: **PitchKit** / npm scope `@pitchkit`. Needs final npm + GitHub availability check. Shortlist: _Pitchwright, Touchline, Chalkboard, Footwork, Tifo_. Criteria: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
 
 ---
 
@@ -426,17 +425,17 @@ This drops the component into `components/ui/pitch.tsx` and appends the followin
 
 ```css
 :root {
-  --pitch-surface:        #1a472a;
-  --pitch-stripe:         #1d4f30;
-  --pitch-lines:          rgba(255, 255, 255, 0.8);
+  --pitch-surface: #1a472a;
+  --pitch-stripe: #1d4f30;
+  --pitch-lines: rgba(255, 255, 255, 0.8);
   --pitch-marker-primary: #3b82f6;
-  --pitch-marker-goal:    #f59e0b;
-  --pitch-marker-miss:    rgba(255, 255, 255, 0.4);
+  --pitch-marker-goal: #f59e0b;
+  --pitch-marker-miss: rgba(255, 255, 255, 0.4);
 }
 
 .dark {
-  --pitch-surface:  #0f2819;
-  --pitch-lines:    rgba(255, 255, 255, 0.6);
+  --pitch-surface: #0f2819;
+  --pitch-lines: rgba(255, 255, 255, 0.6);
 }
 ```
 
