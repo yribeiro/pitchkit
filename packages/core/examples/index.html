@@ -151,6 +151,84 @@
         ];
       }
 
+      // Edges for a tiny pass network, reusing the same six named
+      // positions — feeds both the Arrows panel (directional passes) and
+      // the Comet panel (tapered, fading lines).
+      const passNetworkEdges = [
+        ["GK", "CB"],
+        ["CB", "LB"],
+        ["CB", "RB"],
+        ["LB", "CM"],
+        ["RB", "CM"],
+        ["CM", "FW"],
+      ];
+
+      /** Arrows + Scatter + Annotate composed into a small pass-network recipe (PRD §7.4). */
+      function buildPassNetworkLayers(dimensions) {
+        const standardize = createStandardizeTransform(statsbombDims, dimensions);
+        const nodesStd = players.map((p) => ({ ...p, pos: standardize(p.pos) }));
+        const nodeByName = Object.fromEntries(nodesStd.map((n) => [n.name, n]));
+        const edges = passNetworkEdges.map(([from, to]) => ({
+          from: nodeByName[from].pos,
+          to: nodeByName[to].pos,
+        }));
+
+        return [
+          {
+            type: "arrows",
+            data: edges,
+            x: (d) => d.from[0],
+            y: (d) => d.from[1],
+            x2: (d) => d.to[0],
+            y2: (d) => d.to[1],
+            strokeOpacity: 0.5,
+            headSize: 5,
+          },
+          {
+            type: "scatter",
+            data: nodesStd,
+            x: (d) => d.pos[0],
+            y: (d) => d.pos[1],
+            r: 7,
+            stroke: "white",
+            strokeWidth: 2,
+          },
+          {
+            type: "annotate",
+            data: nodesStd,
+            x: (d) => d.pos[0],
+            y: (d) => d.pos[1],
+            label: (d) => d.name,
+            offsetY: -14,
+            className: "demo-label",
+          },
+        ];
+      }
+
+      /** A single CometLayer with gradient fade-in, reusing the same pass-network edges. */
+      function buildCometLayers(dimensions) {
+        const standardize = createStandardizeTransform(statsbombDims, dimensions);
+        const posByName = Object.fromEntries(players.map((p) => [p.name, standardize(p.pos)]));
+        const edges = passNetworkEdges.map(([from, to]) => ({
+          from: posByName[from],
+          to: posByName[to],
+        }));
+
+        return [
+          {
+            type: "comet",
+            data: edges,
+            x: (d) => d.from[0],
+            y: (d) => d.from[1],
+            x2: (d) => d.to[0],
+            y2: (d) => d.to[1],
+            gradient: true,
+            startWidth: 0.5,
+            endWidth: 5,
+          },
+        ];
+      }
+
       const grid = document.getElementById("grid");
 
       function addPanel(label, svg, extraClass) {
@@ -210,6 +288,25 @@
         const layers = buildLayers(dimensions);
         const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
         addPanel("uefa — print theme (CSS var override)", svg, "print");
+      }
+
+      // Arrows: directional pass-network edges with arrowheads.
+      {
+        const dimensions = getPitchDimensions("statsbomb");
+        const viewport = { width: 420, height: 280, orientation: "horizontal" };
+        const layers = buildPassNetworkLayers(dimensions);
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+        addPanel("statsbomb — pass network (arrows)", svg);
+      }
+
+      // Comet lines: tapered, gradient-faded edges — same data as the
+      // pass-network panel above, painted as CometLayer instead of Arrows.
+      {
+        const dimensions = getPitchDimensions("statsbomb");
+        const viewport = { width: 420, height: 280, orientation: "horizontal" };
+        const layers = buildCometLayers(dimensions);
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+        addPanel("statsbomb — comet lines (gradient)", svg);
       }
     </script>
   </body>

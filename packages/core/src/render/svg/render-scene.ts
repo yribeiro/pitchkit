@@ -4,6 +4,8 @@ import { createPixelTransform } from "../../transform/pixel-transform.js";
 import type { PixelTransform } from "../../transform/types.js";
 import type { Renderer } from "../renderer.js";
 import { paintAnnotateLayer } from "./paint-annotate.js";
+import { paintArrowsLayer } from "./paint-arrows.js";
+import { paintCometLayer } from "./paint-comet.js";
 import { paintPitchGeometry } from "./paint-pitch.js";
 import { paintScatterLayer } from "./paint-scatter.js";
 
@@ -22,6 +24,12 @@ function paintLayer(
       return;
     case "annotate":
       paintAnnotateLayer(svg, doc, layer, transform);
+      return;
+    case "arrows":
+      paintArrowsLayer(svg, doc, layer, transform);
+      return;
+    case "comet":
+      paintCometLayer(svg, doc, layer, transform);
       return;
   }
 }

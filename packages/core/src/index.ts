@@ -28,6 +28,8 @@ export type {
   Accessor,
   ScatterLayer,
   AnnotateLayer,
+  ArrowsLayer,
+  CometLayer,
 } from "./scene/types.js";
 export type { Rect, Line, Circle, Arc, PitchGeometry } from "./scene/geometry.js";
 export { computePitchGeometry } from "./scene/geometry.js";

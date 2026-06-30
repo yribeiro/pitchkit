@@ -40,19 +40,57 @@ export interface AnnotateLayer<T = unknown> {
 }
 
 /**
+ * Directional marks: one straight line + arrowhead per datum, from
+ * `(x, y)` to `(x2, y2)` in provider coordinates (e.g. pass direction).
+ */
+export interface ArrowsLayer<T = unknown> {
+  readonly type: "arrows";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  readonly x2: Accessor<T, number>;
+  readonly y2: Accessor<T, number>;
+  readonly stroke?: Accessor<T, string>;
+  readonly strokeWidth?: Accessor<T, number>;
+  readonly strokeOpacity?: Accessor<T, number>;
+  /** Arrowhead size in pixels. */
+  readonly headSize?: Accessor<T, number>;
+}
+
+/**
+ * Tapered "comet" lines: one filled shape per datum, narrow at
+ * `(x, y)` and wide at `(x2, y2)`, optionally fading in via a gradient.
+ * SVG can't vary a `<line>`'s stroke-width along its length, so this is
+ * painted as a filled quadrilateral instead.
+ */
+export interface CometLayer<T = unknown> {
+  readonly type: "comet";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  readonly x2: Accessor<T, number>;
+  readonly y2: Accessor<T, number>;
+  readonly color?: Accessor<T, string>;
+  readonly startWidth?: Accessor<T, number>;
+  readonly endWidth?: Accessor<T, number>;
+  /** Fades opacity from 0 at the start to 1 at the end via a linear gradient. */
+  readonly gradient?: boolean;
+}
+
+/**
  * The discriminated union of all layer kinds a Scene can draw. Milestone 1
- * adds Scatter/Annotate here, then Arrows/Comet; Heatmap (Canvas) is
+ * adds Scatter/Annotate, then Arrows/Comet here; Heatmap (Canvas) is
  * deferred to a later milestone.
  *
  * Erased to `any` rather than `unknown` here deliberately: each accessor
- * function's parameter type makes `ScatterLayer<T>`/`AnnotateLayer<T>`
- * invariant in `T` under `strictFunctionTypes`, so a concrete
- * `ScatterLayer<MyDatum>` could never widen to `ScatterLayer<unknown>` for
- * storage in this heterogeneous array. Individual layer constructors (and
- * the painters, called generically per-layer) stay fully typed in `T`.
+ * function's parameter type makes every `*Layer<T>` invariant in `T` under
+ * `strictFunctionTypes`, so a concrete `ScatterLayer<MyDatum>` could never
+ * widen to `ScatterLayer<unknown>` for storage in this heterogeneous array.
+ * Individual layer constructors (and the painters, called generically
+ * per-layer) stay fully typed in `T`.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Layer = ScatterLayer<any> | AnnotateLayer<any>;
+export type Layer = ScatterLayer<any> | AnnotateLayer<any> | ArrowsLayer<any> | CometLayer<any>;
 
 /** How many vertical grass stripes to paint; `true` picks a sensible default. */
 export type PitchStripes = boolean | number;
