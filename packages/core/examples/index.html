@@ -36,35 +36,25 @@
         display: block;
       }
 
-      /* Demo-only styling. The renderer itself sets no presentation
-         attributes — every shape is just `data-pitchkit-part`-tagged
-         geometry. Real theming (CSS variables) is Milestone 1 scope. */
-      svg rect[data-pitchkit-part="outline"] {
-        fill: #1a472a;
-        stroke: rgba(255, 255, 255, 0.8);
-        stroke-width: 1.5;
+      /* The renderer now ships its own default presentation via inline
+         `style="fill: var(--pitch-surface, ...)"` etc. (Milestone 1) — no
+         CSS is required for a themed pitch to render correctly. The rules
+         below are an *optional* per-page retheme, proving the CSS-variable
+         override path described in PRD §8.7 (per-chart override via the
+         cascade): defining --pitch-* anywhere above a pitch in the DOM
+         changes its colours with zero renderer changes. */
+      #grid {
+        --pitch-surface: #1a472a;
+        --pitch-stripe: rgba(255, 255, 255, 0.05);
+        --pitch-lines: rgba(255, 255, 255, 0.8);
       }
-      svg line,
-      svg path {
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.8);
-        stroke-width: 1.5;
-      }
-      svg rect[data-pitchkit-part="penalty-area"],
-      svg rect[data-pitchkit-part="six-yard-box"] {
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.8);
-        stroke-width: 1.5;
-      }
-      svg circle[data-pitchkit-part="center-circle"] {
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.8);
-        stroke-width: 1.5;
-      }
-      svg circle[data-pitchkit-part="center-spot"],
-      svg circle[data-pitchkit-part="penalty-spot"] {
-        fill: rgba(255, 255, 255, 0.8);
-        stroke: none;
+      .panel.print {
+        --pitch-surface: #ffffff;
+        --pitch-stripe: #f5f5f5;
+        --pitch-lines: #222222;
+        background: #ddd;
+        border-radius: 4px;
+        padding: 0.5rem;
       }
 
       /* Hand-drawn demo objects (players/pass/shot) — these are NOT a
@@ -113,6 +103,7 @@
         getPitchDimensions,
         createPixelTransform,
         createStandardizeTransform,
+        cropForHalf,
       } from "../dist/index.js";
 
       const pitchTypes = ["statsbomb", "opta", "uefa"];
@@ -185,6 +176,23 @@
 
       const grid = document.getElementById("grid");
 
+      function addPanel(label, svg, extraClass) {
+        const panel = document.createElement("div");
+        panel.className = extraClass ? `panel ${extraClass}` : "panel";
+
+        const heading = document.createElement("h2");
+        heading.textContent = label;
+
+        panel.append(heading, svg);
+        grid.appendChild(panel);
+        return panel;
+      }
+
+      // Renderer styling/appearance demo (Milestone 1): grass stripes +
+      // box-style goal frames, painted entirely by the renderer's own
+      // CSS-variable defaults — no per-shape CSS required.
+      const appearance = { stripes: true, goalType: "box" };
+
       for (const pitchType of pitchTypes) {
         for (const orientation of orientations) {
           const dimensions = getPitchDimensions(pitchType);
@@ -193,18 +201,38 @@
               ? { width: 420, height: 280, orientation }
               : { width: 280, height: 420, orientation };
 
-          const svg = renderSceneToSVGElement({ dimensions, viewport, layers: [] });
+          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
           drawDemoObjects(svg, dimensions, viewport);
 
-          const panel = document.createElement("div");
-          panel.className = "panel";
-
-          const label = document.createElement("h2");
-          label.textContent = `${pitchType} — ${orientation}`;
-
-          panel.append(label, svg);
-          grid.appendChild(panel);
+          addPanel(`${pitchType} — ${orientation}`, svg);
         }
+      }
+
+      // `half` convenience: cropForHalf() crops the viewport to the
+      // attacking (right) half in provider coordinates — one call, no
+      // manual crop-window math.
+      {
+        const dimensions = getPitchDimensions("statsbomb");
+        const viewport = {
+          width: 320,
+          height: 280,
+          orientation: "horizontal",
+          crop: cropForHalf(dimensions),
+        };
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
+        drawDemoObjects(svg, dimensions, viewport);
+        addPanel("statsbomb — half (cropForHalf)", svg);
+      }
+
+      // Per-chart theme override (PRD §8.7): scoping --pitch-* variables on
+      // a wrapper element retheme the renderer's output via the CSS
+      // cascade — no prop, no provider, no renderer change.
+      {
+        const dimensions = getPitchDimensions("uefa");
+        const viewport = { width: 320, height: 220, orientation: "horizontal" };
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
+        drawDemoObjects(svg, dimensions, viewport);
+        addPanel("uefa — print theme (CSS var override)", svg, "print");
       }
     </script>
   </body>

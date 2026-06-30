@@ -39,4 +39,40 @@ describe("renderSceneToSVGElement", () => {
     expect(countOf("corner-arc")).toBe(4);
     expect(countOf("goal")).toBe(2);
   });
+
+  it("outline carries a CSS-variable-themed style by default", () => {
+    const svg = renderSceneToSVGElement(buildScene("statsbomb"));
+    const outline = svg.querySelector('[data-pitchkit-part="outline"]');
+    expect(outline?.getAttribute("style")).toContain("var(--pitch-surface");
+  });
+
+  it.each([true, 6, 0, false] as const)(
+    "stripes: %s paints the expected number of stripe bands",
+    (stripes) => {
+      const scene: Scene = { ...buildScene("statsbomb"), appearance: { stripes } };
+      const svg = renderSceneToSVGElement(scene);
+      const stripeCount = svg.querySelectorAll('[data-pitchkit-part="stripe"]').length;
+
+      if (stripes === true) {
+        expect(stripeCount).toBe(6); // half of the default 12-band count
+      } else if (stripes === 6) {
+        expect(stripeCount).toBe(3);
+      } else {
+        expect(stripeCount).toBe(0);
+      }
+    },
+  );
+
+  it("goalType 'line' (default) renders 2 goal lines and no goal-box", () => {
+    const svg = renderSceneToSVGElement(buildScene("statsbomb"));
+    expect(svg.querySelectorAll('[data-pitchkit-part="goal"]').length).toBe(2);
+    expect(svg.querySelectorAll('[data-pitchkit-part="goal-box"]').length).toBe(0);
+  });
+
+  it("goalType 'box' renders 2 goal-box rects and no goal lines", () => {
+    const scene: Scene = { ...buildScene("statsbomb"), appearance: { goalType: "box" } };
+    const svg = renderSceneToSVGElement(scene);
+    expect(svg.querySelectorAll('[data-pitchkit-part="goal"]').length).toBe(0);
+    expect(svg.querySelectorAll('[data-pitchkit-part="goal-box"]').length).toBe(2);
+  });
 });

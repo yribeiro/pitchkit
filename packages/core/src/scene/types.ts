@@ -8,6 +8,24 @@ import type { Viewport } from "../transform/types.js";
  */
 export type Layer = never;
 
+/** How many vertical grass stripes to paint; `true` picks a sensible default. */
+export type PitchStripes = boolean | number;
+
+/** Visual treatment of the goal markings. */
+export type GoalType = "line" | "box";
+
+/**
+ * Non-coordinate visual treatment of the pitch surface (PRD §8.7's
+ * "grass/stripes, line colour/width/alpha, goal types" styling knobs).
+ * Deliberately separate from `PitchDimensions` (a fact about the provider's
+ * coordinate system) and from CSS variables (the colours themselves) — this
+ * only toggles which shapes get painted.
+ */
+export interface PitchAppearance {
+  readonly stripes?: PitchStripes;
+  readonly goalType?: GoalType;
+}
+
 /**
  * A Scene is the renderer-independent description of one pitch render:
  * which provider coordinate system, how it's displayed, and what's drawn
@@ -16,5 +34,6 @@ export type Layer = never;
 export interface Scene {
   readonly dimensions: PitchDimensions;
   readonly viewport: Viewport;
+  readonly appearance?: PitchAppearance;
   readonly layers: readonly Layer[];
 }

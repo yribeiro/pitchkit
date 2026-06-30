@@ -20,7 +20,7 @@ export function renderSceneToSVGElement(scene: Scene, doc: Document = document):
 
   const transform = createPixelTransform(scene.dimensions, scene.viewport);
   const geometry = computePitchGeometry(scene.dimensions);
-  paintPitchGeometry(svg, geometry, transform, doc);
+  paintPitchGeometry(svg, geometry, transform, doc, scene.dimensions, scene.appearance);
 
   return svg;
 }
