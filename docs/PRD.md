@@ -341,14 +341,48 @@ npx shadcn add @pitchkit/theme-broadcast
 - [x] Coordinate model + transform pipeline + `Standardizer` core, fully unit-tested.
 - [x] SVG renderer + scene/layer architecture.
 
-### Milestone 1 — MVP (core pitch + primitives)
+### Milestone 1 — MVP (core pitch + primitives) 🚧 In progress
 
-- [ ] `Pitch` / `VerticalPitch`, half/pad/crop, StatsBomb + Opta + UEFA types, styling.
-- [ ] Scatter, Arrows, Comet lines, Annotate.
+- [x] Pitch styling: CSS-variable-themed defaults (`--pitch-surface`, `--pitch-stripe`,
+      `--pitch-lines`) with built-in fallbacks, optional grass stripes and box-style goal
+      frames via `PitchAppearance`, `cropForHalf()` convenience, `pitchTokens` for
+      autocomplete. (Orientation, padding, and crop were already in the M0 transform
+      pipeline; StatsBomb/Opta/UEFA dimensions already in M0. No separate `VerticalPitch`
+      component exists yet — that's a `@pitchkit/react` API concern, not core.)
+- [x] Scatter, Annotate, Arrows, Comet lines — SVG mark layers on the new `Layer`
+      discriminated union, with `Accessor<T, V>` (static value or per-datum function) for
+      every visual prop, resolved via `scene/resolve.ts`.
 - [ ] Binned Heatmap (Canvas path).
 - [ ] `@pitchkit/react` bindings + responsive sizing + tooltips.
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] First npm publish (0.1.x) + README hero.
+
+**Progress notes for the next agent (as of 2026-06-30):**
+
+- Work so far is on branch `milestone-1-pitch-styling-layers`, [PR #3](https://github.com/yribeiro/pitchkit/pull/3)
+  (open, not yet merged into `main`). Plan file (if still present) was
+  `let-s-plan-for-the-sparkling-locket.md`.
+- Manually verified via `packages/core/examples/index.html`, which now includes a live
+  styling control panel (colour pickers write straight to `--pitch-*` CSS vars; stripes/
+  goal-type controls mutate `PitchAppearance` and re-render, since those are baked into
+  SVG shapes rather than CSS). Serve with `npm run build` in `packages/core` then any
+  static server from the `packages/core` directory (not `examples/`, since the page
+  imports `../dist/index.js`).
+- `Layer` is erased to `any` rather than `unknown` in `scene/types.ts` — deliberate.
+  TypeScript's `strictFunctionTypes` makes `ScatterLayer<T>`/etc. invariant in `T` because
+  of the accessor function parameter, so a concrete `ScatterLayer<MyDatum>` can never widen
+  to `ScatterLayer<unknown>` for storage in the heterogeneous `layers` array. See the
+  comment on `Layer` before changing this.
+- **Environment quirk:** this repo's `node_modules` were installed under WSL (Linux
+  optional deps, e.g. `@rollup/rollup-linux-x64-gnu`), but the default shell tool resolves
+  to Windows `node.exe` via a UNC path, which fails on `vitest`/`tsup` (missing the Linux
+  rollup binary) and on plain `npm run <script>` (cmd.exe rejects UNC working directories).
+  Run all `npm`/`node` commands through real WSL instead, e.g.
+  `wsl.exe -e bash -lic "cd ~/random/pitchkit/packages/core && npm run test"` (the `-lic`
+  flags matter — login+interactive loads `nvm`). `git`/`gh` work fine from the default
+  shell tool.
+- Remaining Milestone 1 scope (Canvas heatmap, `@pitchkit/react`, docs site, first npm
+  publish) was deliberately deferred to a follow-up plan, not started.
 
 ### Milestone 2 — v1.0 (parity push)
 
