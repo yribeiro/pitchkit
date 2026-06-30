@@ -101,8 +101,12 @@ describe("renderSceneToSVGElement", () => {
     expect(svg.querySelectorAll('[data-pitchkit-mark="annotate"]').length).toBe(1);
 
     const children = Array.from(svg.children);
-    const pitchIndex = children.findIndex((el) => el.getAttribute("data-pitchkit-layer") === "pitch");
-    const scatterIndex = children.findIndex((el) => el.getAttribute("data-pitchkit-layer") === "scatter");
+    const pitchIndex = children.findIndex(
+      (el) => el.getAttribute("data-pitchkit-layer") === "pitch",
+    );
+    const scatterIndex = children.findIndex(
+      (el) => el.getAttribute("data-pitchkit-layer") === "scatter",
+    );
     const annotateIndex = children.findIndex(
       (el) => el.getAttribute("data-pitchkit-layer") === "annotate",
     );

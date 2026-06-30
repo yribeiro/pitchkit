@@ -53,7 +53,10 @@ describe("paintCometLayer", () => {
 
   it("uses the static colour fill when gradient is not enabled", () => {
     const svg = makeSvg();
-    const layer: CometLayer<Pass> = { ...baseLayer([{ from: [10, 10], to: [50, 50] }]), color: "red" };
+    const layer: CometLayer<Pass> = {
+      ...baseLayer([{ from: [10, 10], to: [50, 50] }]),
+      color: "red",
+    };
     paintCometLayer(svg, document, layer, makeTransform());
 
     const mark = svg.querySelector('[data-pitchkit-mark="comet"]');
