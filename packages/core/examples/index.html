@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>@pitchkit/core — SVG renderer smoke demo</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem;
+        background: #111;
+        color: #eee;
+        font-family: system-ui, sans-serif;
+      }
+      h1 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 1.5rem;
+      }
+      #grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .panel h2 {
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #999;
+        margin: 0 0 0.5rem;
+      }
+      .panel svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Demo-only styling. The renderer itself sets no presentation
+         attributes — every shape is just `data-pitchkit-part`-tagged
+         geometry. Real theming (CSS variables) is Milestone 1 scope. */
+      svg rect[data-pitchkit-part="outline"] {
+        fill: #1a472a;
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5;
+      }
+      svg line,
+      svg path {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5;
+      }
+      svg rect[data-pitchkit-part="penalty-area"],
+      svg rect[data-pitchkit-part="six-yard-box"] {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5;
+      }
+      svg circle[data-pitchkit-part="center-circle"] {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.8);
+        stroke-width: 1.5;
+      }
+      svg circle[data-pitchkit-part="center-spot"],
+      svg circle[data-pitchkit-part="penalty-spot"] {
+        fill: rgba(255, 255, 255, 0.8);
+        stroke: none;
+      }
+
+      /* Hand-drawn demo objects (players/pass/shot) — these are NOT a
+         Scatter/Arrows layer API, which doesn't exist yet (Milestone 1).
+         They're built directly with createPixelTransform +
+         createStandardizeTransform, both already public in @pitchkit/core,
+         to sanity-check that arbitrary data points land exactly where
+         expected relative to the pitch markings. */
+      .demo-pass {
+        stroke: #facc15;
+        stroke-width: 2;
+      }
+      .demo-pass-head {
+        fill: #facc15;
+      }
+      .demo-player {
+        fill: #3b82f6;
+        stroke: white;
+        stroke-width: 1;
+      }
+      .demo-shot {
+        fill: #f97316;
+        stroke: white;
+        stroke-width: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      @pitchkit/core SVG renderer — StatsBomb / Opta / UEFA × horizontal / vertical
+    </h1>
+    <div id="grid"></div>
+
+    <!--
+      This imports the built ESM output directly (no bundler), so:
+        1. Run `npm run build` in packages/core first.
+        2. Serve this directory over HTTP — browsers block ES module
+           imports over file://. e.g. from packages/core/examples:
+             npx serve .
+           or:
+             python3 -m http.server 8080
+    -->
+    <script type="module">
+      import {
+        renderSceneToSVGElement,
+        getPitchDimensions,
+        createPixelTransform,
+        createStandardizeTransform,
+      } from "../dist/index.js";
+
+      const pitchTypes = ["statsbomb", "opta", "uefa"];
+      const orientations = ["horizontal", "vertical"];
+
+      // Sample "match objects" defined once, in StatsBomb's native
+      // coordinates — a simple back-four-plus-pass-plus-shot diagram.
+      // createStandardizeTransform converts them into each pitch type's
+      // own coordinate system below, so the same logical positions line up
+      // correctly regardless of origin/yDirection/grid-size differences.
+      const statsbombDims = getPitchDimensions("statsbomb");
+      const players = [
+        [20, 40], // GK
+        [35, 15], // LB
+        [35, 65], // RB
+        [35, 40], // CB
+        [60, 40], // CM
+        [90, 25], // forward (pass target)
+      ];
+      const pass = { from: [60, 40], to: [90, 25] };
+      const shot = [108, 36];
+
+      const SVG_NS = "http://www.w3.org/2000/svg";
+
+      function drawDemoObjects(svg, dimensions, viewport) {
+        const standardize = createStandardizeTransform(statsbombDims, dimensions);
+        const transform = createPixelTransform(dimensions, viewport);
+        const toPixel = (point) => transform.toPixel(standardize(point));
+
+        const group = document.createElementNS(SVG_NS, "g");
+        group.setAttribute("class", "demo-objects");
+
+        const [px1, py1] = toPixel(pass.from);
+        const [px2, py2] = toPixel(pass.to);
+        const line = document.createElementNS(SVG_NS, "line");
+        line.setAttribute("x1", px1);
+        line.setAttribute("y1", py1);
+        line.setAttribute("x2", px2);
+        line.setAttribute("y2", py2);
+        line.setAttribute("class", "demo-pass");
+        group.appendChild(line);
+
+        const passHead = document.createElementNS(SVG_NS, "circle");
+        passHead.setAttribute("cx", px2);
+        passHead.setAttribute("cy", py2);
+        passHead.setAttribute("r", 3);
+        passHead.setAttribute("class", "demo-pass-head");
+        group.appendChild(passHead);
+
+        for (const player of players) {
+          const [px, py] = toPixel(player);
+          const circle = document.createElementNS(SVG_NS, "circle");
+          circle.setAttribute("cx", px);
+          circle.setAttribute("cy", py);
+          circle.setAttribute("r", 5);
+          circle.setAttribute("class", "demo-player");
+          group.appendChild(circle);
+        }
+
+        const [sx, sy] = toPixel(shot);
+        const shotCircle = document.createElementNS(SVG_NS, "circle");
+        shotCircle.setAttribute("cx", sx);
+        shotCircle.setAttribute("cy", sy);
+        shotCircle.setAttribute("r", 6);
+        shotCircle.setAttribute("class", "demo-shot");
+        group.appendChild(shotCircle);
+
+        svg.appendChild(group);
+      }
+
+      const grid = document.getElementById("grid");
+
+      for (const pitchType of pitchTypes) {
+        for (const orientation of orientations) {
+          const dimensions = getPitchDimensions(pitchType);
+          const viewport =
+            orientation === "horizontal"
+              ? { width: 420, height: 280, orientation }
+              : { width: 280, height: 420, orientation };
+
+          const svg = renderSceneToSVGElement({ dimensions, viewport, layers: [] });
+          drawDemoObjects(svg, dimensions, viewport);
+
+          const panel = document.createElement("div");
+          panel.className = "panel";
+
+          const label = document.createElement("h2");
+          label.textContent = `${pitchType} — ${orientation}`;
+
+          panel.append(label, svg);
+          grid.appendChild(panel);
+        }
+      }
+    </script>
+  </body>
+</html>
