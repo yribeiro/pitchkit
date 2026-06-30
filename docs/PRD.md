@@ -2,7 +2,7 @@
 
 > **TL;DR** — Build the missing piece of the football-analytics web stack: a TypeScript-native, framework-agnostic visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser, with first-class React/Next.js bindings, responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
-_Status: Draft v0.2 · Owner: Yohahn Ribeiro · Last updated: 28 Jun 2026_
+_Status: Draft v0.2 · Owner: Yohahn Ribeiro · Last updated: 30 Jun 2026_
 
 ---
 
@@ -335,11 +335,11 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ## 11. Roadmap (phased)
 
-### Milestone 0 — Foundations
+### Milestone 0 — Foundations ✅ Complete
 
-- [ ] Monorepo scaffold (pnpm/Turborepo/tsup), CI, lint/test baseline.
-- [ ] Coordinate model + transform pipeline + `Standardizer` core, fully unit-tested.
-- [ ] SVG renderer + scene/layer architecture.
+- [x] Monorepo scaffold (npm workspaces/Turborepo/tsup), CI, lint/test baseline.
+- [x] Coordinate model + transform pipeline + `Standardizer` core, fully unit-tested.
+- [x] SVG renderer + scene/layer architecture.
 
 ### Milestone 1 — MVP (core pitch + primitives)
 
