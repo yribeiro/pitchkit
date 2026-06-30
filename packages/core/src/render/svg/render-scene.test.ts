@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
 import type { PitchTypeId } from "../../dimensions/types.js";
-import type { Scene } from "../../scene/types.js";
+import type { AnnotateLayer, ScatterLayer, Scene } from "../../scene/types.js";
 import { renderSceneToSVGElement } from "./render-scene.js";
 
 const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
@@ -74,5 +74,40 @@ describe("renderSceneToSVGElement", () => {
     const svg = renderSceneToSVGElement(scene);
     expect(svg.querySelectorAll('[data-pitchkit-part="goal"]').length).toBe(0);
     expect(svg.querySelectorAll('[data-pitchkit-part="goal-box"]').length).toBe(2);
+  });
+
+  it("dispatches scatter and annotate layers and paints them after the pitch", () => {
+    const datum = { x: 10, y: 10 };
+    const scatterLayer: ScatterLayer<typeof datum> = {
+      type: "scatter",
+      data: [datum],
+      x: (d) => d.x,
+      y: (d) => d.y,
+    };
+    const annotateLayer: AnnotateLayer<typeof datum> = {
+      type: "annotate",
+      data: [datum],
+      x: (d) => d.x,
+      y: (d) => d.y,
+      label: () => "A",
+    };
+    const scene: Scene = {
+      ...buildScene("statsbomb"),
+      layers: [scatterLayer, annotateLayer],
+    };
+    const svg = renderSceneToSVGElement(scene);
+
+    expect(svg.querySelectorAll('[data-pitchkit-mark="scatter"]').length).toBe(1);
+    expect(svg.querySelectorAll('[data-pitchkit-mark="annotate"]').length).toBe(1);
+
+    const children = Array.from(svg.children);
+    const pitchIndex = children.findIndex((el) => el.getAttribute("data-pitchkit-layer") === "pitch");
+    const scatterIndex = children.findIndex((el) => el.getAttribute("data-pitchkit-layer") === "scatter");
+    const annotateIndex = children.findIndex(
+      (el) => el.getAttribute("data-pitchkit-layer") === "annotate",
+    );
+
+    expect(pitchIndex).toBeLessThan(scatterIndex);
+    expect(scatterIndex).toBeLessThan(annotateIndex);
   });
 });

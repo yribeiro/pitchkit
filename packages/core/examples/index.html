@@ -57,28 +57,13 @@
         padding: 0.5rem;
       }
 
-      /* Hand-drawn demo objects (players/pass/shot) — these are NOT a
-         Scatter/Arrows layer API, which doesn't exist yet (Milestone 1).
-         They're built directly with createPixelTransform +
-         createStandardizeTransform, both already public in @pitchkit/core,
-         to sanity-check that arbitrary data points land exactly where
-         expected relative to the pitch markings. */
-      .demo-pass {
-        stroke: #facc15;
-        stroke-width: 2;
-      }
-      .demo-pass-head {
-        fill: #facc15;
-      }
-      .demo-player {
-        fill: #3b82f6;
-        stroke: white;
-        stroke-width: 1;
-      }
-      .demo-shot {
-        fill: #f97316;
-        stroke: white;
-        stroke-width: 1;
+      /* Player-number labels painted by the Annotate layer — colour comes
+         from the painter's themed default; this just sets typography,
+         demonstrating the `className` styling escape hatch (PRD §8.7). */
+      .demo-label {
+        font-weight: 600;
+        font-size: 9px;
+        text-transform: uppercase;
       }
     </style>
   </head>
@@ -101,7 +86,6 @@
       import {
         renderSceneToSVGElement,
         getPitchDimensions,
-        createPixelTransform,
         createStandardizeTransform,
         cropForHalf,
       } from "../dist/index.js";
@@ -110,68 +94,61 @@
       const orientations = ["horizontal", "vertical"];
 
       // Sample "match objects" defined once, in StatsBomb's native
-      // coordinates — a simple back-four-plus-pass-plus-shot diagram.
-      // createStandardizeTransform converts them into each pitch type's
-      // own coordinate system below, so the same logical positions line up
+      // coordinates — a simple back-four-plus-forward diagram.
+      // createStandardizeTransform converts them into each pitch type's own
+      // coordinate system below, so the same logical positions line up
       // correctly regardless of origin/yDirection/grid-size differences.
+      // Layer x/y accessors then read straight off the *standardized*
+      // [x, y] tuples — layer coordinates are always in the scene's own
+      // provider system (Milestone 1 architecture note).
       const statsbombDims = getPitchDimensions("statsbomb");
       const players = [
-        [20, 40], // GK
-        [35, 15], // LB
-        [35, 65], // RB
-        [35, 40], // CB
-        [60, 40], // CM
-        [90, 25], // forward (pass target)
+        { name: "GK", pos: [20, 40] },
+        { name: "LB", pos: [35, 15] },
+        { name: "RB", pos: [35, 65] },
+        { name: "CB", pos: [35, 40] },
+        { name: "CM", pos: [60, 40] },
+        { name: "FW", pos: [90, 25] },
       ];
-      const pass = { from: [60, 40], to: [90, 25] };
       const shot = [108, 36];
 
-      const SVG_NS = "http://www.w3.org/2000/svg";
-
-      function drawDemoObjects(svg, dimensions, viewport) {
+      /** Builds the Scatter + Annotate layers for one target pitch type. */
+      function buildLayers(dimensions) {
         const standardize = createStandardizeTransform(statsbombDims, dimensions);
-        const transform = createPixelTransform(dimensions, viewport);
-        const toPixel = (point) => transform.toPixel(standardize(point));
+        const playersStd = players.map((p) => ({ ...p, pos: standardize(p.pos) }));
+        const shotStd = standardize(shot);
 
-        const group = document.createElementNS(SVG_NS, "g");
-        group.setAttribute("class", "demo-objects");
-
-        const [px1, py1] = toPixel(pass.from);
-        const [px2, py2] = toPixel(pass.to);
-        const line = document.createElementNS(SVG_NS, "line");
-        line.setAttribute("x1", px1);
-        line.setAttribute("y1", py1);
-        line.setAttribute("x2", px2);
-        line.setAttribute("y2", py2);
-        line.setAttribute("class", "demo-pass");
-        group.appendChild(line);
-
-        const passHead = document.createElementNS(SVG_NS, "circle");
-        passHead.setAttribute("cx", px2);
-        passHead.setAttribute("cy", py2);
-        passHead.setAttribute("r", 3);
-        passHead.setAttribute("class", "demo-pass-head");
-        group.appendChild(passHead);
-
-        for (const player of players) {
-          const [px, py] = toPixel(player);
-          const circle = document.createElementNS(SVG_NS, "circle");
-          circle.setAttribute("cx", px);
-          circle.setAttribute("cy", py);
-          circle.setAttribute("r", 5);
-          circle.setAttribute("class", "demo-player");
-          group.appendChild(circle);
-        }
-
-        const [sx, sy] = toPixel(shot);
-        const shotCircle = document.createElementNS(SVG_NS, "circle");
-        shotCircle.setAttribute("cx", sx);
-        shotCircle.setAttribute("cy", sy);
-        shotCircle.setAttribute("r", 6);
-        shotCircle.setAttribute("class", "demo-shot");
-        group.appendChild(shotCircle);
-
-        svg.appendChild(group);
+        return [
+          {
+            type: "scatter",
+            data: playersStd,
+            x: (d) => d.pos[0],
+            y: (d) => d.pos[1],
+            r: 5,
+            fill: "var(--pitch-marker-primary, #3b82f6)",
+            stroke: "white",
+            strokeWidth: 1,
+          },
+          {
+            type: "scatter",
+            data: [{ pos: shotStd }],
+            x: (d) => d.pos[0],
+            y: (d) => d.pos[1],
+            r: 6,
+            fill: "var(--pitch-marker-goal, #f97316)",
+            stroke: "white",
+            strokeWidth: 1,
+          },
+          {
+            type: "annotate",
+            data: playersStd,
+            x: (d) => d.pos[0],
+            y: (d) => d.pos[1],
+            label: (d) => d.name,
+            offsetY: -10,
+            className: "demo-label",
+          },
+        ];
       }
 
       const grid = document.getElementById("grid");
@@ -201,8 +178,8 @@
               ? { width: 420, height: 280, orientation }
               : { width: 280, height: 420, orientation };
 
-          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
-          drawDemoObjects(svg, dimensions, viewport);
+          const layers = buildLayers(dimensions);
+          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
 
           addPanel(`${pitchType} — ${orientation}`, svg);
         }
@@ -219,8 +196,8 @@
           orientation: "horizontal",
           crop: cropForHalf(dimensions),
         };
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
-        drawDemoObjects(svg, dimensions, viewport);
+        const layers = buildLayers(dimensions);
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
         addPanel("statsbomb — half (cropForHalf)", svg);
       }
 
@@ -230,8 +207,8 @@
       {
         const dimensions = getPitchDimensions("uefa");
         const viewport = { width: 320, height: 220, orientation: "horizontal" };
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers: [] });
-        drawDemoObjects(svg, dimensions, viewport);
+        const layers = buildLayers(dimensions);
+        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
         addPanel("uefa — print theme (CSS var override)", svg, "print");
       }
     </script>
