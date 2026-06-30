@@ -36,6 +36,63 @@
         display: block;
       }
 
+      #controls {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.25rem;
+        margin: 0 0 1.5rem;
+        padding: 0.85rem 1rem;
+        background: #1b1b1b;
+        border: 1px solid #333;
+        border-radius: 6px;
+      }
+      #controls .field {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        color: #bbb;
+      }
+      #controls input[type="color"] {
+        width: 1.6rem;
+        height: 1.6rem;
+        padding: 0;
+        border: 1px solid #444;
+        border-radius: 4px;
+        background: none;
+        cursor: pointer;
+      }
+      #controls input[type="range"] {
+        width: 5rem;
+      }
+      #controls input[type="number"] {
+        width: 3.5rem;
+      }
+      #controls select,
+      #controls input[type="number"] {
+        background: #111;
+        color: #eee;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 0.15rem 0.3rem;
+      }
+      #controls button {
+        font-size: 0.8rem;
+        color: #eee;
+        background: #2a2a2a;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 0.35rem 0.7rem;
+        cursor: pointer;
+      }
+      #controls button:hover {
+        background: #353535;
+      }
+
       /* The renderer now ships its own default presentation via inline
          `style="fill: var(--pitch-surface, ...)"` etc. (Milestone 1) — no
          CSS is required for a themed pitch to render correctly. The rules
@@ -69,6 +126,49 @@
   </head>
   <body>
     <h1>@pitchkit/core SVG renderer — StatsBomb / Opta / UEFA × horizontal / vertical</h1>
+
+    <!--
+      Styling sandbox: the colour inputs just set --pitch-* CSS custom
+      properties on #grid and take effect immediately, since the renderer
+      already reads them via var(--pitch-surface, ...) at paint time — no
+      re-render needed (PRD §8.7's CSS-cascade theming). Stripes/goal-type
+      are baked into the SVG shapes themselves (not CSS), so those controls
+      call renderAll() to rebuild every panel's Scene with the new
+      PitchAppearance. The "uefa — print theme" panel intentionally ignores
+      these controls: its --pitch-* vars are scoped on .panel.print, which
+      is more specific than #grid, demonstrating the per-chart override
+      from the same cascade.
+    -->
+    <div id="controls">
+      <label class="field">Surface <input type="color" id="ctrl-surface" value="#1a472a" /></label>
+      <label class="field">
+        Stripe
+        <input type="color" id="ctrl-stripe" value="#ffffff" />
+        <input type="range" id="ctrl-stripe-opacity" min="0" max="1" step="0.01" value="0.05" />
+      </label>
+      <label class="field">
+        Lines
+        <input type="color" id="ctrl-lines" value="#ffffff" />
+        <input type="range" id="ctrl-lines-opacity" min="0" max="1" step="0.01" value="0.8" />
+      </label>
+      <label class="field">
+        <input type="checkbox" id="ctrl-stripes-enabled" checked />
+        Stripes
+      </label>
+      <label class="field">
+        Count
+        <input type="number" id="ctrl-stripe-count" min="2" max="24" step="2" value="12" />
+      </label>
+      <label class="field">
+        Goal type
+        <select id="ctrl-goal-type">
+          <option value="line">line</option>
+          <option value="box" selected>box</option>
+        </select>
+      </label>
+      <button id="ctrl-reset" type="button">Reset</button>
+    </div>
+
     <div id="grid"></div>
 
     <!--
@@ -243,69 +343,159 @@
 
       // Renderer styling/appearance demo (Milestone 1): grass stripes +
       // box-style goal frames, painted entirely by the renderer's own
-      // CSS-variable defaults — no per-shape CSS required.
+      // CSS-variable defaults — no per-shape CSS required. Mutated by the
+      // controls below and re-rendered via renderAll(), since stripes/
+      // goalType are baked into the SVG shapes at paint time (not CSS).
       const appearance = { stripes: true, goalType: "box" };
 
-      for (const pitchType of pitchTypes) {
-        for (const orientation of orientations) {
-          const dimensions = getPitchDimensions(pitchType);
-          const viewport =
-            orientation === "horizontal"
-              ? { width: 420, height: 280, orientation }
-              : { width: 280, height: 420, orientation };
+      /** Clears #grid and rebuilds every demo panel from the current `appearance`. */
+      function renderAll() {
+        grid.replaceChildren();
 
+        for (const pitchType of pitchTypes) {
+          for (const orientation of orientations) {
+            const dimensions = getPitchDimensions(pitchType);
+            const viewport =
+              orientation === "horizontal"
+                ? { width: 420, height: 280, orientation }
+                : { width: 280, height: 420, orientation };
+
+            const layers = buildLayers(dimensions);
+            const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+
+            addPanel(`${pitchType} — ${orientation}`, svg);
+          }
+        }
+
+        // `half` convenience: cropForHalf() crops the viewport to the
+        // attacking (right) half in provider coordinates — one call, no
+        // manual crop-window math.
+        {
+          const dimensions = getPitchDimensions("statsbomb");
+          const viewport = {
+            width: 320,
+            height: 280,
+            orientation: "horizontal",
+            crop: cropForHalf(dimensions),
+          };
           const layers = buildLayers(dimensions);
           const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+          addPanel("statsbomb — half (cropForHalf)", svg);
+        }
 
-          addPanel(`${pitchType} — ${orientation}`, svg);
+        // Per-chart theme override (PRD §8.7): scoping --pitch-* variables
+        // on a wrapper element retheme the renderer's output via the CSS
+        // cascade — no prop, no provider, no renderer change. Deliberately
+        // not driven by the controls above (see comment near #controls).
+        {
+          const dimensions = getPitchDimensions("uefa");
+          const viewport = { width: 320, height: 220, orientation: "horizontal" };
+          const layers = buildLayers(dimensions);
+          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+          addPanel("uefa — print theme (CSS var override)", svg, "print");
+        }
+
+        // Arrows: directional pass-network edges with arrowheads.
+        {
+          const dimensions = getPitchDimensions("statsbomb");
+          const viewport = { width: 420, height: 280, orientation: "horizontal" };
+          const layers = buildPassNetworkLayers(dimensions);
+          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+          addPanel("statsbomb — pass network (arrows)", svg);
+        }
+
+        // Comet lines: tapered, gradient-faded edges — same data as the
+        // pass-network panel above, painted as CometLayer instead of Arrows.
+        {
+          const dimensions = getPitchDimensions("statsbomb");
+          const viewport = { width: 420, height: 280, orientation: "horizontal" };
+          const layers = buildCometLayers(dimensions);
+          const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
+          addPanel("statsbomb — comet lines (gradient)", svg);
         }
       }
 
-      // `half` convenience: cropForHalf() crops the viewport to the
-      // attacking (right) half in provider coordinates — one call, no
-      // manual crop-window math.
-      {
-        const dimensions = getPitchDimensions("statsbomb");
-        const viewport = {
-          width: 320,
-          height: 280,
-          orientation: "horizontal",
-          crop: cropForHalf(dimensions),
-        };
-        const layers = buildLayers(dimensions);
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
-        addPanel("statsbomb — half (cropForHalf)", svg);
+      // ---- Styling control panel ----------------------------------------
+
+      const DEFAULT_CONTROLS = {
+        surface: "#1a472a",
+        stripeColor: "#ffffff",
+        stripeOpacity: 0.05,
+        linesColor: "#ffffff",
+        linesOpacity: 0.8,
+        stripesEnabled: true,
+        stripeCount: 12,
+        goalType: "box",
+      };
+
+      const controls = {
+        surface: document.getElementById("ctrl-surface"),
+        stripeColor: document.getElementById("ctrl-stripe"),
+        stripeOpacity: document.getElementById("ctrl-stripe-opacity"),
+        linesColor: document.getElementById("ctrl-lines"),
+        linesOpacity: document.getElementById("ctrl-lines-opacity"),
+        stripesEnabled: document.getElementById("ctrl-stripes-enabled"),
+        stripeCount: document.getElementById("ctrl-stripe-count"),
+        goalType: document.getElementById("ctrl-goal-type"),
+      };
+
+      /** "#rrggbb" + 0-1 opacity -> "rgba(r, g, b, a)", for compositing into a CSS var. */
+      function hexToRgba(hex, opacity) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
       }
 
-      // Per-chart theme override (PRD §8.7): scoping --pitch-* variables on
-      // a wrapper element retheme the renderer's output via the CSS
-      // cascade — no prop, no provider, no renderer change.
-      {
-        const dimensions = getPitchDimensions("uefa");
-        const viewport = { width: 320, height: 220, orientation: "horizontal" };
-        const layers = buildLayers(dimensions);
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
-        addPanel("uefa — print theme (CSS var override)", svg, "print");
+      /** Pushes the colour controls' current values onto #grid's CSS variables — no re-render. */
+      function applyColors() {
+        grid.style.setProperty("--pitch-surface", controls.surface.value);
+        grid.style.setProperty(
+          "--pitch-stripe",
+          hexToRgba(controls.stripeColor.value, Number(controls.stripeOpacity.value)),
+        );
+        grid.style.setProperty(
+          "--pitch-lines",
+          hexToRgba(controls.linesColor.value, Number(controls.linesOpacity.value)),
+        );
       }
 
-      // Arrows: directional pass-network edges with arrowheads.
-      {
-        const dimensions = getPitchDimensions("statsbomb");
-        const viewport = { width: 420, height: 280, orientation: "horizontal" };
-        const layers = buildPassNetworkLayers(dimensions);
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
-        addPanel("statsbomb — pass network (arrows)", svg);
+      /** Reads the appearance controls (baked into SVG shapes) and re-renders every panel. */
+      function applyAppearance() {
+        controls.stripeCount.disabled = !controls.stripesEnabled.checked;
+        appearance.stripes = controls.stripesEnabled.checked
+          ? Number(controls.stripeCount.value)
+          : false;
+        appearance.goalType = controls.goalType.value;
+        renderAll();
       }
 
-      // Comet lines: tapered, gradient-faded edges — same data as the
-      // pass-network panel above, painted as CometLayer instead of Arrows.
-      {
-        const dimensions = getPitchDimensions("statsbomb");
-        const viewport = { width: 420, height: 280, orientation: "horizontal" };
-        const layers = buildCometLayers(dimensions);
-        const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
-        addPanel("statsbomb — comet lines (gradient)", svg);
+      function resetControls() {
+        controls.surface.value = DEFAULT_CONTROLS.surface;
+        controls.stripeColor.value = DEFAULT_CONTROLS.stripeColor;
+        controls.stripeOpacity.value = String(DEFAULT_CONTROLS.stripeOpacity);
+        controls.linesColor.value = DEFAULT_CONTROLS.linesColor;
+        controls.linesOpacity.value = String(DEFAULT_CONTROLS.linesOpacity);
+        controls.stripesEnabled.checked = DEFAULT_CONTROLS.stripesEnabled;
+        controls.stripeCount.value = String(DEFAULT_CONTROLS.stripeCount);
+        controls.goalType.value = DEFAULT_CONTROLS.goalType;
+        applyColors();
+        applyAppearance();
       }
+
+      for (const input of [controls.surface, controls.stripeColor, controls.linesColor]) {
+        input.addEventListener("input", applyColors);
+      }
+      for (const input of [controls.stripeOpacity, controls.linesOpacity]) {
+        input.addEventListener("input", applyColors);
+      }
+      for (const input of [controls.stripesEnabled, controls.stripeCount, controls.goalType]) {
+        input.addEventListener("input", applyAppearance);
+      }
+      document.getElementById("ctrl-reset").addEventListener("click", resetControls);
+
+      applyColors();
+      renderAll();
     </script>
   </body>
 </html>
