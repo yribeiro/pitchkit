@@ -402,6 +402,20 @@ npx shadcn add @pitchkit/theme-broadcast
 - `core`'s `partStyle()` returns a CSS string (for `setAttribute("style", ...)`); React's
   `style` prop needs a camelCase object. `packages/react/src/style-string.ts` bridges this —
   don't change `partStyle`'s string format for React's sake, add to the bridge instead.
+- **turbo.json gotcha (caught by CI, not local testing):** `@pitchkit/react` resolves
+  `@pitchkit/core` via its published `exports` field, which only points at
+  `dist/index.d.ts` — there's no path back to source types. `typecheck` didn't depend on
+  `^build` (a leftover from M0, when there were no cross-package dependencies to worry
+  about), so on a genuinely fresh checkout `@pitchkit/react`'s typecheck ran before
+  `@pitchkit/core` had ever been built and failed with `Cannot find module '@pitchkit/core'`.
+  This passed locally throughout development purely because `packages/core/dist` already
+  existed from earlier manual builds in the session, masking the missing task dependency.
+  Fixed by adding `"dependsOn": ["^build"]` to `turbo.json`'s `typecheck` task (`test` didn't
+  need the same fix — `packages/react/vitest.config.ts` aliases `@pitchkit/core` straight to
+  its source `.ts`, bypassing `exports` entirely for tests). If you add a fourth package that
+  imports another workspace package's types, verify the relevant task's turbo dependency
+  from a clean `rm -rf packages/*/dist .turbo`, not just from a session with pre-existing
+  builds lying around.
 - `Layer` is erased to `any` rather than `unknown` in `scene/types.ts` — deliberate.
   TypeScript's `strictFunctionTypes` makes `ScatterLayer<T>`/etc. invariant in `T` because
   of the accessor function parameter, so a concrete `ScatterLayer<MyDatum>` can never widen
