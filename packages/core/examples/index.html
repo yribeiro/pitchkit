@@ -160,7 +160,10 @@
       PitchAppearance. The "uefa — print theme" panel intentionally ignores
       these controls: its --pitch-* vars are scoped on .panel.print, which
       is more specific than #grid, demonstrating the per-chart override
-      from the same cascade.
+      from the same cascade. The heatmap dropdown swaps the shot-heatmap
+      panel's colorMin/colorMax and re-renders — HEATMAP_COLORMAPS in the
+      script includes mplsoccer's "Pearl Earring" and "Flamingo" colormaps
+      ported verbatim (same hex stops), alongside the library's own default.
     -->
     <div id="controls">
       <label class="field">Surface <input type="color" id="ctrl-surface" value="#1a472a" /></label>
@@ -187,6 +190,14 @@
         <select id="ctrl-goal-type">
           <option value="line">line</option>
           <option value="box" selected>box</option>
+        </select>
+      </label>
+      <label class="field">
+        Heatmap
+        <select id="ctrl-heatmap-colormap">
+          <option value="default" selected>default (blue → red)</option>
+          <option value="pearlEarring">pearl earring</option>
+          <option value="flamingo">flamingo</option>
         </select>
       </label>
       <button id="ctrl-reset" type="button">Reset</button>
@@ -377,6 +388,22 @@
         [70, 42],
       ];
 
+      // Selectable heatmap colormaps. "pearlEarring" and "flamingo" are
+      // ported verbatim (same hex stops) from mplsoccer's own gallery
+      // example: https://mplsoccer.readthedocs.io/en/latest/gallery/pitch_plots/plot_cmap.html
+      // — LinearSegmentedColormap.from_list(['#15242e', '#4393c4']) and
+      // (['#e3aca7', '#c03a1d']) respectively. mplsoccer builds an N-color
+      // stepped colormap via matplotlib; createColorScale here is a
+      // continuous 2-stop linear interpolation instead (see colormap.ts),
+      // so the gradient is smoother, but the two endpoint colors match
+      // exactly.
+      const HEATMAP_COLORMAPS = {
+        default: { colorMin: "#1d4ed8", colorMax: "#facc15" },
+        pearlEarring: { colorMin: "#15242e", colorMax: "#4393c4" },
+        flamingo: { colorMin: "#e3aca7", colorMax: "#c03a1d" },
+      };
+      let heatmapColormap = HEATMAP_COLORMAPS.default;
+
       /**
        * A <canvas> heatmap stacked on top of the SVG pitch (Milestone 1's
        * "Binned Heatmap (Canvas path)" item). renderHeatmapLayersToCanvas
@@ -411,8 +438,8 @@
           y: (d) => d.pos[1],
           binsX: 8,
           binsY: 6,
-          colorMin: "#1d4ed8",
-          colorMax: "#facc15",
+          colorMin: heatmapColormap.colorMin,
+          colorMax: heatmapColormap.colorMax,
         };
         const canvas = document.createElement("canvas");
         canvas.className = "heatmap-canvas";
@@ -533,6 +560,7 @@
         stripesEnabled: true,
         stripeCount: 12,
         goalType: "box",
+        heatmapColormap: "default",
       };
 
       const controls = {
@@ -544,6 +572,7 @@
         stripesEnabled: document.getElementById("ctrl-stripes-enabled"),
         stripeCount: document.getElementById("ctrl-stripe-count"),
         goalType: document.getElementById("ctrl-goal-type"),
+        heatmapColormap: document.getElementById("ctrl-heatmap-colormap"),
       };
 
       /** "#rrggbb" + 0-1 opacity -> "rgba(r, g, b, a)", for compositing into a CSS var. */
@@ -577,6 +606,12 @@
         renderAll();
       }
 
+      /** Reads the heatmap colormap control and re-renders every panel. */
+      function applyHeatmapColormap() {
+        heatmapColormap = HEATMAP_COLORMAPS[controls.heatmapColormap.value];
+        renderAll();
+      }
+
       function resetControls() {
         controls.surface.value = DEFAULT_CONTROLS.surface;
         controls.stripeColor.value = DEFAULT_CONTROLS.stripeColor;
@@ -586,8 +621,10 @@
         controls.stripesEnabled.checked = DEFAULT_CONTROLS.stripesEnabled;
         controls.stripeCount.value = String(DEFAULT_CONTROLS.stripeCount);
         controls.goalType.value = DEFAULT_CONTROLS.goalType;
+        controls.heatmapColormap.value = DEFAULT_CONTROLS.heatmapColormap;
         applyColors();
         applyAppearance();
+        applyHeatmapColormap();
       }
 
       for (const input of [controls.surface, controls.stripeColor, controls.linesColor]) {
@@ -599,6 +636,7 @@
       for (const input of [controls.stripesEnabled, controls.stripeCount, controls.goalType]) {
         input.addEventListener("input", applyAppearance);
       }
+      controls.heatmapColormap.addEventListener("input", applyHeatmapColormap);
       document.getElementById("ctrl-reset").addEventListener("click", resetControls);
 
       applyColors();
