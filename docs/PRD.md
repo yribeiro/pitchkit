@@ -352,27 +352,43 @@ npx shadcn add @pitchkit/theme-broadcast
 - [x] Scatter, Annotate, Arrows, Comet lines — SVG mark layers on the new `Layer`
       discriminated union, with `Accessor<T, V>` (static value or per-datum function) for
       every visual prop, resolved via `scene/resolve.ts`.
-- [ ] Binned Heatmap (Canvas path).
+- [x] Binned Heatmap (Canvas path): `HeatmapLayer` (count, or a summed `weight` accessor),
+      pure `computeHeatmapBins`, a hand-rolled zero-dependency `createColorScale`, and
+      `renderHeatmapLayersToCanvas` / `canvasRenderer` — the second concrete
+      `Renderer<TOutput>` implementation alongside `svgRenderer`, with `devicePixelRatio`
+      handling per §8.6. Core deliberately does not solve SVG+Canvas compositing (stacking
+      the two elements in the DOM is a consumer/`@pitchkit/react` concern) —
+      `packages/core/examples/index.html` hand-wires a stacked demo panel to prove it's
+      possible. Every `@pitchkit/core` item in Milestone 1 is now done.
 - [ ] `@pitchkit/react` bindings + responsive sizing + tooltips.
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] First npm publish (0.1.x) + README hero.
 
 **Progress notes for the next agent (as of 2026-06-30):**
 
-- Work so far is on branch `milestone-1-pitch-styling-layers`, [PR #3](https://github.com/yribeiro/pitchkit/pull/3)
-  (open, not yet merged into `main`). Plan file (if still present) was
-  `let-s-plan-for-the-sparkling-locket.md`.
+- Pitch styling/theming and the SVG mark layers landed via branch
+  `milestone-1-pitch-styling-layers`, [PR #3](https://github.com/yribeiro/pitchkit/pull/3)
+  (merged into `main`).
+- The Canvas heatmap landed via branch `milestone-1-canvas-heatmap`,
+  [PR #4](https://github.com/yribeiro/pitchkit/pull/4) (open, not yet merged into `main`).
 - Manually verified via `packages/core/examples/index.html`, which now includes a live
   styling control panel (colour pickers write straight to `--pitch-*` CSS vars; stripes/
   goal-type controls mutate `PitchAppearance` and re-render, since those are baked into
-  SVG shapes rather than CSS). Serve with `npm run build` in `packages/core` then any
-  static server from the `packages/core` directory (not `examples/`, since the page
-  imports `../dist/index.js`).
+  SVG shapes rather than CSS) and a stacked SVG+Canvas heatmap panel. Serve with
+  `npm run build` in `packages/core` then any static server from the `packages/core`
+  directory (not `examples/`, since the page imports `../dist/index.js`) — or use the
+  checked-in `.claude/launch.json` (`core-examples` config, port 4321).
 - `Layer` is erased to `any` rather than `unknown` in `scene/types.ts` — deliberate.
   TypeScript's `strictFunctionTypes` makes `ScatterLayer<T>`/etc. invariant in `T` because
   of the accessor function parameter, so a concrete `ScatterLayer<MyDatum>` can never widen
   to `ScatterLayer<unknown>` for storage in the heterogeneous `layers` array. See the
   comment on `Layer` before changing this.
+- Canvas painting is tested via a hand-rolled mock of `CanvasRenderingContext2D` (see
+  `render/canvas/paint-heatmap.test.ts` and `render-heatmap.test.ts`), not real pixel
+  output — happy-dom's `<canvas>` has no real 2D rendering support, so
+  `canvas.getContext("2d")` returns `null` under test. `render-heatmap.test.ts` stubs
+  `HTMLCanvasElement.prototype.getContext` via `vi.spyOn` for the tests that need to
+  observe paint calls; the canvas-sizing/DPR tests don't need a working context at all.
 - **Environment quirk:** this repo's `node_modules` were installed under WSL (Linux
   optional deps, e.g. `@rollup/rollup-linux-x64-gnu`), but the default shell tool resolves
   to Windows `node.exe` via a UNC path, which fails on `vitest`/`tsup` (missing the Linux
@@ -381,8 +397,8 @@ npx shadcn add @pitchkit/theme-broadcast
   `wsl.exe -e bash -lic "cd ~/random/pitchkit/packages/core && npm run test"` (the `-lic`
   flags matter — login+interactive loads `nvm`). `git`/`gh` work fine from the default
   shell tool.
-- Remaining Milestone 1 scope (Canvas heatmap, `@pitchkit/react`, docs site, first npm
-  publish) was deliberately deferred to a follow-up plan, not started.
+- Remaining Milestone 1 scope (`@pitchkit/react`, docs site, first npm publish) is all
+  outside `@pitchkit/core` and was deliberately deferred to a follow-up plan, not started.
 
 ### Milestone 2 — v1.0 (parity push)
 
