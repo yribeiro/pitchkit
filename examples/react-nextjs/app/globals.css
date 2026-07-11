@@ -1,0 +1,86 @@
+:root {
+  color-scheme: dark;
+
+  /* Theming demo (PRD §8.7): consumers set these once — via a shadcn-style
+     "add to globals.css" install, or by hand as here — and every <Pitch>
+     picks them up through CSS variable cascade, no per-instance props. */
+  --pitch-surface: #1a472a;
+  --pitch-stripe: rgba(255, 255, 255, 0.05);
+  --pitch-lines: rgba(255, 255, 255, 0.8);
+  --pitch-marker-primary: #3b82f6;
+  --pitch-marker-goal: #f97316;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #111;
+  color: #eee;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0 0 1.5rem;
+}
+
+.callout {
+  font-size: 0.75rem;
+  color: #bbb;
+  background: #1b1b1b;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.callout code {
+  background: #262626;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.72rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+section h2 {
+  font-size: 0.85rem;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+section p {
+  font-size: 0.75rem;
+  color: #777;
+  margin-top: 0;
+}

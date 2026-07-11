@@ -1,6 +1,7 @@
 import { resolve } from "../../scene/resolve.js";
 import type { CometLayer } from "../../scene/types.js";
 import type { PixelTransform, Point } from "../../transform/types.js";
+import { computeCometQuad } from "../comet-geometry.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -35,18 +36,7 @@ export function paintCometLayer<T>(
     const startWidth = resolve(layer.startWidth ?? DEFAULT_START_WIDTH, d, i);
     const endWidth = resolve(layer.endWidth ?? DEFAULT_END_WIDTH, d, i);
 
-    const dx = end[0] - start[0];
-    const dy = end[1] - start[1];
-    const length = Math.hypot(dx, dy) || 1;
-    const nx = -dy / length;
-    const ny = dx / length;
-
-    const corners: Point[] = [
-      [start[0] + (nx * startWidth) / 2, start[1] + (ny * startWidth) / 2],
-      [end[0] + (nx * endWidth) / 2, end[1] + (ny * endWidth) / 2],
-      [end[0] - (nx * endWidth) / 2, end[1] - (ny * endWidth) / 2],
-      [start[0] - (nx * startWidth) / 2, start[1] - (ny * startWidth) / 2],
-    ];
+    const corners = computeCometQuad(start, end, startWidth, endWidth);
 
     let fill: string = color;
     if (layer.gradient) {

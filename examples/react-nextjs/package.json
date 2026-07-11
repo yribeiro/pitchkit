@@ -1,0 +1,26 @@
+{
+  "name": "react-nextjs-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Next.js (App Router) app for verifying @pitchkit/react's SSR story — real server-rendered HTML, not just renderToString in a test.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@pitchkit/core": "*",
+    "@pitchkit/react": "*",
+    "next": "^16",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

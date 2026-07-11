@@ -1,14 +1,13 @@
 import { resolve } from "../../scene/resolve.js";
 import type { ArrowsLayer } from "../../scene/types.js";
 import type { PixelTransform, Point } from "../../transform/types.js";
+import { computeArrowHeadCorners } from "../arrow-geometry.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 const DEFAULT_STROKE = "var(--pitch-marker-primary, #3b82f6)";
 const DEFAULT_STROKE_WIDTH = 1.5;
 const DEFAULT_HEAD_SIZE = 6;
-/** Half-angle of the arrowhead, in radians (~26°) — a conventional proportion. */
-const HEAD_HALF_ANGLE = Math.PI / 7;
 
 /**
  * Paints an ArrowsLayer as one shaft `<line>` + arrowhead `<polygon>` per
@@ -48,15 +47,7 @@ export function paintArrowsLayer<T>(
     shaft.setAttribute("style", `stroke: ${stroke}; stroke-width: ${strokeWidth};${opacityStyle}`);
     group.appendChild(shaft);
 
-    const angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
-    const headPointA: Point = [
-      end[0] - headSize * Math.cos(angle - HEAD_HALF_ANGLE),
-      end[1] - headSize * Math.sin(angle - HEAD_HALF_ANGLE),
-    ];
-    const headPointB: Point = [
-      end[0] - headSize * Math.cos(angle + HEAD_HALF_ANGLE),
-      end[1] - headSize * Math.sin(angle + HEAD_HALF_ANGLE),
-    ];
+    const [headPointA, headPointB] = computeArrowHeadCorners(start, end, headSize);
 
     const head = doc.createElementNS(SVG_NS, "polygon");
     head.setAttribute(

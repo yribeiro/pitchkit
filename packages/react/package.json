@@ -1,0 +1,46 @@
+{
+  "name": "@pitchkit/react",
+  "version": "0.0.0",
+  "description": "Thin React bindings for @pitchkit/core: declarative <Pitch> + layer components, responsive by default.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && node scripts/add-use-client.mjs",
+    "dev": "tsup --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@pitchkit/core": "*"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^3",
+    "happy-dom": "^20.10.6",
+    "react": "^19",
+    "react-dom": "^19",
+    "tsup": "^8",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

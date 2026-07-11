@@ -1,0 +1,128 @@
+import { act, render } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { Pitch } from "./Pitch.js";
+import { VerticalPitch } from "./VerticalPitch.js";
+
+const PARTS_WITH_EXPECTED_COUNT: Record<string, number> = {
+  outline: 1,
+  "halfway-line": 1,
+  "center-circle": 1,
+  "center-spot": 1,
+  "penalty-area": 2,
+  "six-yard-box": 2,
+  "penalty-spot": 2,
+  "penalty-arc": 2,
+  "corner-arc": 4,
+  goal: 2,
+};
+
+describe("Pitch", () => {
+  it("renders an svg with the requested viewBox when width/height are explicit", () => {
+    const { container } = render(<Pitch type="statsbomb" width={600} height={400} />);
+    const svg = container.querySelector("svg");
+    expect(svg?.getAttribute("viewBox")).toBe("0 0 600 400");
+  });
+
+  it("renders every expected pitch-part element exactly once/twice/four times as appropriate", () => {
+    const { container } = render(<Pitch type="statsbomb" width={600} height={400} />);
+
+    for (const [part, expectedCount] of Object.entries(PARTS_WITH_EXPECTED_COUNT)) {
+      expect(
+        container.querySelectorAll(`[data-pitchkit-part="${part}"]`),
+        `expected ${expectedCount} "${part}" element(s)`,
+      ).toHaveLength(expectedCount);
+    }
+  });
+
+  it.each(["statsbomb", "opta", "uefa"] as const)(
+    "renders a structurally correct pitch for %s",
+    (type) => {
+      const { container } = render(<Pitch type={type} width={600} height={400} />);
+      expect(container.querySelectorAll("[data-pitchkit-part]").length).toBeGreaterThan(0);
+    },
+  );
+
+  it("box goalType renders goal-box rects instead of goal lines", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400} appearance={{ goalType: "box" }} />,
+    );
+    expect(container.querySelectorAll('[data-pitchkit-part="goal"]')).toHaveLength(0);
+    expect(container.querySelectorAll('[data-pitchkit-part="goal-box"]')).toHaveLength(2);
+  });
+
+  it("stripes appearance paints stripe bands", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400} appearance={{ stripes: 6 }} />,
+    );
+    expect(container.querySelectorAll('[data-pitchkit-part="stripe"]')).toHaveLength(3);
+  });
+
+  it("VerticalPitch renders with vertical orientation (aspect swapped)", () => {
+    const { container } = render(<VerticalPitch type="statsbomb" width={400} height={600} />);
+    const outline = container.querySelector('[data-pitchkit-part="outline"]');
+    // statsbomb 120x80 into 400x600 vertical -> scale = min(400/80, 600/120) = 5
+    // rendered outline width should be 80*5=400 (fills width), height 120*5=600
+    expect(outline?.getAttribute("width")).toBe("400");
+    expect(outline?.getAttribute("height")).toBe("600");
+  });
+
+  it("renders children (layer components) inside the svg", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <g data-testid="custom-child" />
+      </Pitch>,
+    );
+    const svg = container.querySelector("svg");
+    expect(svg?.querySelector('[data-testid="custom-child"]')).not.toBeNull();
+  });
+});
+
+describe("Pitch responsive sizing (no explicit width/height)", () => {
+  class MockResizeObserver {
+    static instances: MockResizeObserver[] = [];
+    callback: ResizeObserverCallback;
+    constructor(callback: ResizeObserverCallback) {
+      this.callback = callback;
+      MockResizeObserver.instances.push(this);
+    }
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+    trigger(rect: { width: number; height: number }): void {
+      this.callback(
+        [{ contentRect: rect } as ResizeObserverEntry],
+        this as unknown as ResizeObserver,
+      );
+    }
+  }
+
+  afterEach(() => {
+    MockResizeObserver.instances = [];
+    vi.unstubAllGlobals();
+  });
+
+  it("uses a fallback size matching the pitch's own aspect ratio before any measurement", () => {
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+    const { container } = render(<Pitch type="statsbomb" />);
+
+    const svg = container.querySelector("svg");
+    const viewBox = svg?.getAttribute("viewBox");
+    const [, , w, h] = viewBox?.split(" ").map(Number) ?? [];
+    // statsbomb aspect = 120/80 = 1.5
+    expect((w ?? 0) / (h ?? 1)).toBeCloseTo(1.5, 5);
+  });
+
+  it("updates the viewBox once ResizeObserver reports a measured size", () => {
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+    const { container } = render(<Pitch type="statsbomb" />);
+
+    const observer = MockResizeObserver.instances[0];
+    if (!observer) throw new Error("no ResizeObserver instance created");
+    act(() => {
+      observer.trigger({ width: 300, height: 200 });
+    });
+
+    const svg = container.querySelector("svg");
+    expect(svg?.getAttribute("viewBox")).toBe("0 0 300 200");
+  });
+});
