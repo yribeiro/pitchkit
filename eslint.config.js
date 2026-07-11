@@ -6,7 +6,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/coverage/**", "**/.turbo/**", "**/node_modules/**"],
+    ignores: ["**/dist/**", "**/coverage/**", "**/.turbo/**", "**/node_modules/**", "**/.next/**"],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -21,7 +21,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/react/**/*.tsx", "packages/react/**/*.ts"],
+    files: [
+      "packages/react/**/*.tsx",
+      "packages/react/**/*.ts",
+      "examples/react-nextjs/**/*.tsx",
+      "examples/react-nextjs/**/*.ts",
+    ],
     plugins: { "react-hooks": reactHooks },
     rules: {
       ...reactHooks.configs.recommended.rules,

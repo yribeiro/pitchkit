@@ -369,7 +369,7 @@ npx shadcn add @pitchkit/theme-broadcast
       `renderToString`-able output (verified by a dedicated SSR test suite) — while sharing
       100% of core's math (transform, geometry, arc/arrow/comet geometry, styling) so the
       two renderers can't drift on anything but element-emission syntax. Review harness:
-      `examples/react-vite/`.
+      `examples/react-vite/`, `examples/react-nextjs/` (App Router SSR verification).
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] First npm publish (0.1.x) + README hero.
 
@@ -459,6 +459,20 @@ npx shadcn add @pitchkit/theme-broadcast
   22.4.0 that doesn't satisfy some deps' `engines` field — run `nvm alias default 22.23.1`
   (or whatever the newest installed 22.x is) once if you see `EBADENGINE` warnings on
   install.
+- **`examples/react-nextjs/`** (Next.js 16, App Router) added to verify `@pitchkit/react`'s
+  SSR story under a real Next.js server, not just `renderToString` in a test. Real finding
+  from building it: every `@pitchkit/react` layer takes accessor _functions_ as props
+  (`x={(p) => p.x}`), and React Server Components cannot pass functions as props to a Client
+  Component — `next build` failed with "Functions cannot be passed directly to Client
+  Components" when the `<Pitch>` tree lived directly in the page's Server Component. Fix:
+  the `<Pitch>` tree must _originate_ inside a `"use client"` component (see
+  `app/LineupPanel.tsx`, `app/HeatmapPanel.tsx`) rather than being composed from a Server
+  Component parent — `"use client"` only governs hydration and the prop-serialization
+  boundary, not whether SSR happens, so the initial HTML is still fully server-rendered
+  (confirmed via `fetch("/")` returning real `<svg>`/`data-pitchkit-mark="scatter"` markup,
+  and via `next build`'s static prerender succeeding). Wired into `.claude/launch.json` as
+  `react-nextjs-example`, port 3000 (`npm run dev -- --hostname 0.0.0.0` from
+  `examples/react-nextjs`).
 - Remaining Milestone 1 scope (docs site, first npm publish) is all outside
   `@pitchkit/core`/`@pitchkit/react` and was deliberately deferred to a follow-up plan, not
   started.

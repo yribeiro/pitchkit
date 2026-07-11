@@ -18,6 +18,7 @@ Full PRD: see `docs/PRD.md` — read this before any architectural work.
 Milestone 1 — MVP, in progress (see PRD roadmap section 11 for the full checklist and
 progress notes). Every `@pitchkit/core` item is done and merged (pitch styling/theming,
 SVG mark layers, Canvas heatmap). `@pitchkit/react` bindings (`<Pitch>`, layer components,
-`<Heatmap>`, tooltips, `usePitch()`) are done, on branch `milestone-1-react-bindings` /
-[PR #5](https://github.com/yribeiro/pitchkit/pull/5) (open). Remaining Milestone 1 scope:
-docs site skeleton, first npm publish.
+`<Heatmap>`, tooltips, `usePitch()`) plus review apps `examples/react-vite/` and
+`examples/react-nextjs/` (Next.js App Router SSR verification) are done, on branch
+`milestone-1-react-bindings` / [PR #5](https://github.com/yribeiro/pitchkit/pull/5) (open).
+Remaining Milestone 1 scope: docs site skeleton, first npm publish.
