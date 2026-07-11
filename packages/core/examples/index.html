@@ -122,6 +122,35 @@
         font-size: 9px;
         text-transform: uppercase;
       }
+
+      /* Canvas heatmap (Milestone 1): stacked on top of the SVG pitch via
+         plain CSS positioning. @pitchkit/core deliberately does NOT solve
+         this compositing story itself (that's a consumer/@pitchkit/react
+         concern) — this wiring is hand-rolled in the demo script, same
+         spirit as the pass-network recipe above. */
+      .heatmap-stack {
+        position: relative;
+      }
+      .heatmap-stack svg {
+        position: relative;
+        z-index: 1;
+      }
+      .heatmap-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        /* 100%/100% (not max-width/height:auto) deliberately — the canvas's
+           displayed size is set via inline style by renderHeatmapLayersToCanvas
+           (required for devicePixelRatio scaling), and inline style always
+           wins over a stylesheet rule for the same property, so max-width
+           would never actually apply here. Filling the wrapper exactly
+           matches the in-flow SVG's own responsive size instead. */
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        opacity: 0.75;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -137,7 +166,10 @@
       PitchAppearance. The "uefa — print theme" panel intentionally ignores
       these controls: its --pitch-* vars are scoped on .panel.print, which
       is more specific than #grid, demonstrating the per-chart override
-      from the same cascade.
+      from the same cascade. The heatmap dropdown swaps the shot-heatmap
+      panel's colorMin/colorMax and re-renders — HEATMAP_COLORMAPS in the
+      script includes mplsoccer's "Pearl Earring" and "Flamingo" colormaps
+      ported verbatim (same hex stops), alongside the library's own default.
     -->
     <div id="controls">
       <label class="field">Surface <input type="color" id="ctrl-surface" value="#1a472a" /></label>
@@ -166,6 +198,14 @@
           <option value="box" selected>box</option>
         </select>
       </label>
+      <label class="field">
+        Heatmap
+        <select id="ctrl-heatmap-colormap">
+          <option value="default" selected>default (blue → red)</option>
+          <option value="pearlEarring">pearl earring</option>
+          <option value="flamingo">flamingo</option>
+        </select>
+      </label>
       <button id="ctrl-reset" type="button">Reset</button>
     </div>
 
@@ -183,6 +223,7 @@
     <script type="module">
       import {
         renderSceneToSVGElement,
+        renderHeatmapLayersToCanvas,
         getPitchDimensions,
         createStandardizeTransform,
         cropForHalf,
@@ -327,6 +368,102 @@
         ];
       }
 
+      // Synthetic shot locations, in StatsBomb's native coordinates — mostly
+      // clustered around the box (to give the heatmap an obvious hot zone),
+      // with a few midfield touches for contrast. Deterministic (not random)
+      // so the demo is reproducible.
+      const shotLocations = [
+        [95, 35],
+        [98, 40],
+        [101, 38],
+        [104, 42],
+        [96, 44],
+        [110, 39],
+        [112, 41],
+        [108, 36],
+        [99, 45],
+        [102, 33],
+        [105, 46],
+        [97, 37],
+        [103, 40],
+        [100, 43],
+        [109, 38],
+        [60, 40],
+        [65, 35],
+        [55, 45],
+        [70, 42],
+      ];
+
+      // Selectable heatmap colormaps. "pearlEarring" and "flamingo" are
+      // ported verbatim (same hex stops) from mplsoccer's own gallery
+      // example: https://mplsoccer.readthedocs.io/en/latest/gallery/pitch_plots/plot_cmap.html
+      // — LinearSegmentedColormap.from_list(['#15242e', '#4393c4']) and
+      // (['#e3aca7', '#c03a1d']) respectively. mplsoccer builds an N-color
+      // stepped colormap via matplotlib; createColorScale here is a
+      // continuous 2-stop linear interpolation instead (see colormap.ts),
+      // so the gradient is smoother, but the two endpoint colors match
+      // exactly.
+      const HEATMAP_COLORMAPS = {
+        default: { colorMin: "#1d4ed8", colorMax: "#facc15" },
+        pearlEarring: { colorMin: "#15242e", colorMax: "#4393c4" },
+        flamingo: { colorMin: "#e3aca7", colorMax: "#c03a1d" },
+      };
+      let heatmapColormap = HEATMAP_COLORMAPS.default;
+
+      /**
+       * A <canvas> heatmap stacked on top of the SVG pitch (Milestone 1's
+       * "Binned Heatmap (Canvas path)" item). renderHeatmapLayersToCanvas
+       * only paints heatmap-type layers — the SVG scene below carries the
+       * pitch itself plus a light scatter of the raw shot locations, so you
+       * can see both the raw data and how it aggregates into bins.
+       */
+      function buildHeatmapStack(dimensions, viewport) {
+        const standardize = createStandardizeTransform(statsbombDims, dimensions);
+        const shotsStd = shotLocations.map((pos) => ({ pos: standardize(pos) }));
+
+        const scatterLayer = {
+          type: "scatter",
+          data: shotsStd,
+          x: (d) => d.pos[0],
+          y: (d) => d.pos[1],
+          r: 2,
+          fill: "white",
+          fillOpacity: 0.7,
+        };
+        const svg = renderSceneToSVGElement({
+          dimensions,
+          viewport,
+          appearance,
+          layers: [scatterLayer],
+        });
+
+        const heatmapLayer = {
+          type: "heatmap",
+          data: shotsStd,
+          x: (d) => d.pos[0],
+          y: (d) => d.pos[1],
+          binsX: 8,
+          binsY: 6,
+          colorMin: heatmapColormap.colorMin,
+          colorMax: heatmapColormap.colorMax,
+        };
+        const canvas = document.createElement("canvas");
+        canvas.className = "heatmap-canvas";
+        renderHeatmapLayersToCanvas({ dimensions, viewport, layers: [heatmapLayer] }, canvas);
+        // renderHeatmapLayersToCanvas sets a fixed-px inline style.width/
+        // height (required for devicePixelRatio scaling — see its source).
+        // Overwrite that with a 100%/100% fill so the canvas responsively
+        // tracks the in-flow SVG's own size instead of staying pinned at
+        // the viewport's nominal px size when the grid column narrows.
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+
+        const stack = document.createElement("div");
+        stack.className = "heatmap-stack";
+        stack.append(svg, canvas);
+        return stack;
+      }
+
       const grid = document.getElementById("grid");
 
       function addPanel(label, svg, extraClass) {
@@ -413,6 +550,16 @@
           const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
           addPanel("statsbomb — comet lines (gradient)", svg);
         }
+
+        // Canvas heatmap: a <canvas> stacked on top of the SVG pitch via
+        // plain CSS (see .heatmap-stack above) — the human-verifiable
+        // acceptance bar for Milestone 1's Canvas heatmap item.
+        {
+          const dimensions = getPitchDimensions("statsbomb");
+          const viewport = { width: 420, height: 280, orientation: "horizontal" };
+          const stack = buildHeatmapStack(dimensions, viewport);
+          addPanel("statsbomb — shot heatmap (canvas + svg, stacked)", stack);
+        }
       }
 
       // ---- Styling control panel ----------------------------------------
@@ -426,6 +573,7 @@
         stripesEnabled: true,
         stripeCount: 12,
         goalType: "box",
+        heatmapColormap: "default",
       };
 
       const controls = {
@@ -437,6 +585,7 @@
         stripesEnabled: document.getElementById("ctrl-stripes-enabled"),
         stripeCount: document.getElementById("ctrl-stripe-count"),
         goalType: document.getElementById("ctrl-goal-type"),
+        heatmapColormap: document.getElementById("ctrl-heatmap-colormap"),
       };
 
       /** "#rrggbb" + 0-1 opacity -> "rgba(r, g, b, a)", for compositing into a CSS var. */
@@ -470,6 +619,12 @@
         renderAll();
       }
 
+      /** Reads the heatmap colormap control and re-renders every panel. */
+      function applyHeatmapColormap() {
+        heatmapColormap = HEATMAP_COLORMAPS[controls.heatmapColormap.value];
+        renderAll();
+      }
+
       function resetControls() {
         controls.surface.value = DEFAULT_CONTROLS.surface;
         controls.stripeColor.value = DEFAULT_CONTROLS.stripeColor;
@@ -479,8 +634,10 @@
         controls.stripesEnabled.checked = DEFAULT_CONTROLS.stripesEnabled;
         controls.stripeCount.value = String(DEFAULT_CONTROLS.stripeCount);
         controls.goalType.value = DEFAULT_CONTROLS.goalType;
+        controls.heatmapColormap.value = DEFAULT_CONTROLS.heatmapColormap;
         applyColors();
         applyAppearance();
+        applyHeatmapColormap();
       }
 
       for (const input of [controls.surface, controls.stripeColor, controls.linesColor]) {
@@ -492,6 +649,7 @@
       for (const input of [controls.stripesEnabled, controls.stripeCount, controls.goalType]) {
         input.addEventListener("input", applyAppearance);
       }
+      controls.heatmapColormap.addEventListener("input", applyHeatmapColormap);
       document.getElementById("ctrl-reset").addEventListener("click", resetControls);
 
       applyColors();

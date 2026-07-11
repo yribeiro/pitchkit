@@ -78,9 +78,33 @@ export interface CometLayer<T = unknown> {
 }
 
 /**
+ * Binned aggregate marks: divides the pitch into a `binsX` x `binsY` grid
+ * and colors each cell by point count (default) or, if `weight` is given,
+ * the sum of that weight per cell (e.g. total xG per zone). Rendered via
+ * the Canvas path (PRD §8.1) — SVG's per-element DOM cost doesn't scale to
+ * dense raster data the way a handful of `fillRect` calls does.
+ */
+export interface HeatmapLayer<T = unknown> {
+  readonly type: "heatmap";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  /** Omitted = count of points per bin; provided = sum of this per bin. */
+  readonly weight?: Accessor<T, number>;
+  readonly binsX?: number;
+  readonly binsY?: number;
+  /** Color at the lowest bin value in the scene's data. */
+  readonly colorMin?: string;
+  /** Color at the highest bin value in the scene's data. */
+  readonly colorMax?: string;
+}
+
+/**
  * The discriminated union of all layer kinds a Scene can draw. Milestone 1
- * adds Scatter/Annotate, then Arrows/Comet here; Heatmap (Canvas) is
- * deferred to a later milestone.
+ * adds Scatter/Annotate, then Arrows/Comet, then Heatmap here. Heatmap is
+ * the one variant the SVG renderer deliberately skips — see
+ * `render/canvas/render-heatmap.ts`, which is the only renderer that reads
+ * it, using the same Scene/PixelTransform as everything else.
  *
  * Erased to `any` rather than `unknown` here deliberately: each accessor
  * function's parameter type makes every `*Layer<T>` invariant in `T` under
@@ -89,8 +113,10 @@ export interface CometLayer<T = unknown> {
  * Individual layer constructors (and the painters, called generically
  * per-layer) stay fully typed in `T`.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Layer = ScatterLayer<any> | AnnotateLayer<any> | ArrowsLayer<any> | CometLayer<any>;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type Layer =
+  ScatterLayer<any> | AnnotateLayer<any> | ArrowsLayer<any> | CometLayer<any> | HeatmapLayer<any>;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /** How many vertical grass stripes to paint; `true` picks a sensible default. */
 export type PitchStripes = boolean | number;
