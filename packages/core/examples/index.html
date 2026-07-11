@@ -139,9 +139,15 @@
         position: absolute;
         top: 0;
         left: 0;
+        /* 100%/100% (not max-width/height:auto) deliberately — the canvas's
+           displayed size is set via inline style by renderHeatmapLayersToCanvas
+           (required for devicePixelRatio scaling), and inline style always
+           wins over a stylesheet rule for the same property, so max-width
+           would never actually apply here. Filling the wrapper exactly
+           matches the in-flow SVG's own responsive size instead. */
+        width: 100%;
+        height: 100%;
         z-index: 2;
-        max-width: 100%;
-        height: auto;
         opacity: 0.75;
         pointer-events: none;
       }
@@ -444,6 +450,13 @@
         const canvas = document.createElement("canvas");
         canvas.className = "heatmap-canvas";
         renderHeatmapLayersToCanvas({ dimensions, viewport, layers: [heatmapLayer] }, canvas);
+        // renderHeatmapLayersToCanvas sets a fixed-px inline style.width/
+        // height (required for devicePixelRatio scaling — see its source).
+        // Overwrite that with a 100%/100% fill so the canvas responsively
+        // tracks the in-flow SVG's own size instead of staying pinned at
+        // the viewport's nominal px size when the grid column narrows.
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
 
         const stack = document.createElement("div");
         stack.className = "heatmap-stack";
