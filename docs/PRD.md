@@ -372,6 +372,16 @@ npx shadcn add @pitchkit/theme-broadcast
       `examples/react-vite/`, `examples/react-nextjs/` (App Router SSR verification).
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] First npm publish (0.1.x) + README hero.
+- [ ] [Issue #6](https://github.com/yribeiro/pitchkit/issues/6): assess whether
+      `@pitchkit/core`'s SVG painters (`render/svg/paint-*.ts`) are still needed as public
+      surface now that `@pitchkit/react` re-emits its own JSX rather than calling them —
+      their only remaining first-party consumer is the vanilla-JS `packages/core/examples/index.html`
+      harness.
+- [ ] [Issue #7](https://github.com/yribeiro/pitchkit/issues/7): design how Tailwind
+      integrates with `@pitchkit/react` — `<Scatter>`/`<Arrows>`/`<Annotate>`/`<Comet>` marks
+      don't currently accept a `className`, so there's no way to hand them Tailwind utilities
+      the way `<Heatmap>` already allows. Needs resolving before the shadcn showcase site can
+      credibly demonstrate Tailwind usage.
 
 **Progress notes for the next agent (as of 2026-06-30):**
 
