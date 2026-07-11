@@ -1,40 +1,23 @@
 import type { PitchDimensions } from "../../dimensions/types.js";
+import {
+  computeGoalBox,
+  computeStripeBands,
+  goalBoxDepth,
+  resolveStripeCount,
+} from "../../scene/appearance.js";
 import type { Arc, Circle, Line, PitchGeometry, Rect } from "../../scene/geometry.js";
-import type { GoalType, PitchAppearance, PitchStripes } from "../../scene/types.js";
+import type { GoalType, PitchAppearance } from "../../scene/types.js";
 import type { PixelTransform, Point } from "../../transform/types.js";
+import { partStyle } from "../../theme/part-style.js";
+import { arcPathData, arcSweepFlag } from "../arc-sweep.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
-
-const DEFAULT_STRIPE_COUNT = 12;
 
 function createSvgEl<K extends keyof SVGElementTagNameMap>(
   doc: Document,
   tag: K,
 ): SVGElementTagNameMap[K] {
   return doc.createElementNS(SVG_NS, tag) as SVGElementTagNameMap[K];
-}
-
-/**
- * Maps a `data-pitchkit-part` to its default presentation as an inline
- * `style` attribute referencing themeable CSS variables with built-in
- * fallbacks (PRD §8.7). Consumers retheme by setting the `--pitch-*`
- * variables — never by overriding these shapes' fill/stroke directly.
- */
-function partStyle(part: string): string {
-  const lineStroke = "stroke: var(--pitch-lines, rgba(255, 255, 255, 0.8));";
-  const lineWidth = "stroke-width: var(--pitch-line-width, 1.5);";
-
-  switch (part) {
-    case "outline":
-      return `fill: var(--pitch-surface, #1a472a); ${lineStroke} ${lineWidth}`;
-    case "stripe":
-      return "fill: var(--pitch-stripe, rgba(255, 255, 255, 0.04)); stroke: none;";
-    case "center-spot":
-    case "penalty-spot":
-      return "fill: var(--pitch-lines, rgba(255, 255, 255, 0.8)); stroke: none;";
-    default:
-      return `fill: none; ${lineStroke} ${lineWidth}`;
-  }
 }
 
 function applyPartStyle(el: SVGElement, part: string): void {
@@ -130,33 +113,9 @@ function appendArc(
   const sweep = arcSweepFlag(center, start, end);
 
   const el = createSvgEl(doc, "path");
-  el.setAttribute(
-    "d",
-    `M ${start[0]} ${start[1]} A ${radius} ${radius} 0 0 ${sweep} ${end[0]} ${end[1]}`,
-  );
+  el.setAttribute("d", arcPathData(radius, start, end, sweep));
   applyPartStyle(el, part);
   parent.appendChild(el);
-}
-
-/**
- * Picks the SVG arc sweep-flag from the already-transformed pixel-space
- * points, rather than assuming a fixed direction. The pixel transform may
- * have flipped or swapped axes (yDirection, orientation), which would
- * otherwise silently mirror the arc onto the wrong side.
- */
-function arcSweepFlag(center: Point, start: Point, end: Point): 0 | 1 {
-  const startAngle = Math.atan2(start[1] - center[1], start[0] - center[0]);
-  const endAngle = Math.atan2(end[1] - center[1], end[0] - center[0]);
-  let delta = endAngle - startAngle;
-  while (delta <= -Math.PI) delta += 2 * Math.PI;
-  while (delta > Math.PI) delta -= 2 * Math.PI;
-  return delta > 0 ? 1 : 0;
-}
-
-function resolveStripeCount(stripes: PitchStripes | undefined): number {
-  if (!stripes) return 0;
-  if (stripes === true) return DEFAULT_STRIPE_COUNT;
-  return Math.max(0, Math.floor(stripes));
 }
 
 /** Paints alternating vertical grass bands across the outline, under the markings. */
@@ -167,25 +126,14 @@ function appendStripes(
   transform: PixelTransform,
   stripeCount: number,
 ): void {
-  if (stripeCount < 2) return;
-  const bandWidth = outline.width / stripeCount;
-
-  for (let i = 0; i < stripeCount; i += 2) {
-    const band: Rect = {
-      x: outline.x + i * bandWidth,
-      y: outline.y,
-      width: bandWidth,
-      height: outline.height,
-    };
+  for (const band of computeStripeBands(outline, stripeCount)) {
     appendRect(parent, doc, band, transform, "stripe");
   }
 }
 
 /**
  * Paints a small goal-frame box just outside the pitch boundary, behind the
- * goal line. The depth is a visual approximation (scaled off the corner-arc
- * radius, itself a small provider-unit constant) rather than a regulation
- * goal-depth figure, since this is a styling flourish, not a measured mark.
+ * goal line.
  */
 function appendGoalBox(
   parent: SVGGElement,
@@ -195,12 +143,7 @@ function appendGoalBox(
   isLeft: boolean,
   depth: number,
 ): void {
-  const lineX = goal.from[0];
-  const x = isLeft ? lineX - depth : lineX;
-  const y = Math.min(goal.from[1], goal.to[1]);
-  const height = Math.abs(goal.to[1] - goal.from[1]);
-
-  appendRect(parent, doc, { x, y, width: depth, height }, transform, "goal-box");
+  appendRect(parent, doc, computeGoalBox(goal, isLeft, depth), transform, "goal-box");
 }
 
 function appendGoals(
@@ -258,6 +201,6 @@ export function paintPitchGeometry(
     appendArc(group, doc, arc, transform, "corner-arc");
   }
 
-  const goalDepth = dimensions.markings.cornerArcRadius * 3;
-  appendGoals(group, doc, geometry.goals, transform, appearance.goalType ?? "line", goalDepth);
+  const depth = goalBoxDepth(dimensions.markings.cornerArcRadius);
+  appendGoals(group, doc, geometry.goals, transform, appearance.goalType ?? "line", depth);
 }

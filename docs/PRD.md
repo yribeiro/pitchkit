@@ -360,7 +360,16 @@ npx shadcn add @pitchkit/theme-broadcast
       the two elements in the DOM is a consumer/`@pitchkit/react` concern) —
       `packages/core/examples/index.html` hand-wires a stacked demo panel to prove it's
       possible. Every `@pitchkit/core` item in Milestone 1 is now done.
-- [ ] `@pitchkit/react` bindings + responsive sizing + tooltips.
+- [x] `@pitchkit/react` bindings + responsive sizing + tooltips: `<Pitch>`/`<VerticalPitch>`
+      (responsive by default via `ResizeObserver`, explicit `width`/`height` is the opt-out,
+      SSR-safe aspect-ratio fallback before the first measurement per §8.6), `<Scatter>`/
+      `<Annotate>`/`<Arrows>`/`<Comet>` (JSX mark emission with hover tooltips), `<Heatmap>`
+      (client-only `<canvas>` via `<foreignObject>`), and `usePitch()`. Components re-emit
+      SVG as JSX rather than reusing core's DOM painters — the only way to get
+      `renderToString`-able output (verified by a dedicated SSR test suite) — while sharing
+      100% of core's math (transform, geometry, arc/arrow/comet geometry, styling) so the
+      two renderers can't drift on anything but element-emission syntax. Review harness:
+      `examples/react-vite/`.
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] First npm publish (0.1.x) + README hero.
 
@@ -370,25 +379,61 @@ npx shadcn add @pitchkit/theme-broadcast
   `milestone-1-pitch-styling-layers`, [PR #3](https://github.com/yribeiro/pitchkit/pull/3)
   (merged into `main`).
 - The Canvas heatmap landed via branch `milestone-1-canvas-heatmap`,
-  [PR #4](https://github.com/yribeiro/pitchkit/pull/4) (open, not yet merged into `main`).
-- Manually verified via `packages/core/examples/index.html`, which now includes a live
-  styling control panel (colour pickers write straight to `--pitch-*` CSS vars; stripes/
-  goal-type controls mutate `PitchAppearance` and re-render, since those are baked into
-  SVG shapes rather than CSS) and a stacked SVG+Canvas heatmap panel. Serve with
-  `npm run build` in `packages/core` then any static server from the `packages/core`
-  directory (not `examples/`, since the page imports `../dist/index.js`) — or use the
-  checked-in `.claude/launch.json` (`core-examples` config, port 4321).
+  [PR #4](https://github.com/yribeiro/pitchkit/pull/4) (merged into `main`).
+- `@pitchkit/react` landed via branch `milestone-1-react-bindings`,
+  [PR #5](https://github.com/yribeiro/pitchkit/pull/5) (open, not yet merged into `main`).
+- Manually verified via `packages/core/examples/index.html` (styling control panel + a
+  stacked SVG+Canvas heatmap panel) and the new `examples/react-vite/` app (responsive
+  Pitch+Scatter+Arrows+tooltip panel, fixed-size Pitch+Heatmap panel). Serve `core/examples`
+  with `npm run build` in `packages/core` then a static server from the `packages/core`
+  directory (not `examples/`, since the page imports `../dist/index.js`); serve
+  `react-vite` with `npm run dev` from `examples/react-vite` after building
+  `packages/core`+`packages/react`. Both wired into the checked-in `.claude/launch.json`
+  (`core-examples` port 4321, `react-vite-example` port 5173).
+- **Shared-math extraction pattern (important if you touch pitch/mark rendering):** every
+  piece of core's SVG-painter _logic_ that `@pitchkit/react` also needs got pulled out of
+  `render/svg/paint-*.ts` into pure, exported functions before the React side was written —
+  `theme/part-style.ts` (`partStyle`), `scene/appearance.ts` (stripe bands, goal-box
+  geometry), `render/arc-sweep.ts` (sweep-flag + path-string math), `render/arrow-geometry.ts`,
+  `render/comet-geometry.ts`. If you add a new SVG mark type or change pitch-appearance
+  math, extract the logic the same way rather than letting `@pitchkit/react` reimplement it
+  independently — that's the whole point of the exercise (see the comment on
+  `pitch-geometry.tsx` in `@pitchkit/react`).
+- `core`'s `partStyle()` returns a CSS string (for `setAttribute("style", ...)`); React's
+  `style` prop needs a camelCase object. `packages/react/src/style-string.ts` bridges this —
+  don't change `partStyle`'s string format for React's sake, add to the bridge instead.
 - `Layer` is erased to `any` rather than `unknown` in `scene/types.ts` — deliberate.
   TypeScript's `strictFunctionTypes` makes `ScatterLayer<T>`/etc. invariant in `T` because
   of the accessor function parameter, so a concrete `ScatterLayer<MyDatum>` can never widen
   to `ScatterLayer<unknown>` for storage in the heterogeneous `layers` array. See the
   comment on `Layer` before changing this.
 - Canvas painting is tested via a hand-rolled mock of `CanvasRenderingContext2D` (see
-  `render/canvas/paint-heatmap.test.ts` and `render-heatmap.test.ts`), not real pixel
-  output — happy-dom's `<canvas>` has no real 2D rendering support, so
-  `canvas.getContext("2d")` returns `null` under test. `render-heatmap.test.ts` stubs
-  `HTMLCanvasElement.prototype.getContext` via `vi.spyOn` for the tests that need to
-  observe paint calls; the canvas-sizing/DPR tests don't need a working context at all.
+  `render/canvas/paint-heatmap.test.ts` and `render-heatmap.test.ts` in core, and
+  `Heatmap.test.tsx` in react), not real pixel output — happy-dom's `<canvas>` has no real
+  2D rendering support, so `canvas.getContext("2d")` returns `null` under test.
+  `render-heatmap.test.ts`/`Heatmap.test.tsx` stub `HTMLCanvasElement.prototype.getContext`
+  via `vi.spyOn` for the tests that need to observe paint calls.
+- **tsup + `"use client"` gotcha:** `tsup`'s `banner: { js: '"use client";' }` option
+  produces an ESM bundle with no directive at all — esbuild silently drops banner text that
+  looks like a directive prologue (only a build-log warning, no error). `@pitchkit/react`'s
+  fix is `packages/react/scripts/add-use-client.mjs`, a postbuild step that prepends the
+  directive to `dist/index.js` as a plain text operation after bundling finishes. If you add
+  a package that needs `"use client"`, copy this pattern, not `tsup`'s `banner` option.
+- **Vite + workspace package rebuild gotcha:** if you rebuild `packages/react` (or `core`)
+  while a Vite dev server for `examples/react-vite` is already running, Vite's dependency
+  pre-bundling cache can serve the stale version and HMR silently fails to pick up the
+  change (`[vite] Failed to reload ...dist/index.js`). Clear
+  `examples/react-vite/node_modules/.vite` and restart the dev server rather than relying
+  on HMR when iterating across the workspace boundary this way.
+- **Testing hover tooltips:** `fireEvent.mouseEnter`/`mouseLeave` from
+  `@testing-library/react` correctly trigger React's synthetic `onMouseEnter`/`onMouseLeave`
+  handlers in unit tests. A raw `element.dispatchEvent(new MouseEvent("mouseenter"))` does
+  **not** reliably work — use `fireEvent`. Separately, simulating hover via a live
+  browser's CDP-driven mouse-move (e.g. an agent's browser-automation `hover` action) also
+  did not reliably trigger it in manual verification — this is a known category of
+  automation quirk (synthetic pointer events not matching the boundary-crossing sequence
+  React listens for), not a bug in the tooltip implementation; trust the `fireEvent`-based
+  unit tests over live-browser hover simulation for this specific interaction.
 - **Environment quirk:** this repo's `node_modules` were installed under WSL (Linux
   optional deps, e.g. `@rollup/rollup-linux-x64-gnu`), but the default shell tool resolves
   to Windows `node.exe` via a UNC path, which fails on `vitest`/`tsup` (missing the Linux
@@ -396,9 +441,13 @@ npx shadcn add @pitchkit/theme-broadcast
   Run all `npm`/`node` commands through real WSL instead, e.g.
   `wsl.exe -e bash -lic "cd ~/random/pitchkit/packages/core && npm run test"` (the `-lic`
   flags matter — login+interactive loads `nvm`). `git`/`gh` work fine from the default
-  shell tool.
-- Remaining Milestone 1 scope (`@pitchkit/react`, docs site, first npm publish) is all
-  outside `@pitchkit/core` and was deliberately deferred to a follow-up plan, not started.
+  shell tool. Also: this WSL install has an `nvm` `default` alias pinned to an old Node
+  22.4.0 that doesn't satisfy some deps' `engines` field — run `nvm alias default 22.23.1`
+  (or whatever the newest installed 22.x is) once if you see `EBADENGINE` warnings on
+  install.
+- Remaining Milestone 1 scope (docs site, first npm publish) is all outside
+  `@pitchkit/core`/`@pitchkit/react` and was deliberately deferred to a follow-up plan, not
+  started.
 
 ### Milestone 2 — v1.0 (parity push)
 
