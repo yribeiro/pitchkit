@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Heatmap, Pitch, Scatter } from "@pitchkit/react";
+import type { PitchAppearance } from "@pitchkit/core";
 
 interface Shot {
   x: number;
@@ -21,65 +21,30 @@ const shots: Shot[] = [
   { x: 65, y: 35 },
 ];
 
-const HEATMAP_COLORMAPS = {
-  default: { colorMin: "#1d4ed8", colorMax: "#facc15" },
-  pearlEarring: { colorMin: "#15242e", colorMax: "#4393c4" },
-  flamingo: { colorMin: "#e3aca7", colorMax: "#c03a1d" },
-} as const;
-type HeatmapColormapKey = keyof typeof HEATMAP_COLORMAPS;
+interface HeatmapPanelProps {
+  appearance: PitchAppearance;
+  colorMin: string;
+  colorMax: string;
+}
 
 /**
- * "use client": Heatmap paints to a <canvas> via a client-side effect
- * (there's no server Canvas 2D context), and the colormap select below
- * needs interactive state — both require a client boundary.
+ * "use client": Heatmap paints to a <canvas> via a client-side effect —
+ * there's no server Canvas 2D context to render into.
  */
-export function HeatmapPanel() {
-  const [colormap, setColormap] = useState<HeatmapColormapKey>("default");
-  const colors = HEATMAP_COLORMAPS[colormap];
-
+export function HeatmapPanel({ appearance, colorMin, colorMax }: HeatmapPanelProps) {
   return (
     <section>
       <h2>Client Pitch + Heatmap</h2>
-      <p>
-        Canvas painting and the colormap picker both need the browser, so this panel opts into a
-        client boundary explicitly.
-      </p>
-      <label
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.4rem",
-          fontSize: "0.8rem",
-          color: "#bbb",
-          marginBottom: "0.75rem",
-        }}
-      >
-        Colormap
-        <select
-          value={colormap}
-          onChange={(e) => setColormap(e.target.value as HeatmapColormapKey)}
-          style={{
-            background: "#111",
-            color: "#eee",
-            border: "1px solid #444",
-            borderRadius: 4,
-            padding: "0.15rem 0.3rem",
-          }}
-        >
-          <option value="default">default (blue → yellow)</option>
-          <option value="pearlEarring">pearl earring</option>
-          <option value="flamingo">flamingo</option>
-        </select>
-      </label>
-      <Pitch type="statsbomb" width={460} height={307}>
+      <p>Canvas painting needs the browser, so this panel is client-only for its content.</p>
+      <Pitch type="statsbomb" width={460} height={307} appearance={appearance}>
         <Heatmap
           data={shots}
           x={(s) => s.x}
           y={(s) => s.y}
           binsX={8}
           binsY={6}
-          colorMin={colors.colorMin}
-          colorMax={colors.colorMax}
+          colorMin={colorMin}
+          colorMax={colorMax}
           style={{ opacity: 0.75 }}
         />
         <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={2} fill="white" fillOpacity={0.7} />

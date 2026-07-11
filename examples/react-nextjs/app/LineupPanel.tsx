@@ -1,6 +1,7 @@
 "use client";
 
 import { Arrows, Pitch, Scatter } from "@pitchkit/react";
+import type { PitchAppearance } from "@pitchkit/core";
 
 interface Player {
   name: string;
@@ -26,6 +27,10 @@ const passes = [
   { from: players[4], to: players[5] },
 ].filter((p): p is { from: Player; to: Player } => p.from !== undefined && p.to !== undefined);
 
+interface LineupPanelProps {
+  appearance: PitchAppearance;
+}
+
 /**
  * "use client": every @pitchkit/react layer takes accessor *functions*
  * (x, y, tooltip, ...) as props. Functions can't cross the RSC
@@ -35,14 +40,16 @@ const passes = [
  * as part of Next's SSR pass (that's what "use client" server-renders
  * then hydrates" means); it just can't be a *child* of the page's server
  * render with function props flowing across that specific boundary.
+ * `appearance` itself is plain serializable data, so it's fine to lift
+ * into the shared Controls parent and pass down.
  */
-export function LineupPanel() {
+export function LineupPanel({ appearance }: LineupPanelProps) {
   return (
     <section>
       <h2>Pitch + Scatter + Arrows</h2>
       <p>Static lineup, server-rendered to HTML (view page source) then hydrated.</p>
       <div style={{ width: "100%", maxWidth: 460 }}>
-        <Pitch type="statsbomb" appearance={{ stripes: 12, goalType: "box" }}>
+        <Pitch type="statsbomb" appearance={appearance}>
           <Arrows
             data={passes}
             x={(p) => p.from.x}
