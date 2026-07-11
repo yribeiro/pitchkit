@@ -122,6 +122,29 @@
         font-size: 9px;
         text-transform: uppercase;
       }
+
+      /* Canvas heatmap (Milestone 1): stacked on top of the SVG pitch via
+         plain CSS positioning. @pitchkit/core deliberately does NOT solve
+         this compositing story itself (that's a consumer/@pitchkit/react
+         concern) — this wiring is hand-rolled in the demo script, same
+         spirit as the pass-network recipe above. */
+      .heatmap-stack {
+        position: relative;
+      }
+      .heatmap-stack svg {
+        position: relative;
+        z-index: 1;
+      }
+      .heatmap-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        max-width: 100%;
+        height: auto;
+        opacity: 0.75;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -183,6 +206,7 @@
     <script type="module">
       import {
         renderSceneToSVGElement,
+        renderHeatmapLayersToCanvas,
         getPitchDimensions,
         createStandardizeTransform,
         cropForHalf,
@@ -327,6 +351,79 @@
         ];
       }
 
+      // Synthetic shot locations, in StatsBomb's native coordinates — mostly
+      // clustered around the box (to give the heatmap an obvious hot zone),
+      // with a few midfield touches for contrast. Deterministic (not random)
+      // so the demo is reproducible.
+      const shotLocations = [
+        [95, 35],
+        [98, 40],
+        [101, 38],
+        [104, 42],
+        [96, 44],
+        [110, 39],
+        [112, 41],
+        [108, 36],
+        [99, 45],
+        [102, 33],
+        [105, 46],
+        [97, 37],
+        [103, 40],
+        [100, 43],
+        [109, 38],
+        [60, 40],
+        [65, 35],
+        [55, 45],
+        [70, 42],
+      ];
+
+      /**
+       * A <canvas> heatmap stacked on top of the SVG pitch (Milestone 1's
+       * "Binned Heatmap (Canvas path)" item). renderHeatmapLayersToCanvas
+       * only paints heatmap-type layers — the SVG scene below carries the
+       * pitch itself plus a light scatter of the raw shot locations, so you
+       * can see both the raw data and how it aggregates into bins.
+       */
+      function buildHeatmapStack(dimensions, viewport) {
+        const standardize = createStandardizeTransform(statsbombDims, dimensions);
+        const shotsStd = shotLocations.map((pos) => ({ pos: standardize(pos) }));
+
+        const scatterLayer = {
+          type: "scatter",
+          data: shotsStd,
+          x: (d) => d.pos[0],
+          y: (d) => d.pos[1],
+          r: 2,
+          fill: "white",
+          fillOpacity: 0.7,
+        };
+        const svg = renderSceneToSVGElement({
+          dimensions,
+          viewport,
+          appearance,
+          layers: [scatterLayer],
+        });
+
+        const heatmapLayer = {
+          type: "heatmap",
+          data: shotsStd,
+          x: (d) => d.pos[0],
+          y: (d) => d.pos[1],
+          binsX: 8,
+          binsY: 6,
+          colorMin: "#1d4ed8",
+          colorMax: "#facc15",
+        };
+        const canvas = document.createElement("canvas");
+        canvas.className = "heatmap-canvas";
+        renderHeatmapLayersToCanvas({ dimensions, viewport, layers: [heatmapLayer] }, canvas);
+
+        const stack = document.createElement("div");
+        stack.className = "heatmap-stack";
+        stack.append(svg, canvas);
+        return stack;
+      }
+
       const grid = document.getElementById("grid");
 
       function addPanel(label, svg, extraClass) {
@@ -412,6 +509,16 @@
           const layers = buildCometLayers(dimensions);
           const svg = renderSceneToSVGElement({ dimensions, viewport, appearance, layers });
           addPanel("statsbomb — comet lines (gradient)", svg);
+        }
+
+        // Canvas heatmap: a <canvas> stacked on top of the SVG pitch via
+        // plain CSS (see .heatmap-stack above) — the human-verifiable
+        // acceptance bar for Milestone 1's Canvas heatmap item.
+        {
+          const dimensions = getPitchDimensions("statsbomb");
+          const viewport = { width: 420, height: 280, orientation: "horizontal" };
+          const stack = buildHeatmapStack(dimensions, viewport);
+          addPanel("statsbomb — shot heatmap (canvas + svg, stacked)", stack);
         }
       }
 

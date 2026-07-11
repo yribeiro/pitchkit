@@ -30,12 +30,19 @@ export type {
   AnnotateLayer,
   ArrowsLayer,
   CometLayer,
+  HeatmapLayer,
 } from "./scene/types.js";
 export type { Rect, Line, Circle, Arc, PitchGeometry } from "./scene/geometry.js";
 export { computePitchGeometry } from "./scene/geometry.js";
 export { resolve } from "./scene/resolve.js";
 
+export type { HeatmapBin } from "./heatmap/bins.js";
+export { computeHeatmapBins } from "./heatmap/bins.js";
+export { createColorScale } from "./heatmap/colormap.js";
+
 export type { Renderer } from "./render/renderer.js";
 export { renderSceneToSVGElement, svgRenderer } from "./render/svg/render-scene.js";
+export type { RenderHeatmapOptions } from "./render/canvas/render-heatmap.js";
+export { renderHeatmapLayersToCanvas, canvasRenderer } from "./render/canvas/render-heatmap.js";
 
 export { pitchTokens } from "./theme/tokens.js";

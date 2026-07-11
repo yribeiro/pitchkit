@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "core-examples",
+      "runtimeExecutable": "wsl.exe",
+      "runtimeArgs": [
+        "-e",
+        "bash",
+        "-lic",
+        "cd ~/random/pitchkit/packages/core && python3 -m http.server 4321"
+      ],
+      "port": 4321
+    }
+  ]
+}
