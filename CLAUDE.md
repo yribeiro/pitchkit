@@ -15,4 +15,8 @@ Full PRD: see `docs/PRD.md` — read this before any architectural work.
 
 ## Current phase
 
-Milestone 0 — foundations (see PRD roadmap section 11)
+Milestone 1 — MVP, in progress (see PRD roadmap section 11 for the full checklist and
+progress notes). Pitch styling/theming and the SVG mark layers (Scatter, Annotate, Arrows,
+Comet) are done, on branch `milestone-1-pitch-styling-layers` /
+[PR #3](https://github.com/yribeiro/pitchkit/pull/3) (open). Remaining: Canvas heatmap,
+`@pitchkit/react` bindings, docs site skeleton, first npm publish.
