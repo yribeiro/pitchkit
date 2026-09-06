@@ -47,6 +47,16 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 - **Excellent docs**: API reference, conceptual guides, and live editable examples.
 - **shadcn-style showcase site** that doubles as documentation home.
 - **Open-source, MIT, built in public** with high engineering standards (CI, tests, semver, changelog).
+- **Legible to an AI coding agent, not just a human reading docs.** Increasingly, "the
+  developer" is a person directing an agent to build a football app in one sitting — which
+  raises the bar on API and docs shape rather than adding a separate audience to design for.
+  Concretely: a generic `Accessor<T, V>` pattern (§6) means an agent never has to hand-roll a
+  data adapter to match a fixed prop shape; every docs example is a complete, standalone,
+  copy-pasteable file rather than a fragment assuming surrounding context (already this
+  project's `apps/docs` convention, worth stating as a deliberate principle, not an incidental
+  format choice); and "load real open data → render a chart" should be a first-class, runnable
+  example an agent can lift verbatim, not two separately-documented halves (a data adapter,
+  and a chart) it has to wire together itself.
 
 ### Non-Goals (v1)
 
@@ -62,6 +72,11 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 2. **The club/product engineer** — building internal scouting or match-analysis tools; needs reliable, themeable, performant components.
 3. **The data journalist / creator** — wants quick, good-looking, shareable interactive viz embedded in articles.
 4. **The student / hobbyist** — learning football analytics; needs gentle docs and copy-paste examples.
+
+Note: personas 1–4 increasingly mean "a person directing an AI coding agent to build this,"
+not necessarily typing every line by hand — not a fifth persona so much as a lens that applies
+across all four. It doesn't change *who* wants the library, but it does raise the bar on *how*
+the library and its docs need to be shaped (see the agent-legibility goal in §4).
 
 ## 6. Product Principles
 
@@ -116,6 +131,13 @@ Mapped directly from mplsoccer's modules so parity is auditable. Phase tags: **M
 ### 7.4 Composite recipes (docs-level, built on primitives)
 
 Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expected-threat grid. Shipped as **documented examples/recipes** rather than rigid components, so users compose them. Phase **1**.
+
+**"Load open data → visualize" recipes** are a distinct category from the component-level
+recipes above, and matter specifically for agent-legibility (§4): a single, complete, minimal
+example wiring `@pitchkit/data-statsbomb` straight into a chart — e.g. "fetch a StatsBomb
+open-data match → render a shot map" in one file, not a data-loading doc and a charting doc a
+consumer (or agent) has to connect themselves. At least one such end-to-end recipe per major
+chart family (shot map, pass map, heatmap) ships alongside `@pitchkit/data-statsbomb`. Phase **1**.
 
 ### 7.5 Non-pitch charts
 
