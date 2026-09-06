@@ -1,0 +1,104 @@
+---
+title: Tailwind
+description: Theming with CSS variables, and four ways to reach PitchKit with Tailwind utilities.
+---
+
+PitchKit's theming is **CSS variables only** — no JS theme objects, no per-instance color
+props to thread through. Set a variable once in your global stylesheet and every `<Pitch>`
+picks it up through the CSS cascade.
+
+## The variables
+
+| Variable | Controls | Default |
+| --- | --- | --- |
+| `--pitch-surface` | Grass fill | `#1a472a` |
+| `--pitch-stripe` | Mow-stripe overlay | `rgba(255, 255, 255, 0.04)` |
+| `--pitch-lines` | Pitch markings (lines, circles, boxes) | `rgba(255, 255, 255, 0.8)` |
+| `--pitch-line-width` | Pitch marking stroke width | `1.5` |
+| `--pitch-marker-primary` | Default mark color (`<Scatter>`, `<Arrows>`, `<Comet>`) | `#3b82f6` |
+
+```css
+/* globals.css */
+:root {
+  --pitch-surface: #1a472a;
+  --pitch-stripe: rgba(255, 255, 255, 0.05);
+  --pitch-lines: rgba(255, 255, 255, 0.8);
+  --pitch-marker-primary: #3b82f6;
+}
+```
+
+This alone works with or without Tailwind in the picture — dark mode is a second `:root`
+override behind a class or media query, and a one-off chart can override any variable on a
+wrapper `<div>`. What follows is specifically about reaching those variables (and individual
+marks) *with* Tailwind utilities, once it's in the project.
+
+## Marks you render yourself: `className`
+
+`<Scatter>`, `<Arrows>`, and `<Comet>` fall back to a themed default `fill`/`stroke` — but
+that default is applied as inline `style`, and inline style always beats a class at the same
+CSS property. So a `className` utility only takes effect once the corresponding accessor prop
+is **omitted entirely** — passing both `fill="red"` and a `fill-*` class silently drops the
+class.
+
+<PitchPreview name="tailwind-classname-basic" />
+
+## Marks you don't own: a `data-pitchkit-*` selector
+
+Sometimes you're styling a mark whose JSX isn't yours — inside a wrapped recipe component, for
+example. Every mark already carries `data-pitchkit-mark`/`data-pitchkit-layer` attributes with
+zero setup, reachable via Tailwind's arbitrary-variant selectors on a wrapping element:
+
+<PitchPreview name="tailwind-attribute-basic" />
+
+Note the trailing `!` (Tailwind v4's important modifier) in the class list above — it's
+required here specifically. Unlike the `className` mechanism, these marks never got a
+`className` to signal an opt-out from their themed default, so an ordinary class can't
+out-rank the inline style they still carry.
+
+## The pitch background: a `@utility` recipe
+
+The pitch background (outline, stripes, lines) isn't a mark at all — it's restyled only
+through the `--pitch-*` variables above, never via `className` on the shapes directly. Two
+ways to set them with Tailwind:
+
+**Zero setup**, using Tailwind's arbitrary-property syntax:
+
+```tsx
+<Pitch type="statsbomb" className="[--pitch-surface:var(--color-emerald-950)]" />
+```
+
+**Or install this recipe once** (a "shadcn add"-style snippet — copy it into your own
+`globals.css`) to get autocompletable, first-class utilities instead, reading any color
+already in your Tailwind theme:
+
+```css
+/* globals.css */
+@utility pitch-surface-* {
+  --pitch-surface: --value(--color-*);
+}
+@utility pitch-stripe-* {
+  --pitch-stripe: --value(--color-*);
+}
+@utility pitch-lines-* {
+  --pitch-lines: --value(--color-*);
+}
+```
+
+<PitchPreview name="tailwind-recipe-basic" />
+
+## Line width
+
+`--pitch-line-width` gets the same recipe shape, but validates a bare/arbitrary number instead
+of looking one up in the theme — Tailwind has no rich preset scale for stroke width the way it
+does for color:
+
+```css
+@utility pitch-line-width-* {
+  --pitch-line-width: --value(number, [number]);
+}
+```
+
+<PitchPreview name="tailwind-line-width-basic" />
+
+`pitch-line-width-4` (bare) and `[--pitch-line-width:4]` (zero-setup arbitrary property) are
+equally reasonable here — pick whichever reads better in context.

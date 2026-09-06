@@ -20,9 +20,10 @@ mplsoccer's `VerticalPitch`) — useful for shot maps and attacking-third views.
 ## Appearance
 
 Colours are CSS variables (`--pitch-surface`, `--pitch-stripe`, `--pitch-lines`,
-`--pitch-marker-primary`, `--pitch-marker-goal`) — set them once per theme, no per-instance
-props needed. `stripes` and `goalType` are the two structural knobs, passed via the
-`appearance` prop:
+`--pitch-marker-primary`) — set them once per theme, no per-instance props needed. See
+[Configuration > Tailwind](/docs/configuration/tailwind) for the full variable reference and
+how to reach them with Tailwind utilities. `stripes` and `goalType` are the two structural
+knobs, passed via the `appearance` prop:
 
 ```tsx
 <Pitch type="statsbomb" appearance={{ stripes: true, goalType: "box" }} />

@@ -1,4 +1,4 @@
 {
   "title": "Docs",
-  "pages": ["index", "pitch", "scatter", "arrows", "comet", "annotate", "heatmap"]
+  "pages": ["index", "components", "overlays", "configuration"]
 }

@@ -21,6 +21,35 @@
   --color-fd-primary-foreground: oklch(0.15 0 0);
 }
 
+/*
+ * The Tailwind integration recipe from issue #7 (PRD §8.7 / Appendix C.6):
+ * turns pitchkit's `--pitch-*` theme variables into first-class Tailwind
+ * utilities, e.g. `className="pitch-surface-emerald-950"`. This is the
+ * "shadcn add"-style install step the Configuration > Tailwind docs page
+ * walks through — shown here applied to this very site, not just
+ * documented. Without it, `--pitch-surface`/`--pitch-stripe`/
+ * `--pitch-lines` can still be set via Tailwind's arbitrary-property
+ * syntax with zero setup: `className="[--pitch-surface:var(--color-emerald-800)]"`.
+ */
+@utility pitch-surface-* {
+  --pitch-surface: --value(--color-*);
+}
+@utility pitch-stripe-* {
+  --pitch-stripe: --value(--color-*);
+}
+@utility pitch-lines-* {
+  --pitch-lines: --value(--color-*);
+}
+/*
+ * Unlike color, Tailwind has no rich named scale to borrow for stroke width
+ * — this utility validates its own bare/arbitrary number instead of
+ * looking one up in the theme: `pitch-line-width-2` (bare) or
+ * `pitch-line-width-[1.75]` (arbitrary).
+ */
+@utility pitch-line-width-* {
+  --pitch-line-width: --value(number, [number]);
+}
+
 /* Live-example preview card: the frame every <PitchPreview> renders inside. */
 .pitchkit-preview {
   border: 1px solid var(--color-fd-border);

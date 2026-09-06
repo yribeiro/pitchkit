@@ -6,15 +6,20 @@ description: What PitchKit is, and how the pieces fit together.
 PitchKit is a TypeScript-native football pitch visualisation library for the web — mplsoccer's
 surface, built for the browser. `@pitchkit/core` is a framework-agnostic engine (coordinate
 transforms, SVG + Canvas rendering); `@pitchkit/react` is the officially supported set of
-declarative bindings on top of it: `<Pitch>`, `<VerticalPitch>`, and a family of layer
-components for plotting data onto a pitch.
+declarative bindings on top of it, split into two families: **components** (the pitch itself)
+and **overlays** (data plotted onto it).
 
 ## What's on this page
 
 Every page under **Docs** pairs a live, server-rendered example with its exact source — copy
-it straight into your project. Start with [Pitch](/docs/pitch) for the base component, then a
-layer at a time: [Scatter](/docs/scatter), [Arrows](/docs/arrows), [Comet](/docs/comet),
-[Annotate](/docs/annotate), and the canvas-based [Heatmap](/docs/heatmap).
+it straight into your project.
+
+- **[Components](/docs/components/pitch)** — the pitch container that owns the coordinate
+  system: `<Pitch>` and `<VerticalPitch>` today.
+- **Overlays** — layers stacked inside a `<Pitch>`, one per visual: [Scatter](/docs/overlays/scatter),
+  [Arrows](/docs/overlays/arrows), [Comet](/docs/overlays/comet), [Annotate](/docs/overlays/annotate),
+  and the canvas-based [Heatmap](/docs/overlays/heatmap).
+- **[Configuration](/docs/configuration/tailwind)** — theming and Tailwind integration.
 
 ## Install
 
