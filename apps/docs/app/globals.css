@@ -84,5 +84,6 @@
 }
 
 .pitchkit-preview__code-toggle:hover {
+  border-color: #262626;
   background: #262626;
 }
