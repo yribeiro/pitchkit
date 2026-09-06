@@ -1,4 +1,15 @@
 {
   "title": "Overlays",
-  "pages": ["scatter", "arrows", "comet", "annotate", "heatmap"]
+  "pages": [
+    "scatter",
+    "arrows",
+    "comet",
+    "annotate",
+    "heatmap",
+    "polygon",
+    "convex-hull",
+    "voronoi",
+    "goal-angle",
+    "flow"
+  ]
 }

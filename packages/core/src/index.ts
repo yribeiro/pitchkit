@@ -31,6 +31,11 @@ export type {
   ArrowsLayer,
   CometLayer,
   HeatmapLayer,
+  PolygonLayer,
+  ConvexHullLayer,
+  VoronoiLayer,
+  GoalAngleLayer,
+  FlowLayer,
 } from "./scene/types.js";
 export type { Rect, Line, Circle, Arc, PitchGeometry } from "./scene/geometry.js";
 export { computePitchGeometry } from "./scene/geometry.js";
@@ -57,6 +62,13 @@ export { renderHeatmapLayersToCanvas, canvasRenderer } from "./render/canvas/ren
 export { arcSweepFlag, arcPathData } from "./render/arc-sweep.js";
 export { computeArrowHeadCorners, ARROW_HEAD_HALF_ANGLE } from "./render/arrow-geometry.js";
 export { computeCometQuad } from "./render/comet-geometry.js";
+
+export { computePolygonCentroid } from "./geometry/polygon.js";
+export { computeConvexHull } from "./geometry/convex-hull.js";
+export { clipPolygonByHalfPlane, computeVoronoiCells } from "./geometry/voronoi.js";
+export { computeGoalAngle, selectGoal } from "./geometry/goal-angle.js";
+export type { FlowVector, FlowBin } from "./geometry/flow.js";
+export { computeFlowBins } from "./geometry/flow.js";
 
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

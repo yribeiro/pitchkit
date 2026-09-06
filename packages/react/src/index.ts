@@ -12,6 +12,16 @@ export { Comet } from "./Comet.js";
 export type { CometProps } from "./Comet.js";
 export { Heatmap } from "./Heatmap.js";
 export type { HeatmapProps } from "./Heatmap.js";
+export { Polygon } from "./Polygon.js";
+export type { PolygonProps } from "./Polygon.js";
+export { ConvexHull } from "./ConvexHull.js";
+export type { ConvexHullProps } from "./ConvexHull.js";
+export { Voronoi } from "./Voronoi.js";
+export type { VoronoiProps } from "./Voronoi.js";
+export { GoalAngle } from "./GoalAngle.js";
+export type { GoalAngleProps } from "./GoalAngle.js";
+export { Flow } from "./Flow.js";
+export type { FlowProps } from "./Flow.js";
 
 export { usePitch } from "./use-pitch.js";
 export type { TooltipState } from "./context.js";

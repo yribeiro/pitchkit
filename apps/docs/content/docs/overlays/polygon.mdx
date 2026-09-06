@@ -1,0 +1,17 @@
+---
+title: Polygon
+description: An arbitrary closed shape from a list of points — good for highlighting zones.
+---
+
+<PitchPreview name="polygon-basic" />
+
+## Usage
+
+`<Polygon>` takes a `points` accessor per datum, returning that shape's vertices as
+`[x, y]` pairs in provider coordinates. One datum draws one filled polygon.
+
+```tsx
+<VerticalPitch type="statsbomb" crop={cropForHalf(dimensions)}>
+  <Polygon data={zones} points={(z) => z.vertices} />
+</VerticalPitch>
+```

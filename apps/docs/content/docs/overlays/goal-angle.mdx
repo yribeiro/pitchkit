@@ -1,0 +1,16 @@
+---
+title: Goal Angle
+description: The angle subtended by the goal mouth at each point, rendered as a wedge.
+---
+
+<PitchPreview name="goal-angle-basic" />
+
+## Usage
+
+`<GoalAngle>` takes `x`/`y` accessors per datum and draws a wedge from that point to both
+goalposts. Pass `goal` (`"left" | "right" | "nearest"`, default `"nearest"`) to control
+which goal is measured against.
+
+```tsx
+<GoalAngle data={shots} x={(s) => s.x} y={(s) => s.y} />
+```
