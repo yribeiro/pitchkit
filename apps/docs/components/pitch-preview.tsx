@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { registry } from "./examples/registry";
 import { CodeBlock } from "./code-block";
+import { OpenInButtons } from "./open-in-buttons";
 import "./examples/docs-pitch-theme.css";
 
 interface PitchPreviewProps {
@@ -40,6 +41,9 @@ export function PitchPreview({ name }: PitchPreviewProps) {
         <div className="pitchkit-preview__stage-inner pitchkit-docs-pitch">
           <Component />
         </div>
+      </div>
+      <div className="pitchkit-preview__toolbar">
+        <OpenInButtons name={name} source={source} />
       </div>
       <div
         className={

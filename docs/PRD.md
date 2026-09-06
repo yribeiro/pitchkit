@@ -380,7 +380,7 @@ npx shadcn add @pitchkit/theme-broadcast
 **Must-haves:**
 
 - Landing page with an immediate, interactive hero pitch (responsive demo you can touch).
-- **Live, editable examples** (code + rendered output side by side) for every feature — the single biggest adoption driver.
+- **Live examples** (rendered output + copy-ready code + "Open in StackBlitz/CodeSandbox") for every feature — the single biggest adoption driver. (Amended per issue #28: shadcn/ui's own reference implementation is copy-only; true in-browser editing (Sandpack/react-live) is a later enhancement if still wanted.)
 - Full **API reference** (generated from TSDoc via TypeDoc/api-extractor, styled to match).
 - **Conceptual guides**: coordinates & pitch types, layers, theming, responsive, Next.js/SSR, recipes (pass network, shot map, radar).
 - "mplsoccer → PitchKit" **migration/cheatsheet** page to capture that audience directly.
@@ -434,8 +434,17 @@ npx shadcn add @pitchkit/theme-broadcast
       100% of core's math (transform, geometry, arc/arrow/comet geometry, styling) so the
       two renderers can't drift on anything but element-emission syntax. Review harness:
       `examples/react-vite/`, `examples/react-nextjs/` (App Router SSR verification).
-- [ ] Docs site skeleton with live examples for the above.
-- [ ] shadcn-style showcase website (doubles as docs home, per §9).
+- [x] Docs site skeleton with live examples for the above. (Delivered by
+      [issue #17](https://github.com/yribeiro/pitchkit/issues/17) /
+      [PR #18](https://github.com/yribeiro/pitchkit/pull/18): `apps/docs`, Next.js App
+      Router + Fumadocs + Tailwind v4, `<PitchPreview>` registry pipeline.)
+- [x] shadcn-style showcase website (doubles as docs home, per §9). (Delivered by
+      [issue #28](https://github.com/yribeiro/pitchkit/issues/28): interactive landing
+      hero, category-tabbed `/gallery` with View Code + StackBlitz/CodeSandbox export,
+      TypeDoc-generated API reference styled by Fumadocs, conceptual guides, and the
+      mplsoccer → PitchKit migration cheatsheet. Note: the "open in sandbox" buttons
+      build a correct Vite project but can't resolve `@pitchkit/*` until Milestone 3
+      publishes to npm.)
 - [x] [Issue #6](https://github.com/yribeiro/pitchkit/issues/6): resolved — decision:
       **deprecate/reposition the SVG painters as internal-only.** `render/svg/paint-*.ts`,
       `render-scene.ts`, `svgRenderer`, and the `Renderer<TOutput>` abstraction (for SVG

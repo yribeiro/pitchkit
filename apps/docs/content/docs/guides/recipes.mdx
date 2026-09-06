@@ -1,0 +1,42 @@
+---
+title: Recipes
+description: Finished visualisations composed from the primitives — with full source.
+---
+
+PitchKit ships primitives, not chart types — a shot map or a pass network is a
+*composition*, a dozen lines of data prep plus two or three layers. These recipes are the
+common ones; every one lives in the [gallery](/gallery) too, with "open in sandbox"
+buttons.
+
+## Shot map
+
+Attacking half, vertical framing, markers sized by xG and coloured by outcome:
+
+<PitchPreview name="shot-map-gallery" />
+
+## Pass network
+
+The classic: average positions as nodes sized by touches, edges weighted by pass volume
+between each pair. The aggregation is ordinary data prep — the pitch just draws the
+result:
+
+<PitchPreview name="pass-network-gallery" />
+
+## Pass flow
+
+Passes binned by starting zone, one aggregate arrow per zone:
+
+<PitchPreview name="pass-flow-gallery" />
+
+## Pressure heatmap
+
+Event density on the canvas path (note the container-measuring pattern from the
+[responsive guide](/docs/guides/responsive)):
+
+<PitchPreview name="pressure-heatmap-gallery" />
+
+## Still to come
+
+Density/geometry recipes that need Milestone 2 marks — hexbin and KDE surfaces, positional
+grids, radar charts — land here as each mark ships. Track progress on the
+[roadmap](https://github.com/yribeiro/pitchkit/issues).

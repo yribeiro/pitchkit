@@ -1,0 +1,4 @@
+{
+  "title": "Guides",
+  "pages": ["coordinates", "layers", "theming", "responsive", "nextjs-ssr", "recipes"]
+}

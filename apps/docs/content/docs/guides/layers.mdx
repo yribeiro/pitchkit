@@ -1,0 +1,56 @@
+---
+title: Layers
+description: The mental model — a pitch container, overlay children, and typed accessors.
+---
+
+Five things to hold in your head — that's the whole model:
+
+1. **`<Pitch>` owns the coordinate system.** Declare the provider via `type`; every child
+   reads the resulting transform from context.
+2. **Children are layers, stacked in render order.** Later siblings paint on top of earlier
+   ones, exactly like the DOM.
+3. **Accessors map your data to visuals.** Every visual prop takes a static value or a typed
+   per-datum function `(d, i) => value`.
+4. **Colours are CSS variables** — see [Theming](/docs/guides/theming).
+5. **Responsive is the default** — see [Responsive](/docs/guides/responsive).
+
+```tsx
+<Pitch type="statsbomb">
+  <Heatmap data={pressures} x={(p) => p.x} y={(p) => p.y} binsX={12} binsY={8} />
+  <Arrows data={passes} x={(p) => p.x} y={(p) => p.y} x2={(p) => p.x2} y2={(p) => p.y2} />
+  <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={(s) => 3 + s.xg * 9} />
+</Pitch>
+```
+
+## The overlay set
+
+| Overlay | Draws | Good for |
+| --- | --- | --- |
+| [`<Scatter>`](/docs/overlays/scatter) | One circle per datum | Shots, touches, positions |
+| [`<Arrows>`](/docs/overlays/arrows) | Directional line + head per datum | Pass maps |
+| [`<Comet>`](/docs/overlays/comet) | Tapered, optionally fading trail | Carries, runs |
+| [`<Annotate>`](/docs/overlays/annotate) | Text label per datum | Player names, callouts |
+| [`<Heatmap>`](/docs/overlays/heatmap) | Binned grid on canvas | Density, xG surfaces |
+| [`<Flow>`](/docs/overlays/flow) | One aggregate arrow per zone | Pass direction by zone |
+| [`<Polygon>`](/docs/overlays/polygon) | Arbitrary closed shape | Zone highlights |
+| [`<ConvexHull>`](/docs/overlays/convex-hull) | Hull of a point set | Team/player shape |
+| [`<Voronoi>`](/docs/overlays/voronoi) | Nearest-player tessellation | Space control |
+| [`<GoalAngle>`](/docs/overlays/goal-angle) | Wedge to both posts | Shot quality context |
+
+The accessor pattern is what keeps PitchKit shape-agnostic: there's no required data
+schema — `x={(shot) => shot.location[0]}` adapts any provider's records without a
+pre-processing step.
+
+## SVG vs canvas
+
+Marks are SVG (crisp, inspectable, hoverable — most take a `tooltip` accessor). `<Heatmap>`
+is the exception: dense raster grids paint to a `<canvas>`, where a handful of `fillRect`
+calls beat thousands of DOM nodes. The split is per-layer and automatic — you compose both
+kinds freely in one pitch.
+
+## Escape hatch
+
+For custom marks the built-ins don't cover, call
+[`usePitch()`](/docs/api/react/functions/usePitch) from any child of `<Pitch>` to get the
+pitch dimensions, viewport, and pixel transform, then emit your own SVG. The landing page's interactive hero uses it to turn clicks back
+into provider coordinates.

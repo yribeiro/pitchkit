@@ -1,0 +1,59 @@
+---
+title: Next.js & SSR
+description: Server-rendered pitches under the App Router, and the one boundary rule to know.
+---
+
+`@pitchkit/react` server-renders to real SVG — verified against `renderToString` in the
+test suite and against a real Next.js App Router app (`examples/react-nextjs/` in the
+repo). The initial HTML response contains the full pitch and its marks; hydration attaches
+interactivity without re-drawing anything.
+
+## The one rule: originate the tree in a client component
+
+Every layer takes accessor *functions* as props (`x={(p) => p.x}`), and React Server
+Components **cannot pass functions as props** across the server → client boundary. Compose
+your `<Pitch>` tree *inside* a `"use client"` component, and render that from your page:
+
+```tsx
+// app/ShotMapPanel.tsx
+"use client";
+
+import { Pitch, Scatter } from "@pitchkit/react";
+import { shots } from "./data";
+
+export function ShotMapPanel() {
+  return (
+    <Pitch type="statsbomb">
+      <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} />
+    </Pitch>
+  );
+}
+```
+
+```tsx
+// app/page.tsx — stays a Server Component
+import { ShotMapPanel } from "./ShotMapPanel";
+
+export default function Page() {
+  return <ShotMapPanel />;
+}
+```
+
+Putting the `<Pitch>` tree directly in a Server Component page fails `next build` with
+*"Functions cannot be passed directly to Client Components"* — that's this rule, not a
+PitchKit limitation.
+
+`"use client"` governs hydration and prop serialization, **not** whether SSR happens — the
+panel above is still fully server-rendered into the initial HTML.
+
+## Heatmaps are client-only by design
+
+`<Heatmap>` paints to a `<canvas>`, which has no server-renderable content — it renders
+nothing on the server and paints after hydration. The pitch and any SVG layers around it
+still SSR normally.
+
+## Data fetching
+
+Fetch on the server as usual and pass plain data down — arrays and objects serialize fine
+across the boundary; only functions don't. Accessors live in the client component, next to
+the JSX that uses them.

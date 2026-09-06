@@ -1,0 +1,66 @@
+---
+title: Responsive
+description: Pitches fill their container by default; fixed pixels are the opt-out.
+---
+
+Responsiveness isn't a prop — it's the default. A `<Pitch>` fills its container's width,
+keeps the pitch's own aspect ratio, and re-renders through a `ResizeObserver` as the
+container changes. Sizing a pitch means sizing its parent, like an `<img>`:
+
+```tsx
+<div style={{ maxWidth: "40rem" }}>
+  <Pitch type="statsbomb">…</Pitch>
+</div>
+```
+
+## First paint and SSR
+
+Before the first client-side measurement (including on the server, where there's nothing to
+measure), the pitch renders at a nominal size **with the correct aspect ratio** — so
+server-rendered output is never distorted, and the post-hydration refinement only adjusts
+pixel scale, not shape. No flicker, no placeholder box.
+
+The aspect ratio tracks what's actually shown: a `crop` to the attacking half reserves
+space for half a pitch, not a whole one.
+
+## Fixed size: the opt-out
+
+Pass both `width` and `height` to pin exact pixels — for image export, fixed-layout
+embeds, or canvas work:
+
+```tsx
+<Pitch type="statsbomb" width={640} height={427}>…</Pitch>
+```
+
+## The heatmap caveat
+
+`<Heatmap>` paints to a `<canvas>`, which needs real pixel dimensions up front — it can't
+lean on the SVG's responsive viewBox. Use a fixed-size pitch, or measure your own container
+and pass the result down (the same technique `<Pitch>` uses internally):
+
+```tsx
+const containerRef = useRef<HTMLDivElement>(null);
+const [width, setWidth] = useState(480);
+
+useEffect(() => {
+  const el = containerRef.current;
+  if (!el) return;
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries[0];
+    if (entry) setWidth(entry.contentRect.width);
+  });
+  observer.observe(el);
+  return () => observer.disconnect();
+}, []);
+
+return (
+  <div ref={containerRef}>
+    <Pitch type="statsbomb" width={width} height={Math.round(width / (120 / 80))}>
+      <Heatmap data={events} x={(e) => e.x} y={(e) => e.y} binsX={12} binsY={8} />
+    </Pitch>
+  </div>
+);
+```
+
+Every heatmap example on this site (see the [gallery](/gallery)) uses this pattern — open
+one and copy it.

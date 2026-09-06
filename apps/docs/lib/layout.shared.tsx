@@ -12,6 +12,14 @@ export function baseOptions(): BaseLayoutProps {
     },
     links: [
       {
+        text: "Docs",
+        url: "/docs",
+      },
+      {
+        text: "Gallery",
+        url: "/gallery",
+      },
+      {
         text: "GitHub",
         url: "https://github.com/yribeiro/pitchkit",
         external: true,

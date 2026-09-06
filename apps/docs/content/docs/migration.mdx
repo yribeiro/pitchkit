@@ -1,0 +1,88 @@
+---
+title: mplsoccer → PitchKit
+description: The cheatsheet — every common mplsoccer call and its PitchKit equivalent.
+---
+
+PitchKit is deliberately "mplsoccer for the web": the concepts map one-to-one, so most of
+migrating is translating syntax, not relearning ideas. The real shifts are structural —
+and there are only three:
+
+1. **A React tree instead of a matplotlib figure.** No `fig, ax = pitch.draw()`; the pitch
+   is a component and marks are its children.
+2. **Accessors instead of column arrays.** mplsoccer takes parallel arrays
+   (`pitch.scatter(df.x, df.y)`); PitchKit takes your records once plus a function per
+   visual property (`<Scatter data={shots} x={(s) => s.x} />`).
+3. **CSS instead of kwargs for colour.** `pitch_color=`/`line_color=` become the
+   [`--pitch-*` variables](/docs/guides/theming); per-mark colour stays inline via
+   accessor props.
+
+## Pitch setup
+
+| mplsoccer | PitchKit |
+| --- | --- |
+| `Pitch(pitch_type="statsbomb")` | `<Pitch type="statsbomb">` |
+| `VerticalPitch(...)` | `<VerticalPitch type="...">` |
+| `Pitch(half=True)` | `crop={cropForHalf(getPitchDimensions("statsbomb"))}` |
+| `Pitch(pitch_color="grass", stripe=True)` | `--pitch-surface` variable + `appearance={{ stripes: true }}` |
+| `Pitch(line_color="white", linewidth=2)` | `--pitch-lines` / `--pitch-line-width` variables |
+| `Pitch(goal_type="box")` | `appearance={{ goalType: "box" }}` |
+| `Pitch(pad_left=10, ...)` | `padding={{ left: 10, ... }}` (pixels) |
+| `fig, ax = pitch.draw(figsize=(8, 5))` | Not needed — responsive by default; `width`/`height` props to fix pixels |
+
+## Plotting
+
+| mplsoccer | PitchKit |
+| --- | --- |
+| `pitch.scatter(x, y, s=size, ax=ax)` | `<Scatter data={d} x={...} y={...} r={...} />` |
+| `pitch.arrows(xstart, ystart, xend, yend)` | `<Arrows data={d} x={...} y={...} x2={...} y2={...} />` |
+| `pitch.lines(..., comet=True, transparent=True)` | `<Comet data={d} ... gradient />` |
+| `pitch.annotate(text, xy=(x, y))` | `<Annotate data={d} x={...} y={...} label={...} />` |
+| `pitch.bin_statistic(...)` + `pitch.heatmap(...)` | `<Heatmap data={d} x={...} y={...} binsX={...} binsY={...} weight={...} />` |
+| `pitch.flow(xstart, ystart, xend, yend, bins=...)` | `<Flow data={d} ... binsX={...} binsY={...} />` |
+| `pitch.polygon(verts)` | `<Polygon data={d} points={...} />` |
+| `pitch.convexhull(x, y)` + `pitch.polygon` | `<ConvexHull data={d} x={...} y={...} />` |
+| `pitch.voronoi(x, y, teams)` | `<Voronoi data={d} x={...} y={...} fill={(p) => teamColor(p)} />` |
+| `pitch.goal_angle(x, y)` | `<GoalAngle data={d} x={...} y={...} />` |
+
+Binning for `<Heatmap>`/`<Flow>` happens inside the component — there's no separate
+`bin_statistic` step to manage.
+
+## Utilities
+
+| mplsoccer | PitchKit |
+| --- | --- |
+| `Standardizer(pitch_from="opta", pitch_to="statsbomb")` | `createStandardizeTransform(getPitchDimensions("opta"), getPitchDimensions("statsbomb"))` |
+| Pitch dimension constants | `getPitchDimensions(type)` / `PITCH_DIMENSIONS` |
+| `FontManager`, custom fonts | Plain CSS — pitches inherit your page's fonts |
+
+One caveat on standardizing: PitchKit's current transform is a uniform extent mapping.
+mplsoccer's `Standardizer` interpolates between pitch *markings* as control points, so
+marking-boundary alignment across providers can differ slightly — exact for corners and
+the centre spot, approximate at box edges.
+
+## Not ported (yet)
+
+Hexbin and KDE heatmaps, positional grids, radars, bumpy charts, and pizza charts are
+Milestone 2 scope — the [roadmap issues](https://github.com/yribeiro/pitchkit/issues)
+track each one. Everything in the tables above works today; see the
+[gallery](/gallery) for finished equivalents of mplsoccer's own example charts.
+
+## A worked example
+
+mplsoccer:
+
+```python
+pitch = VerticalPitch(pitch_type="statsbomb", half=True)
+fig, ax = pitch.draw()
+pitch.scatter(df.x, df.y, s=df.xg * 500, c="#38bdf8", ax=ax)
+```
+
+PitchKit:
+
+```tsx
+const dims = getPitchDimensions("statsbomb");
+
+<VerticalPitch type="statsbomb" crop={cropForHalf(dims)}>
+  <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={(s) => 3 + s.xg * 9} fill="#38bdf8" />
+</VerticalPitch>;
+```
