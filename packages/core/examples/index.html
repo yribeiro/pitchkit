@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>@pitchkit/core — SVG renderer smoke demo</title>
+    <title>@pitchkit/core — internal SVG renderer dev harness</title>
     <style>
       body {
         margin: 0;
@@ -155,6 +155,14 @@
   </head>
   <body>
     <h1>@pitchkit/core SVG renderer — StatsBomb / Opta / UEFA × horizontal / vertical</h1>
+    <p style="opacity: 0.6; font-size: 0.85rem; max-width: 40rem">
+      Internal dev harness exercising core's SVG painters and Canvas heatmap
+      renderer directly (no framework) — not a reference implementation for
+      building vanilla-JS/framework-agnostic consumers. Those painters are
+      internal building blocks kept for this harness only (see issue #6);
+      <code>@pitchkit/react</code> is the officially supported way to render
+      PitchKit.
+    </p>
 
     <!--
       Styling sandbox: the colour inputs just set --pitch-* CSS custom

@@ -47,6 +47,10 @@ export { computeHeatmapBins } from "./heatmap/bins.js";
 export { createColorScale } from "./heatmap/colormap.js";
 
 export type { Renderer } from "./render/renderer.js";
+// renderSceneToSVGElement/svgRenderer are internal building blocks kept for
+// the packages/core/examples/index.html dev harness, not a supported public
+// consumption path — see the @internal notes in render/svg/render-scene.ts
+// (resolves issue #6). Use @pitchkit/react for actual rendering.
 export { renderSceneToSVGElement, svgRenderer } from "./render/svg/render-scene.js";
 export type { RenderHeatmapOptions } from "./render/canvas/render-heatmap.js";
 export { renderHeatmapLayersToCanvas, canvasRenderer } from "./render/canvas/render-heatmap.js";
