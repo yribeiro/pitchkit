@@ -2,7 +2,7 @@
 
 > **TL;DR** — Build the missing piece of the football-analytics web stack: a TypeScript-native, framework-agnostic visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser, with first-class React/Next.js bindings, responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
-_Status: Draft v0.3 · Owner: Yohahn Ribeiro · Last updated: 06 Sep 2026_
+_Status: Draft v0.4 · Owner: Yohahn Ribeiro · Last updated: 06 Sep 2026_
 
 ---
 
@@ -134,6 +134,16 @@ Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expect
 | Font management                                               | `FontManager`               | M (web fonts are trivial; document the pattern) |
 | StatsBomb open-data adapter                                   | `Sbopen`                    | 1                                               |
 | (Out of scope) authenticated StatsBomb API/local              | `Sbapi`, `Sblocal`          | —                                               |
+| Image export (PNG/SVG download) + logo/watermark overlay      | `add_image`                 | 1                                               |
+
+**Why export matters:** every competing analytics tool surveyed treats "download as image" as
+table-stakes, not a nice-to-have, and it's the direct mechanism behind this PRD's own
+"social-shareable" goal (§5, persona 3) and the docs site's planned visualization gallery (§9)
+— without it, a finished chart has no path out of the browser tab it was rendered in. SVG
+layers export losslessly as-is; Canvas layers (heatmap/KDE/hexbin) need their
+`devicePixelRatio`-scaled backing buffer flattened into the same output. Ship as a core utility
+(`exportToPng`/`exportToSvg`) plus a documented recipe, not a component prop — export is a
+one-shot imperative action, not part of the declarative render tree.
 
 ## 8. Technical Architecture
 
@@ -317,6 +327,17 @@ npx shadcn add @pitchkit/theme-broadcast
 - Keyboard navigation across discrete marks; focus-visible states.
 - Respect `prefers-reduced-motion` for transitions.
 - Minimum contrast in default themes; never colour-only encoding without shape/label backup in recipes.
+- **Default colour scale is colour-blind-safe, not just the swappable theme preset.** The
+  `colour-blind-safe` registry preset (§8.7) covers the pitch/marker CSS variables, but
+  `createColorScale`'s `colorMin`/`colorMax` (heatmap/hexbin/KDE) are per-instance string
+  props, outside that CSS-variable path — so `<Heatmap>` and friends need their own built-in
+  default pulled from a validated colour-blind-safe pair (e.g. the Wong 8-colour palette's
+  blue→orange, distinguishable across protanopia/deuteranopia/tritanopia), not an arbitrary
+  green→red gradient, unless a consumer explicitly overrides it.
+- **Data table fallback for dense layers.** Heatmap/hexbin/KDE convey their underlying values
+  visually only; ship an optional pattern (documented recipe, not a required prop) for pairing
+  a density layer with a visually-hidden-but-screen-reader-exposed data table of the same
+  binned values, per current data-viz accessibility guidance.
 
 ### 8.9 Performance budgets
 
@@ -584,7 +605,10 @@ npx shadcn add @pitchkit/theme-broadcast
 ### Milestone 4 — later
 
 - [ ] Sonars, bumpy chart, inset images.
-- [ ] WebGL renderer for tracking-scale data; animation/timeline helpers.
+- [ ] WebGL renderer for tracking-scale data; animation/timeline helpers — frame-by-frame
+      playback with a scrubber, not just a fast static render. Free tracking-data sources now
+      exist to build/test against without a commercial licence: SkillCorner's open broadcast
+      tracking data, Metrica Sports' sample tracking+event data (CSV/EPTS/JSON).
 - [ ] Optional Vue/Svelte bindings (core already supports it).
 
 ## 12. Success Metrics
