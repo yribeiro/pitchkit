@@ -43,3 +43,47 @@
   width: 100%;
   max-width: 32rem;
 }
+
+/*
+ * Collapsed code panel (shadcn/ui registry-preview pattern): crop to a
+ * peek height with a fade-to-card gradient and a centered "View Code"
+ * button floating over it. Expanding removes the cap entirely — see
+ * pitch-preview.tsx.
+ */
+.pitchkit-preview__code {
+  position: relative;
+}
+
+.pitchkit-preview__code--collapsed {
+  max-height: 9rem;
+  overflow: hidden;
+}
+
+.pitchkit-preview__code-fade {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1.25rem;
+  background: linear-gradient(to top, var(--color-fd-card) 40%, transparent);
+  pointer-events: none;
+}
+
+.pitchkit-preview__code-toggle {
+  pointer-events: auto;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  background: var(--color-fd-secondary, var(--color-fd-card));
+  color: var(--color-fd-secondary-foreground, var(--color-fd-foreground));
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+.pitchkit-preview__code-toggle:hover {
+  background: var(--color-fd-accent);
+  color: var(--color-fd-accent-foreground);
+}
