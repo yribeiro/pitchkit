@@ -24,6 +24,8 @@ export interface ScatterLayer<T = unknown> {
   readonly fillOpacity?: Accessor<T, number>;
   readonly stroke?: Accessor<T, string>;
   readonly strokeWidth?: Accessor<T, number>;
+  /** Applied as every `<circle>`'s `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
 }
 
 /** Text labels: one `<text>` per datum, offset from its anchor point in pixels. */
@@ -55,6 +57,8 @@ export interface ArrowsLayer<T = unknown> {
   readonly strokeOpacity?: Accessor<T, number>;
   /** Arrowhead size in pixels. */
   readonly headSize?: Accessor<T, number>;
+  /** Applied as both the shaft's and arrowhead's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
 }
 
 /**
@@ -75,6 +79,8 @@ export interface CometLayer<T = unknown> {
   readonly endWidth?: Accessor<T, number>;
   /** Fades opacity from 0 at the start to 1 at the end via a linear gradient. */
   readonly gradient?: boolean;
+  /** Applied as every `<polygon>`'s `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
 }
 
 /**

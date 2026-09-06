@@ -32,13 +32,19 @@ export function paintCometLayer<T>(
     const start: Point = transform.toPixel([resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     const end: Point = transform.toPixel([resolve(layer.x2, d, i), resolve(layer.y2, d, i)]);
 
+    // `color` always has a themed default — needed unconditionally for the
+    // gradient's `<stop>` colours below, which have no `className`-based
+    // equivalent. The *flat* (non-gradient) fill is the one that backs off
+    // that default when `className` is set and no explicit `color` was
+    // given, for the same inline-style-beats-class reason as the other
+    // painters — an explicit `color` prop still always wins over `className`.
     const color = resolve(layer.color ?? DEFAULT_COLOR, d, i);
     const startWidth = resolve(layer.startWidth ?? DEFAULT_START_WIDTH, d, i);
     const endWidth = resolve(layer.endWidth ?? DEFAULT_END_WIDTH, d, i);
 
     const corners = computeCometQuad(start, end, startWidth, endWidth);
 
-    let fill: string = color;
+    let fill: string | undefined = layer.color !== undefined || !layer.className ? color : undefined;
     if (layer.gradient) {
       const gradientId = `pitchkit-comet-gradient-${gradientIdCounter++}`;
       appendFadeGradient(group, doc, gradientId, start, end, color);
@@ -48,7 +54,10 @@ export function paintCometLayer<T>(
     const polygon = doc.createElementNS(SVG_NS, "polygon");
     polygon.setAttribute("points", corners.map(([x, y]) => `${x},${y}`).join(" "));
     polygon.setAttribute("data-pitchkit-mark", "comet");
-    polygon.setAttribute("style", `fill: ${fill}; stroke: none;`);
+    polygon.setAttribute("style", `${fill !== undefined ? `fill: ${fill}; ` : ""}stroke: none;`);
+    if (layer.className) {
+      polygon.setAttribute("class", layer.className);
+    }
     group.appendChild(polygon);
   });
 }

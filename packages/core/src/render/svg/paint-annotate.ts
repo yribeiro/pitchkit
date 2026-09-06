@@ -26,10 +26,11 @@ export function paintAnnotateLayer<T>(
     el.setAttribute("x", String(px + offsetX));
     el.setAttribute("y", String(py + offsetY));
     el.setAttribute("data-pitchkit-mark", "annotate");
-    el.setAttribute(
-      "style",
-      "fill: var(--pitch-lines, rgba(255, 255, 255, 0.8)); font-size: 10px; text-anchor: middle;",
-    );
+    // The themed default fill is an inline style, which always beats a class
+    // at the same property — so it's only applied when `className` is
+    // absent, letting a consumer's class own `fill` instead when present.
+    const fillStyle = layer.className ? "" : "fill: var(--pitch-lines, rgba(255, 255, 255, 0.8)); ";
+    el.setAttribute("style", `${fillStyle}font-size: 10px; text-anchor: middle;`);
     if (layer.className) {
       el.setAttribute("class", layer.className);
     }

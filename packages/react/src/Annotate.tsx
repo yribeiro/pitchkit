@@ -7,11 +7,8 @@ export interface AnnotateProps<T> extends Omit<AnnotateLayer<T>, "type"> {
   tooltip?: (d: T, i: number) => ReactNode;
 }
 
-const TEXT_STYLE: CSSProperties = {
-  fill: "var(--pitch-lines, rgba(255, 255, 255, 0.8))",
-  fontSize: 10,
-  textAnchor: "middle",
-};
+const TEXT_BASE_STYLE: CSSProperties = { fontSize: 10, textAnchor: "middle" };
+const DEFAULT_FILL = "var(--pitch-lines, rgba(255, 255, 255, 0.8))";
 
 /** One `<text>` per datum — the JSX equivalent of core's `paintAnnotateLayer`. */
 export function Annotate<T>({
@@ -25,6 +22,11 @@ export function Annotate<T>({
   tooltip,
 }: AnnotateProps<T>) {
   const { transform, setTooltip } = usePitchContext();
+  // The themed default fill is only applied when `className` is absent —
+  // it's set as inline style, which always beats a class at the same
+  // property, so a consumer's `fill-*` utility needs the default to back
+  // off rather than losing to it. See Scatter.tsx's equivalent comment.
+  const textStyle: CSSProperties = className ? TEXT_BASE_STYLE : { ...TEXT_BASE_STYLE, fill: DEFAULT_FILL };
 
   return (
     <g data-pitchkit-layer="annotate">
@@ -41,7 +43,7 @@ export function Annotate<T>({
             x={tx}
             y={ty}
             data-pitchkit-mark="annotate"
-            style={TEXT_STYLE}
+            style={textStyle}
             className={className}
             onMouseEnter={
               tooltip ? () => setTooltip({ content: tooltip(d, i), x: tx, y: ty }) : undefined

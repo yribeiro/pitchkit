@@ -26,6 +26,7 @@ export function Arrows<T>({
   strokeWidth,
   strokeOpacity,
   headSize,
+  className,
   tooltip,
 }: ArrowsProps<T>) {
   const { transform, setTooltip } = usePitchContext();
@@ -35,7 +36,12 @@ export function Arrows<T>({
       {data.map((d, i) => {
         const start = transform.toPixel([resolve(x, d, i), resolve(y, d, i)]);
         const end = transform.toPixel([resolve(x2, d, i), resolve(y2, d, i)]);
-        const strokeValue = resolve(stroke ?? DEFAULT_STROKE, d, i);
+        // See Scatter.tsx's equivalent comment: the themed default falls
+        // back to an inline style, which always beats a `className`
+        // utility at the same property, so it only applies when
+        // `className` is absent.
+        const strokeValue =
+          stroke !== undefined ? resolve(stroke, d, i) : className ? undefined : DEFAULT_STROKE;
         const strokeWidthValue = resolve(strokeWidth ?? DEFAULT_STROKE_WIDTH, d, i);
         const opacityValue = strokeOpacity !== undefined ? resolve(strokeOpacity, d, i) : undefined;
         const headSizeValue = resolve(headSize ?? DEFAULT_HEAD_SIZE, d, i);
@@ -57,11 +63,13 @@ export function Arrows<T>({
               x2={end[0]}
               y2={end[1]}
               data-pitchkit-mark="arrow-shaft"
+              className={className}
               style={{ stroke: strokeValue, strokeWidth: strokeWidthValue, opacity: opacityValue }}
             />
             <polygon
               points={`${end[0]},${end[1]} ${headA[0]},${headA[1]} ${headB[0]},${headB[1]}`}
               data-pitchkit-mark="arrow-head"
+              className={className}
               style={{ fill: strokeValue, opacity: opacityValue }}
             />
           </g>

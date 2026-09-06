@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
+import { TailwindPanel } from "./TailwindPanel";
 
 /** React's CSSProperties has no index signature for custom properties. */
 type CSSVars = CSSProperties & Record<`--${string}`, string>;
@@ -244,6 +245,8 @@ export function Controls() {
           colorMax={heatmapColors.colorMax}
         />
       </div>
+
+      <TailwindPanel appearance={appearance} />
     </div>
   );
 }

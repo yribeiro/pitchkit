@@ -118,6 +118,27 @@ describe("paintArrowsLayer", () => {
     expect(defaultShaft?.getAttribute("style")).toContain("var(--pitch-marker-primary");
   });
 
+  it("applies className to both the shaft and the head when provided", () => {
+    const svg = makeSvg();
+    const layer: ArrowsLayer<Pass> = {
+      type: "arrows",
+      data: [{ from: [10, 10], to: [50, 50] }],
+      x: (d) => d.from[0],
+      y: (d) => d.from[1],
+      x2: (d) => d.to[0],
+      y2: (d) => d.to[1],
+      className: "demo-arrow",
+    };
+    paintArrowsLayer(svg, document, layer, makeTransform());
+
+    expect(svg.querySelector('[data-pitchkit-mark="arrow-shaft"]')?.getAttribute("class")).toBe(
+      "demo-arrow",
+    );
+    expect(svg.querySelector('[data-pitchkit-mark="arrow-head"]')?.getAttribute("class")).toBe(
+      "demo-arrow",
+    );
+  });
+
   it("wraps marks in a g[data-pitchkit-layer='arrows']", () => {
     const svg = makeSvg();
     const layer: ArrowsLayer<Pass> = {

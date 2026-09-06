@@ -55,6 +55,43 @@ describe("Comet", () => {
     expect(container.querySelector("linearGradient")).toBeNull();
   });
 
+  it("applies the className prop to the polygon element", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Comet
+          data={[{ x: 0, y: 0, x2: 60, y2: 40 }]}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          x2={(d) => d.x2}
+          y2={(d) => d.y2}
+          className="my-comet"
+        />
+      </Pitch>,
+    );
+
+    expect(container.querySelector('[data-pitchkit-mark="comet"]')?.getAttribute("class")).toBe(
+      "my-comet",
+    );
+  });
+
+  it("omits the themed default fill inline style when className is set without color (flat fill only)", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Comet
+          data={[{ x: 0, y: 0, x2: 60, y2: 40 }]}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          x2={(d) => d.x2}
+          y2={(d) => d.y2}
+          className="fill-red-500"
+        />
+      </Pitch>,
+    );
+
+    const polygon = container.querySelector('[data-pitchkit-mark="comet"]') as SVGElement;
+    expect(polygon.style.fill).toBe("");
+  });
+
   it("renders a unique linearGradient per datum when gradient is set", () => {
     const data = [
       { x: 0, y: 0, x2: 30, y2: 20 },
