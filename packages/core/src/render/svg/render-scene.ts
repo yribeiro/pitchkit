@@ -39,6 +39,17 @@ function paintLayer(
  * templating) — runs under happy-dom in tests and a real DOM in the
  * browser with the same code path, and extends cleanly to interactive
  * marks (event listeners need real nodes) in Milestone 1.
+ *
+ * @internal Resolves issue #6: `@pitchkit/react` re-emits its own JSX rather
+ * than calling this (JSX is what makes output SSR-able), so this function's
+ * only first-party consumer is the `packages/core/examples/index.html` dev
+ * harness. It is kept — and exported from `@pitchkit/core` so that harness
+ * keeps working — as an internal building block, not a supported public API
+ * for framework-agnostic/vanilla-JS consumption. React is the only
+ * officially supported rendering surface for marks; do not add painters for
+ * new Milestone 2 mark types (hexbin, KDE, flow, polygon, hull, Voronoi,
+ * goal angle) — ship those React-only. `canvasRenderer` (heatmaps) is
+ * unaffected and remains fully supported.
  */
 export function renderSceneToSVGElement(scene: Scene, doc: Document = document): SVGSVGElement {
   const svg = doc.createElementNS(SVG_NS, "svg") as SVGSVGElement;
@@ -58,7 +69,12 @@ export function renderSceneToSVGElement(scene: Scene, doc: Document = document):
   return svg;
 }
 
-/** Concrete `Renderer` implementation backed by the SVG renderer. */
+/**
+ * Concrete `Renderer` implementation backed by the SVG renderer.
+ *
+ * @internal See the note on `renderSceneToSVGElement` above — internal
+ * building-block surface, not a supported public consumption path.
+ */
 export const svgRenderer: Renderer<SVGSVGElement> = {
   render: (scene: Scene) => renderSceneToSVGElement(scene),
 };

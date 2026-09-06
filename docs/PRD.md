@@ -393,11 +393,19 @@ npx shadcn add @pitchkit/theme-broadcast
       `examples/react-vite/`, `examples/react-nextjs/` (App Router SSR verification).
 - [ ] Docs site skeleton with live examples for the above.
 - [ ] shadcn-style showcase website (doubles as docs home, per §9).
-- [ ] [Issue #6](https://github.com/yribeiro/pitchkit/issues/6): assess whether
-      `@pitchkit/core`'s SVG painters (`render/svg/paint-*.ts`) are still needed as public
-      surface now that `@pitchkit/react` re-emits its own JSX rather than calling them —
-      their only remaining first-party consumer is the vanilla-JS `packages/core/examples/index.html`
-      harness.
+- [x] [Issue #6](https://github.com/yribeiro/pitchkit/issues/6): resolved — decision:
+      **deprecate/reposition the SVG painters as internal-only.** `render/svg/paint-*.ts`,
+      `render-scene.ts`, `svgRenderer`, and the `Renderer<TOutput>` abstraction (for SVG
+      specifically — `canvasRenderer` for heatmaps is unaffected, since `@pitchkit/react`'s
+      `<Heatmap>` still calls into it directly) are internal building blocks kept only to
+      support the `packages/core/examples/index.html` dev harness, not a supported public
+      consumption path. `@pitchkit/react` is the only officially supported rendering surface
+      going forward. Consequence for Milestone 2: new mark types (hexbin, KDE, flow, polygon,
+      convex hull, Voronoi, goal angle) ship **React-only** — no DOM painter is written for
+      them, avoiding the double-implementation cost the issue flagged. `@internal` JSDoc added
+      at the three export sites (`render/renderer.ts`, `render/svg/render-scene.ts`,
+      `index.ts`) and `examples/index.html` relabelled as an internal dev harness rather than
+      a reference implementation, so nobody mistakes it for a supported vanilla-JS pattern.
 - [x] [Issue #7](https://github.com/yribeiro/pitchkit/issues/7): resolved — Tailwind
       integrates via four mechanisms rather than one (see §8.7 and Appendix C.6 for the full
       writeup): (1) `className` on `<Scatter>`/`<Arrows>`/`<Comet>` (`<Annotate>` already had

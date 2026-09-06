@@ -9,6 +9,10 @@ Full PRD: see `docs/PRD.md` — read this before any architectural work.
 - Hybrid SVG (interactive marks) + Canvas (heatmaps/KDE) rendering
 - Monorepo: npm workspaces + Turborepo, packages under `@pitchkit/*`
 - `@pitchkit/core` has zero React dependency; `@pitchkit/react` is a thin binding
+- `@pitchkit/react` is the only officially supported rendering surface; core's SVG painters
+  (`render/svg/paint-*.ts`, `svgRenderer`) are internal-only, kept solely for the
+  `packages/core/examples/index.html` dev harness — new marks ship React-only
+  ([issue #6](https://github.com/yribeiro/pitchkit/issues/6), resolved)
 - Theming = CSS variables only (shadcn-style), no JS theme objects
 - Responsive is the default (no prop); explicit width/height is the opt-out
 - Distribution: engine via npm, recipes/themes via shadcn registry
@@ -24,8 +28,9 @@ progress notes). Every `@pitchkit/core` and `@pitchkit/react` item is done and m
 [Issue #7](https://github.com/yribeiro/pitchkit/issues/7) (Tailwind integration) is resolved
 and implemented on branch `design-tailwind-integration` (see PRD §8.7 and Appendix C.6),
 not yet committed/merged as of this writing.
-Remaining Milestone 1 scope: docs site skeleton, shadcn-style showcase website, and
-[issue #6](https://github.com/yribeiro/pitchkit/issues/6).
+[Issue #6](https://github.com/yribeiro/pitchkit/issues/6) (SVG painters scoping) is resolved
+— see PRD roadmap section 11 for the decision writeup.
+Remaining Milestone 1 scope: docs site skeleton and shadcn-style showcase website.
 npm publish and repo-hygiene/release tooling were moved out of Milestone 1 into a new
 **Milestone 3 — publishing**, run as one concentrated effort after Milestone 2's parity
 push (see PRD roadmap section 11).
