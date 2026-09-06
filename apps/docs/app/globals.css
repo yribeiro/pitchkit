@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/*
+ * PitchKit brand theme (shadcn-style CSS-variable theming, per CLAUDE.md /
+ * PRD §8.7): overrides fumadocs-ui's neutral preset with pitch-green
+ * accents so the docs chrome reads as PitchKit's own site, not generic
+ * fumadocs. `--pitch-*` variables (consumed directly by @pitchkit/react)
+ * are set separately in docs-appearance below, once per preview, so every
+ * live example renders against one deliberate, on-brand pitch look rather
+ * than the library's bare defaults.
+ */
+:root {
+  --color-fd-primary: oklch(0.62 0.17 152);
+  --color-fd-primary-foreground: oklch(0.98 0 0);
+}
+
+.dark {
+  --color-fd-primary: oklch(0.72 0.17 152);
+  --color-fd-primary-foreground: oklch(0.15 0 0);
+}
+
+/* Live-example preview card: the frame every <PitchPreview> renders inside. */
+.pitchkit-preview {
+  border: 1px solid var(--color-fd-border);
+  border-radius: var(--radius, 0.75rem);
+  overflow: hidden;
+  background: var(--color-fd-card);
+  margin: 1.5rem 0;
+}
+
+.pitchkit-preview__stage {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background:
+    radial-gradient(circle at top, color-mix(in oklch, var(--color-fd-primary) 6%, transparent), transparent 60%),
+    var(--color-fd-background);
+}
+
+.pitchkit-preview__stage-inner {
+  width: 100%;
+  max-width: 32rem;
+}

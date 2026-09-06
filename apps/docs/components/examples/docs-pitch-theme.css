@@ -1,0 +1,13 @@
+/*
+ * PitchKit's own CSS-variable theming, applied to every live example on
+ * the docs site (imported once via docs-pitch.tsx). Kept separate from
+ * app/globals.css's fumadocs chrome variables since these are consumed
+ * directly by @pitchkit/core's painters, not by fumadocs-ui.
+ */
+.pitchkit-docs-pitch {
+  --pitch-surface: #0f3d24;
+  --pitch-stripe: rgba(255, 255, 255, 0.045);
+  --pitch-lines: rgba(255, 255, 255, 0.85);
+  --pitch-marker-primary: #38bdf8;
+  --pitch-marker-goal: #fb923c;
+}

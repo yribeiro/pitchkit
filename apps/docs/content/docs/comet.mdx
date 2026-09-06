@@ -1,0 +1,15 @@
+---
+title: Comet
+description: A tapered, optionally fading trail — good for carries and off-ball runs.
+---
+
+<PitchPreview name="comet-basic" />
+
+## Usage
+
+Like `<Arrows>`, `<Comet>` takes start (`x`/`y`) and end (`x2`/`y2`) accessors, plus
+`startWidth`/`endWidth` to control the taper and `gradient` to fade opacity along its length.
+
+```tsx
+<Comet data={carries} x={(c) => c.from.x} y={(c) => c.from.y} x2={(c) => c.to.x} y2={(c) => c.to.y} gradient />
+```

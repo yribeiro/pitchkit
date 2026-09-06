@@ -1,0 +1,34 @@
+---
+title: Introduction
+description: What PitchKit is, and how the pieces fit together.
+---
+
+PitchKit is a TypeScript-native football pitch visualisation library for the web — mplsoccer's
+surface, built for the browser. `@pitchkit/core` is a framework-agnostic engine (coordinate
+transforms, SVG + Canvas rendering); `@pitchkit/react` is the officially supported set of
+declarative bindings on top of it: `<Pitch>`, `<VerticalPitch>`, and a family of layer
+components for plotting data onto a pitch.
+
+## What's on this page
+
+Every page under **Docs** pairs a live, server-rendered example with its exact source — copy
+it straight into your project. Start with [Pitch](/docs/pitch) for the base component, then a
+layer at a time: [Scatter](/docs/scatter), [Arrows](/docs/arrows), [Comet](/docs/comet),
+[Annotate](/docs/annotate), and the canvas-based [Heatmap](/docs/heatmap).
+
+## Install
+
+```bash
+npm install @pitchkit/core @pitchkit/react
+```
+
+## The accessor pattern
+
+Every layer takes plain data plus accessor functions for its visual properties:
+
+```tsx
+<Scatter data={players} x={(p) => p.x} y={(p) => p.y} tooltip={(p) => p.name} />
+```
+
+`x`, `y`, and most other props accept either a static value or a per-datum function — this is
+how PitchKit stays shape-agnostic across providers (StatsBomb, Opta, UEFA, or your own).
