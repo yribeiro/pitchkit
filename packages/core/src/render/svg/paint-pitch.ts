@@ -178,7 +178,7 @@ export function paintPitchGeometry(
   group.setAttribute("data-pitchkit-layer", "pitch");
   svg.appendChild(group);
 
-  appendRect(group, doc, geometry.outline, transform, "outline");
+  appendRect(group, doc, geometry.outline, transform, "surface");
   appendStripes(group, doc, geometry.outline, transform, resolveStripeCount(appearance.stripes));
 
   appendLine(group, doc, geometry.halfwayLine, transform, "halfway-line");
@@ -203,4 +203,9 @@ export function paintPitchGeometry(
 
   const depth = goalBoxDepth(dimensions.markings.cornerArcRadius);
   appendGoals(group, doc, geometry.goals, transform, appearance.goalType ?? "line", depth);
+
+  // The stroke-only border paints last: SVG strokes are centered on the path,
+  // so the inner half of an earlier-painted border would be masked by opaque
+  // stripes (issue #14).
+  appendRect(group, doc, geometry.outline, transform, "outline");
 }

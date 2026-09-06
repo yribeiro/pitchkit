@@ -28,6 +28,7 @@ describe("renderSceneToSVGElement", () => {
     const countOf = (part: string): number =>
       svg.querySelectorAll(`[data-pitchkit-part="${part}"]`).length;
 
+    expect(countOf("surface")).toBe(1);
     expect(countOf("outline")).toBe(1);
     expect(countOf("halfway-line")).toBe(1);
     expect(countOf("center-circle")).toBe(1);
@@ -40,10 +41,26 @@ describe("renderSceneToSVGElement", () => {
     expect(countOf("goal")).toBe(2);
   });
 
-  it("outline carries a CSS-variable-themed style by default", () => {
+  it("surface carries a CSS-variable-themed style by default", () => {
     const svg = renderSceneToSVGElement(buildScene("statsbomb"));
+    const surface = svg.querySelector('[data-pitchkit-part="surface"]');
+    expect(surface?.getAttribute("style")).toContain("var(--pitch-surface");
+  });
+
+  it("paints the stroke-only outline border after the stripes so opaque stripes can't mask it", () => {
+    const scene: Scene = { ...buildScene("statsbomb"), appearance: { stripes: true } };
+    const svg = renderSceneToSVGElement(scene);
+    const parts = Array.from(svg.querySelectorAll("[data-pitchkit-part]")).map((el) =>
+      el.getAttribute("data-pitchkit-part"),
+    );
+
+    const outlineIndex = parts.indexOf("outline");
+    expect(parts.indexOf("surface")).toBeLessThan(parts.indexOf("stripe"));
+    expect(outlineIndex).toBeGreaterThan(parts.lastIndexOf("stripe"));
+    expect(outlineIndex).toBe(parts.length - 1);
+
     const outline = svg.querySelector('[data-pitchkit-part="outline"]');
-    expect(outline?.getAttribute("style")).toContain("var(--pitch-surface");
+    expect(outline?.getAttribute("style")).toContain("fill: none");
   });
 
   it.each([true, 6, 0, false] as const)(

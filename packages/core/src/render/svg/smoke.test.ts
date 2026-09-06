@@ -10,6 +10,7 @@ const ORIENTATIONS: Orientation[] = ["horizontal", "vertical"];
 const VIEWPORT = { width: 600, height: 400 };
 
 const PARTS_WITH_EXPECTED_COUNT: Record<string, number> = {
+  surface: 1,
   outline: 1,
   "halfway-line": 1,
   "center-circle": 1,
