@@ -12,7 +12,7 @@
     "start": "next start",
     "prelint": "node scripts/generate-examples-registry.mjs",
     "lint": "eslint .",
-    "pretypecheck": "node scripts/generate-examples-registry.mjs",
+    "pretypecheck": "node scripts/generate-examples-registry.mjs && fumadocs-mdx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
