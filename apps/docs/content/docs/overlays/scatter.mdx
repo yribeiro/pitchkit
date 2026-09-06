@@ -1,0 +1,15 @@
+---
+title: Scatter
+description: Plot discrete points on a pitch, with per-point styling and hover tooltips.
+---
+
+<PitchPreview name="scatter-basic" />
+
+## Usage
+
+`<Scatter>` takes a `data` array plus `x`/`y` accessors; `r`, `fill`, `stroke`, `strokeWidth`,
+and `tooltip` are all optional and accept either a static value or a per-datum function.
+
+```tsx
+<Scatter data={players} x={(p) => p.x} y={(p) => p.y} r={7} tooltip={(p) => p.name} />
+```

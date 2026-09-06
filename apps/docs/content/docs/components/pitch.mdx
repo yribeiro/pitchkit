@@ -1,0 +1,30 @@
+---
+title: Pitch
+description: The root component — owns the coordinate system and is responsive by default.
+---
+
+`<Pitch>` renders the pitch surface and markings, and provides the coordinate transform every
+layer component reads from context. It's responsive by default (fills its container via
+`ResizeObserver`); pass explicit `width`/`height` to opt out — required for `<Heatmap>`, which
+paints to a `<canvas>` with no server-rendered content to size against.
+
+<PitchPreview name="pitch-basic" />
+
+## Vertical orientation
+
+`<VerticalPitch>` is `<Pitch orientation="vertical">` under a friendlier name (matching
+mplsoccer's `VerticalPitch`) — useful for shot maps and attacking-third views.
+
+<PitchPreview name="vertical-pitch-basic" />
+
+## Appearance
+
+Colours are CSS variables (`--pitch-surface`, `--pitch-stripe`, `--pitch-lines`,
+`--pitch-marker-primary`) — set them once per theme, no per-instance props needed. See
+[Configuration > Tailwind](/docs/configuration/tailwind) for the full variable reference and
+how to reach them with Tailwind utilities. `stripes` and `goalType` are the two structural
+knobs, passed via the `appearance` prop:
+
+```tsx
+<Pitch type="statsbomb" appearance={{ stripes: true, goalType: "box" }} />
+```

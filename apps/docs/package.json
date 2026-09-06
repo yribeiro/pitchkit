@@ -1,0 +1,38 @@
+{
+  "name": "docs",
+  "private": true,
+  "version": "0.0.0",
+  "description": "PitchKit docs site: Next.js App Router + Fumadocs, with live @pitchkit/react examples.",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/generate-examples-registry.mjs",
+    "dev": "next dev",
+    "prebuild": "node scripts/generate-examples-registry.mjs",
+    "build": "next build",
+    "start": "next start",
+    "prelint": "node scripts/generate-examples-registry.mjs",
+    "lint": "eslint .",
+    "pretypecheck": "node scripts/generate-examples-registry.mjs && fumadocs-mdx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pitchkit/core": "*",
+    "@pitchkit/react": "*",
+    "fumadocs-core": "^16",
+    "fumadocs-mdx": "^15",
+    "fumadocs-ui": "^16",
+    "next": "^16",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/mdx": "^2",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5"
+  }
+}

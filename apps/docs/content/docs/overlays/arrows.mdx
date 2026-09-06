@@ -1,0 +1,15 @@
+---
+title: Arrows
+description: Draw a directional pass or carry map between two points.
+---
+
+<PitchPreview name="arrows-basic" />
+
+## Usage
+
+`<Arrows>` takes `x`/`y` (start) and `x2`/`y2` (end) accessors per datum — good for pass maps
+and set-piece routines.
+
+```tsx
+<Arrows data={passes} x={(p) => p.from.x} y={(p) => p.from.y} x2={(p) => p.to.x} y2={(p) => p.to.y} />
+```

@@ -1,0 +1,19 @@
+---
+title: Heatmap
+description: Canvas-based binned density, for shot maps and touch maps.
+---
+
+<PitchPreview name="heatmap-basic" />
+
+## Usage
+
+`<Heatmap>` bins `data` by `x`/`y` (optionally weighted by a `weight` accessor) and paints them
+to a `<canvas>` layered inside the pitch's SVG via `<foreignObject>`. Unlike the SVG mark
+layers above, it needs a fixed-size `<Pitch>` (`width`/`height`) — canvas has no server-rendered
+content to size against before the client measures its container.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320}>
+  <Heatmap data={shots} x={(s) => s.x} y={(s) => s.y} binsX={8} binsY={6} />
+</Pitch>
+```

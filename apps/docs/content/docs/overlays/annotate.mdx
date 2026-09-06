@@ -1,0 +1,15 @@
+---
+title: Annotate
+description: Place text labels at pitch coordinates.
+---
+
+<PitchPreview name="annotate-basic" />
+
+## Usage
+
+`<Annotate>` takes `x`/`y`/`label` accessors, plus optional `offsetX`/`offsetY` to nudge label
+position away from its anchor point.
+
+```tsx
+<Annotate data={zones} x={(z) => z.x} y={(z) => z.y} label={(z) => z.label} offsetY={-4} />
+```

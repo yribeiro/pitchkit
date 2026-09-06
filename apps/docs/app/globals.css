@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/*
+ * PitchKit brand theme (shadcn-style CSS-variable theming, per CLAUDE.md /
+ * PRD §8.7): overrides fumadocs-ui's neutral preset with pitch-green
+ * accents so the docs chrome reads as PitchKit's own site, not generic
+ * fumadocs. `--pitch-*` variables (consumed directly by @pitchkit/react)
+ * are set separately in docs-appearance below, once per preview, so every
+ * live example renders against one deliberate, on-brand pitch look rather
+ * than the library's bare defaults.
+ */
+:root {
+  --color-fd-primary: oklch(0.62 0.17 152);
+  --color-fd-primary-foreground: oklch(0.98 0 0);
+}
+
+.dark {
+  --color-fd-primary: oklch(0.72 0.17 152);
+  --color-fd-primary-foreground: oklch(0.15 0 0);
+}
+
+/*
+ * The Tailwind integration recipe from issue #7 (PRD §8.7 / Appendix C.6):
+ * turns pitchkit's `--pitch-*` theme variables into first-class Tailwind
+ * utilities, e.g. `className="pitch-surface-emerald-950"`. This is the
+ * "shadcn add"-style install step the Configuration > Tailwind docs page
+ * walks through — shown here applied to this very site, not just
+ * documented. Without it, `--pitch-surface`/`--pitch-stripe`/
+ * `--pitch-lines` can still be set via Tailwind's arbitrary-property
+ * syntax with zero setup: `className="[--pitch-surface:var(--color-emerald-800)]"`.
+ */
+@utility pitch-surface-* {
+  --pitch-surface: --value(--color-*);
+}
+@utility pitch-stripe-* {
+  --pitch-stripe: --value(--color-*);
+}
+@utility pitch-lines-* {
+  --pitch-lines: --value(--color-*);
+}
+/*
+ * Unlike color, Tailwind has no rich named scale to borrow for stroke width
+ * — this utility validates its own bare/arbitrary number instead of
+ * looking one up in the theme: `pitch-line-width-2` (bare) or
+ * `pitch-line-width-[1.75]` (arbitrary).
+ */
+@utility pitch-line-width-* {
+  --pitch-line-width: --value(number, [number]);
+}
+
+/* Live-example preview card: the frame every <PitchPreview> renders inside. */
+.pitchkit-preview {
+  border: 1px solid var(--color-fd-border);
+  border-radius: var(--radius, 0.75rem);
+  overflow: hidden;
+  background: var(--color-fd-card);
+  margin: 1.5rem 0;
+}
+
+.pitchkit-preview__stage {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background:
+    radial-gradient(circle at top, color-mix(in oklch, var(--color-fd-primary) 6%, transparent), transparent 60%),
+    var(--color-fd-background);
+}
+
+.pitchkit-preview__stage-inner {
+  width: 100%;
+  max-width: 32rem;
+}
+
+/*
+ * Collapsed code panel (shadcn/ui registry-preview pattern): crop to a
+ * peek height with a fade-to-card gradient and a centered "View Code"
+ * button floating over it. Expanding removes the cap entirely — see
+ * pitch-preview.tsx.
+ */
+.pitchkit-preview__code {
+  position: relative;
+}
+
+.pitchkit-preview__code--collapsed {
+  max-height: 9rem;
+  overflow: hidden;
+}
+
+.pitchkit-preview__code-fade {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1.25rem;
+  background: linear-gradient(to top, var(--color-fd-card) 40%, transparent);
+  pointer-events: none;
+}
+
+.pitchkit-preview__code-toggle {
+  pointer-events: auto;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  background: black;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+.pitchkit-preview__code-toggle:hover {
+  border-color: #262626;
+  background: #262626;
+}
