@@ -30,17 +30,29 @@ export function paintScatterLayer<T>(
     el.setAttribute("r", String(r));
     el.setAttribute("data-pitchkit-mark", "scatter");
 
-    const fill = resolve(layer.fill ?? DEFAULT_FILL, d, i);
-    const stroke = layer.stroke !== undefined ? resolve(layer.stroke, d, i) : "none";
+    // `fill`/`stroke` themed defaults are applied as inline style, which
+    // always beats a class at the same property — so the default only
+    // applies when `className` is absent, letting a consumer's class own
+    // that property instead. An explicit `fill`/`stroke` prop still always
+    // wins over `className`, same as before.
+    const fill =
+      layer.fill !== undefined ? resolve(layer.fill, d, i) : layer.className ? undefined : DEFAULT_FILL;
+    const stroke =
+      layer.stroke !== undefined ? resolve(layer.stroke, d, i) : layer.className ? undefined : "none";
 
-    let style = `fill: ${fill}; stroke: ${stroke};`;
+    let style = "";
+    if (fill !== undefined) style += `fill: ${fill}; `;
+    if (stroke !== undefined) style += `stroke: ${stroke}; `;
     if (layer.fillOpacity !== undefined) {
-      style += ` fill-opacity: ${resolve(layer.fillOpacity, d, i)};`;
+      style += `fill-opacity: ${resolve(layer.fillOpacity, d, i)}; `;
     }
     if (layer.strokeWidth !== undefined) {
-      style += ` stroke-width: ${resolve(layer.strokeWidth, d, i)};`;
+      style += `stroke-width: ${resolve(layer.strokeWidth, d, i)}; `;
     }
-    el.setAttribute("style", style);
+    el.setAttribute("style", style.trim());
+    if (layer.className) {
+      el.setAttribute("class", layer.className);
+    }
 
     group.appendChild(el);
   });

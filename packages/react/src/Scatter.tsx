@@ -20,6 +20,7 @@ export function Scatter<T>({
   fillOpacity,
   stroke,
   strokeWidth,
+  className,
   tooltip,
 }: ScatterProps<T>) {
   const { transform, setTooltip } = usePitchContext();
@@ -29,8 +30,17 @@ export function Scatter<T>({
       {data.map((d, i) => {
         const [cx, cy] = transform.toPixel([resolve(x, d, i), resolve(y, d, i)]);
         const radius = resolve(r ?? DEFAULT_RADIUS, d, i);
-        const fillValue = resolve(fill ?? DEFAULT_FILL, d, i);
-        const strokeValue = stroke !== undefined ? resolve(stroke, d, i) : "none";
+        // `fill`/`stroke` are the only two visual props with a themed
+        // fallback rather than "just leave it unset" — and that fallback is
+        // an inline style, which always beats a `className` utility class
+        // (`fill-emerald-400`, say) at the same CSS property, opt-in or
+        // not. So the fallback only applies when `className` is absent;
+        // passing `className` hands color ownership to it, same as passing
+        // `fill`/`stroke` explicitly still does either way.
+        const fillValue =
+          fill !== undefined ? resolve(fill, d, i) : className ? undefined : DEFAULT_FILL;
+        const strokeValue =
+          stroke !== undefined ? resolve(stroke, d, i) : className ? undefined : "none";
         const fillOpacityValue = fillOpacity !== undefined ? resolve(fillOpacity, d, i) : undefined;
         const strokeWidthValue = strokeWidth !== undefined ? resolve(strokeWidth, d, i) : undefined;
 
@@ -41,6 +51,7 @@ export function Scatter<T>({
             cy={cy}
             r={radius}
             data-pitchkit-mark="scatter"
+            className={className}
             style={{
               fill: fillValue,
               stroke: strokeValue,

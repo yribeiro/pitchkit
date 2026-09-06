@@ -82,6 +82,22 @@ describe("paintAnnotateLayer", () => {
     expect(text?.getAttribute("class")).toBe("demo-label");
   });
 
+  it("omits the themed default fill inline style when className is set, so a class can take effect", () => {
+    const svg = makeSvg();
+    const layer: AnnotateLayer<Datum> = {
+      type: "annotate",
+      data: [{ x: 10, y: 10, name: "GK" }],
+      x: (d) => d.x,
+      y: (d) => d.y,
+      label: (d) => d.name,
+      className: "demo-label",
+    };
+    paintAnnotateLayer(svg, document, layer, makeTransform());
+
+    const text = svg.querySelector('[data-pitchkit-mark="annotate"]');
+    expect(text?.getAttribute("style")).not.toContain("fill");
+  });
+
   it("wraps marks in a g[data-pitchkit-layer='annotate']", () => {
     const svg = makeSvg();
     const layer: AnnotateLayer<Datum> = {

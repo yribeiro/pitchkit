@@ -101,6 +101,18 @@ describe("paintCometLayer", () => {
     expect(new Set(ids).size).toBe(2);
   });
 
+  it("applies className when provided", () => {
+    const svg = makeSvg();
+    const layer: CometLayer<Pass> = {
+      ...baseLayer([{ from: [10, 10], to: [50, 50] }]),
+      className: "demo-comet",
+    };
+    paintCometLayer(svg, document, layer, makeTransform());
+
+    const mark = svg.querySelector('[data-pitchkit-mark="comet"]');
+    expect(mark?.getAttribute("class")).toBe("demo-comet");
+  });
+
   it("wraps marks in a g[data-pitchkit-layer='comet']", () => {
     const svg = makeSvg();
     paintCometLayer(svg, document, baseLayer([{ from: [10, 10], to: [50, 50] }]), makeTransform());

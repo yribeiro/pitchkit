@@ -30,13 +30,22 @@ export function paintArrowsLayer<T>(
     const start: Point = transform.toPixel([resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     const end: Point = transform.toPixel([resolve(layer.x2, d, i), resolve(layer.y2, d, i)]);
 
-    const stroke = resolve(layer.stroke ?? DEFAULT_STROKE, d, i);
+    // The themed default stroke is applied as inline style, which always
+    // beats a class at the same property — so it only applies when
+    // `className` is absent, letting a consumer's class own colour instead.
+    // An explicit `stroke` prop still always wins over `className`.
+    const stroke =
+      layer.stroke !== undefined
+        ? resolve(layer.stroke, d, i)
+        : layer.className
+          ? undefined
+          : DEFAULT_STROKE;
     const strokeWidth = resolve(layer.strokeWidth ?? DEFAULT_STROKE_WIDTH, d, i);
     const strokeOpacity =
       layer.strokeOpacity !== undefined ? resolve(layer.strokeOpacity, d, i) : undefined;
     const headSize = resolve(layer.headSize ?? DEFAULT_HEAD_SIZE, d, i);
 
-    const opacityStyle = strokeOpacity !== undefined ? ` opacity: ${strokeOpacity};` : "";
+    const opacityStyle = strokeOpacity !== undefined ? `opacity: ${strokeOpacity}; ` : "";
 
     const shaft = doc.createElementNS(SVG_NS, "line");
     shaft.setAttribute("x1", String(start[0]));
@@ -44,7 +53,13 @@ export function paintArrowsLayer<T>(
     shaft.setAttribute("x2", String(end[0]));
     shaft.setAttribute("y2", String(end[1]));
     shaft.setAttribute("data-pitchkit-mark", "arrow-shaft");
-    shaft.setAttribute("style", `stroke: ${stroke}; stroke-width: ${strokeWidth};${opacityStyle}`);
+    shaft.setAttribute(
+      "style",
+      `${stroke !== undefined ? `stroke: ${stroke}; ` : ""}stroke-width: ${strokeWidth}; ${opacityStyle}`.trim(),
+    );
+    if (layer.className) {
+      shaft.setAttribute("class", layer.className);
+    }
     group.appendChild(shaft);
 
     const [headPointA, headPointB] = computeArrowHeadCorners(start, end, headSize);
@@ -55,7 +70,13 @@ export function paintArrowsLayer<T>(
       `${end[0]},${end[1]} ${headPointA[0]},${headPointA[1]} ${headPointB[0]},${headPointB[1]}`,
     );
     head.setAttribute("data-pitchkit-mark", "arrow-head");
-    head.setAttribute("style", `fill: ${stroke};${opacityStyle}`);
+    head.setAttribute(
+      "style",
+      `${stroke !== undefined ? `fill: ${stroke}; ` : ""}${opacityStyle}`.trim(),
+    );
+    if (layer.className) {
+      head.setAttribute("class", layer.className);
+    }
     group.appendChild(head);
   });
 }

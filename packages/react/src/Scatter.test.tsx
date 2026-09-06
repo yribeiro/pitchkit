@@ -52,6 +52,47 @@ describe("Scatter", () => {
     expect((circle as SVGElement).style.stroke).toBe("blue");
   });
 
+  it("applies the className prop to the circle element", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Scatter data={[{ x: 10, y: 10 }]} x={(d) => d.x} y={(d) => d.y} className="my-mark" />
+      </Pitch>,
+    );
+
+    expect(container.querySelector('[data-pitchkit-mark="scatter"]')?.getAttribute("class")).toBe(
+      "my-mark",
+    );
+  });
+
+  it("omits the themed default fill/stroke inline style when className is set without fill/stroke, so a Tailwind class can take effect", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Scatter data={[{ x: 10, y: 10 }]} x={(d) => d.x} y={(d) => d.y} className="fill-red-500" />
+      </Pitch>,
+    );
+
+    const circle = container.querySelector('[data-pitchkit-mark="scatter"]') as SVGElement;
+    expect(circle.style.fill).toBe("");
+    expect(circle.style.stroke).toBe("");
+  });
+
+  it("still applies an explicit fill/stroke prop even when className is set", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Scatter
+          data={[{ x: 10, y: 10 }]}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          fill="red"
+          className="my-mark"
+        />
+      </Pitch>,
+    );
+
+    const circle = container.querySelector('[data-pitchkit-mark="scatter"]') as SVGElement;
+    expect(circle.style.fill).toBe("red");
+  });
+
   it("calls the tooltip accessor on hover and clears it on leave", () => {
     const tooltip = vi.fn((d: { x: number; y: number }) => `Point at ${d.x},${d.y}`);
     const { container, getByRole, queryByRole } = render(

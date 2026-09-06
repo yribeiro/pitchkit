@@ -29,6 +29,7 @@ export function Comet<T>({
   startWidth,
   endWidth,
   gradient,
+  className,
   tooltip,
 }: CometProps<T>) {
   const { transform, setTooltip } = usePitchContext();
@@ -39,12 +40,19 @@ export function Comet<T>({
       {data.map((d, i) => {
         const start = transform.toPixel([resolve(x, d, i), resolve(y, d, i)]);
         const end = transform.toPixel([resolve(x2, d, i), resolve(y2, d, i)]);
+        // `colorValue` always has a themed default — needed unconditionally
+        // for the gradient's `<stop>` colors below, which have no
+        // `className`-based equivalent. The *flat* (non-gradient) fill is
+        // the one that needs to back off that default when `className` is
+        // set, for the same inline-style-beats-class reason as Scatter's
+        // fill/stroke.
         const colorValue = resolve(color ?? DEFAULT_COLOR, d, i);
         const startWidthValue = resolve(startWidth ?? DEFAULT_START_WIDTH, d, i);
         const endWidthValue = resolve(endWidth ?? DEFAULT_END_WIDTH, d, i);
         const corners = computeCometQuad(start, end, startWidthValue, endWidthValue);
         const gradientId = `${baseId}-comet-${i}`;
-        const fill = gradient ? `url(#${gradientId})` : colorValue;
+        const flatFillValue = color !== undefined || !className ? colorValue : undefined;
+        const fill = gradient ? `url(#${gradientId})` : flatFillValue;
 
         return (
           <g
@@ -74,6 +82,7 @@ export function Comet<T>({
             <polygon
               points={corners.map(([px, py]) => `${px},${py}`).join(" ")}
               data-pitchkit-mark="comet"
+              className={className}
               style={{ fill, stroke: "none" }}
             />
           </g>

@@ -228,17 +228,36 @@ The theming model is **CSS variables only** — the same mechanism shadcn uses i
 }
 ```
 
-**Layer 2 — Tailwind `@theme inline`** maps tokens to utility classes at zero cost:
+**Layer 2 — Tailwind.** Resolved by [issue #7](https://github.com/yribeiro/pitchkit/issues/7)
+(see Milestone 1 progress notes and Appendix C.6 for the full writeup); superseded the
+`@theme inline` per-token-mapping sketch this section originally had, because marks and the
+pitch background need genuinely different mechanisms:
 
-```css
-@theme inline {
-  --color-pitch-surface: var(--pitch-surface);
-  --color-pitch-marker-primary: var(--pitch-marker-primary);
-  --color-pitch-marker-goal: var(--pitch-marker-goal);
-}
-```
-
-SVG marks can now use `className="fill-pitch-marker-goal"` exactly like any other shadcn component. HTML chrome (tooltips, legends) uses normal shadcn classes like `text-muted-foreground`.
+- **Marks you render yourself** (`<Scatter>`/`<Arrows>`/`<Comet>`/`<Annotate>`) take a
+  `className` prop, forwarded straight onto the SVG element(s). The one non-obvious part: a
+  mark's themed default colour (e.g. `fill: var(--pitch-marker-primary)`) is applied as an
+  inline `style`, and inline style always wins over a class at the same CSS property — so a
+  mark only omits that default, letting a `fill-*`/`stroke-*` utility take effect, when
+  `className` is set _and_ the corresponding accessor prop (`fill`/`stroke`/`color`) is
+  absent. Pass an explicit accessor prop and it still always wins over `className`, same as
+  before.
+- **Marks you don't own the JSX for** (e.g. inside a future shadcn recipe wrapping
+  `<Pitch>`) fall back to the `data-pitchkit-mark`/`data-pitchkit-layer`/`data-pitchkit-part`
+  attributes every element already carries, via Tailwind's arbitrary-variant selectors —
+  `className="[&_[data-pitchkit-mark=scatter]]:fill-cyan-400!"` on a wrapping element. The
+  trailing `!` (Tailwind v4's important modifier) is required here specifically because those
+  marks never got a `className`, so nothing signalled them to back off their inline default.
+- **The pitch background** (outline/stripes/lines — `PitchGeometryShapes`, not a mark) is
+  deliberately restyled only via the `--pitch-*` CSS variables, never via `className` on the
+  shapes directly (see `core/theme/part-style.ts`'s doc comment). Two ways to set those
+  variables with Tailwind: the zero-setup arbitrary-property syntax
+  (`className="[--pitch-surface:var(--color-emerald-800)]"`), or an installable `@utility`
+  recipe — `pitch-surface-*`/`pitch-stripe-*`/`pitch-lines-*` via
+  `--value(--color-*)` — that turns the variables into first-class utilities reading any
+  colour already in the project's Tailwind theme. `--pitch-line-width` (stroke width,
+  default `1.5`) gets the same recipe shape, but validates a bare/arbitrary number
+  (`--value(number, [number])`) instead, since Tailwind has no rich preset colour-style scale
+  for stroke width to borrow from.
 
 **Layer 3 — Canvas reads the same vars at draw time:**
 
@@ -267,7 +286,8 @@ fill={d => d.shot.outcome.name === 'Goal'
   : 'var(--pitch-marker-miss)'}
 ```
 
-**Resolution order per visual property:** accessor prop → explicit static prop → CSS variable default → library built-in.
+**Resolution order per visual property:** accessor prop → explicit static prop → `className`
+utility (only if no accessor/static prop given) → CSS variable default → library built-in.
 
 **Token discoverability — the only TS in the theming layer:**
 
@@ -276,6 +296,7 @@ export const pitchTokens = {
   surface: "--pitch-surface",
   stripe: "--pitch-stripe",
   lines: "--pitch-lines",
+  lineWidth: "--pitch-line-width",
   markerPrimary: "--pitch-marker-primary",
   markerGoal: "--pitch-marker-goal",
   markerMiss: "--pitch-marker-miss",
@@ -377,11 +398,20 @@ npx shadcn add @pitchkit/theme-broadcast
       surface now that `@pitchkit/react` re-emits its own JSX rather than calling them —
       their only remaining first-party consumer is the vanilla-JS `packages/core/examples/index.html`
       harness.
-- [ ] [Issue #7](https://github.com/yribeiro/pitchkit/issues/7): design how Tailwind
-      integrates with `@pitchkit/react` — `<Scatter>`/`<Arrows>`/`<Annotate>`/`<Comet>` marks
-      don't currently accept a `className`, so there's no way to hand them Tailwind utilities
-      the way `<Heatmap>` already allows. Needs resolving before the shadcn showcase site can
-      credibly demonstrate Tailwind usage.
+- [x] [Issue #7](https://github.com/yribeiro/pitchkit/issues/7): resolved — Tailwind
+      integrates via four mechanisms rather than one (see §8.7 and Appendix C.6 for the full
+      writeup): (1) `className` on `<Scatter>`/`<Arrows>`/`<Comet>` (`<Annotate>` already had
+      it), which now back off their themed default `fill`/`stroke` when `className` is set
+      and no explicit colour prop is given — inline style otherwise always beats a class,
+      which the original issue didn't anticipate; (2) the existing
+      `data-pitchkit-mark`/`-layer`/`-part` attributes as the escape hatch for marks whose
+      JSX you don't own, via Tailwind arbitrary-variant selectors with the `!` important
+      modifier; (3) a `pitch-surface-*`/`pitch-stripe-*`/`pitch-lines-*` `@utility` recipe
+      (`--value(--color-*)`) for the pitch background, which isn't a mark and was never in
+      scope for `className`; (4) `pitch-line-width-*` (bare/arbitrary number — no colour-style
+      palette to borrow from). Implemented and manually verified end-to-end in
+      `examples/react-nextjs/` (`TailwindPanel.tsx` + `globals.css`) on branch
+      `design-tailwind-integration`, not yet committed/merged as of this writing.
 
 **Progress notes for the next agent (as of 2026-06-30):**
 
@@ -483,6 +513,41 @@ npx shadcn add @pitchkit/theme-broadcast
   and via `next build`'s static prerender succeeding). Wired into `.claude/launch.json` as
   `react-nextjs-example`, port 3000 (`npm run dev -- --hostname 0.0.0.0` from
   `examples/react-nextjs`).
+- **Issue #7 (Tailwind integration), resolved on branch `design-tailwind-integration`
+  (2026-09-06), not yet committed/merged as of this writing.** Core finding, worth knowing
+  before touching any mark's styling again: `<Scatter>`/`<Arrows>`/`<Comet>` always applied
+  their themed default `fill`/`stroke` as an inline `style`, even when the corresponding
+  accessor prop was never passed — and inline style unconditionally beats a CSS class at the
+  same property, so simply adding a `className` prop (the issue's naive framing) would have
+  done nothing for colour. Fix: `fill`/`stroke`/`color` now resolve to `undefined` (omitted
+  from `style` entirely) when `className` is set _and_ the accessor prop is absent, letting a
+  Tailwind class apply; an explicit accessor prop still always wins over `className`, same as
+  before. `<Annotate>` already had `className` (and didn't have this bug, since it has no
+  themed default colour to conflict with) — that's the pattern the fix generalises to the
+  other three. Changes: `core/scene/types.ts` (`className?: string` added to
+  `ScatterLayer`/`ArrowsLayer`/`CometLayer`), the three `render/svg/paint-*.ts` painters
+  (forward `className` as the `class` attribute — vanilla-DOM consumers get this too, not
+  just React), and `react/{Scatter,Arrows,Comet}.tsx` (forward `className` + the
+  default-backoff logic). `Arrows` applies one `className` to both the shaft and the head
+  (single visual unit, one class). Test coverage added at both layers mirroring `Annotate`'s
+  existing pattern, plus new tests specifically locking in the backoff behaviour (e.g.
+  `Scatter.test.tsx`'s "omits the themed default fill/stroke inline style when className is
+  set without fill/stroke" case) — 213 tests passing, core still at 100% coverage. Second,
+  independent mechanism (not a code change): every element already carries
+  `data-pitchkit-mark`/`data-pitchkit-layer`/`data-pitchkit-part`, usable via Tailwind
+  arbitrary-variant selectors for marks whose JSX isn't yours to edit — this needs the `!`
+  important modifier, since those marks never got a `className` to signal the backoff. Third
+  and fourth mechanisms are pitch-background theming, not marks at all — see §8.7. All four
+  demonstrated together in a new `examples/react-nextjs/app/TailwindPanel.tsx`, added
+  alongside wiring Tailwind v4 into that example for the first time (`postcss.config.mjs`,
+  `@import "tailwindcss"` in `globals.css`, `@utility` recipe block) — confirmed coexisting
+  cleanly with the example's existing plain CSS and `--pitch-*` `:root` theme, and confirmed
+  live via `next build` + the dev server, not just unit tests. One environment-specific
+  gotcha hit while building this: after rebuilding `@pitchkit/core`/`@pitchkit/react` (`tsup`)
+  mid-session, the Next.js dev server kept serving the stale `dist/` output through its own
+  bundler cache — a plain page reload wasn't enough; restarting the dev server (`preview_stop`
+  + `preview_start`) was required to pick up the rebuilt workspace packages, same category of
+  issue as the Vite pre-bundling gotcha already documented above.
 - Remaining Milestone 1 scope (docs site skeleton + shadcn showcase website) is all outside
   `@pitchkit/core`/`@pitchkit/react` and was deliberately deferred to a follow-up plan, not
   started. Publishing (npm publish, repo hygiene, Changesets, deploying the docs site) was
@@ -719,11 +784,72 @@ export function PrintShotMap({ shots }: { shots: Shot[] }) {
 
 No prop drilling. No re-render. No provider.
 
-### C.6 The developer mental model
+### C.6 Tailwind styling
 
-Four things to hold in your head — that's all:
+Resolved by [issue #7](https://github.com/yribeiro/pitchkit/issues/7) (see §8.7 for the
+technical writeup). Four mechanisms, because marks and the pitch background need genuinely
+different answers — pick the one that matches what you own:
+
+**1. `className` on a mark you render yourself** — the direct replacement for `fill`/`stroke`,
+not an addition to them:
+
+```typescript
+<Scatter
+  data={shots}
+  x={d => d.location[0]}
+  y={d => d.location[1]}
+  className="fill-emerald-400 stroke-white hover:fill-emerald-200"
+/>
+```
+
+Don't pass `fill`/`stroke` alongside a colour-setting class — whichever visual prop you _do_
+pass always wins over `className` (it's applied as inline style, and inline style always
+beats a class at the same CSS property). Omit the prop entirely to hand that property to
+Tailwind.
+
+**2. A `data-pitchkit-*` attribute selector, for a mark whose JSX you don't own** — e.g. inside
+a shadcn recipe wrapping `<Pitch>`. Every mark already carries
+`data-pitchkit-mark`/`data-pitchkit-layer`/`data-pitchkit-part`, with zero code changes
+required:
+
+```typescript
+<div className="[&_[data-pitchkit-mark=scatter]]:fill-cyan-400!">
+  <ShotMap shots={shots} />
+</div>
+```
+
+The trailing `!` (Tailwind's important modifier) is required here — unlike mechanism 1, there
+was no `className` on that mark to signal it should back off its own themed default, so an
+ordinary class can't out-rank the inline style it still carries.
+
+**3. The pitch background itself isn't a mark** — `--pitch-surface`/`--pitch-stripe`/
+`--pitch-lines` are CSS variables, restyled the same way with or without Tailwind in the
+picture. Zero-setup, using Tailwind's arbitrary-property syntax:
+
+```typescript
+<Pitch type="statsbomb" className="[--pitch-surface:var(--color-emerald-950)]" />
+```
+
+Or install a small `@utility` recipe once (`pitch-surface-*`/`pitch-stripe-*`/
+`pitch-lines-*`, via `--value(--color-*)`) for the nicer, autocompletable spelling:
+
+```typescript
+<Pitch type="statsbomb" className="pitch-surface-emerald-950 pitch-stripe-emerald-800" />
+```
+
+**4. `--pitch-line-width`** (stroke width, default `1.5`) gets the same recipe shape as
+mechanism 3, but validates a bare/arbitrary number (`--value(number, [number])`) rather than
+looking one up in the theme — Tailwind has no rich preset scale for stroke width the way it
+does for colour, so `pitch-line-width-4` and `[--pitch-line-width:4]` are equally reasonable.
+
+All four demonstrated together in `examples/react-nextjs/app/TailwindPanel.tsx`.
+
+### C.7 The developer mental model
+
+Five things to hold in your head — that's all:
 
 1. **`<Pitch>` = the container that owns the coordinate system.** Declare the provider via `type`.
 2. **Children = layers, stacked in render order.** `<Scatter>`, `<Arrows>`, `<Heatmap>` — composable like HTML elements.
 3. **Accessors = how your data maps to visuals.** Always a typed function of the datum: `x={d => d.location[0]}`.
 4. **Colours = CSS variables.** Defined once in `globals.css`, dark mode for free, override per-chart with a wrapper div.
+5. **Tailwind reaches marks two ways, the background a third.** `className` on marks you own, a `data-pitchkit-*` selector on marks you don't, `@utility` recipes for the CSS-variable-driven background — never fight the inline style, hand it the property instead (§C.6).

@@ -89,6 +89,21 @@ describe("paintScatterLayer", () => {
     expect(circle?.getAttribute("style")).toContain("var(--pitch-marker-primary");
   });
 
+  it("applies className when provided", () => {
+    const svg = makeSvg();
+    const layer: ScatterLayer<Datum> = {
+      type: "scatter",
+      data: [{ x: 10, y: 10 }],
+      x: (d) => d.x,
+      y: (d) => d.y,
+      className: "demo-mark",
+    };
+    paintScatterLayer(svg, document, layer, makeTransform());
+
+    const circle = svg.querySelector('[data-pitchkit-mark="scatter"]');
+    expect(circle?.getAttribute("class")).toBe("demo-mark");
+  });
+
   it("wraps marks in a g[data-pitchkit-layer='scatter']", () => {
     const svg = makeSvg();
     const layer: ScatterLayer<Datum> = {

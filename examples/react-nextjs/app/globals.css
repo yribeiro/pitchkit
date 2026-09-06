@@ -1,3 +1,40 @@
+@import "tailwindcss";
+
+/*
+ * Issue #7 (Tailwind integration): turns pitchkit's `--pitch-*` theme
+ * variables into first-class Tailwind utilities, e.g.
+ * `className="pitch-surface-emerald-800"`. This is the "shadcn add"-style
+ * recipe — ship this block once, and every `--color-*` in the project's
+ * Tailwind theme (built-in or custom, via @theme) becomes usable directly
+ * against pitchkit's variables, with none of pitchkit's own code touched.
+ *
+ * Without this block, `--pitch-surface`/`--pitch-stripe`/`--pitch-lines`
+ * can still be set via Tailwind's own arbitrary-property syntax —
+ * `className="[--pitch-surface:var(--color-emerald-800)]"` — with zero
+ * setup. That always works; these utilities are the nicer-to-read,
+ * install-once alternative on top of it.
+ */
+@utility pitch-surface-* {
+  --pitch-surface: --value(--color-*);
+}
+@utility pitch-stripe-* {
+  --pitch-stripe: --value(--color-*);
+}
+@utility pitch-lines-* {
+  --pitch-lines: --value(--color-*);
+}
+/*
+ * Unlike color, Tailwind has no rich named scale to borrow for stroke width
+ * — its own `stroke-1`/`stroke-2` are just bare numbers, not a `--*`
+ * namespace of presets. So this utility validates its own bare/arbitrary
+ * number rather than looking one up in the theme: `pitch-line-width-2`
+ * (bare) or `pitch-line-width-[1.75]` (arbitrary), both via the same
+ * `--value()` call.
+ */
+@utility pitch-line-width-* {
+  --pitch-line-width: --value(number, [number]);
+}
+
 :root {
   color-scheme: dark;
 

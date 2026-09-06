@@ -57,6 +57,23 @@ describe("Annotate", () => {
     );
   });
 
+  it("omits the themed default fill inline style when className is set, so a Tailwind class can take effect", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Annotate
+          data={[{ x: 10, y: 10 }]}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          label={() => "A"}
+          className="fill-red-500"
+        />
+      </Pitch>,
+    );
+
+    const text = container.querySelector('[data-pitchkit-mark="annotate"]') as SVGElement;
+    expect(text.style.fill).toBe("");
+  });
+
   it("shows a tooltip on hover", () => {
     const tooltip = vi.fn(() => "tip");
     const { container, getByRole } = render(
