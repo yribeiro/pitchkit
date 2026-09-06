@@ -1,0 +1,16 @@
+---
+title: Flow
+description: Pass/movement data binned by direction and volume, drawn as sized/colored arrows.
+---
+
+<PitchPreview name="flow-basic" />
+
+## Usage
+
+`<Flow>` takes `x`/`y` (start) and `x2`/`y2` (end) accessors per datum, bins them by start
+location into a `binsX` x `binsY` grid, and draws one arrow per occupied bin — from the
+bin's center toward the mean end point, colored and sized by that bin's pass volume.
+
+```tsx
+<Flow data={passes} x={(p) => p.from.x} y={(p) => p.from.y} x2={(p) => p.to.x} y2={(p) => p.to.y} binsX={8} binsY={6} />
+```

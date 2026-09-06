@@ -124,6 +124,101 @@ export type Layer =
   ScatterLayer<any> | AnnotateLayer<any> | ArrowsLayer<any> | CometLayer<any> | HeatmapLayer<any>;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
+/**
+ * Geometric overlay layers (issue #20): flow, polygon, convex hull, Voronoi,
+ * goal angle. These follow the same shape convention as every layer above
+ * (`data`, accessor props, optional `className`) but are **not** members of
+ * the `Layer` union below — per issue #6's resolution, new marks ship
+ * React-only with no core SVG/Canvas painter, so there's no renderer here
+ * that would ever switch on their `type`. They're exported standalone for
+ * `@pitchkit/react`'s components to build their prop types from
+ * (`Omit<PolygonLayer<T>, "type">`, etc.), the same way `Comet`/`Annotate`
+ * do for their own (painter-backed) layer types.
+ */
+
+/** An arbitrary closed shape: one polygon per datum, from a list of vertices in provider coordinates. */
+export interface PolygonLayer<T = unknown> {
+  readonly type: "polygon";
+  readonly data: readonly T[];
+  readonly points: Accessor<T, ReadonlyArray<readonly [number, number]>>;
+  readonly fill?: Accessor<T, string>;
+  readonly fillOpacity?: Accessor<T, number>;
+  readonly stroke?: Accessor<T, string>;
+  readonly strokeWidth?: Accessor<T, number>;
+  /** Applied as every polygon's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
+}
+
+/** The convex hull of a point set (e.g. a player's touches), rendered as a single filled polygon. */
+export interface ConvexHullLayer<T = unknown> {
+  readonly type: "convexHull";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  readonly fill?: string;
+  readonly fillOpacity?: number;
+  readonly stroke?: string;
+  readonly strokeWidth?: number;
+  /** Applied as the resulting polygon's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
+}
+
+/** Voronoi tessellation over a point set (e.g. player positions), clipped to the pitch outline. */
+export interface VoronoiLayer<T = unknown> {
+  readonly type: "voronoi";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  readonly fill?: Accessor<T, string>;
+  readonly fillOpacity?: Accessor<T, number>;
+  readonly stroke?: Accessor<T, string>;
+  readonly strokeWidth?: Accessor<T, number>;
+  /** Applied as every cell's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
+}
+
+/** The angle subtended at each point by a goal mouth, rendered as a wedge from the point to both posts. */
+export interface GoalAngleLayer<T = unknown> {
+  readonly type: "goalAngle";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  /** Which goal to measure against; `"nearest"` (the default) picks by distance. */
+  readonly goal?: Accessor<T, "left" | "right" | "nearest">;
+  readonly fill?: Accessor<T, string>;
+  readonly fillOpacity?: Accessor<T, number>;
+  readonly stroke?: Accessor<T, string>;
+  readonly strokeWidth?: Accessor<T, number>;
+  /** Applied as every wedge's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
+}
+
+/**
+ * Aggregated movement/pass data, binned by start location into a grid and
+ * rendered as one arrow per occupied bin, sized/colored by that bin's
+ * volume (mplsoccer's `flow`).
+ */
+export interface FlowLayer<T = unknown> {
+  readonly type: "flow";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  readonly x2: Accessor<T, number>;
+  readonly y2: Accessor<T, number>;
+  readonly binsX?: number;
+  readonly binsY?: number;
+  /** Color at the lowest bin count in the layer's data. */
+  readonly colorMin?: string;
+  /** Color at the highest bin count in the layer's data. */
+  readonly colorMax?: string;
+  /** Arrow stroke width at the lowest bin count. */
+  readonly strokeWidthMin?: number;
+  /** Arrow stroke width at the highest bin count. */
+  readonly strokeWidthMax?: number;
+  /** Applied as every arrow's `class` attribute; styling escape hatch (PRD §8.7). */
+  readonly className?: string;
+}
+
 /** How many vertical grass stripes to paint; `true` picks a sensible default. */
 export type PitchStripes = boolean | number;
 

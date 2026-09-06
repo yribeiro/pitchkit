@@ -1,0 +1,21 @@
+---
+title: Voronoi
+description: Voronoi tessellation over a point set, clipped to the pitch — good for coverage/space.
+---
+
+<PitchPreview name="voronoi-basic" />
+
+## Usage
+
+`<Voronoi>` takes `x`/`y` accessors per datum (one site per datum) and renders one cell per
+datum, clipped to the pitch outline. `fill`/`stroke`/etc. accept per-datum accessors, so
+opposing teams can be colored differently by keying off a field on the datum.
+
+```tsx
+<Voronoi
+  data={players}
+  x={(p) => p.x}
+  y={(p) => p.y}
+  fill={(p) => (p.team === "home" ? "#3b82f6" : "#f97316")}
+/>
+```

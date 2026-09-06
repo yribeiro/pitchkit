@@ -66,6 +66,27 @@ describe("Pitch", () => {
     expect(outline?.getAttribute("height")).toBe("600");
   });
 
+  it("an explicit-size half-pitch crop matching that aspect ratio has no letterbox offset", () => {
+    // 300x400 matches the half-crop's own aspect (60x80 provider units), so
+    // there's no contain-fit margin for the other half's markings to leak
+    // into — the crop's near edge (x0=60) should land exactly at pixel x=0.
+    const { container } = render(
+      <Pitch
+        type="statsbomb"
+        width={300}
+        height={400}
+        crop={{ x0: 60, y0: 0, x1: 120, y1: 80 }}
+      />,
+    );
+    const outline = container.querySelector('[data-pitchkit-part="outline"]');
+    // The full outline still spans provider x=[0,120] (unclipped, relying on
+    // the SVG's own viewBox clipping) — its far (x=120) edge lands exactly
+    // on the container's right edge, its near (x=0, off-crop) edge lands
+    // exactly one container-width to the left, outside the visible viewBox.
+    expect(outline?.getAttribute("x")).toBe("-300");
+    expect(outline?.getAttribute("width")).toBe("600");
+  });
+
   it("renders children (layer components) inside the svg", () => {
     const { container } = render(
       <Pitch type="statsbomb" width={600} height={400}>
@@ -110,6 +131,22 @@ describe("Pitch responsive sizing (no explicit width/height)", () => {
     const [, , w, h] = viewBox?.split(" ").map(Number) ?? [];
     // statsbomb aspect = 120/80 = 1.5
     expect((w ?? 0) / (h ?? 1)).toBeCloseTo(1.5, 5);
+  });
+
+  it("VerticalPitch's fallback aspect matches a half-pitch crop, not the full pitch", () => {
+    vi.stubGlobal("ResizeObserver", MockResizeObserver);
+    const { container } = render(
+      <VerticalPitch type="statsbomb" crop={{ x0: 60, y0: 0, x1: 120, y1: 80 }} />,
+    );
+
+    const svg = container.querySelector("svg");
+    const viewBox = svg?.getAttribute("viewBox");
+    const [, , w, h] = viewBox?.split(" ").map(Number) ?? [];
+    // Cropped extent vertical aspect = width(80) / half-length(60) = 4/3, not
+    // the full-pitch vertical aspect of 80/120 = 2/3 — the bug this guards
+    // against sized the fallback box for the full pitch, leaving room for
+    // the other half's markings to bleed into the extra space.
+    expect((w ?? 0) / (h ?? 1)).toBeCloseTo(4 / 3, 5);
   });
 
   it("updates the viewBox once ResizeObserver reports a measured size", () => {

@@ -1,6 +1,18 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import { Arrows, Heatmap, Pitch, Scatter } from "@pitchkit/react";
+import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
+import {
+  Arrows,
+  ConvexHull,
+  Flow,
+  GoalAngle,
+  Heatmap,
+  Pitch,
+  Polygon,
+  Scatter,
+  VerticalPitch,
+  Voronoi,
+} from "@pitchkit/react";
 
 /** React's CSSProperties has no index signature for custom properties. */
 type CSSVars = CSSProperties & Record<`--${string}`, string>;
@@ -46,6 +58,61 @@ const shots: Shot[] = [
   { x: 65, y: 35 },
 ];
 
+// Touch map for the convex hull / Voronoi sections below.
+const touches: Player[] = [
+  { name: "P1", x: 30, y: 15 },
+  { name: "P2", x: 55, y: 10 },
+  { name: "P3", x: 75, y: 25 },
+  { name: "P4", x: 80, y: 55 },
+  { name: "P5", x: 60, y: 68 },
+  { name: "P6", x: 35, y: 60 },
+  { name: "P7", x: 55, y: 38 }, // interior, excluded from the hull
+];
+
+// A denser pass cluster for the flow diagram, upfield-moving.
+const flowPasses = [
+  { from: { x: 20, y: 40 }, to: { x: 45, y: 35 } },
+  { from: { x: 22, y: 42 }, to: { x: 48, y: 38 } },
+  { from: { x: 18, y: 38 }, to: { x: 42, y: 30 } },
+  { from: { x: 60, y: 30 }, to: { x: 85, y: 25 } },
+  { from: { x: 62, y: 32 }, to: { x: 88, y: 22 } },
+  { from: { x: 95, y: 60 }, to: { x: 105, y: 45 } },
+  { from: { x: 30, y: 65 }, to: { x: 55, y: 60 } },
+];
+
+const highlightZone = [
+  {
+    vertices: [
+      [80, 18],
+      [120, 18],
+      [120, 62],
+      [80, 62],
+    ] as const,
+  },
+];
+
+const statsbombDimensions = getPitchDimensions("statsbomb");
+
+type Team = "home" | "away";
+interface TeamPlayer extends Player {
+  team: Team;
+}
+const TEAM_COLOR: Record<Team, string> = { home: "#3b82f6", away: "#f97316" };
+
+// Two opposing back lines, so Voronoi cells read as which team controls
+// which space rather than one undifferentiated mesh.
+const teamPlayers: TeamPlayer[] = [
+  { name: "LB", team: "home", x: 40, y: 15 },
+  { name: "CB", team: "home", x: 35, y: 35 },
+  { name: "CB", team: "home", x: 35, y: 55 },
+  { name: "RB", team: "home", x: 40, y: 70 },
+  { name: "LB", team: "away", x: 80, y: 15 },
+  { name: "CB", team: "away", x: 85, y: 35 },
+  { name: "CB", team: "away", x: 85, y: 55 },
+  { name: "RB", team: "away", x: 80, y: 70 },
+];
+
+type GoalSide = "nearest" | "left" | "right";
 type GoalType = "line" | "box";
 
 // Selectable heatmap colormaps. "pearlEarring" and "flamingo" are ported
@@ -69,6 +136,10 @@ const DEFAULT_CONTROLS = {
   stripeCount: 12,
   goalType: "box" as GoalType,
   heatmapColormap: "default" as HeatmapColormapKey,
+  goalAngleSide: "nearest" as GoalSide,
+  flowBinsX: 8,
+  flowBinsY: 6,
+  polygonOpacity: 0.35,
 };
 
 /** "#rrggbb" + 0-1 opacity -> "rgba(r, g, b, a)", for compositing into a CSS var. */
@@ -147,6 +218,10 @@ export function App() {
   const [heatmapColormap, setHeatmapColormap] = useState<HeatmapColormapKey>(
     DEFAULT_CONTROLS.heatmapColormap,
   );
+  const [goalAngleSide, setGoalAngleSide] = useState<GoalSide>(DEFAULT_CONTROLS.goalAngleSide);
+  const [flowBinsX, setFlowBinsX] = useState(DEFAULT_CONTROLS.flowBinsX);
+  const [flowBinsY, setFlowBinsY] = useState(DEFAULT_CONTROLS.flowBinsY);
+  const [polygonOpacity, setPolygonOpacity] = useState(DEFAULT_CONTROLS.polygonOpacity);
 
   function resetControls() {
     setSurface(DEFAULT_CONTROLS.surface);
@@ -158,6 +233,10 @@ export function App() {
     setStripeCount(DEFAULT_CONTROLS.stripeCount);
     setGoalType(DEFAULT_CONTROLS.goalType);
     setHeatmapColormap(DEFAULT_CONTROLS.heatmapColormap);
+    setGoalAngleSide(DEFAULT_CONTROLS.goalAngleSide);
+    setFlowBinsX(DEFAULT_CONTROLS.flowBinsX);
+    setFlowBinsY(DEFAULT_CONTROLS.flowBinsY);
+    setPolygonOpacity(DEFAULT_CONTROLS.polygonOpacity);
   }
 
   // Stripes/goalType are baked into the SVG shapes at paint time (not CSS),
@@ -281,6 +360,50 @@ export function App() {
             <option value="flamingo">flamingo</option>
           </select>
         </label>
+        <label style={fieldStyle}>
+          Goal angle side
+          <select
+            style={selectStyle}
+            value={goalAngleSide}
+            onChange={(e) => setGoalAngleSide(e.target.value as GoalSide)}
+          >
+            <option value="nearest">nearest</option>
+            <option value="left">left</option>
+            <option value="right">right</option>
+          </select>
+        </label>
+        <label style={fieldStyle}>
+          Flow bins
+          <input
+            type="number"
+            style={numberInputStyle}
+            min={2}
+            max={16}
+            value={flowBinsX}
+            onChange={(e) => setFlowBinsX(Number(e.target.value))}
+          />
+          x
+          <input
+            type="number"
+            style={numberInputStyle}
+            min={2}
+            max={16}
+            value={flowBinsY}
+            onChange={(e) => setFlowBinsY(Number(e.target.value))}
+          />
+        </label>
+        <label style={fieldStyle}>
+          Zone opacity
+          <input
+            type="range"
+            style={rangeInputStyle}
+            min={0}
+            max={1}
+            step={0.05}
+            value={polygonOpacity}
+            onChange={(e) => setPolygonOpacity(Number(e.target.value))}
+          />
+        </label>
         <button type="button" style={buttonStyle} onClick={resetControls}>
           Reset
         </button>
@@ -345,6 +468,109 @@ export function App() {
               fillOpacity={0.7}
             />
           </Pitch>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: "0.85rem", color: "#999", textTransform: "uppercase" }}>
+            Convex Hull + Scatter
+          </h2>
+          <p style={{ fontSize: "0.75rem", color: "#777" }}>
+            One filled polygon around a touch map's outermost points.
+          </p>
+          <div style={{ width: "100%", maxWidth: 500 }}>
+            <Pitch type="statsbomb" appearance={appearance}>
+              <ConvexHull data={touches} x={(t) => t.x} y={(t) => t.y} />
+              <Scatter data={touches} x={(t) => t.x} y={(t) => t.y} r={3} tooltip={(t) => t.name} />
+            </Pitch>
+          </div>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: "0.85rem", color: "#999", textTransform: "uppercase" }}>
+            Voronoi + Scatter
+          </h2>
+          <p style={{ fontSize: "0.75rem", color: "#777" }}>
+            One cell per player, clipped to the pitch outline, colored per team. Hover a cell.
+          </p>
+          <div style={{ width: "100%", maxWidth: 500 }}>
+            <Pitch type="statsbomb" appearance={appearance}>
+              <Voronoi
+                data={teamPlayers}
+                x={(p) => p.x}
+                y={(p) => p.y}
+                fill={(p) => TEAM_COLOR[p.team]}
+                tooltip={(p) => `${p.team} ${p.name}`}
+              />
+              <Scatter
+                data={teamPlayers}
+                x={(p) => p.x}
+                y={(p) => p.y}
+                r={4}
+                stroke="white"
+                strokeWidth={1.5}
+              />
+            </Pitch>
+          </div>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: "0.85rem", color: "#999", textTransform: "uppercase" }}>
+            Goal Angle + Scatter
+          </h2>
+          <p style={{ fontSize: "0.75rem", color: "#777" }}>
+            Wedge from each shot to both goalposts. Use the "Goal angle side" control above.
+          </p>
+          <div style={{ width: "100%", maxWidth: 500 }}>
+            <Pitch type="statsbomb" appearance={appearance}>
+              <GoalAngle data={shots} x={(s) => s.x} y={(s) => s.y} goal={goalAngleSide} />
+              <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={2} fill="white" />
+            </Pitch>
+          </div>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: "0.85rem", color: "#999", textTransform: "uppercase" }}>
+            Flow diagram
+          </h2>
+          <p style={{ fontSize: "0.75rem", color: "#777" }}>
+            One arrow per occupied bin, colored/sized by volume. Use the "Flow bins" control above.
+          </p>
+          <div style={{ width: "100%", maxWidth: 500 }}>
+            <Pitch type="statsbomb" appearance={appearance}>
+              <Flow
+                data={flowPasses}
+                x={(p) => p.from.x}
+                y={(p) => p.from.y}
+                x2={(p) => p.to.x}
+                y2={(p) => p.to.y}
+                binsX={flowBinsX}
+                binsY={flowBinsY}
+              />
+            </Pitch>
+          </div>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: "0.85rem", color: "#999", textTransform: "uppercase" }}>
+            Polygon
+          </h2>
+          <p style={{ fontSize: "0.75rem", color: "#777" }}>
+            A static highlighted zone, cropped to the attacking half and rotated vertical. Use
+            the "Zone opacity" control above.
+          </p>
+          <div style={{ width: "100%", maxWidth: 250 }}>
+            <VerticalPitch
+              type="statsbomb"
+              appearance={appearance}
+              crop={cropForHalf(statsbombDimensions)}
+            >
+              <Polygon
+                data={highlightZone}
+                points={(z) => z.vertices}
+                fillOpacity={polygonOpacity}
+              />
+            </VerticalPitch>
+          </div>
         </section>
       </div>
     </div>

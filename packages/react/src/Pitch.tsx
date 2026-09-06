@@ -63,10 +63,18 @@ export function Pitch({
 
   const isExplicitSize = explicitWidth !== undefined && explicitHeight !== undefined;
 
-  const pitchAspect =
-    orientation === "vertical"
-      ? dimensions.width / dimensions.length
-      : dimensions.length / dimensions.width;
+  // The container's aspect ratio must match what's actually being shown —
+  // the cropped extent, not the full pitch — otherwise a half-pitch crop
+  // renders inside a box sized for the whole pitch, leaving room for the
+  // other half's markings (which the transform maps just outside the
+  // crop, but not outside the oversized container) to bleed into view.
+  // `crop`'s x0/x1/y0/y1 are already in the provider's own units (same
+  // space as `dimensions.length`/`width`), and x never gets axis-swapped
+  // by yDirection (see `canonical.ts`), so a plain abs-difference gives
+  // the right extent without needing the canonical-frame conversion.
+  const cropExtentX = crop ? Math.abs(crop.x1 - crop.x0) : dimensions.length;
+  const cropExtentY = crop ? Math.abs(crop.y1 - crop.y0) : dimensions.width;
+  const pitchAspect = orientation === "vertical" ? cropExtentY / cropExtentX : cropExtentX / cropExtentY;
   const fallbackSize = { width: NOMINAL_WIDTH, height: Math.round(NOMINAL_WIDTH / pitchAspect) };
 
   const size = isExplicitSize

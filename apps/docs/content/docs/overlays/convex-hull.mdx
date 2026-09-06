@@ -1,0 +1,15 @@
+---
+title: Convex Hull
+description: The convex hull of a point set, rendered as a filled polygon — good for touch maps.
+---
+
+<PitchPreview name="convex-hull-basic" />
+
+## Usage
+
+`<ConvexHull>` takes `x`/`y` accessors per datum (one point per datum, like `<Scatter>`) and
+renders a single filled polygon around the outermost points.
+
+```tsx
+<ConvexHull data={touches} x={(t) => t.x} y={(t) => t.y} />
+```
