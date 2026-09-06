@@ -1,0 +1,72 @@
+---
+title: Theming
+description: CSS variables only — set once, dark mode for free, override per chart.
+---
+
+PitchKit's theming is **CSS variables only** — the same mechanism shadcn/ui uses internally.
+There are no JS theme objects and no per-instance colour props to thread through: set a
+variable once in your global stylesheet and every `<Pitch>` picks it up through the cascade.
+
+## The variables
+
+| Variable | Controls | Default |
+| --- | --- | --- |
+| `--pitch-surface` | Grass fill | `#1a472a` |
+| `--pitch-stripe` | Mow-stripe overlay | `rgba(255, 255, 255, 0.04)` |
+| `--pitch-lines` | Pitch markings (lines, circles, boxes) | `rgba(255, 255, 255, 0.8)` |
+| `--pitch-line-width` | Marking stroke width | `1.5` |
+| `--pitch-marker-primary` | Default mark colour (`<Scatter>`, `<Arrows>`, `<Comet>`…) | `#3b82f6` |
+
+```css
+/* globals.css */
+:root {
+  --pitch-surface: #1a472a;
+  --pitch-lines: rgba(255, 255, 255, 0.8);
+  --pitch-marker-primary: #3b82f6;
+}
+```
+
+Every variable has a built-in fallback, so nothing is required — an unthemed `<Pitch>`
+still renders sensibly.
+
+## Dark mode
+
+Because it's plain CSS, dark mode is a second override behind whatever convention your app
+already uses — a class, a media query, a `data-theme` attribute:
+
+```css
+.dark {
+  --pitch-surface: #0b1712;
+  --pitch-lines: rgba(255, 255, 255, 0.35);
+}
+```
+
+No PitchKit configuration involved. This site's own examples work exactly this way.
+
+## Per-chart overrides
+
+Variables cascade, so scoping an override to one chart is just a wrapper element:
+
+```tsx
+<div style={{ "--pitch-surface": "#101418" } as React.CSSProperties}>
+  <Pitch type="statsbomb">{/* this one renders dark */}</Pitch>
+</div>
+```
+
+## Structure vs colour
+
+The `appearance` prop is deliberately separate from theming: it toggles which *shapes* get
+painted (grass stripes, goal style), never colours.
+
+```tsx
+<Pitch type="statsbomb" appearance={{ stripes: true, goalType: "box" }} />
+```
+
+## Individual marks
+
+Colour accessors (`fill`, `stroke`, `color`) always win over the themed default for the
+marks you pass them to — theming sets the baseline, accessors express data. For styling
+marks with utility classes instead, see
+[Configuration → Tailwind](/docs/configuration/tailwind), which covers `className`, the
+`data-pitchkit-*` attribute escape hatch, and the `@utility` recipe for the pitch
+background.

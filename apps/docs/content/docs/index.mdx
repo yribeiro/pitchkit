@@ -9,31 +9,51 @@ transforms, SVG + Canvas rendering); `@pitchkit/react` is the officially support
 declarative bindings on top of it, split into two families: **components** (the pitch itself)
 and **overlays** (data plotted onto it).
 
-## What's on this page
-
-Every page under **Docs** pairs a live, server-rendered example with its exact source — copy
-it straight into your project.
-
-- **[Components](/docs/components/pitch)** — the pitch container that owns the coordinate
-  system: `<Pitch>` and `<VerticalPitch>` today.
-- **Overlays** — layers stacked inside a `<Pitch>`, one per visual: [Scatter](/docs/overlays/scatter),
-  [Arrows](/docs/overlays/arrows), [Comet](/docs/overlays/comet), [Annotate](/docs/overlays/annotate),
-  and the canvas-based [Heatmap](/docs/overlays/heatmap).
-- **[Configuration](/docs/configuration/tailwind)** — theming and Tailwind integration.
-
 ## Install
 
 ```bash
 npm install @pitchkit/core @pitchkit/react
 ```
 
-## The accessor pattern
-
-Every layer takes plain data plus accessor functions for its visual properties:
+## Quickstart
 
 ```tsx
-<Scatter data={players} x={(p) => p.x} y={(p) => p.y} tooltip={(p) => p.name} />
+"use client";
+
+import { Pitch, Scatter } from "@pitchkit/react";
+
+const shots = [
+  { x: 108, y: 38, xg: 0.62 },
+  { x: 96, y: 48, xg: 0.15 },
+];
+
+export function ShotMap() {
+  return (
+    <Pitch type="statsbomb">
+      <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={(s) => 3 + s.xg * 9} />
+    </Pitch>
+  );
+}
 ```
 
-`x`, `y`, and most other props accept either a static value or a per-datum function — this is
-how PitchKit stays shape-agnostic across providers (StatsBomb, Opta, UEFA, or your own).
+That's a responsive, server-renderable shot map. Every layer takes plain data plus
+**accessor functions** for its visual properties — `x`, `y`, and most other props accept
+either a static value or a per-datum function, which is how PitchKit stays shape-agnostic
+across providers (StatsBomb, Opta, UEFA, or your own).
+
+## Finding your way around
+
+- **[Guides](/docs/guides/coordinates)** — the concepts: coordinates & pitch types,
+  layers, theming, responsive behaviour, Next.js/SSR, and recipes.
+- **[Components](/docs/components/pitch)** — the pitch container that owns the coordinate
+  system: `<Pitch>` and `<VerticalPitch>`.
+- **Overlays** — layers stacked inside a `<Pitch>`, one page per visual, each with a live
+  example: [Scatter](/docs/overlays/scatter), [Arrows](/docs/overlays/arrows),
+  [Comet](/docs/overlays/comet), [Annotate](/docs/overlays/annotate),
+  [Heatmap](/docs/overlays/heatmap), [Flow](/docs/overlays/flow),
+  [Polygon](/docs/overlays/polygon), [Convex Hull](/docs/overlays/convex-hull),
+  [Voronoi](/docs/overlays/voronoi), and [Goal Angle](/docs/overlays/goal-angle).
+- **[Configuration](/docs/configuration/tailwind)** — Tailwind integration.
+- **[mplsoccer → PitchKit](/docs/migration)** — the migration cheatsheet.
+- **[API Reference](/docs/api)** — every public export, generated from TSDoc.
+- **[Gallery](/gallery)** — finished visualisations with full source and sandbox exports.

@@ -50,6 +50,19 @@
   --pitch-line-width: --value(number, [number]);
 }
 
+/*
+ * The landing hero's pitch: a deliberately darker, broadcast-graphics look
+ * (near-black surface, low-contrast markings, one bright accent) that reads
+ * as a product screenshot in both site themes — themed through the same
+ * --pitch-* variables as every other pitch on the site.
+ */
+.pitchkit-hero-pitch {
+  --pitch-surface: #0b1712;
+  --pitch-stripe: rgba(255, 255, 255, 0.025);
+  --pitch-lines: rgba(255, 255, 255, 0.32);
+  --pitch-marker-primary: #34d399;
+}
+
 /* Live-example preview card: the frame every <PitchPreview> renders inside. */
 .pitchkit-preview {
   border: 1px solid var(--color-fd-border);
@@ -71,6 +84,14 @@
 .pitchkit-preview__stage-inner {
   width: 100%;
   max-width: 32rem;
+}
+
+/* Toolbar row between the stage and the code panel: "open in" buttons. */
+.pitchkit-preview__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--color-fd-border);
 }
 
 /*

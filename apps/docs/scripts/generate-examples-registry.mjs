@@ -15,8 +15,10 @@ import path from "node:path";
 const examplesDir = fileURLToPath(new URL("../components/examples", import.meta.url));
 const outputFile = path.join(examplesDir, "registry.ts");
 
+// `-basic.tsx` = the minimal per-feature docs examples; `-gallery.tsx` = the
+// finished visualisations on /gallery. Same registry, same preview pipeline.
 const exampleFiles = readdirSync(examplesDir)
-  .filter((file) => file.endsWith("-basic.tsx"))
+  .filter((file) => file.endsWith("-basic.tsx") || file.endsWith("-gallery.tsx"))
   .sort();
 
 function toPascalCase(kebabName) {

@@ -1,0 +1,68 @@
+---
+title: Coordinates & pitch types
+description: Provider coordinate systems, the transform pipeline, and how to move data between them.
+---
+
+Every football data provider draws its pitch on a different grid. PitchKit makes the grid an
+explicit choice — the `type` prop on `<Pitch>` — and feeds every layer through one transform
+pipeline, so your data goes in **in its provider's native units** and everything stays
+aligned.
+
+## Supported pitch types
+
+| `type` | Extent | Origin | y direction | Notes |
+| --- | --- | --- | --- | --- |
+| `statsbomb` | 120 × 80 | top-left | down | Abstract units |
+| `opta` | 100 × 100 | bottom-left | up | Normalized percentage grid |
+| `uefa` | 105 × 68 | bottom-left | up | Real metres |
+
+```tsx
+<Pitch type="statsbomb">{/* data in 120x80, y-down */}</Pitch>
+<Pitch type="opta">{/* data in 0-100, y-up */}</Pitch>
+```
+
+Marking positions (box sizes, penalty spots, circle radii) are sourced from mplsoccer's
+published per-provider constants rather than derived from real-world metres — real event
+data is published against those exact landmark values, and deriving our own would silently
+misalign rendered markings against it.
+
+## Orientation and cropping
+
+Display orientation is a *view* concern, not a fact about the data — the same StatsBomb
+coordinates render horizontally or vertically:
+
+```tsx
+import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
+
+const dims = getPitchDimensions("statsbomb");
+
+// Attacking-half shot map framing:
+<VerticalPitch type="statsbomb" crop={cropForHalf(dims)}>
+  <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} />
+</VerticalPitch>;
+```
+
+`crop` takes any `{ x0, y0, x1, y1 }` window in provider units; `cropForHalf` is the
+convenience for the most common one.
+
+## Converting between providers
+
+`createStandardizeTransform` maps coordinates from one provider grid to another (mplsoccer's
+`Standardizer`) — useful when combining data sources:
+
+```tsx
+import { createStandardizeTransform, getPitchDimensions } from "@pitchkit/core";
+
+const optaToStatsBomb = createStandardizeTransform(
+  getPitchDimensions("opta"),
+  getPitchDimensions("statsbomb"),
+);
+const [x, y] = optaToStatsBomb([50, 50]); // -> [60, 40]
+```
+
+## Pixels and back
+
+Inside a `<Pitch>`, [`usePitch()`](/docs/api/react/functions/usePitch) exposes the active
+pixel transform: `transform.toPixel` for provider → screen, and `transform.toProvider` for
+screen → provider — the inverse you need to ingest clicks or pointer positions as pitch
+coordinates. The landing page's hero pitch is built on exactly this.

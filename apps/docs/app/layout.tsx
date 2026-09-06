@@ -16,7 +16,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>{children}</RootProvider>
+        {/*
+         * Dark is the default (issue #28's design direction: near-black
+         * surface first, Linear/Supabase-style) — visitors can still switch
+         * to light or system via the theme toggle.
+         */}
+        <RootProvider theme={{ defaultTheme: "dark" }}>{children}</RootProvider>
       </body>
     </html>
   );
