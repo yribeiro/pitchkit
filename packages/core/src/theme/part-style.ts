@@ -12,8 +12,8 @@ export function partStyle(part: string): string {
   const lineWidth = "stroke-width: var(--pitch-line-width, 1.5);";
 
   switch (part) {
-    case "outline":
-      return `fill: var(--pitch-surface, #1a472a); ${lineStroke} ${lineWidth}`;
+    case "surface":
+      return "fill: var(--pitch-surface, #1a472a); stroke: none;";
     case "stripe":
       return "fill: var(--pitch-stripe, rgba(255, 255, 255, 0.04)); stroke: none;";
     case "center-spot":

@@ -47,7 +47,7 @@ export function PitchGeometryShapes({
 
   return (
     <g data-pitchkit-layer="pitch">
-      <RectShape rect={geometry.outline} transform={transform} part="outline" />
+      <RectShape rect={geometry.outline} transform={transform} part="surface" />
       {computeStripeBands(geometry.outline, stripeCount).map((band, i) => (
         <RectShape key={i} rect={band} transform={transform} part="stripe" />
       ))}
@@ -90,6 +90,11 @@ export function PitchGeometryShapes({
           <LineShape key={i} line={line} transform={transform} part="goal" />
         ))
       )}
+
+      {/* The stroke-only border paints last: SVG strokes are centered on the
+          path, so the inner half of an earlier-painted border would be masked
+          by opaque stripes (issue #14). */}
+      <RectShape rect={geometry.outline} transform={transform} part="outline" />
     </g>
   );
 }

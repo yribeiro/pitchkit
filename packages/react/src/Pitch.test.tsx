@@ -4,6 +4,7 @@ import { Pitch } from "./Pitch.js";
 import { VerticalPitch } from "./VerticalPitch.js";
 
 const PARTS_WITH_EXPECTED_COUNT: Record<string, number> = {
+  surface: 1,
   outline: 1,
   "halfway-line": 1,
   "center-circle": 1,
@@ -48,6 +49,23 @@ describe("Pitch", () => {
     );
     expect(container.querySelectorAll('[data-pitchkit-part="goal"]')).toHaveLength(0);
     expect(container.querySelectorAll('[data-pitchkit-part="goal-box"]')).toHaveLength(2);
+  });
+
+  it("paints the stroke-only outline border after the stripes so opaque stripes can't mask it", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400} appearance={{ stripes: true }} />,
+    );
+    const parts = Array.from(container.querySelectorAll("[data-pitchkit-part]")).map((el) =>
+      el.getAttribute("data-pitchkit-part"),
+    );
+
+    const outlineIndex = parts.indexOf("outline");
+    expect(parts.indexOf("surface")).toBeLessThan(parts.indexOf("stripe"));
+    expect(outlineIndex).toBeGreaterThan(parts.lastIndexOf("stripe"));
+    expect(outlineIndex).toBe(parts.length - 1);
+
+    const outline = container.querySelector('[data-pitchkit-part="outline"]');
+    expect((outline as SVGRectElement | null)?.style.fill).toBe("none");
   });
 
   it("stripes appearance paints stripe bands", () => {
