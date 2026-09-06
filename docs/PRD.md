@@ -2,7 +2,7 @@
 
 > **TL;DR** — Build the missing piece of the football-analytics web stack: a TypeScript-native, framework-agnostic visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser, with first-class React/Next.js bindings, responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
-_Status: Draft v0.2 · Owner: Yohahn Ribeiro · Last updated: 30 Jun 2026_
+_Status: Draft v0.3 · Owner: Yohahn Ribeiro · Last updated: 06 Sep 2026_
 
 ---
 
@@ -371,7 +371,7 @@ npx shadcn add @pitchkit/theme-broadcast
       two renderers can't drift on anything but element-emission syntax. Review harness:
       `examples/react-vite/`, `examples/react-nextjs/` (App Router SSR verification).
 - [ ] Docs site skeleton with live examples for the above.
-- [ ] First npm publish (0.1.x) + README hero.
+- [ ] shadcn-style showcase website (doubles as docs home, per §9).
 - [ ] [Issue #6](https://github.com/yribeiro/pitchkit/issues/6): assess whether
       `@pitchkit/core`'s SVG painters (`render/svg/paint-*.ts`) are still needed as public
       surface now that `@pitchkit/react` re-emits its own JSX rather than calling them —
@@ -483,9 +483,12 @@ npx shadcn add @pitchkit/theme-broadcast
   and via `next build`'s static prerender succeeding). Wired into `.claude/launch.json` as
   `react-nextjs-example`, port 3000 (`npm run dev -- --hostname 0.0.0.0` from
   `examples/react-nextjs`).
-- Remaining Milestone 1 scope (docs site, first npm publish) is all outside
+- Remaining Milestone 1 scope (docs site skeleton + shadcn showcase website) is all outside
   `@pitchkit/core`/`@pitchkit/react` and was deliberately deferred to a follow-up plan, not
-  started.
+  started. Publishing (npm publish, repo hygiene, Changesets, deploying the docs site) was
+  moved out of Milestone 1 into a new **Milestone 3 — publishing**, run as one concentrated
+  effort after Milestone 2's parity push, so the site only needs to be built/updated twice
+  (once for M1, once for M2) rather than being kept publish-ready throughout.
 
 ### Milestone 2 — v1.0 (parity push)
 
@@ -495,8 +498,17 @@ npx shadcn add @pitchkit/theme-broadcast
 - [ ] StatsBomb open-data adapter.
 - [ ] Grid/jointgrid layout; recipe pages (pass network, shot map).
 - [ ] Full API reference; migration cheatsheet; gallery.
+- [ ] Update the docs site / showcase website with all of the above.
 
-### Milestone 3 — later
+### Milestone 3 — publishing (concentrated effort)
+
+- [ ] First npm publish (0.1.x) + README hero.
+- [ ] Repo hygiene: CONTRIBUTING, issue/PR templates, good-first-issues, MIT licence file.
+- [ ] Changesets wired for semver + automated changelog; canary tags from `main`.
+- [ ] Docs site deployed (Vercel) at a real domain.
+- [ ] Naming finalised (§14) — npm scope + GitHub availability confirmed before publish.
+
+### Milestone 4 — later
 
 - [ ] Sonars, bumpy chart, inset images.
 - [ ] WebGL renderer for tracking-scale data; animation/timeline helpers.
