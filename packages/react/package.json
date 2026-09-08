@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Thin React bindings for @pitchkit/core: declarative <Pitch> + layer components, responsive by default.",
   "license": "MIT",
   "type": "module",
