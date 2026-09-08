@@ -1,0 +1,131 @@
+# @pitchkit/react
+
+[![npm](https://img.shields.io/npm/v/@pitchkit/react)](https://www.npmjs.com/package/@pitchkit/react)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yribeiro/pitchkit/blob/main/LICENSE)
+
+Declarative React components for football pitch visualisation — mplsoccer's feature set for
+the web. Responsive by default, themed with CSS variables, SSR-safe.
+
+> **Early days.** `0.1.x` is the first public release. Usable and tested, but the API isn't
+> stable yet — expect breaking changes before `1.0`.
+
+## Install
+
+```bash
+npm install @pitchkit/react
+```
+
+React >= 18 is a peer dependency. [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
+is installed automatically.
+
+## Usage
+
+```tsx
+import { Pitch, Scatter } from "@pitchkit/react";
+
+const shots = [
+  { x: 112, y: 39, xg: 0.76, outcome: "goal" },
+  { x: 105, y: 44, xg: 0.31, outcome: "saved" },
+  { x: 99, y: 47, xg: 0.13, outcome: "off target" },
+];
+
+export function ShotMap() {
+  return (
+    <Pitch type="statsbomb">
+      <Scatter
+        data={shots}
+        x={(s) => s.x}
+        y={(s) => s.y}
+        r={(s) => 3 + s.xg * 9}
+        fill={(s) => (s.outcome === "goal" ? "#fb923c" : "#38bdf8")}
+        tooltip={(s) => `${s.outcome} · xG ${s.xg.toFixed(2)}`}
+      />
+    </Pitch>
+  );
+}
+```
+
+`<Pitch>` owns the coordinate system; children are layers drawn into it, stacked in render
+order. Every visual prop accepts a static value **or** a function of the datum — `fill="red"`
+and `fill={(d) => d.teamColor}` are the same prop.
+
+## Components
+
+| Component          | Draws                                                       |
+| ------------------ | ----------------------------------------------------------- |
+| `<Pitch>`          | The pitch surface + coordinate context (horizontal)         |
+| `<VerticalPitch>`  | Same, rotated to a vertical framing                         |
+| `<Scatter>`        | Circles — shots, players, events                            |
+| `<Annotate>`       | Text labels                                                 |
+| `<Arrows>`         | Straight arrows — passes, carries                           |
+| `<Comet>`          | Tapered lines with direction implied by width               |
+| `<Heatmap>`        | Binned density on Canvas (client-only)                      |
+| `<Polygon>`        | Arbitrary closed shapes                                     |
+| `<ConvexHull>`     | Convex hull of a point set                                  |
+| `<Voronoi>`        | Voronoi cells, clipped to the pitch                         |
+| `<GoalAngle>`      | The angle-to-goal wedge from a shot location                |
+| `<Flow>`           | Binned direction + magnitude vectors                        |
+| `usePitch()`       | Hook exposing the pixel transform for custom SVG            |
+
+## Sizing
+
+Responsive is the default — with no size props the pitch fills its container via
+`ResizeObserver` and recomputes on resize. Explicit sizing is the opt-out:
+
+```tsx
+<Pitch type="statsbomb" />                          {/* fills container */}
+<Pitch type="statsbomb" width={1200} height={800} /> {/* fixed — exports, OG images */}
+```
+
+## Pitch types
+
+`statsbomb` · `opta` · `uefa`, each using the provider's real coordinate space so event data
+goes in unmodified.
+
+```tsx
+import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
+
+const dimensions = getPitchDimensions("statsbomb");
+
+<VerticalPitch type="statsbomb" crop={cropForHalf(dimensions)}>{/* … */}</VerticalPitch>
+```
+
+## Theming
+
+CSS variables only — no theme objects, no providers. Define once; every chart inherits,
+including dark mode:
+
+```css
+:root {
+  --pitch-surface: #1a472a;
+  --pitch-stripe: #1d4f30;
+  --pitch-lines: rgba(255, 255, 255, 0.8);
+}
+```
+
+Marks accept `className`, so Tailwind works directly:
+
+```tsx
+<Scatter data={shots} x={(s) => s.x} y={(s) => s.y} className="fill-emerald-400 stroke-white" />
+```
+
+Setting `className` without an explicit `fill`/`stroke` makes the mark drop its themed default
+so your class wins. For marks whose JSX you don't own, every element carries
+`data-pitchkit-mark` / `-layer` / `-part` attributes to target instead.
+
+## Next.js / SSR
+
+SVG marks server-render cleanly. Because layer components take accessor *functions* as props,
+the `<Pitch>` tree must originate inside a `"use client"` component — React Server Components
+can't pass functions across the client boundary. SSR still happens; only the prop-serialisation
+boundary moves. `<Heatmap>` is Canvas-backed and therefore client-only.
+
+## Links
+
+- [Repository](https://github.com/yribeiro/pitchkit)
+- [Issues](https://github.com/yribeiro/pitchkit/issues)
+- [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core) — the framework-agnostic engine
+
+## Licence
+
+MIT © Yohahn Ribeiro

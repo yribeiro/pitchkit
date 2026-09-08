@@ -1,0 +1,39 @@
+name: Feature request
+description: A new mark, chart type, prop, or capability
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: >
+        Describe the visualisation or workflow you're after, not just the API you imagine.
+        Knowing the underlying goal often surfaces a better design.
+    validations:
+      required: true
+
+  - type: input
+    id: mplsoccer
+    attributes:
+      label: mplsoccer equivalent
+      description: If this exists in mplsoccer, which function or class? Helps with parity tracking.
+      placeholder: e.g. Pitch.hexbin, PyPizza
+    validations:
+      required: false
+
+  - type: textarea
+    id: api-sketch
+    attributes:
+      label: API sketch
+      description: Optional — what you'd want the JSX to look like.
+      render: tsx
+    validations:
+      required: false
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: How are you solving this today, if at all?
+    validations:
+      required: false

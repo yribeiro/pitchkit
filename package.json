@@ -2,7 +2,17 @@
   "name": "pitchkit",
   "private": true,
   "version": "0.0.0",
+  "description": "TypeScript-native football pitch visualisation for the web — mplsoccer's feature set, built for React.",
   "license": "MIT",
+  "author": "Yohahn Ribeiro",
+  "homepage": "https://github.com/yribeiro/pitchkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yribeiro/pitchkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yribeiro/pitchkit/issues"
+  },
   "type": "module",
   "packageManager": "npm@10.9.8",
   "engines": {

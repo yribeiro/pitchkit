@@ -3,6 +3,28 @@
   "version": "0.1.0",
   "description": "Zero-dependency TypeScript core for PitchKit: coordinate systems, transforms, scene/layer model, SVG renderer.",
   "license": "MIT",
+  "author": "Yohahn Ribeiro",
+  "homepage": "https://github.com/yribeiro/pitchkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yribeiro/pitchkit.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/yribeiro/pitchkit/issues"
+  },
+  "keywords": [
+    "football",
+    "soccer",
+    "pitch",
+    "visualization",
+    "dataviz",
+    "analytics",
+    "mplsoccer",
+    "statsbomb",
+    "opta",
+    "svg"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

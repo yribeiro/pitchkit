@@ -3,6 +3,28 @@
   "version": "0.1.0",
   "description": "Thin React bindings for @pitchkit/core: declarative <Pitch> + layer components, responsive by default.",
   "license": "MIT",
+  "author": "Yohahn Ribeiro",
+  "homepage": "https://github.com/yribeiro/pitchkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yribeiro/pitchkit.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/yribeiro/pitchkit/issues"
+  },
+  "keywords": [
+    "football",
+    "soccer",
+    "pitch",
+    "visualization",
+    "dataviz",
+    "analytics",
+    "mplsoccer",
+    "statsbomb",
+    "react",
+    "nextjs"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {
