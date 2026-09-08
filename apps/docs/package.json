@@ -19,6 +19,7 @@
   "dependencies": {
     "@pitchkit/core": "*",
     "@pitchkit/react": "*",
+    "@vercel/analytics": "^2.0.1",
     "fumadocs-core": "^16",
     "fumadocs-mdx": "^15",
     "fumadocs-ui": "^16",

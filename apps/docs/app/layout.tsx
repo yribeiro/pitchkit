@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
          * to light or system via the theme toggle.
          */}
         <RootProvider theme={{ defaultTheme: "dark" }}>{children}</RootProvider>
+        <Analytics />
       </body>
     </html>
   );
