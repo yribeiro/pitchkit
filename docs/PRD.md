@@ -470,8 +470,8 @@ npx shadcn add @pitchkit/theme-broadcast
       (`--value(--color-*)`) for the pitch background, which isn't a mark and was never in
       scope for `className`; (4) `pitch-line-width-*` (bare/arbitrary number — no colour-style
       palette to borrow from). Implemented and manually verified end-to-end in
-      `examples/react-nextjs/` (`TailwindPanel.tsx` + `globals.css`) on branch
-      `design-tailwind-integration`, not yet committed/merged as of this writing.
+      `examples/react-nextjs/` (`TailwindPanel.tsx` + `globals.css`); merged via
+      [PR #13](https://github.com/yribeiro/pitchkit/pull/13).
 
 **Progress notes for the next agent (as of 2026-06-30):**
 
@@ -573,8 +573,8 @@ npx shadcn add @pitchkit/theme-broadcast
   and via `next build`'s static prerender succeeding). Wired into `.claude/launch.json` as
   `react-nextjs-example`, port 3000 (`npm run dev -- --hostname 0.0.0.0` from
   `examples/react-nextjs`).
-- **Issue #7 (Tailwind integration), resolved on branch `design-tailwind-integration`
-  (2026-09-06), not yet committed/merged as of this writing.** Core finding, worth knowing
+- **Issue #7 (Tailwind integration), resolved 2026-09-06, merged via
+  [PR #13](https://github.com/yribeiro/pitchkit/pull/13).** Core finding, worth knowing
   before touching any mark's styling again: `<Scatter>`/`<Arrows>`/`<Comet>` always applied
   their themed default `fill`/`stroke` as an inline `style`, even when the corresponding
   accessor prop was never passed — and inline style unconditionally beats a CSS class at the
@@ -608,17 +608,24 @@ npx shadcn add @pitchkit/theme-broadcast
   bundler cache — a plain page reload wasn't enough; restarting the dev server (`preview_stop`
   + `preview_start`) was required to pick up the rebuilt workspace packages, same category of
   issue as the Vite pre-bundling gotcha already documented above.
-- Remaining Milestone 1 scope (docs site skeleton + shadcn showcase website) is all outside
-  `@pitchkit/core`/`@pitchkit/react` and was deliberately deferred to a follow-up plan, not
-  started. Publishing (npm publish, repo hygiene, Changesets, deploying the docs site) was
-  moved out of Milestone 1 into a new **Milestone 3 — publishing**, run as one concentrated
-  effort after Milestone 2's parity push, so the site only needs to be built/updated twice
-  (once for M1, once for M2) rather than being kept publish-ready throughout.
+- Docs site skeleton ([PR #18](https://github.com/yribeiro/pitchkit/pull/18)) and the
+  shadcn showcase website ([PR #32](https://github.com/yribeiro/pitchkit/pull/32)) are both
+  merged, closing out Milestone 1 entirely as of 2026-09-06. Publishing (npm publish, repo
+  hygiene, Changesets, deploying the docs site) remains deferred to a new
+  **Milestone 3 — publishing**, run as one concentrated effort after Milestone 2's parity
+  push, so the site only needs to be built/updated twice (once for M1, once for M2) rather
+  than being kept publish-ready throughout.
+- Milestone 2 already has a head start: geometric overlays (Flow, Polygon, Convex Hull,
+  Voronoi, Goal Angle) shipped via [PR #25](https://github.com/yribeiro/pitchkit/pull/25),
+  and a pitch-outline stroke/fill rendering bug was fixed via
+  [PR #31](https://github.com/yribeiro/pitchkit/pull/31).
 
 ### Milestone 2 — v1.0 (parity push)
 
 - [ ] Remaining pitch types + Standardizer exposed.
-- [ ] Positional heatmap, hexbin, KDE, flow, polygon, convex hull, Voronoi, goal angle.
+- [ ] Positional heatmap, hexbin, KDE ([issue #19](https://github.com/yribeiro/pitchkit/issues/19)).
+- [x] Flow, polygon, convex hull, Voronoi, goal angle
+      ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
 - [ ] Radar + Pizza charts.
 - [ ] StatsBomb open-data adapter.
 - [ ] Grid/jointgrid layout; recipe pages (pass network, shot map).

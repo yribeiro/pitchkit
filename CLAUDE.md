@@ -19,18 +19,32 @@ Full PRD: see `docs/PRD.md` — read this before any architectural work.
 
 ## Current phase
 
-Milestone 1 — MVP, in progress (see PRD roadmap section 11 for the full checklist and
-progress notes). Every `@pitchkit/core` and `@pitchkit/react` item is done and merged
-(pitch styling/theming, SVG mark layers, Canvas heatmap, `<Pitch>`, layer components,
-`<Heatmap>`, tooltips, `usePitch()`), including review apps `examples/react-vite/` and
-`examples/react-nextjs/` (Next.js App Router SSR verification) —
-[PR #5](https://github.com/yribeiro/pitchkit/pull/5) merged into `main`.
-[Issue #7](https://github.com/yribeiro/pitchkit/issues/7) (Tailwind integration) is resolved
-and implemented on branch `design-tailwind-integration` (see PRD §8.7 and Appendix C.6),
-not yet committed/merged as of this writing.
-[Issue #6](https://github.com/yribeiro/pitchkit/issues/6) (SVG painters scoping) is resolved
-— see PRD roadmap section 11 for the decision writeup.
-Remaining Milestone 1 scope: docs site skeleton and shadcn-style showcase website.
-npm publish and repo-hygiene/release tooling were moved out of Milestone 1 into a new
+**Milestone 1 — MVP ✅ Complete.** Every checklist item in PRD roadmap section 11 is done
+and merged into `main`: pitch styling/theming, SVG mark layers, Canvas heatmap,
+`@pitchkit/react` (`<Pitch>`, layer components, `<Heatmap>`, tooltips, `usePitch()`,
+review apps `examples/react-vite/` and `examples/react-nextjs/`) via
+[PR #5](https://github.com/yribeiro/pitchkit/pull/5); [issue #7](https://github.com/yribeiro/pitchkit/issues/7)
+(Tailwind integration) via [PR #13](https://github.com/yribeiro/pitchkit/pull/13);
+[issue #6](https://github.com/yribeiro/pitchkit/issues/6) (SVG painters scoping) via
+[PR #16](https://github.com/yribeiro/pitchkit/pull/16); docs site skeleton via
+[PR #18](https://github.com/yribeiro/pitchkit/pull/18); and the shadcn-style showcase
+website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
+
+**Milestone 2 — v1.0 (parity push), now in progress.** Already landed ahead of the
+checklist: geometric overlays — Flow, Polygon, Convex Hull, Voronoi, Goal Angle — via
+[PR #25](https://github.com/yribeiro/pitchkit/pull/25). Open issues covering the rest of
+M2: density overlays/hexbin/KDE ([#19](https://github.com/yribeiro/pitchkit/issues/19)),
+radar/pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
+([#22](https://github.com/yribeiro/pitchkit/issues/22)), attack/territory and pass-map
+recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
+[#24](https://github.com/yribeiro/pitchkit/issues/24)), interactive pan/zoom
+([#26](https://github.com/yribeiro/pitchkit/issues/26)), and StatsBomb/data-provider
+loaders ([#27](https://github.com/yribeiro/pitchkit/issues/27),
+[#29](https://github.com/yribeiro/pitchkit/issues/29),
+[#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding bug,
+[#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
+105×68), not milestone-scoped.
+
+npm publish and repo-hygiene/release tooling remain deferred to a new
 **Milestone 3 — publishing**, run as one concentrated effort after Milestone 2's parity
 push (see PRD roadmap section 11).
