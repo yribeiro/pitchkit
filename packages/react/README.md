@@ -6,6 +6,8 @@
 Declarative React components for football pitch visualisation — mplsoccer's feature set for
 the web. Responsive by default, themed with CSS variables, SSR-safe.
 
+**Docs and live examples: [pitchkitjs.com](https://pitchkitjs.com)**
+
 > **Early days.** `0.1.x` is the first public release. Usable and tested, but the API isn't
 > stable yet — expect breaking changes before `1.0`.
 
@@ -122,6 +124,7 @@ boundary moves. `<Heatmap>` is Canvas-backed and therefore client-only.
 
 ## Links
 
+- [Documentation & gallery](https://pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
 - [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core) — the framework-agnostic engine

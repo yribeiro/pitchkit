@@ -649,11 +649,39 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ### Milestone 3 — publishing (concentrated effort)
 
-- [ ] First npm publish (0.1.x) + README hero.
-- [ ] Repo hygiene: CONTRIBUTING, issue/PR templates, good-first-issues, MIT licence file.
+**Largely complete as of 2026-09-08** — the library is public, installable, and documented at
+a real domain. Remaining work is release *automation*, not release itself.
+
+- [x] First npm publish — [`@pitchkit/core@0.1.0`](https://www.npmjs.com/package/@pitchkit/core)
+      and [`@pitchkit/react@0.1.0`](https://www.npmjs.com/package/@pitchkit/react), published
+      2026-09-08 under the `pitchkit` npm org. Verified end-to-end from a clean StackBlitz
+      project installing straight from the registry.
+- [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
+      per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
+      `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
+      good-first-issues.
 - [ ] Changesets wired for semver + automated changelog; canary tags from `main`.
-- [ ] Docs site deployed (Vercel) at a real domain.
-- [ ] Naming finalised (§14) — npm scope + GitHub availability confirmed before publish.
+      **Partially done** — Changesets drives versioning/changelogs locally, and
+      `.github/workflows/release.yml` exists, but it is currently `disabled_manually` (it
+      failed with `ENEEDAUTH`; no `NPM_TOKEN` was ever configured). The `0.1.0` release was
+      published manually. Tracked in
+      [issue #36](https://github.com/yribeiro/pitchkit/issues/36) — preferred fix is npm
+      Trusted Publishing (OIDC), which avoids storing a publish token and adds provenance
+      attestation.
+- [x] Docs site deployed at a real domain — **[pitchkitjs.com](https://pitchkitjs.com)**
+      (landing page with interactive hero, `/gallery`, docs, API reference).
+- [x] Naming finalised (§14) — `@pitchkit` npm scope claimed via the `pitchkit` org;
+      GitHub repo is `yribeiro/pitchkit`.
+
+**Known issue visible on the live site:** the hero's Opta tab renders a square pitch rather
+than a 105×68 rectangle ([issue #2](https://github.com/yribeiro/pitchkit/issues/2)) —
+measured at aspect ratio 1.0 versus 1.5 for StatsBomb and 1.544 for UEFA. Root cause is
+narrower than the issue currently records: `PitchDimensions` already carries `normalized`,
+`realLengthMeters` and `realWidthMeters`, but **nothing in the codebase reads those three
+fields** — the transform derives its aspect from `length`/`width` directly. That is correct
+for StatsBomb (120×80) and UEFA (105×68 metres), and wrong for Opta, whose grid is a
+normalized 100×100. Fix: when `normalized` is true, derive the display aspect from the real-metre
+fields.
 
 ### Milestone 4 — later
 
@@ -684,7 +712,7 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ## 14. Naming
 
-Working name: **PitchKit** / npm scope `@pitchkit`. Needs final npm + GitHub availability check. Shortlist: _Pitchwright, Touchline, Chalkboard, Footwork, Tifo_. Criteria: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
+**Settled: PitchKit.** The `@pitchkit` npm scope is claimed (via the `pitchkit` org), the repo is `yribeiro/pitchkit`, and the docs site is live at [pitchkitjs.com](https://pitchkitjs.com). The shortlist considered and rejected: _Pitchwright, Touchline, Chalkboard, Footwork, Tifo_. Criteria were: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
 
 ---
 

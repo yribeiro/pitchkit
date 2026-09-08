@@ -7,6 +7,8 @@
 TypeScript-native football pitch visualisation for the web — mplsoccer's feature set, built
 for React and Next.js instead of matplotlib.
 
+**[pitchkitjs.com](https://pitchkitjs.com)** — docs, interactive examples, and the gallery.
+
 > **Early days.** `0.1.x` is the first public release. The API is usable and tested, but not
 > yet stable — expect breaking changes before `1.0`.
 
@@ -114,7 +116,9 @@ is in `apps/docs`.
 
 ## Documentation
 
-The full product spec, architecture decisions and roadmap live in [docs/PRD.md](./docs/PRD.md).
+- **[pitchkitjs.com](https://pitchkitjs.com)** — guides, API reference, and the
+  [gallery](https://pitchkitjs.com/gallery) (every card ships its full source).
+- [docs/PRD.md](./docs/PRD.md) — product spec, architecture decisions and roadmap.
 
 ## Licence
 

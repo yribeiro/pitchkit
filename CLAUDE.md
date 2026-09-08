@@ -51,6 +51,25 @@ loaders ([#27](https://github.com/yribeiro/pitchkit/issues/27),
 [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
 105×68), not milestone-scoped.
 
-npm publish and repo-hygiene/release tooling remain deferred to a new
-**Milestone 3 — publishing**, run as one concentrated effort after Milestone 2's parity
-push (see PRD roadmap section 11).
+**Milestone 3 — publishing, largely complete (2026-09-08), pulled forward ahead of M2.**
+It was originally deferred until after M2's parity push, but was brought forward to claim the
+namespace and get the library installable:
+
+- **Published to npm:** [`@pitchkit/core@0.1.0`](https://www.npmjs.com/package/@pitchkit/core)
+  and [`@pitchkit/react@0.1.0`](https://www.npmjs.com/package/@pitchkit/react), under the
+  `pitchkit` npm org. Verified from a clean StackBlitz project installing off the registry.
+- **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
+  docs, API reference.
+- **Repo hygiene done:** MIT `LICENSE` (root + both packages), root + per-package READMEs,
+  `CONTRIBUTING.md`, issue/PR templates, npm metadata.
+- **Release automation NOT done.** `.github/workflows/release.yml` (changesets/action) is
+  `disabled_manually` — it failed with `ENEEDAUTH` since no `NPM_TOKEN` was configured, so
+  `0.1.0` was published by hand. Tracked in
+  [issue #36](https://github.com/yribeiro/pitchkit/issues/36); preferred fix is npm Trusted
+  Publishing (OIDC) rather than a stored token. **Until that's resolved, releases are manual:**
+  `npx changeset` → `npm run version-packages` → commit → `npm run release` (needs an OTP).
+- Note: the READMEs/LICENSE landed *after* `0.1.0` was published, so they won't appear on the
+  npm package pages until the next release — the `0.1.0` tarballs are immutable.
+
+Remaining: **Milestone 2 — v1.0 parity push** (see above), plus the release automation in
+issue #36.
