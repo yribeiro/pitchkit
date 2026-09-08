@@ -15,7 +15,13 @@ Full PRD: see `docs/PRD.md` — read this before any architectural work.
   ([issue #6](https://github.com/yribeiro/pitchkit/issues/6), resolved)
 - Theming = CSS variables only (shadcn-style), no JS theme objects
 - Responsive is the default (no prop); explicit width/height is the opt-out
-- Distribution: engine via npm, recipes/themes via shadcn registry
+- **Distribution split (resolved, see PRD §7.4/§8.4):** `@pitchkit/core` and `@pitchkit/react`
+  (the marks — `<Pitch>`, `<Scatter>`, `<Arrows>`, `<Comet>`, `<Heatmap>`, etc.) are "plumbing"
+  — correctness-critical rendering, published to npm like any dependency. Composite **recipes**
+  (pass network, shot map, pass map, …) and **theme presets** are the opposite — opinionated
+  compositions/styling a user should own outright — so they ship as **shadcn registry items**
+  (`npx shadcn add pass-map`), copying real source into the consumer's repo with
+  `@pitchkit/react` auto-installed underneath as a dependency, not as npm packages themselves.
 
 ## Current phase
 

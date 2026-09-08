@@ -128,9 +128,23 @@ Mapped directly from mplsoccer's modules so parity is auditable. Phase tags: **M
 | Pass/flow diagram (binned direction+magnitude) | `flow`                                            | 1     |
 | Sonars / sonar grid                            | `sonar`, `sonar_grid`                             | L     |
 
-### 7.4 Composite recipes (docs-level, built on primitives)
+### 7.4 Composite recipes (shadcn-registry-distributed, built on primitives)
 
-Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expected-threat grid. Shipped as **documented examples/recipes** rather than rigid components, so users compose them. Phase **1**.
+Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expected-threat grid. Phase **1**.
+
+**Distribution model (resolved — see §13's former open question):** marks (`<Pitch>`,
+`<Scatter>`, `<Arrows>`, `<Comet>`, `<Heatmap>`, radar/pizza, etc.) are "plumbing" — coordinate
+transforms, SVG/Canvas painting, correctness-critical geometry — published to npm as
+`@pitchkit/react`, same as any library dependency; nobody should be hand-maintaining a fork of
+arc-sweep math. Recipes are the opposite: the interesting, opinionated decisions (how to bucket
+this data, which marks to compose, how to style the result) that a consumer legitimately wants
+to own. So recipes ship as **shadcn registry items**, not npm packages or doc-only code blocks:
+`npx shadcn add pass-map` copies the actual recipe source (e.g. `PassMap.tsx`) into the
+consumer's repo, with `@pitchkit/react` declared as an npm dependency in the registry item's
+manifest so it auto-installs underneath — the same split shadcn/ui itself uses (its components
+are copied; Radix primitives underneath are npm-installed). This gives users a real starting
+point they can restyle or rewire without waiting on an upstream release, while the
+correctness-critical rendering stays versioned and centrally maintained.
 
 **"Load open data → visualize" recipes** are a distinct category from the component-level
 recipes above, and matter specifically for agent-legibility (§4): a single, complete, minimal
@@ -197,10 +211,10 @@ Layers are pure data + options; they don't own DOM. The renderer walks the scene
 - `@pitchkit/core` — zero-dependency TS core: dimensions, transforms, scene/layer model, geometry, SVG/Canvas renderers. **No React.**
 - `@pitchkit/react` — thin declarative React components wrapping core (`<Pitch>`, `<Scatter>`, `<Heatmap>` …) with hooks for responsive sizing and interaction.
 - `@pitchkit/data-statsbomb` — optional StatsBomb open-data adapter + tidy types.
-- `apps/docs` — the showcase + docs site.
+- `apps/docs` — the showcase + docs site; also hosts the shadcn `registry.json` that serves recipe items (see §7.4).
 - `examples/` — runnable Next.js + Vite examples.
 
-Build with **tsup** (ESM + d.ts). Tree-shakeable, `sideEffects: false`. Publish under the `@pitchkit` npm scope.
+Build with **tsup** (ESM + d.ts). Tree-shakeable, `sideEffects: false`. Publish `@pitchkit/core` and `@pitchkit/react` under the `@pitchkit` npm scope — these are the only npm-published packages; composite recipes are shadcn registry items, not packages (§7.4).
 
 ### 8.5 React & Next.js integration
 
@@ -628,7 +642,8 @@ npx shadcn add @pitchkit/theme-broadcast
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
 - [ ] Radar + Pizza charts.
 - [ ] StatsBomb open-data adapter.
-- [ ] Grid/jointgrid layout; recipe pages (pass network, shot map).
+- [ ] Grid/jointgrid layout; shadcn registry infrastructure (`registry.json` served from
+      `apps/docs`) + first recipe items (pass network, shot map) per §7.4.
 - [ ] Full API reference; migration cheatsheet; gallery.
 - [ ] Update the docs site / showcase website with all of the above.
 
@@ -665,7 +680,7 @@ npx shadcn add @pitchkit/theme-broadcast
 - **SSR + Canvas friction** — design the client boundary deliberately; provide SSR-safe SVG fallbacks.
 - **Maintenance burden (solo)** — keep the core small and well-tested; lean on Changesets/CI; design for contributor on-ramp.
 - **Open question:** Selective D3 modules (d3-scale, d3-delaunay, d3-contour) vs hand-rolled for hard geometry? Leaning selective/tree-shakeable D3 for maths, custom for rendering.
-- **Open question:** Ship composite charts (pass network) as components or documented recipes only? Leaning recipes for v1 to avoid premature API lock-in.
+- **Resolved:** Ship composite charts (pass network, shot map, …) as components or documented recipes only? — **Recipes, distributed as shadcn registry items** (copied source, `@pitchkit/react` as an auto-installed dependency), not npm packages and not doc-only code blocks. See §7.4 for the full writeup.
 
 ## 14. Naming
 
@@ -699,13 +714,15 @@ Target developer experience: what a developer building with PitchKit in a React/
 
 ### C.1 One-time setup
 
-Install via the shadcn registry:
+Install the library — this is the "plumbing" layer (coordinate transforms, rendering), a normal
+npm dependency you update but don't edit:
 
 ```bash
-npx shadcn add @pitchkit/pitch
+npm install @pitchkit/react
 ```
 
-This drops the component into `components/ui/pitch.tsx` and appends the following to `globals.css`. No other configuration needed.
+Then paste the theme tokens into `globals.css` (or install a preset via the registry, e.g.
+`npx shadcn add @pitchkit/theme-broadcast` — see §8.7). No other configuration needed.
 
 ```css
 :root {
@@ -726,7 +743,7 @@ This drops the component into `components/ui/pitch.tsx` and appends the followin
 ### C.2 Drawing a pitch
 
 ```typescript
-import { Pitch } from "@/components/ui/pitch"
+import { Pitch } from "@pitchkit/react"
 
 export function BasicPitch() {
   return <Pitch type="statsbomb" />
@@ -735,10 +752,14 @@ export function BasicPitch() {
 
 No size props means the pitch fills its container and recomputes on resize automatically — this is the default, not something you opt into. `type="statsbomb"` declares the coordinate system; the library handles all scaling.
 
-### C.3 Shot map
+### C.3 Shot map (a recipe)
+
+"Shot map" is one of the composite recipes from §7.4 — `npx shadcn add shot-map` copies exactly
+this file into `components/recipes/shot-map.tsx`, ready to restyle or rewire. What follows is
+that recipe's actual source, importing the primitives from the npm package:
 
 ```typescript
-import { Pitch, Scatter } from "@/components/ui/pitch"
+import { Pitch, Scatter } from "@pitchkit/react"
 
 type Shot = {
   location: [number, number]
@@ -777,10 +798,12 @@ export function ShotMap({ shots }: { shots: Shot[] }) {
 
 Key points: `half` crops to the attacking half with one prop. `r`, `fill`, and `fillOpacity` each accept a static value or a function of the datum — same prop either way. Tooltip content is plain JSX; the library owns positioning.
 
-### C.4 Pass network
+### C.4 Pass network (a recipe)
+
+Same pattern as C.3 — `npx shadcn add pass-network` copies this in:
 
 ```typescript
-import { Pitch, Scatter, Arrows, Annotate } from "@/components/ui/pitch"
+import { Pitch, Scatter, Arrows, Annotate } from "@pitchkit/react"
 
 type Pass = {
   location: [number, number]
