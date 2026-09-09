@@ -1,6 +1,15 @@
-import { mkdtemp, readFile, rm, writeFile, mkdir } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readlink,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   CliError,
@@ -136,13 +145,37 @@ describe("parseArgs", () => {
 });
 
 describe("installSkill", () => {
-  it("copies SKILL.md and its references into <dir>/pitchkit", async () => {
+  it("makes SKILL.md and its references readable at <dir>/pitchkit", async () => {
     const { destination, files } = await installSkill({ cwd });
 
     expect(destination).toBe(join(cwd, DEFAULT_SKILLS_DIR, SKILL_NAME));
     expect(files).toContain("SKILL.md");
     expect(files).toContain("references/api.md");
     await expect(readFile(join(destination, "SKILL.md"), "utf8")).resolves.toContain("# PitchKit");
+  });
+
+  it("links into node_modules rather than copying, so npm update carries the skill", async () => {
+    const { destination, method } = await installSkill({ cwd });
+
+    // A copy is a valid outcome on filesystems that refuse links, but on a
+    // normal one it means the update path silently regressed.
+    expect(method).toBe("link");
+    const stats = await lstat(destination);
+    expect(stats.isSymbolicLink()).toBe(true);
+    expect(resolve(dirname(destination), await readlink(destination))).toBe(skillSourceDir);
+  });
+
+  it("picks up edits made to the package's copy, since it is the same file", async () => {
+    const { destination } = await installSkill({ cwd });
+    const source = join(skillSourceDir, "SKILL.md");
+    const original = await readFile(source, "utf8");
+
+    try {
+      await writeFile(source, "# Upgraded\n");
+      await expect(readFile(join(destination, "SKILL.md"), "utf8")).resolves.toBe("# Upgraded\n");
+    } finally {
+      await writeFile(source, original);
+    }
   });
 
   it("honours an explicit --dir", async () => {
@@ -155,13 +188,36 @@ describe("installSkill", () => {
     await expect(installSkill({ cwd })).rejects.toThrow(/--force/);
   });
 
-  it("overwrites a stale install with --force", async () => {
+  it("replaces an existing install with --force", async () => {
     const { destination } = await installSkill({ cwd });
+    await rm(destination, { recursive: true, force: true });
+    await mkdir(destination, { recursive: true });
     await writeFile(join(destination, "SKILL.md"), "stale");
 
     await installSkill({ cwd, force: true });
 
     await expect(readFile(join(destination, "SKILL.md"), "utf8")).resolves.toContain("# PitchKit");
+  });
+
+  it("replaces a dangling link left behind by an uninstalled dependency", async () => {
+    const skillsDir = join(cwd, DEFAULT_SKILLS_DIR);
+    await mkdir(skillsDir, { recursive: true });
+    await symlink(join(cwd, "gone"), join(skillsDir, SKILL_NAME), "dir");
+
+    // Refuses without --force even though the link resolves to nothing...
+    await expect(installSkill({ cwd })).rejects.toThrow(/--force/);
+    // ...and doesn't trip over EEXIST with it.
+    const { destination } = await installSkill({ cwd, force: true });
+    await expect(readFile(join(destination, "SKILL.md"), "utf8")).resolves.toContain("# PitchKit");
+  });
+
+  it("never deletes the package's own copy when replacing a link", async () => {
+    await installSkill({ cwd });
+    await installSkill({ cwd, force: true });
+
+    await expect(readFile(join(skillSourceDir, "SKILL.md"), "utf8")).resolves.toContain(
+      "# PitchKit",
+    );
   });
 
   it("leaves unrelated files in the skills directory alone", async () => {
@@ -195,13 +251,17 @@ describe("run", () => {
     expect(lines).toEqual([skillSourceDir]);
   });
 
-  it("reports what it wrote after an install", async () => {
+  it("reports what it wrote, and that updates now flow through npm", async () => {
     const { lines, log } = capture();
     await run(["skills", "install"], { cwd, log });
 
     const output = lines.join("\n");
     expect(output).toContain(join(DEFAULT_SKILLS_DIR, SKILL_NAME));
     expect(output).toContain("SKILL.md");
+    // Linking and copying differ in whether `npm update` refreshes the
+    // skill, so the user has to be told which one they got.
+    expect(output).toMatch(/^Linked /m);
+    expect(output).toContain("npm update @pitchkit/react");
   });
 
   it("rejects an unknown command", async () => {

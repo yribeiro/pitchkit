@@ -12,8 +12,12 @@ instead of inventing an mplsoccer-flavoured one.
 - `skills/pitchkit/references/api.md` — full prop tables for every component plus the
   `@pitchkit/core` exports worth calling directly.
 - A new `pitchkit` bin: `npx @pitchkit/react skills install [--dir <path>] [--force]`
-  copies the skill into a consuming project (default `.claude/skills/`), and
-  `npx @pitchkit/react skills path` prints its location in `node_modules`.
+  symlinks the skill into a consuming project (default `.claude/skills/`), falling back to
+  a copy where the filesystem won't take a link. `npx @pitchkit/react skills path` prints
+  its location in `node_modules`.
 
-Because the skill travels in the tarball it always describes the installed version, which
-`llms.txt`-style docs can't do.
+Because the skill travels in the tarball, and the installed link points into
+`node_modules`, `npm update @pitchkit/react` moves the skill with it — so an agent reads
+the API of the version actually installed, which `llms.txt`-style docs can't guarantee.
+The `skills/<name>/SKILL.md` layout is the shared convention, so generic installers pick
+it up without this CLI.
