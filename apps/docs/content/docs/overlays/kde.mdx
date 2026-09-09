@@ -39,3 +39,15 @@ being washed in `colorMin`.
 surface, lower it for speed.
 
 Like every Canvas layer, this needs a fixed-size `<Pitch>` (`width`/`height`).
+
+## Keeping the pitch markings visible
+
+A filled density layer paints over the lines underneath it. Set `linesOnTop` on the pitch's
+`appearance` — mplsoccer's `line_zorder` — to paint the markings above the layers instead. Only the
+markings move; the grass surface and stripes stay underneath either way.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320} appearance={{ linesOnTop: true }}>
+  {/* ... */}
+</Pitch>
+```

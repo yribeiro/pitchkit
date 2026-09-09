@@ -11,7 +11,11 @@ import type {
 } from "@pitchkit/core";
 import { PitchContext } from "./context.js";
 import type { TooltipState } from "./context.js";
-import { PitchGeometryShapes } from "./pitch-geometry.js";
+import {
+  PitchGeometryShapes,
+  PitchMarkingShapes,
+  PitchSurfaceShapes,
+} from "./pitch-geometry.js";
 import { TooltipOverlay } from "./TooltipOverlay.js";
 import { useResizeObserver } from "./use-resize-observer.js";
 
@@ -81,6 +85,7 @@ export function Pitch({
     ? { width: explicitWidth, height: explicitHeight }
     : (measuredSize ?? fallbackSize);
 
+  const linesOnTop = appearance?.linesOnTop ?? false;
   const viewport: Viewport = { width: size.width, height: size.height, orientation, crop, padding };
   const transform = createPixelTransform(dimensions, viewport);
   const geometry = computePitchGeometry(dimensions);
@@ -103,15 +108,35 @@ export function Pitch({
         viewBox={`0 0 ${viewport.width} ${viewport.height}`}
         style={{ display: "block" }}
       >
-        <PitchGeometryShapes
-          geometry={geometry}
-          transform={transform}
-          dimensions={dimensions}
-          appearance={appearance}
-        />
+        {/* With `linesOnTop` the markings are emitted *after* the children
+            so an opaque density layer can't hide them; the grass surface
+            stays underneath either way. Default keeps the single combined
+            group, so nothing about the existing DOM changes. */}
+        {linesOnTop ? (
+          <PitchSurfaceShapes
+            geometry={geometry}
+            transform={transform}
+            appearance={appearance}
+          />
+        ) : (
+          <PitchGeometryShapes
+            geometry={geometry}
+            transform={transform}
+            dimensions={dimensions}
+            appearance={appearance}
+          />
+        )}
         <PitchContext.Provider value={{ dimensions, viewport, transform, setTooltip }}>
           {children}
         </PitchContext.Provider>
+        {linesOnTop && (
+          <PitchMarkingShapes
+            geometry={geometry}
+            transform={transform}
+            dimensions={dimensions}
+            appearance={appearance}
+          />
+        )}
       </svg>
       {tooltip && <TooltipOverlay tooltip={tooltip} />}
     </div>

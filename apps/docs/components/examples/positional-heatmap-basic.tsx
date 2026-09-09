@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Pitch, PositionalHeatmap } from "@pitchkit/react";
-import { docsAppearance } from "./docs-appearance";
+import { docsDensityAppearance } from "./docs-appearance";
 
 // StatsBomb coordinates (120 x 80). A midfielder's touches over a match:
 // heaviest through the left half-space and the middle third, thinning out
@@ -82,7 +82,7 @@ export function PositionalHeatmapBasic() {
         type="statsbomb"
         width={width}
         height={Math.round(width / PITCH_ASPECT)}
-        appearance={docsAppearance}
+        appearance={docsDensityAppearance}
       >
         <PositionalHeatmap
           data={touches}

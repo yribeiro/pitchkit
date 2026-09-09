@@ -35,6 +35,15 @@ function generateTouches(count: number): Point[] {
   }));
 }
 
+/**
+ * The density layers paint an opaque fill over the whole pitch, so these
+ * panels turn on `linesOnTop` (mplsoccer's `line_zorder`) to keep the
+ * markings visible on top of it.
+ */
+function withLinesOnTop(appearance: PitchAppearance): PitchAppearance {
+  return { ...appearance, linesOnTop: true };
+}
+
 interface DensityPanelProps {
   appearance: PitchAppearance;
   colorMin: string;
@@ -54,6 +63,7 @@ const PITCH_HEIGHT = 307;
  */
 export function DensityPanel({ appearance, colorMin, colorMax }: DensityPanelProps) {
   const touches = useMemo(() => generateTouches(500), []);
+  const pitchAppearance = withLinesOnTop(appearance);
 
   return (
     <>
@@ -67,7 +77,7 @@ export function DensityPanel({ appearance, colorMin, colorMax }: DensityPanelPro
           type="statsbomb"
           width={PITCH_WIDTH}
           height={PITCH_HEIGHT}
-          appearance={appearance}
+          appearance={pitchAppearance}
         >
           <PositionalHeatmap
             data={touches}
@@ -91,7 +101,7 @@ export function DensityPanel({ appearance, colorMin, colorMax }: DensityPanelPro
           type="statsbomb"
           width={PITCH_WIDTH}
           height={PITCH_HEIGHT}
-          appearance={appearance}
+          appearance={pitchAppearance}
         >
           <Hexbin
             data={touches}
@@ -118,7 +128,7 @@ export function DensityPanel({ appearance, colorMin, colorMax }: DensityPanelPro
           type="statsbomb"
           width={PITCH_WIDTH}
           height={PITCH_HEIGHT}
-          appearance={appearance}
+          appearance={pitchAppearance}
         >
           <KDE
             data={touches.slice(0, 40)}

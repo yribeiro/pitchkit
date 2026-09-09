@@ -1,6 +1,7 @@
 import { act, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Pitch } from "./Pitch.js";
+import { Scatter } from "./Scatter.js";
 import { VerticalPitch } from "./VerticalPitch.js";
 
 const PARTS_WITH_EXPECTED_COUNT: Record<string, number> = {
@@ -66,6 +67,58 @@ describe("Pitch", () => {
 
     const outline = container.querySelector('[data-pitchkit-part="outline"]');
     expect((outline as SVGRectElement | null)?.style.fill).toBe("none");
+  });
+
+  it("paints markings below the children by default, so marks sit on top of the lines", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Scatter data={[{ x: 60, y: 40 }]} x={(d) => d.x} y={(d) => d.y} />
+      </Pitch>,
+    );
+
+    const painted = Array.from(
+      container.querySelectorAll("[data-pitchkit-part], [data-pitchkit-mark]"),
+    ).map((el) => el.getAttribute("data-pitchkit-part") ?? el.getAttribute("data-pitchkit-mark"));
+
+    expect(painted.lastIndexOf("outline")).toBeLessThan(painted.indexOf("scatter"));
+    expect(container.querySelectorAll('[data-pitchkit-layer="pitch-markings"]')).toHaveLength(0);
+  });
+
+  it("linesOnTop paints the markings after the children, keeping them visible under an opaque layer", () => {
+    const { container } = render(
+      <Pitch
+        type="statsbomb"
+        width={600}
+        height={400}
+        appearance={{ stripes: true, linesOnTop: true }}
+      >
+        <Scatter data={[{ x: 60, y: 40 }]} x={(d) => d.x} y={(d) => d.y} />
+      </Pitch>,
+    );
+
+    const painted = Array.from(
+      container.querySelectorAll("[data-pitchkit-part], [data-pitchkit-mark]"),
+    ).map((el) => el.getAttribute("data-pitchkit-part") ?? el.getAttribute("data-pitchkit-mark"));
+
+    // Every marking now paints after the layer children...
+    expect(painted.indexOf("scatter")).toBeLessThan(painted.indexOf("halfway-line"));
+    expect(painted.indexOf("scatter")).toBeLessThan(painted.lastIndexOf("outline"));
+    // ...but the grass still paints first, underneath everything.
+    expect(painted.indexOf("surface")).toBe(0);
+    expect(painted.lastIndexOf("stripe")).toBeLessThan(painted.indexOf("scatter"));
+  });
+
+  it("emits the markings in their own group only when linesOnTop is set", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400} appearance={{ linesOnTop: true }} />,
+    );
+
+    expect(container.querySelectorAll('[data-pitchkit-layer="pitch"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-pitchkit-layer="pitch-markings"]')).toHaveLength(1);
+    // The full set of parts is still painted exactly once, just regrouped.
+    for (const [part, count] of Object.entries(PARTS_WITH_EXPECTED_COUNT)) {
+      expect(container.querySelectorAll(`[data-pitchkit-part="${part}"]`)).toHaveLength(count);
+    }
   });
 
   it("stripes appearance paints stripe bands", () => {

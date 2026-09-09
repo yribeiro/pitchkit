@@ -22,9 +22,21 @@ mplsoccer's `VerticalPitch`) — useful for shot maps and attacking-third views.
 Colours are CSS variables (`--pitch-surface`, `--pitch-stripe`, `--pitch-lines`,
 `--pitch-marker-primary`) — set them once per theme, no per-instance props needed. See
 [Configuration > Tailwind](/docs/configuration/tailwind) for the full variable reference and
-how to reach them with Tailwind utilities. `stripes` and `goalType` are the two structural
-knobs, passed via the `appearance` prop:
+how to reach them with Tailwind utilities. `stripes`, `goalType` and `linesOnTop` are the
+structural knobs, passed via the `appearance` prop:
 
 ```tsx
 <Pitch type="statsbomb" appearance={{ stripes: true, goalType: "box" }} />
 ```
+
+| Key | Does |
+| --- | --- |
+| `stripes` | `true` for a sensible default count, or a number for exactly that many mown bands |
+| `goalType` | `"line"` (default) or `"box"` |
+| `linesOnTop` | Paints the markings above the layers instead of below them — mplsoccer's `line_zorder` |
+
+`linesOnTop` is off by default so discrete marks sit on top of the lines. Turn it on for the
+density layers ([`<Heatmap>`](/docs/overlays/heatmap),
+[`<PositionalHeatmap>`](/docs/overlays/positional-heatmap), [`<Hexbin>`](/docs/overlays/hexbin),
+[`<KDE>`](/docs/overlays/kde)), whose fills otherwise cover the markings underneath them. Only the
+markings move — the grass surface and stripes always stay at the bottom.

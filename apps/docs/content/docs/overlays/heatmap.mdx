@@ -17,3 +17,15 @@ content to size against before the client measures its container.
   <Heatmap data={shots} x={(s) => s.x} y={(s) => s.y} binsX={8} binsY={6} />
 </Pitch>
 ```
+
+## Keeping the pitch markings visible
+
+A filled density layer paints over the lines underneath it. Set `linesOnTop` on the pitch's
+`appearance` — mplsoccer's `line_zorder` — to paint the markings above the layers instead. Only the
+markings move; the grass surface and stripes stay underneath either way.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320} appearance={{ linesOnTop: true }}>
+  {/* ... */}
+</Pitch>
+```

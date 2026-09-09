@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { KDE, Pitch, Scatter } from "@pitchkit/react";
-import { docsAppearance } from "./docs-appearance";
+import { docsDensityAppearance } from "./docs-appearance";
 
 // StatsBomb coordinates (120 x 80). Defensive pressure events from one
 // half: a high press concentrated around the opposition's left channel,
@@ -61,7 +61,7 @@ export function KdeBasic() {
         type="statsbomb"
         width={width}
         height={Math.round(width / PITCH_ASPECT)}
-        appearance={docsAppearance}
+        appearance={docsDensityAppearance}
       >
         <KDE
           data={pressures}

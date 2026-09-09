@@ -30,7 +30,79 @@ import { parseStyleString } from "./style-string.js";
  * DOM-vs-JSX element-emission layer differs, so the two renderers cannot
  * drift on anything but syntax.
  */
-export function PitchGeometryShapes({
+export function PitchGeometryShapes(props: {
+  geometry: PitchGeometry;
+  transform: PixelTransform;
+  dimensions: PitchDimensions;
+  appearance?: PitchAppearance;
+}) {
+  return (
+    <g data-pitchkit-layer="pitch">
+      <PitchSurface {...props} />
+      <PitchMarkings {...props} />
+    </g>
+  );
+}
+
+/**
+ * The grass: the surface fill plus its stripe bands. Always painted
+ * first, underneath everything — `appearance.linesOnTop` moves the
+ * markings, never this.
+ */
+export function PitchSurfaceShapes(props: {
+  geometry: PitchGeometry;
+  transform: PixelTransform;
+  appearance?: PitchAppearance;
+}) {
+  return (
+    <g data-pitchkit-layer="pitch">
+      <PitchSurface {...props} />
+    </g>
+  );
+}
+
+/**
+ * Every painted line: halfway line, circles, boxes, arcs, goals, and the
+ * stroke-only outline border. Emitted separately from the surface so
+ * `<Pitch appearance={{ linesOnTop: true }}>` can render it *after* the
+ * layer children (mplsoccer's `line_zorder`), keeping the markings
+ * visible through an opaque density layer.
+ */
+export function PitchMarkingShapes(props: {
+  geometry: PitchGeometry;
+  transform: PixelTransform;
+  dimensions: PitchDimensions;
+  appearance?: PitchAppearance;
+}) {
+  return (
+    <g data-pitchkit-layer="pitch-markings">
+      <PitchMarkings {...props} />
+    </g>
+  );
+}
+
+function PitchSurface({
+  geometry,
+  transform,
+  appearance = {},
+}: {
+  geometry: PitchGeometry;
+  transform: PixelTransform;
+  appearance?: PitchAppearance;
+}) {
+  const stripeCount = resolveStripeCount(appearance.stripes);
+
+  return (
+    <>
+      <RectShape rect={geometry.outline} transform={transform} part="surface" />
+      {computeStripeBands(geometry.outline, stripeCount).map((band, i) => (
+        <RectShape key={i} rect={band} transform={transform} part="stripe" />
+      ))}
+    </>
+  );
+}
+
+function PitchMarkings({
   geometry,
   transform,
   dimensions,
@@ -41,17 +113,11 @@ export function PitchGeometryShapes({
   dimensions: PitchDimensions;
   appearance?: PitchAppearance;
 }) {
-  const stripeCount = resolveStripeCount(appearance.stripes);
   const depth = goalBoxDepth(dimensions.markings.cornerArcRadius);
   const goalType = appearance.goalType ?? "line";
 
   return (
-    <g data-pitchkit-layer="pitch">
-      <RectShape rect={geometry.outline} transform={transform} part="surface" />
-      {computeStripeBands(geometry.outline, stripeCount).map((band, i) => (
-        <RectShape key={i} rect={band} transform={transform} part="stripe" />
-      ))}
-
+    <>
       <LineShape line={geometry.halfwayLine} transform={transform} part="halfway-line" />
       <CircleShape circle={geometry.centerCircle} transform={transform} part="center-circle" />
       <PointShape point={geometry.centerSpot} transform={transform} part="center-spot" />
@@ -95,7 +161,7 @@ export function PitchGeometryShapes({
           path, so the inner half of an earlier-painted border would be masked
           by opaque stripes (issue #14). */}
       <RectShape rect={geometry.outline} transform={transform} part="outline" />
-    </g>
+    </>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Hexbin, Pitch } from "@pitchkit/react";
-import { docsAppearance } from "./docs-appearance";
+import { docsDensityAppearance } from "./docs-appearance";
 
 /**
  * A deterministic stand-in for a full match's touch data — hexbin only
@@ -64,7 +64,7 @@ export function HexbinBasic() {
         type="statsbomb"
         width={width}
         height={Math.round(width / PITCH_ASPECT)}
-        appearance={docsAppearance}
+        appearance={docsDensityAppearance}
       >
         <Hexbin
           data={touches}

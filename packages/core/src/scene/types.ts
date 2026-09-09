@@ -316,6 +316,22 @@ export type GoalType = "line" | "box";
 export interface PitchAppearance {
   readonly stripes?: PitchStripes;
   readonly goalType?: GoalType;
+  /**
+   * Paint the pitch markings *above* the layers rather than below them —
+   * mplsoccer's `line_zorder`. Off by default, so SVG marks (a scatter
+   * dot on the penalty spot, an arrow crossing the halfway line) sit on
+   * top of the lines, which is what you want for discrete marks.
+   *
+   * Turn it on for the density layers: an opaque `heatmap`/
+   * `positionalHeatmap`/`hexbin`/`kde` fill covers the whole pitch and
+   * would otherwise hide the markings underneath it — the same masking
+   * problem opaque stripes caused for the outline in issue #14, one
+   * level up.
+   *
+   * Only the *markings* move; the grass surface and stripes always stay
+   * at the bottom.
+   */
+  readonly linesOnTop?: boolean;
 }
 
 /**
