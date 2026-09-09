@@ -1,13 +1,6 @@
 ---
 name: pitchkit
-description: >-
-  Builds football (soccer) pitch visualisations for the web with PitchKit —
-  `@pitchkit/react` and `@pitchkit/core`. Use when the request involves a shot map,
-  pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi,
-  convex hull, or any other chart drawn on a football pitch in React or Next.js; when
-  the user names PitchKit, `@pitchkit/react`, `@pitchkit/core` or `<Pitch>`; when they
-  mention StatsBomb, Opta or UEFA pitch coordinates; or when they ask for mplsoccer's
-  behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react and @pitchkit/core packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core or the Pitch component; when they mention StatsBomb, Opta or UEFA pitch coordinates; or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 

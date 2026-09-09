@@ -40,17 +40,64 @@ describe("the bundled skill", () => {
     expect(Object.keys(manifest.bin)).toEqual(["pitchkit"]);
   });
 
-  it("opens with frontmatter carrying a name and a third-person description", async () => {
-    const source = await readFile(join(skillSourceDir, "SKILL.md"), "utf8");
-    const [, frontmatter] = source.split("---\n", 2);
+  // The published Agent Skills frontmatter rules, asserted rather than
+  // trusted to review: name and description are the only required fields,
+  // and both are validated on load — a violation doesn't degrade discovery,
+  // it can reject the skill outright.
+  // https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure
+  describe("its frontmatter", () => {
+    const read = async () => {
+      const source = await readFile(join(skillSourceDir, "SKILL.md"), "utf8");
+      const [, frontmatter, ...rest] = source.split("---\n");
+      return { source, frontmatter, body: rest.join("---\n") };
+    };
 
-    expect(source.startsWith("---\n")).toBe(true);
-    expect(frontmatter).toMatch(/^name: pitchkit$/m);
-    expect(frontmatter).toMatch(/^description: /m);
-    // Second person in a description is the documented cause of skill
-    // discovery failures — it's injected into a system prompt, where "you"
-    // means the agent, not the reader.
-    expect(frontmatter).not.toMatch(/\byou(r)?\b/i);
+    it("is a well-formed YAML block with the two required fields", async () => {
+      const { source, frontmatter } = await read();
+      expect(source.startsWith("---\n")).toBe(true);
+      expect(frontmatter).toMatch(/^name: /m);
+      expect(frontmatter).toMatch(/^description: /m);
+    });
+
+    it("uses a name that is lowercase, hyphenated, short, and not reserved", async () => {
+      const { frontmatter } = await read();
+      const name = /^name: (.*)$/m.exec(frontmatter)?.[1] ?? "";
+
+      expect(name).toMatch(/^[a-z0-9-]+$/);
+      expect(name.length).toBeLessThanOrEqual(64);
+      expect(name).not.toMatch(/anthropic|claude/);
+    });
+
+    it("keeps the description on one line, within 1024 chars, free of XML tags", async () => {
+      const { frontmatter } = await read();
+      const description = /^description: (.*)$/m.exec(frontmatter)?.[1] ?? "";
+
+      expect(description.length).toBeGreaterThan(0);
+      expect(description.length).toBeLessThanOrEqual(1024);
+      // Angle brackets read as XML tags, which the spec forbids here — so
+      // components get named as "the Pitch component", never as `<Pitch>`.
+      expect(description).not.toMatch(/<[^>]+>/);
+      // A folded scalar (`description: >-`) is valid YAML but leaves the
+      // value empty for the line-oriented parsers some agents use, on the
+      // one field that decides whether the skill is ever discovered.
+      expect(description).not.toMatch(/^[>|]/);
+    });
+
+    it("describes both what the skill does and when to use it, in third person", async () => {
+      const { frontmatter } = await read();
+      const description = /^description: (.*)$/m.exec(frontmatter)?.[1] ?? "";
+
+      expect(description).toMatch(/\bUse when\b/);
+      // Second person is the documented cause of discovery failures — the
+      // description is injected into a system prompt, where "you" is the
+      // agent, not the reader.
+      expect(description).not.toMatch(/\byou(r)?\b/i);
+    });
+
+    it("keeps the body under the 500-line guidance, deferring detail to references/", async () => {
+      const { body } = await read();
+      expect(body.split("\n").length).toBeLessThan(500);
+    });
   });
 });
 
