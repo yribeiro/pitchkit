@@ -38,6 +38,9 @@ and there are only three:
 | `pitch.lines(..., comet=True, transparent=True)` | `<Comet data={d} ... gradient />` |
 | `pitch.annotate(text, xy=(x, y))` | `<Annotate data={d} x={...} y={...} label={...} />` |
 | `pitch.bin_statistic(...)` + `pitch.heatmap(...)` | `<Heatmap data={d} x={...} y={...} binsX={...} binsY={...} weight={...} />` |
+| `pitch.bin_statistic_positional(...)` + `pitch.heatmap_positional(...)` | `<PositionalHeatmap data={d} x={...} y={...} layout="full" />` |
+| `pitch.hexbin(x, y, gridsize=...)` | `<Hexbin data={d} x={...} y={...} binsX={...} />` |
+| `pitch.kdeplot(x, y, bw_adjust=...)` | `<KDE data={d} x={...} y={...} bandwidth={...} />` |
 | `pitch.flow(xstart, ystart, xend, yend, bins=...)` | `<Flow data={d} ... binsX={...} binsY={...} />` |
 | `pitch.polygon(verts)` | `<Polygon data={d} points={...} />` |
 | `pitch.convexhull(x, y)` + `pitch.polygon` | `<ConvexHull data={d} x={...} y={...} />` |
@@ -62,9 +65,8 @@ the centre spot, approximate at box edges.
 
 ## Not ported (yet)
 
-Hexbin and KDE heatmaps, positional grids, radars, bumpy charts, and pizza charts are
-Milestone 2 scope — the [roadmap issues](https://github.com/yribeiro/pitchkit/issues)
-track each one. Everything in the tables above works today; see the
+Radars, bumpy charts, and pizza charts are Milestone 2 scope — the
+[roadmap issues](https://github.com/yribeiro/pitchkit/issues) track each one. Everything in the tables above works today; see the
 [gallery](/gallery) for finished equivalents of mplsoccer's own example charts.
 
 ## A worked example

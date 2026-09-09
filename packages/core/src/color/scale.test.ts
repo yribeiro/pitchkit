@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createColorScale } from "./colormap.js";
+import { createColorScale } from "./scale.js";
 
 describe("createColorScale", () => {
   it("maps the minimum value to exactly colorMin", () => {

@@ -2,6 +2,9 @@ import type { Scene } from "../../scene/types.js";
 import { createPixelTransform } from "../../transform/pixel-transform.js";
 import type { Renderer } from "../renderer.js";
 import { paintHeatmapLayer } from "./paint-heatmap.js";
+import { paintHexbinLayer } from "./paint-hexbin.js";
+import { paintKdeLayer } from "./paint-kde.js";
+import { paintPositionalHeatmapLayer } from "./paint-positional.js";
 
 export interface RenderHeatmapOptions {
   /** Defaults to `window.devicePixelRatio` (falling back to 1 if unavailable). */
@@ -9,17 +12,18 @@ export interface RenderHeatmapOptions {
 }
 
 /**
- * Paints every `heatmap`-type layer in a Scene onto a 2D canvas, ignoring
- * every other layer type — the SVG renderer handles those. Backs the
- * canvas at `cssSize x devicePixelRatio` physical pixels and scales the
- * drawing context accordingly (PRD §8.6), so dense layers stay crisp on
- * retina displays without every painter needing to know about DPR itself.
+ * Paints every density-type layer in a Scene (`heatmap`,
+ * `positionalHeatmap`, `hexbin`, `kde`) onto a 2D canvas, ignoring every
+ * other layer type — the SVG renderer handles those. Backs the canvas at
+ * `cssSize x devicePixelRatio` physical pixels and scales the drawing
+ * context accordingly (PRD §8.6), so dense layers stay crisp on retina
+ * displays without every painter needing to know about DPR itself.
  *
  * Does not attempt to composite with the SVG renderer's output — stacking
  * the resulting canvas with an `<svg>` in the DOM is a consumer concern
- * (eventually `@pitchkit/react`'s), not core's.
+ * (`@pitchkit/react`'s), not core's.
  */
-export function renderHeatmapLayersToCanvas(
+export function renderDensityLayersToCanvas(
   scene: Scene,
   canvas: HTMLCanvasElement,
   options: RenderHeatmapOptions = {},
@@ -44,17 +48,36 @@ export function renderHeatmapLayersToCanvas(
   const transform = createPixelTransform(scene.dimensions, scene.viewport);
 
   for (const layer of scene.layers) {
-    if (layer.type === "heatmap") {
-      paintHeatmapLayer(ctx, layer, scene.dimensions, transform);
+    switch (layer.type) {
+      case "heatmap":
+        paintHeatmapLayer(ctx, layer, scene.dimensions, transform);
+        break;
+      case "positionalHeatmap":
+        paintPositionalHeatmapLayer(ctx, layer, scene.dimensions, transform);
+        break;
+      case "hexbin":
+        paintHexbinLayer(ctx, layer, scene.dimensions, transform);
+        break;
+      case "kde":
+        paintKdeLayer(ctx, layer, scene.dimensions, transform);
+        break;
     }
   }
 }
 
-/** Concrete `Renderer` implementation backed by the Canvas heatmap path. */
+/**
+ * The original name for `renderDensityLayersToCanvas`, from when `heatmap`
+ * was the only Canvas-rendered layer. Kept as an alias because it shipped
+ * in `@pitchkit/core@0.1.0`'s public API — it paints every density layer,
+ * not just heatmaps.
+ */
+export const renderHeatmapLayersToCanvas = renderDensityLayersToCanvas;
+
+/** Concrete `Renderer` implementation backed by the Canvas density path. */
 export const canvasRenderer: Renderer<HTMLCanvasElement> = {
   render: (scene: Scene): HTMLCanvasElement => {
     const canvas = document.createElement("canvas");
-    renderHeatmapLayersToCanvas(scene, canvas);
+    renderDensityLayersToCanvas(scene, canvas);
     return canvas;
   },
 };

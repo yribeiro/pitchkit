@@ -65,7 +65,7 @@ function rectToPolygon(bounds: Rect): Point[] {
  * starts as the full `bounds` rectangle and gets clipped by the
  * perpendicular-bisector half-plane against every other site (keeping the
  * side closer to this site). O(n²) clips total — core has no runtime
- * dependencies (`heatmap/colormap.ts`), so this stands in for a
+ * dependencies (`color/scale.ts`), so this stands in for a
  * Delaunay-based library (e.g. d3-delaunay) at the point counts a pitch
  * plot needs (tens of players, not thousands).
  *

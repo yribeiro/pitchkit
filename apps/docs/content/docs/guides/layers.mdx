@@ -31,6 +31,9 @@ Five things to hold in your head — that's the whole model:
 | [`<Comet>`](/docs/overlays/comet) | Tapered, optionally fading trail | Carries, runs |
 | [`<Annotate>`](/docs/overlays/annotate) | Text label per datum | Player names, callouts |
 | [`<Heatmap>`](/docs/overlays/heatmap) | Binned grid on canvas | Density, xG surfaces |
+| [`<PositionalHeatmap>`](/docs/overlays/positional-heatmap) | Juego de Posición zones on canvas | Positional play, zone comparisons |
+| [`<Hexbin>`](/docs/overlays/hexbin) | Hexagonal binned density on canvas | Dense touch/event maps |
+| [`<KDE>`](/docs/overlays/kde) | Smooth density surface on canvas | Pressure, territory |
 | [`<Flow>`](/docs/overlays/flow) | One aggregate arrow per zone | Pass direction by zone |
 | [`<Polygon>`](/docs/overlays/polygon) | Arbitrary closed shape | Zone highlights |
 | [`<ConvexHull>`](/docs/overlays/convex-hull) | Hull of a point set | Team/player shape |
@@ -43,9 +46,9 @@ pre-processing step.
 
 ## SVG vs canvas
 
-Marks are SVG (crisp, inspectable, hoverable — most take a `tooltip` accessor). `<Heatmap>`
-is the exception: dense raster grids paint to a `<canvas>`, where a handful of `fillRect`
-calls beat thousands of DOM nodes. The split is per-layer and automatic — you compose both
+Marks are SVG (crisp, inspectable, hoverable — most take a `tooltip` accessor). The density
+layers are the exception: `<Heatmap>`, `<PositionalHeatmap>`, `<Hexbin>` and `<KDE>` paint to
+a `<canvas>`, where a handful of fills beat thousands of DOM nodes. The split is per-layer and automatic — you compose both
 kinds freely in one pitch.
 
 ## Escape hatch
