@@ -4,7 +4,7 @@ import { GalleryGrid } from "@/components/gallery-grid";
 export const metadata: Metadata = {
   title: "Gallery",
   description:
-    "Finished football visualisations built with PitchKit — shot maps, pass networks, heatmaps, Voronoi — each with its full source.",
+    "Finished football visualisations built with PitchKit — shot maps, pass networks, heatmaps, hexbins, KDE surfaces, Voronoi — each with its full source.",
 };
 
 export default function GalleryPage() {
