@@ -672,10 +672,13 @@ npx shadcn add @pitchkit/theme-broadcast
 **Largely complete as of 2026-09-08** — the library is public, installable, and documented at
 a real domain. Remaining work is release *automation*, not release itself.
 
-- [x] First npm publish — [`@pitchkit/core@0.1.0`](https://www.npmjs.com/package/@pitchkit/core)
-      and [`@pitchkit/react@0.1.0`](https://www.npmjs.com/package/@pitchkit/react), published
-      2026-09-08 under the `pitchkit` npm org. Verified end-to-end from a clean StackBlitz
-      project installing straight from the registry.
+- [x] First npm publish — [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
+      and [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react) under the
+      `pitchkit` npm org. `0.1.0` published 2026-09-08, verified end-to-end from a clean
+      StackBlitz project installing straight from the registry. `0.2.0` published
+      2026-09-09 (density overlays + `appearance.linesOnTop`) — this is also the release
+      that first carried the READMEs and `LICENSE` onto the npm package pages, since
+      `0.1.0`'s tarballs predated them.
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
