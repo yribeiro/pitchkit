@@ -407,9 +407,29 @@ npx shadcn add @pitchkit/theme-broadcast
 - **Testing:** Vitest (unit: transforms, dimensions, geometry); Playwright + visual snapshots for rendered output; jsdom/happy-dom for component tests.
 - **Quality:** ESLint + Prettier (or Biome), typecheck in CI, size-limit budgets, coverage on the coordinate/transform core.
 - **CI/CD:** GitHub Actions — lint, typecheck, test, visual-regression, build, bundle-size report on PRs.
+  _As built:_ `.github/workflows/ci.yml` runs lint, typecheck, test and build on every PR and
+  push to `main`, and is green. Visual-regression (Playwright) and bundle-size reporting are
+  **not implemented yet**.
 - **Release:** Changesets for semver + automated changelog + npm publish; canary tags from main.
-- **Docs deploy:** Vercel.
+  _As built:_ Changesets drives versioning and changelogs, but publishing is **manual** —
+  `.github/workflows/release.yml` exists and is `disabled_manually`. See
+  [issue #36](https://github.com/yribeiro/pitchkit/issues/36).
+- **Docs deploy:** Vercel. _As built:_ live at **[pitchkitjs.com](https://pitchkitjs.com)**,
+  auto-deploying on every push to `main` via Vercel's GitHub App integration — note this is
+  **not** a workflow in this repo, so there is no `vercel.json` or deploy job to find; PRs get
+  preview deployments automatically. Deploys are independent of `ci.yml`, so a red CI run does
+  not block production. Vercel Web Analytics is enabled via `<Analytics />` in
+  `apps/docs/app/layout.tsx`.
 - **Repo hygiene:** clear README with hero GIF, CONTRIBUTING, issue/PR templates, good-first-issues, MIT licence.
+  _As built:_ all done except the README hero GIF and good-first-issue labelling.
+- **Security posture (as of 2026-09-09):** 37 open Dependabot alerts (2 critical, 22 high,
+  12 medium, 1 low) and 7 open Dependabot PRs. Important scoping: **none of these reach the
+  published packages** — `@pitchkit/core` has zero runtime dependencies and `@pitchkit/react`
+  depends only on `core` (React is a peer), so consumers installing from npm are unaffected.
+  Every alert sits in `apps/docs` or `examples/*`, which are all `private: true` and never
+  published. The alerts that _do_ matter are the ones affecting the **deployed** docs site:
+  `next` (11 alerts, critical) and `sharp` (2, high). The rest are dev-only tooling
+  (`brace-expansion`, `js-yaml`, `browserslist`, `vitest`, `esbuild`).
 
 ## 11. Roadmap (phased)
 
@@ -669,7 +689,10 @@ a real domain. Remaining work is release *automation*, not release itself.
       Trusted Publishing (OIDC), which avoids storing a publish token and adds provenance
       attestation.
 - [x] Docs site deployed at a real domain — **[pitchkitjs.com](https://pitchkitjs.com)**
-      (landing page with interactive hero, `/gallery`, docs, API reference).
+      (landing page with interactive hero, `/gallery`, docs, API reference). Auto-deploys on
+      every push to `main` via Vercel's GitHub App (no workflow in this repo); PRs get preview
+      deployments. Vercel Web Analytics enabled via `<Analytics />` in the docs root layout,
+      verified live (`/_vercel/insights/script.js` → 200, `window.va` present).
 - [x] Naming finalised (§14) — `@pitchkit` npm scope claimed via the `pitchkit` org;
       GitHub repo is `yribeiro/pitchkit`.
 

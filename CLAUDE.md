@@ -59,7 +59,10 @@ namespace and get the library installable:
   and [`@pitchkit/react@0.1.0`](https://www.npmjs.com/package/@pitchkit/react), under the
   `pitchkit` npm org. Verified from a clean StackBlitz project installing off the registry.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
-  docs, API reference.
+  docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
+  there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs
+  get preview deployments too. Deploys are independent of `ci.yml` (a red CI run won't block
+  production). Vercel Web Analytics is wired up in `apps/docs/app/layout.tsx`.
 - **Repo hygiene done:** MIT `LICENSE` (root + both packages), root + per-package READMEs,
   `CONTRIBUTING.md`, issue/PR templates, npm metadata.
 - **Release automation NOT done.** `.github/workflows/release.yml` (changesets/action) is
@@ -73,3 +76,12 @@ namespace and get the library installable:
 
 Remaining: **Milestone 2 — v1.0 parity push** (see above), plus the release automation in
 issue #36.
+
+## Security posture (2026-09-09)
+
+37 open Dependabot alerts (2 critical, 22 high) and 7 open Dependabot PRs — but scope matters
+before reacting: **the published packages are clean.** `@pitchkit/core` has zero runtime
+dependencies and `@pitchkit/react` depends only on `core`, so nobody installing from npm is
+exposed. Every alert lives in `apps/docs` or `examples/*`, all of which are `private: true`.
+The ones that genuinely matter are those affecting the **live** docs site: `next` (11 alerts,
+critical) and `sharp` (2, high). Everything else is dev-only tooling. See PRD §10.
