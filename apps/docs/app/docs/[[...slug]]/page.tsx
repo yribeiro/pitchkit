@@ -1,4 +1,5 @@
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
+import defaultMdxComponents from "fumadocs-ui/mdx";
 import { notFound } from "next/navigation";
 import { source } from "@/lib/source";
 import { PitchPreview } from "@/components/pitch-preview";
@@ -15,7 +16,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent components={{ PitchPreview }} />
+        <MDXContent components={{ ...defaultMdxComponents, PitchPreview }} />
       </DocsBody>
     </DocsPage>
   );
