@@ -36,11 +36,21 @@ review apps `examples/react-vite/` and `examples/react-nextjs/`) via
 [PR #18](https://github.com/yribeiro/pitchkit/pull/18); and the shadcn-style showcase
 website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
 
-**Milestone 2 — v1.0 (parity push), now in progress.** Already landed ahead of the
-checklist: geometric overlays — Flow, Polygon, Convex Hull, Voronoi, Goal Angle — via
-[PR #25](https://github.com/yribeiro/pitchkit/pull/25). Open issues covering the rest of
-M2: density overlays/hexbin/KDE ([#19](https://github.com/yribeiro/pitchkit/issues/19)),
-radar/pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
+**Milestone 2 — v1.0 (parity push), now in progress.** Landed so far:
+
+- Geometric overlays — Flow, Polygon, Convex Hull, Voronoi, Goal Angle — via
+  [PR #25](https://github.com/yribeiro/pitchkit/pull/25).
+- Density overlays — `<PositionalHeatmap>` (Juego de Posición zones), `<Hexbin>`, `<KDE>` —
+  via [PR #39](https://github.com/yribeiro/pitchkit/pull/39), closing
+  [#19](https://github.com/yribeiro/pitchkit/issues/19). `createColorScale` moved to
+  `color/scale.ts` (public export unchanged) now four layers share it, and
+  `renderHeatmapLayersToCanvas` is an alias for the broader
+  `renderDensityLayersToCanvas`.
+- `appearance.linesOnTop` (mplsoccer's `line_zorder`) — paints markings above layer children
+  so opaque density fills don't cover them. Off by default.
+
+Open issues covering the rest of M2: radar/pizza charts
+([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
 ([#22](https://github.com/yribeiro/pitchkit/issues/22)), attack/territory and pass-map
 recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
 [#24](https://github.com/yribeiro/pitchkit/issues/24)), interactive pan/zoom
@@ -49,7 +59,11 @@ loaders ([#27](https://github.com/yribeiro/pitchkit/issues/27),
 [#29](https://github.com/yribeiro/pitchkit/issues/29),
 [#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding bug,
 [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
-105×68), not milestone-scoped.
+105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
+
+Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
+depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
+an internal examples registry for its own gallery, not a consumable `registry.json`.
 
 **Milestone 3 — publishing, largely complete (2026-09-08), pulled forward ahead of M2.**
 It was originally deferred until after M2's parity push, but was brought forward to claim the
