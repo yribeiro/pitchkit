@@ -4,7 +4,7 @@
 [![CI](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml/badge.svg)](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-TypeScript-native football pitch visualisation for the web — mplsoccer's feature set, built
+React-native football pitch visualisation for the web — mplsoccer's feature set, built
 for React and Next.js instead of matplotlib. See
 [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.
 

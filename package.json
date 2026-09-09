@@ -2,7 +2,7 @@
   "name": "pitchkit",
   "private": true,
   "version": "0.0.0",
-  "description": "TypeScript-native football pitch visualisation for the web — mplsoccer's feature set, built for React.",
+  "description": "React-native football pitch visualisation for the web — mplsoccer's feature set, built for React and Next.js instead of matplotlib.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
   "homepage": "https://github.com/yribeiro/pitchkit#readme",

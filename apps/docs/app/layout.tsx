@@ -7,10 +7,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: {
     template: "%s | PitchKit",
-    default: "PitchKit — TypeScript football pitch visualisation",
+    default: "PitchKit — React football pitch visualisation",
   },
   description:
-    "PitchKit is a TypeScript-native football pitch visualisation library for the web, with first-class React bindings.",
+    "PitchKit is a React-native football pitch visualisation library for the web, with first-class TypeScript types.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
