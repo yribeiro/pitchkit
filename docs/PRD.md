@@ -1,6 +1,6 @@
 # ⚽ PRD — PitchKit (mplsoccer for the web)
 
-> **TL;DR** — Build the missing piece of the football-analytics web stack: a TypeScript-native, framework-agnostic visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser, with first-class React/Next.js bindings, responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
+> **TL;DR** — Build the missing piece of the football-analytics web stack: a React-native visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser as first-class React/Next.js components, with responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
 _Status: Draft v0.4 · Owner: Yohahn Ribeiro · Last updated: 06 Sep 2026_
 
@@ -18,7 +18,7 @@ The deliverable is three things: (1) the **library** (a framework-agnostic core 
 
 The modern delivery surface for analytics — internal club tools, scouting platforms, fan-facing products — is increasingly the **browser**. There, the gaps are:
 
-- **No TypeScript-native equivalent.** Existing options are thin or unmaintained.
+- **No React-native equivalent.** Existing options are thin or unmaintained.
 - **No responsive, multi-device story.** mplsoccer outputs fixed-size raster images; web needs fluid, retina-crisp, touch-friendly rendering.
 - **No first-class interactivity.** Hover tooltips, selection, animation, and data-driven updates are first-class on the web and absent from a static image pipeline.
 - **Fragmented ecosystem.** Pitch drawing, statistical layers, and player charts live in separate, incompatible micro-libraries.
@@ -33,7 +33,7 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 | **football-lineup-generator** | TS     | Lineups/formations only                         | Canvas              | Low activity | No event data, no stats layers                    |
 | **Pitch.js**                  | JS     | Pitch rendering                                 | DOM/SVG             | Minimal      | Pitch only, no analytics layer                    |
 
-**Conclusion:** there is a clear, unoccupied niche for a comprehensive, TypeScript-first, framework-agnostic library with a proper React story. Nobody has built "mplsoccer for the web."
+**Conclusion:** there is a clear, unoccupied niche for a comprehensive, React-native library with a proper TypeScript story. Nobody has built "mplsoccer for the web."
 
 ## 4. Goals & Non-Goals
 

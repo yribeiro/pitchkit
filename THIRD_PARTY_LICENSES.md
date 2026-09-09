@@ -1,6 +1,6 @@
 # Third-Party Licenses
 
-pitchkit is a TypeScript-native reimplementation of the pitch visualisation
+pitchkit is a React-native reimplementation of the pitch visualisation
 concepts pioneered by [mplsoccer](https://github.com/andrewRowlinson/mplsoccer)
 (matplotlib-based, Python). No mplsoccer source files are vendored directly,
 but portions of pitchkit's design — pitch dimension specs, coordinate

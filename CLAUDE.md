@@ -1,6 +1,6 @@
 # PitchKit
 
-TypeScript-native football pitch visualisation library (mplsoccer for the web).
+React-native football pitch visualisation library (mplsoccer for the web).
 
 Full PRD: see `docs/PRD.md` — read this before any architectural work.
 
