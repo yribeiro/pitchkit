@@ -63,7 +63,8 @@ OG images, PDFs).
 ### Components
 
 `<Pitch>` · `<VerticalPitch>` · `<Scatter>` · `<Annotate>` · `<Arrows>` · `<Comet>` ·
-`<Heatmap>` · `<Polygon>` · `<ConvexHull>` · `<Voronoi>` · `<GoalAngle>` · `<Flow>` ·
+`<Heatmap>` · `<PositionalHeatmap>` · `<Hexbin>` · `<KDE>` · `<Polygon>` · `<ConvexHull>` ·
+`<Voronoi>` · `<GoalAngle>` · `<Flow>` ·
 `usePitch()`
 
 Every visual prop takes either a static value or a function of the datum, so `fill="red"` and

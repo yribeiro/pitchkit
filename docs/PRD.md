@@ -657,7 +657,7 @@ npx shadcn add @pitchkit/theme-broadcast
 ### Milestone 2 — v1.0 (parity push)
 
 - [ ] Remaining pitch types + Standardizer exposed.
-- [ ] Positional heatmap, hexbin, KDE ([issue #19](https://github.com/yribeiro/pitchkit/issues/19)).
+- [x] Positional heatmap, hexbin, KDE ([issue #19](https://github.com/yribeiro/pitchkit/issues/19)).
 - [x] Flow, polygon, convex hull, Voronoi, goal angle
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
 - [ ] Radar + Pizza charts.

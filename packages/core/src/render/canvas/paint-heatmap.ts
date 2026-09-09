@@ -1,6 +1,6 @@
 import type { PitchDimensions } from "../../dimensions/types.js";
 import { computeHeatmapBins } from "../../heatmap/bins.js";
-import { createColorScale } from "../../heatmap/colormap.js";
+import { createColorScale } from "../../color/scale.js";
 import type { HeatmapLayer } from "../../scene/types.js";
 import type { PixelTransform } from "../../transform/types.js";
 

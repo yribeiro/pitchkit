@@ -106,11 +106,85 @@ export interface HeatmapLayer<T = unknown> {
 }
 
 /**
+ * Which Juego de Posición layout to bin into: the full 20-zone grid, the
+ * five lateral bands only, or the six vertical columns only. Mirrors
+ * mplsoccer's `positional` argument.
+ */
+export type PositionalLayout = "full" | "horizontal" | "vertical";
+
+/**
+ * Like `HeatmapLayer`, but binned into Juego de Posición *zones* derived
+ * from the pitch markings (penalty areas, six-yard boxes, halfway line)
+ * rather than a uniform `binsX` x `binsY` grid — mplsoccer's
+ * `bin_statistic_positional` + `heatmap_positional`. Also Canvas-rendered.
+ */
+export interface PositionalHeatmapLayer<T = unknown> {
+  readonly type: "positionalHeatmap";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  /** Omitted = count of points per zone; provided = sum of this per zone. */
+  readonly weight?: Accessor<T, number>;
+  /** Defaults to `"full"`, the 20-zone layout. */
+  readonly layout?: PositionalLayout;
+  readonly colorMin?: string;
+  readonly colorMax?: string;
+  /** Stroke colour for zone outlines; omitted = no outlines. */
+  readonly stroke?: string;
+  readonly strokeWidth?: number;
+}
+
+/**
+ * Hexagonally-binned density (mplsoccer's `hexbin`): the same aggregation
+ * as `HeatmapLayer` over a hexagonal lattice, which packs more evenly than
+ * a square grid and so shows less axis-aligned banding. Canvas-rendered.
+ */
+export interface HexbinLayer<T = unknown> {
+  readonly type: "hexbin";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  /** Omitted = count of points per hexagon; provided = sum of this per hexagon. */
+  readonly weight?: Accessor<T, number>;
+  /** Hexagon columns across the pitch length; the cell size follows from it. */
+  readonly binsX?: number;
+  readonly colorMin?: string;
+  readonly colorMax?: string;
+  /** Stroke colour for hexagon outlines; omitted = no outlines. */
+  readonly stroke?: string;
+  readonly strokeWidth?: number;
+}
+
+/**
+ * A smooth 2D kernel density estimate (mplsoccer's `kdeplot`), evaluated
+ * on a grid and painted as a continuous surface. Unlike the binned
+ * layers, low-density areas fade out rather than being filled with
+ * `colorMin`, so the pitch stays visible underneath. Canvas-rendered.
+ */
+export interface KdeLayer<T = unknown> {
+  readonly type: "kde";
+  readonly data: readonly T[];
+  readonly x: Accessor<T, number>;
+  readonly y: Accessor<T, number>;
+  /** Omitted = every point counts equally; provided = each point's contribution is scaled by this. */
+  readonly weight?: Accessor<T, number>;
+  /** Grid cells per axis the estimate is sampled on; higher = smoother, slower. */
+  readonly resolution?: number;
+  /** Kernel bandwidth in provider units; omitted = Silverman's rule of thumb per axis. */
+  readonly bandwidth?: number;
+  readonly colorMin?: string;
+  readonly colorMax?: string;
+  /** Opacity at the densest cell; density fades linearly to fully transparent at zero. */
+  readonly maxOpacity?: number;
+}
+
+/**
  * The discriminated union of all layer kinds a Scene can draw. Milestone 1
- * adds Scatter/Annotate, then Arrows/Comet, then Heatmap here. Heatmap is
- * the one variant the SVG renderer deliberately skips — see
- * `render/canvas/render-heatmap.ts`, which is the only renderer that reads
- * it, using the same Scene/PixelTransform as everything else.
+ * adds Scatter/Annotate, then Arrows/Comet, then Heatmap here; Milestone 2
+ * adds the remaining density layers (positional heatmap, hexbin, KDE).
+ * Those four density variants are the ones the SVG renderer deliberately
+ * skips — see `render/canvas/render-heatmap.ts`, the only renderer that
+ * reads them, using the same Scene/PixelTransform as everything else.
  *
  * Erased to `any` rather than `unknown` here deliberately: each accessor
  * function's parameter type makes every `*Layer<T>` invariant in `T` under
@@ -121,7 +195,14 @@ export interface HeatmapLayer<T = unknown> {
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Layer =
-  ScatterLayer<any> | AnnotateLayer<any> | ArrowsLayer<any> | CometLayer<any> | HeatmapLayer<any>;
+  | ScatterLayer<any>
+  | AnnotateLayer<any>
+  | ArrowsLayer<any>
+  | CometLayer<any>
+  | HeatmapLayer<any>
+  | PositionalHeatmapLayer<any>
+  | HexbinLayer<any>
+  | KdeLayer<any>;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
@@ -235,6 +316,22 @@ export type GoalType = "line" | "box";
 export interface PitchAppearance {
   readonly stripes?: PitchStripes;
   readonly goalType?: GoalType;
+  /**
+   * Paint the pitch markings *above* the layers rather than below them —
+   * mplsoccer's `line_zorder`. Off by default, so SVG marks (a scatter
+   * dot on the penalty spot, an arrow crossing the halfway line) sit on
+   * top of the lines, which is what you want for discrete marks.
+   *
+   * Turn it on for the density layers: an opaque `heatmap`/
+   * `positionalHeatmap`/`hexbin`/`kde` fill covers the whole pitch and
+   * would otherwise hide the markings underneath it — the same masking
+   * problem opaque stripes caused for the outline in issue #14, one
+   * level up.
+   *
+   * Only the *markings* move; the grass surface and stripes always stay
+   * at the bottom.
+   */
+  readonly linesOnTop?: boolean;
 }
 
 /**

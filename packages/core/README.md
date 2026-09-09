@@ -49,9 +49,10 @@ const transform = createPixelTransform({ dimensions, viewport, orientation: "ver
 **Geometry** — `computeConvexHull`, `computeVoronoiCells`, `computeGoalAngle`,
 `computeFlowBins`, `computePolygonCentroid`, plus arc/arrow/comet path maths.
 
-**Heatmaps** — `computeHeatmapBins` for binning (count or weighted), `createColorScale` for a
-dependency-free colour ramp, and `renderHeatmapLayersToCanvas` for painting to a
-`devicePixelRatio`-aware canvas.
+**Density** — `computeHeatmapBins` (uniform grid), `computePositionalBins` (Juego de Posición
+zones), `computeHexBins` (hexagonal lattice) and `computeKdeGrid` (Gaussian KDE) for binning
+(count or weighted), `createColorScale` for a dependency-free colour ramp, and
+`renderDensityLayersToCanvas` for painting to a `devicePixelRatio`-aware canvas.
 
 **Theming** — `pitchTokens` (CSS variable names, for autocomplete) and `partStyle`.
 

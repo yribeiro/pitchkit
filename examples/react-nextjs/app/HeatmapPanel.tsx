@@ -32,11 +32,13 @@ interface HeatmapPanelProps {
  * there's no server Canvas 2D context to render into.
  */
 export function HeatmapPanel({ appearance, colorMin, colorMax }: HeatmapPanelProps) {
+  // The heatmap fill covers the whole pitch, so the markings paint above it.
+  const pitchAppearance = { ...appearance, linesOnTop: true };
   return (
     <section>
       <h2>Client Pitch + Heatmap</h2>
       <p>Canvas painting needs the browser, so this panel is client-only for its content.</p>
-      <Pitch type="statsbomb" width={460} height={307} appearance={appearance}>
+      <Pitch type="statsbomb" width={460} height={307} appearance={pitchAppearance}>
         <Heatmap
           data={shots}
           x={(s) => s.x}

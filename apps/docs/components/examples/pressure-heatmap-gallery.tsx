@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Heatmap, Pitch } from "@pitchkit/react";
-import { docsAppearance } from "./docs-appearance";
+import { docsDensityAppearance } from "./docs-appearance";
 
 // StatsBomb coordinates (120 x 80). Pressure events — where the team wins
 // the ball back or forces a rushed pass. Concentrated in midfield and
@@ -51,7 +51,7 @@ export function PressureHeatmapGallery() {
         type="statsbomb"
         width={width}
         height={Math.round(width / PITCH_ASPECT)}
-        appearance={docsAppearance}
+        appearance={docsDensityAppearance}
       >
         <Heatmap
           data={pressures}

@@ -31,6 +31,10 @@ export type {
   ArrowsLayer,
   CometLayer,
   HeatmapLayer,
+  PositionalLayout,
+  PositionalHeatmapLayer,
+  HexbinLayer,
+  KdeLayer,
   PolygonLayer,
   ConvexHullLayer,
   VoronoiLayer,
@@ -49,7 +53,13 @@ export {
 
 export type { HeatmapBin } from "./heatmap/bins.js";
 export { computeHeatmapBins } from "./heatmap/bins.js";
-export { createColorScale } from "./heatmap/colormap.js";
+export type { PositionalZone, PositionalBin } from "./heatmap/positional.js";
+export { computePositionalZones, computePositionalBins } from "./heatmap/positional.js";
+export type { HexBin } from "./hexbin/bins.js";
+export { computeHexBins, hexCorners } from "./hexbin/bins.js";
+export type { KdeGrid } from "./kde/density.js";
+export { computeKdeGrid, silvermanBandwidth } from "./kde/density.js";
+export { createColorScale } from "./color/scale.js";
 
 export type { Renderer } from "./render/renderer.js";
 // renderSceneToSVGElement/svgRenderer are internal building blocks kept for
@@ -58,7 +68,11 @@ export type { Renderer } from "./render/renderer.js";
 // (resolves issue #6). Use @pitchkit/react for actual rendering.
 export { renderSceneToSVGElement, svgRenderer } from "./render/svg/render-scene.js";
 export type { RenderHeatmapOptions } from "./render/canvas/render-heatmap.js";
-export { renderHeatmapLayersToCanvas, canvasRenderer } from "./render/canvas/render-heatmap.js";
+export {
+  renderDensityLayersToCanvas,
+  renderHeatmapLayersToCanvas,
+  canvasRenderer,
+} from "./render/canvas/render-heatmap.js";
 export { arcSweepFlag, arcPathData } from "./render/arc-sweep.js";
 export { computeArrowHeadCorners, ARROW_HEAD_HALF_ANGLE } from "./render/arrow-geometry.js";
 export { computeCometQuad } from "./render/comet-geometry.js";

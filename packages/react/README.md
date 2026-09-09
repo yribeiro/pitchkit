@@ -62,6 +62,9 @@ and `fill={(d) => d.teamColor}` are the same prop.
 | `<Arrows>`         | Straight arrows — passes, carries                           |
 | `<Comet>`          | Tapered lines with direction implied by width               |
 | `<Heatmap>`        | Binned density on Canvas (client-only)                      |
+| `<PositionalHeatmap>` | Juego de Posición zone density on Canvas (client-only)   |
+| `<Hexbin>`         | Hexagonal density on Canvas (client-only)                   |
+| `<KDE>`            | Smooth kernel density surface on Canvas (client-only)       |
 | `<Polygon>`        | Arbitrary closed shapes                                     |
 | `<ConvexHull>`     | Convex hull of a point set                                  |
 | `<Voronoi>`        | Voronoi cells, clipped to the pitch                         |

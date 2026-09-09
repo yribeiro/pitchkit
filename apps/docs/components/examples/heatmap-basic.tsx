@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Heatmap, Pitch, Scatter } from "@pitchkit/react";
-import { docsAppearance } from "./docs-appearance";
+import { docsDensityAppearance } from "./docs-appearance";
 
 // StatsBomb coordinates (120 x 80) — a fuller shot map: a dense cluster of
 // good chances inside the box, a spread of half-chances around its edge,
@@ -66,7 +66,7 @@ export function HeatmapBasic() {
         type="statsbomb"
         width={width}
         height={Math.round(width / PITCH_ASPECT)}
-        appearance={docsAppearance}
+        appearance={docsDensityAppearance}
       >
         <Heatmap
           data={shots}

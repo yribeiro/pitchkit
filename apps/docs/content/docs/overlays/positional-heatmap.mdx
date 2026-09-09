@@ -1,0 +1,57 @@
+---
+title: Positional Heatmap
+description: Density binned into Juego de Posición zones instead of a uniform grid.
+---
+
+<PitchPreview name="positional-heatmap-basic" />
+
+## Usage
+
+`<PositionalHeatmap>` aggregates the same way `<Heatmap>` does — count per zone, or the sum of a
+`weight` accessor — but the cells come from the **pitch markings** rather than a `binsX` x `binsY`
+grid: the penalty-area lines, the halfway line and the midpoints between them give six columns, and
+the touchlines, penalty-area edges and six-yard-box edges give five lateral bands. This is
+mplsoccer's `bin_statistic_positional` + `heatmap_positional`, ported zone-for-zone, so the layout
+matches what analysts already read.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320}>
+  <PositionalHeatmap data={touches} x={(t) => t.x} y={(t) => t.y} />
+</Pitch>
+```
+
+## Layouts
+
+The default `"full"` layout is not a grid — it's the 20-zone Juego de Posición board: the two flank
+bands split across all six columns, the three central bands split only at the penalty-area lines,
+and each penalty area as a single wide zone.
+
+| `layout`           | Zones | Shape                                 |
+| ------------------ | ----- | ------------------------------------- |
+| `"full"` (default) | 20    | The Juego de Posición board           |
+| `"horizontal"`     | 5     | Lateral bands only, full pitch length |
+| `"vertical"`       | 6     | Columns only, full pitch width        |
+
+```tsx
+<PositionalHeatmap data={touches} x={(t) => t.x} y={(t) => t.y} layout="horizontal" />
+```
+
+## Zone outlines
+
+Zone boundaries are off by default — they compete with the pitch markings they're derived from. Pass
+`stroke` (and optionally `strokeWidth`) to draw them, as the example above does.
+
+Like `<Heatmap>`, this layer renders to a `<canvas>` inside the pitch's SVG via `<foreignObject>`,
+so it needs a fixed-size `<Pitch>` (`width`/`height`).
+
+## Keeping the pitch markings visible
+
+A filled density layer paints over the lines underneath it. Set `linesOnTop` on the pitch's
+`appearance` — mplsoccer's `line_zorder` — to paint the markings above the layers instead. Only the
+markings move; the grass surface and stripes stay underneath either way.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320} appearance={{ linesOnTop: true }}>
+  {/* ... */}
+</Pitch>
+```

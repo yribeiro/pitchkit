@@ -9,7 +9,7 @@ function cross(o: Point, a: Point, b: Point): number {
  * lexicographically, then build the lower and upper hull chains in one pass
  * each, popping any point that would make a clockwise (non-left) turn.
  * O(n log n), no dependency — the same "hand-rolled over a library" choice
- * as `heatmap/colormap.ts`'s `createColorScale`.
+ * as `color/scale.ts`'s `createColorScale`.
  *
  * Fewer than 3 distinct points have no well-defined hull interior; returns
  * the deduplicated points as-is (a point or a segment) rather than throwing,

@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
 import type { HeatmapLayer, Layer, ScatterLayer, Scene } from "../../scene/types.js";
-import { canvasRenderer, renderHeatmapLayersToCanvas } from "./render-heatmap.js";
+import {
+  canvasRenderer,
+  renderDensityLayersToCanvas,
+  renderHeatmapLayersToCanvas,
+} from "./render-heatmap.js";
 
 interface FillRectCall {
   x: number;
@@ -163,5 +167,98 @@ describe("canvasRenderer", () => {
     expect(canvas).toBeInstanceOf(HTMLCanvasElement);
     expect(canvas.style.width).toBe("250px");
     expect(canvas.style.height).toBe("150px");
+  });
+});
+
+describe("renderDensityLayersToCanvas", () => {
+  it("is the same function as the renderHeatmapLayersToCanvas alias kept from 0.1.0", () => {
+    expect(renderDensityLayersToCanvas).toBe(renderHeatmapLayersToCanvas);
+  });
+
+  it("dispatches positionalHeatmap layers to the positional painter", () => {
+    const { calls } = stubCanvasContext();
+    const canvas = document.createElement("canvas");
+    const scene: Scene = {
+      dimensions,
+      viewport: { width: 600, height: 400, orientation: "horizontal" },
+      layers: [
+        {
+          type: "positionalHeatmap",
+          data: [{ x: 60, y: 40 }],
+          x: (d: { x: number }) => d.x,
+          y: (d: { y: number }) => d.y,
+        },
+      ],
+    };
+
+    renderDensityLayersToCanvas(scene, canvas);
+
+    expect(calls).toHaveLength(20); // the full Juego de Posición layout
+  });
+
+  it("dispatches kde layers to the KDE painter", () => {
+    const { calls } = stubCanvasContext();
+    const canvas = document.createElement("canvas");
+    const scene: Scene = {
+      dimensions,
+      viewport: { width: 600, height: 400, orientation: "horizontal" },
+      layers: [
+        {
+          type: "kde",
+          data: [{ x: 60, y: 40 }],
+          x: (d: { x: number }) => d.x,
+          y: (d: { y: number }) => d.y,
+          resolution: 8,
+          bandwidth: 20,
+        },
+      ],
+    };
+
+    renderDensityLayersToCanvas(scene, canvas);
+
+    expect(calls.length).toBeGreaterThan(0);
+    expect(calls.length).toBeLessThanOrEqual(64);
+  });
+
+  it("dispatches hexbin layers to the hexbin painter (paths, not fillRects)", () => {
+    const paths: string[] = [];
+    const ctx = {
+      fillStyle: "",
+      strokeStyle: "",
+      lineWidth: 0,
+      clearRect() {},
+      setTransform() {},
+      save: () => paths.push("save"),
+      restore: () => paths.push("restore"),
+      beginPath: () => paths.push("beginPath"),
+      rect: () => paths.push("rect"),
+      clip: () => paths.push("clip"),
+      moveTo: () => paths.push("moveTo"),
+      lineTo: () => paths.push("lineTo"),
+      closePath: () => paths.push("closePath"),
+      fill: () => paths.push("fill"),
+    };
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
+      ctx as unknown as CanvasRenderingContext2D,
+    );
+
+    const canvas = document.createElement("canvas");
+    const scene: Scene = {
+      dimensions,
+      viewport: { width: 600, height: 400, orientation: "horizontal" },
+      layers: [
+        {
+          type: "hexbin",
+          data: [{ x: 60, y: 40 }],
+          x: (d: { x: number }) => d.x,
+          y: (d: { y: number }) => d.y,
+        },
+      ],
+    };
+
+    renderDensityLayersToCanvas(scene, canvas);
+
+    expect(paths.filter((op) => op === "fill")).toHaveLength(1);
+    expect(paths).toContain("clip");
   });
 });

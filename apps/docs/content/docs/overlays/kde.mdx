@@ -1,0 +1,53 @@
+---
+title: KDE
+description: A smooth kernel density surface, for pressure and territory maps.
+---
+
+<PitchPreview name="kde-basic" />
+
+## Usage
+
+`<KDE>` estimates a continuous density surface from point data via a 2D Gaussian kernel — mplsoccer's
+`kdeplot`. Where `<Heatmap>` is a hard histogram, each point here spreads influence over its
+neighbourhood, so a handful of events reads as a cloud rather than a grid of cells.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320}>
+  <KDE data={pressures} x={(p) => p.x} y={(p) => p.y} />
+</Pitch>
+```
+
+## Bandwidth
+
+`bandwidth` is the smoothing radius in **provider units** (7 StatsBomb units ≈ 7 yards). Leave it
+unset and each axis gets its own bandwidth from Silverman's rule of thumb — `σ · n^(-1/6)` — computed
+from the data's own spread, which is the same default seaborn's `kdeplot` starts from. Set it
+explicitly when the data's spread isn't the right smoothing scale, e.g. a small sample you want to
+read tightly.
+
+```tsx
+<KDE data={pressures} x={(p) => p.x} y={(p) => p.y} bandwidth={7} />
+```
+
+## Opacity and resolution
+
+Density is drawn with a per-cell opacity ramp: zero density is fully transparent and the peak sits at
+`maxOpacity` (default `0.9`), so the pitch stays visible under the tail of the surface rather than
+being washed in `colorMin`.
+
+`resolution` is the grid the estimate is sampled on, per axis (default `64`). Raise it for a smoother
+surface, lower it for speed.
+
+Like every Canvas layer, this needs a fixed-size `<Pitch>` (`width`/`height`).
+
+## Keeping the pitch markings visible
+
+A filled density layer paints over the lines underneath it. Set `linesOnTop` on the pitch's
+`appearance` — mplsoccer's `line_zorder` — to paint the markings above the layers instead. Only the
+markings move; the grass surface and stripes stay underneath either way.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320} appearance={{ linesOnTop: true }}>
+  {/* ... */}
+</Pitch>
+```

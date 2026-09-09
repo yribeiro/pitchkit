@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CSSProperties } from "react";
+import { DensityPanel } from "./DensityPanel";
 import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
 import { TailwindPanel } from "./TailwindPanel";
@@ -240,6 +241,11 @@ export function Controls() {
       <div className="grid">
         <LineupPanel appearance={appearance} />
         <HeatmapPanel
+          appearance={appearance}
+          colorMin={heatmapColors.colorMin}
+          colorMax={heatmapColors.colorMax}
+        />
+        <DensityPanel
           appearance={appearance}
           colorMin={heatmapColors.colorMin}
           colorMax={heatmapColors.colorMax}

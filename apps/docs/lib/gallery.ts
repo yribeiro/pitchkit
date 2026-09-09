@@ -1,8 +1,10 @@
 /**
  * The /gallery page's catalogue: which registry examples appear, under
  * which category tab, with display copy. Scoped deliberately to what's
- * buildable with today's mark set (issue #28) — new-mark entries (hexbin,
- * KDE, radar…) get added here incrementally as each Milestone 2 mark lands.
+ * buildable with today's mark set (issue #28) — new-mark entries get added
+ * here incrementally as each Milestone 2 mark lands. Positional heatmap,
+ * hexbin and KDE arrived with issue #19; radar/pizza and the goal view are
+ * still to come.
  */
 
 export const GALLERY_CATEGORIES = ["All", "Shooting", "Passing", "Structure", "Density"] as const;
@@ -75,5 +77,29 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
       "Ball-recovery pressure events binned over a fine grid on the canvas path — dense raster data without SVG's DOM cost.",
     category: "Density",
     docsHref: "/docs/overlays/heatmap",
+  },
+  {
+    name: "zone-occupation-gallery",
+    title: "Zone occupation",
+    description:
+      "Touches binned into the Juego de Posición zones — mplsoccer's positional heatmap, with each zone's share of possession on hover.",
+    category: "Density",
+    docsHref: "/docs/overlays/positional-heatmap",
+  },
+  {
+    name: "touch-map-gallery",
+    title: "Touch map",
+    description:
+      "A full match's touches on a hexagonal lattice — even packing in every direction, and empty cells left as grass.",
+    category: "Density",
+    docsHref: "/docs/overlays/hexbin",
+  },
+  {
+    name: "shot-territory-gallery",
+    title: "Shot territory",
+    description:
+      "A forward's season of shots as a smooth kernel density surface, cropped to the attacking half — the shape of a shooting profile, not a bin count.",
+    category: "Density",
+    docsHref: "/docs/overlays/kde",
   },
 ];

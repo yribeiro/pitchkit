@@ -1,0 +1,49 @@
+---
+title: Hexbin
+description: Hexagonal density binning, for dense touch and event maps.
+---
+
+<PitchPreview name="hexbin-basic" />
+
+## Usage
+
+`<Hexbin>` bins `data` into a hexagonal lattice instead of a rectangular grid — mplsoccer's
+`hexbin`. Hexagons pack more evenly than squares (every neighbour is the same distance away), so
+dense event data reads with less of the axis-aligned banding a `<Heatmap>` shows at the same
+resolution.
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320}>
+  <Hexbin data={touches} x={(t) => t.x} y={(t) => t.y} binsX={18} />
+</Pitch>
+```
+
+## Cell size
+
+`binsX` is the number of hexagon **columns** across the pitch length; the cell size follows from it,
+so the same value looks right on a 120x80 StatsBomb pitch and a 100x100 Opta one. It defaults to
+`20`.
+
+## Empty cells
+
+Unlike `<Heatmap>`, hexagons with no data aren't drawn at all, so the pitch stays visible wherever
+there was no activity — no `colorMin` wash to opt out of. The lattice is clipped to the pitch
+outline, so edge hexagons don't spill past the touchlines.
+
+Pass `weight` to sum a value per hexagon (e.g. xG) rather than counting points, and `stroke` to
+outline each cell. Like every Canvas layer, this needs a fixed-size `<Pitch>` (`width`/`height`).
+
+## Keeping the pitch markings visible
+
+A filled density layer paints over the lines underneath it. Set `linesOnTop` on the pitch's
+`appearance` — mplsoccer's `line_zorder` — to paint the markings above the layers instead:
+
+```tsx
+<Pitch type="statsbomb" width={480} height={320} appearance={{ linesOnTop: true }}>
+  <Hexbin data={touches} x={(t) => t.x} y={(t) => t.y} />
+</Pitch>
+```
+
+Only the *markings* move — the grass surface and stripes stay underneath either way. It's off by
+default so that discrete SVG marks (a scatter dot on the penalty spot) still sit on top of the
+lines, which is what you want everywhere except a density fill.

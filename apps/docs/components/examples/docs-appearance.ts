@@ -12,3 +12,13 @@ export const docsAppearance: PitchAppearance = {
   stripes: true,
   goalType: "box",
 };
+
+/**
+ * The density-layer variant: identical, but with the markings painted
+ * above the layers (mplsoccer's `line_zorder`). An opaque heatmap /
+ * hexbin / KDE fill would otherwise cover the lines it sits on.
+ */
+export const docsDensityAppearance: PitchAppearance = {
+  ...docsAppearance,
+  linesOnTop: true,
+};
