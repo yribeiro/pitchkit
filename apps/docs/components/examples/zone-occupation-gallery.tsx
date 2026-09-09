@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { computePositionalBins, getPitchDimensions } from "@pitchkit/core";
-import { Pitch, PositionalHeatmap, usePitch } from "@pitchkit/react";
+import { Pitch, Polygon, PositionalHeatmap } from "@pitchkit/react";
 import { docsDensityAppearance } from "./docs-appearance";
 
 interface Touch {
@@ -10,10 +10,12 @@ interface Touch {
   y: number;
 }
 
-interface ZoneLabel {
-  x: number;
-  y: number;
-  share: string;
+interface Zone {
+  /** mplsoccer's own zone name, e.g. "penalty-left", "middle-2-1". */
+  name: string;
+  corners: [number, number][];
+  touches: number;
+  share: number;
 }
 
 // StatsBomb coordinates (120 x 80). A possession side's touches across one
@@ -37,91 +39,45 @@ const dimensions = getPitchDimensions("statsbomb");
 const PITCH_ASPECT = 120 / 80;
 const FALLBACK_WIDTH = 480;
 
-const LABEL_FONT_SIZE = 10;
-const LABEL_HEIGHT = 16;
-/** Rough advance width of a digit at LABEL_FONT_SIZE, plus horizontal padding. */
-const LABEL_CHAR_WIDTH = 6;
-const LABEL_PADDING_X = 6;
-
-/**
- * Zone shares drawn as pill-shaped chips rather than bare `<Annotate>`
- * text: white-on-orange is legible in the hot zones but washes out in the
- * dark ones, and a share printed straight over the penalty spot has a
- * marking running through it. A solid backing plate fixes both, and keeps
- * every label reading identically regardless of the fill underneath.
- *
- * `<Annotate>` emits a bare `<text>`, and SVG text has no background
- * property, so this is `usePitch()` — the documented escape hatch for
- * marks the built-ins don't cover. Chip dimensions stay in pixels because
- * the text they wrap is a fixed pixel size too, so the two scale together.
- */
-function ZoneShareLabels({ labels }: { labels: ZoneLabel[] }) {
-  const { transform } = usePitch();
-
-  return (
-    <g data-pitchkit-layer="zone-share">
-      {labels.map((label, i) => {
-        const [cx, cy] = transform.toPixel([label.x, label.y]);
-        const width = label.share.length * LABEL_CHAR_WIDTH + LABEL_PADDING_X * 2;
-
-        return (
-          <g key={i}>
-            <rect
-              x={cx - width / 2}
-              y={cy - LABEL_HEIGHT / 2}
-              width={width}
-              height={LABEL_HEIGHT}
-              rx={LABEL_HEIGHT / 2}
-              style={{ fill: "rgba(0, 0, 0, 0.78)" }}
-            />
-            <text
-              x={cx}
-              y={cy}
-              style={{
-                fontSize: LABEL_FONT_SIZE,
-                fontWeight: 600,
-                textAnchor: "middle",
-                dominantBaseline: "central",
-                fill: "#ffffff",
-              }}
-            >
-              {label.share}
-            </text>
-          </g>
-        );
-      })}
-    </g>
-  );
-}
-
 /**
  * A Juego de Posición occupation map: `<PositionalHeatmap>` for the fill,
- * with each zone's share of total touches labelled at its centre.
+ * with each zone's share of total touches on hover.
  *
- * The labels are the point of this one — core's `computePositionalBins`
- * is the same pure function the layer paints from, so calling it directly
- * gives the identical zones and values to annotate. That's mplsoccer's
- * `label_heatmap` built in userland from public exports, which is exactly
- * where composite recipes belong (PRD §7.4).
+ * The interaction is the point of this one. Canvas has no per-region hit
+ * testing, so the shares come from a transparent `<Polygon>` laid over
+ * each zone — SVG marks on top of the canvas layer, in the same
+ * coordinate space, using `<Polygon>`'s own `tooltip` prop. The zone
+ * rectangles and their values both come from `computePositionalBins`, the
+ * same pure function the heatmap paints from, so the hit areas line up
+ * with the fills exactly.
+ *
+ * Hovering rather than printing the numbers keeps the map itself clean:
+ * 20 labels compete with the fills they sit on, and the two penalty-area
+ * zones are centred close enough to the penalty spot that a label there
+ * collides with the marking.
  */
 export function ZoneOccupationGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(FALLBACK_WIDTH);
 
-  const labels = useMemo<ZoneLabel[]>(() => {
+  const zones = useMemo<Zone[]>(() => {
     const bins = computePositionalBins(
       { type: "positionalHeatmap", data: touches, x: (t: Touch) => t.x, y: (t: Touch) => t.y },
       dimensions,
     );
     const total = bins.reduce((sum, bin) => sum + bin.value, 0);
 
-    return bins
-      .filter((bin) => bin.value > 0)
-      .map((bin) => ({
-        x: bin.x + bin.width / 2,
-        y: bin.y + bin.height / 2,
-        share: `${Math.round((bin.value / total) * 100)}%`,
-      }));
+    return bins.map((bin) => ({
+      name: bin.name,
+      corners: [
+        [bin.x, bin.y],
+        [bin.x + bin.width, bin.y],
+        [bin.x + bin.width, bin.y + bin.height],
+        [bin.x, bin.y + bin.height],
+      ],
+      touches: bin.value,
+      share: total > 0 ? Math.round((bin.value / total) * 100) : 0,
+    }));
   }, []);
 
   useEffect(() => {
@@ -155,7 +111,15 @@ export function ZoneOccupationGallery() {
           strokeWidth={1}
           style={{ opacity: 0.85 }}
         />
-        <ZoneShareLabels labels={labels} />
+        {/* `transparent` rather than `none`: a polygon with no fill isn't
+            hit-testable, so it would never receive the hover. */}
+        <Polygon
+          data={zones}
+          points={(zone) => zone.corners}
+          fill="transparent"
+          fillOpacity={1}
+          tooltip={(zone) => `${zone.name} · ${zone.touches} touches (${zone.share}%)`}
+        />
       </Pitch>
     </div>
   );

@@ -82,7 +82,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "zone-occupation-gallery",
     title: "Zone occupation",
     description:
-      "Touches binned into the Juego de Posición zones, each labelled with its share of possession — mplsoccer's positional heatmap, labels and all.",
+      "Touches binned into the Juego de Posición zones — mplsoccer's positional heatmap, with each zone's share of possession on hover.",
     category: "Density",
     docsHref: "/docs/overlays/positional-heatmap",
   },
