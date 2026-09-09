@@ -5,7 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 TypeScript-native football pitch visualisation for the web — mplsoccer's feature set, built
-for React and Next.js instead of matplotlib.
+for React and Next.js instead of matplotlib. See
+[THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.
 
 **[pitchkitjs.com](https://pitchkitjs.com)** — docs, interactive examples, and the gallery.
 
