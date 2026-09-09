@@ -42,9 +42,10 @@ export default tseslint.config(
     },
   },
   {
-    // Node-executed build/postbuild scripts, not bundled app code — need
-    // Node's globals (URL, process, console, ...), not browser/DOM ones.
-    files: ["**/scripts/**/*.mjs", "**/scripts/**/*.js"],
+    // Node-executed build/postbuild scripts and package bins, not bundled
+    // app code — need Node's globals (URL, process, console, ...), not
+    // browser/DOM ones.
+    files: ["**/scripts/**/*.mjs", "**/scripts/**/*.js", "**/bin/**/*.mjs"],
     languageOptions: {
       globals: { URL: "readonly", process: "readonly", console: "readonly" },
     },

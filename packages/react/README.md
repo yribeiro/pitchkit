@@ -125,6 +125,22 @@ the `<Pitch>` tree must originate inside a `"use client"` component — React Se
 can't pass functions across the client boundary. SSR still happens; only the prop-serialisation
 boundary moves. `<Heatmap>` is Canvas-backed and therefore client-only.
 
+## Agent Skill
+
+No model has PitchKit in its training data, so coding agents asked for a shot map tend to
+invent an mplsoccer-flavoured API. This package ships an Agent Skill — `skills/pitchkit/`
+inside the tarball — that documents the real one. Because it travels in the package, it
+always matches the version installed.
+
+```bash
+npx @pitchkit/react skills install          # -> .claude/skills/pitchkit/
+npx @pitchkit/react skills install --dir .cursor/skills
+npx @pitchkit/react skills path             # where it lives in node_modules
+```
+
+The default target suits Claude Code; for any other agent, point `--dir` at wherever it
+reads skills from, or hand it the `skills path` output to read directly.
+
 ## Links
 
 - [Documentation & gallery](https://pitchkitjs.com)
