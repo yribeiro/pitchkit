@@ -2,12 +2,18 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { computePositionalBins, getPitchDimensions } from "@pitchkit/core";
-import { Annotate, Pitch, PositionalHeatmap } from "@pitchkit/react";
+import { Pitch, PositionalHeatmap, usePitch } from "@pitchkit/react";
 import { docsDensityAppearance } from "./docs-appearance";
 
 interface Touch {
   x: number;
   y: number;
+}
+
+interface ZoneLabel {
+  x: number;
+  y: number;
+  share: string;
 }
 
 // StatsBomb coordinates (120 x 80). A possession side's touches across one
@@ -31,9 +37,66 @@ const dimensions = getPitchDimensions("statsbomb");
 const PITCH_ASPECT = 120 / 80;
 const FALLBACK_WIDTH = 480;
 
+const LABEL_FONT_SIZE = 10;
+const LABEL_HEIGHT = 16;
+/** Rough advance width of a digit at LABEL_FONT_SIZE, plus horizontal padding. */
+const LABEL_CHAR_WIDTH = 6;
+const LABEL_PADDING_X = 6;
+
+/**
+ * Zone shares drawn as pill-shaped chips rather than bare `<Annotate>`
+ * text: white-on-orange is legible in the hot zones but washes out in the
+ * dark ones, and a share printed straight over the penalty spot has a
+ * marking running through it. A solid backing plate fixes both, and keeps
+ * every label reading identically regardless of the fill underneath.
+ *
+ * `<Annotate>` emits a bare `<text>`, and SVG text has no background
+ * property, so this is `usePitch()` — the documented escape hatch for
+ * marks the built-ins don't cover. Chip dimensions stay in pixels because
+ * the text they wrap is a fixed pixel size too, so the two scale together.
+ */
+function ZoneShareLabels({ labels }: { labels: ZoneLabel[] }) {
+  const { transform } = usePitch();
+
+  return (
+    <g data-pitchkit-layer="zone-share">
+      {labels.map((label, i) => {
+        const [cx, cy] = transform.toPixel([label.x, label.y]);
+        const width = label.share.length * LABEL_CHAR_WIDTH + LABEL_PADDING_X * 2;
+
+        return (
+          <g key={i}>
+            <rect
+              x={cx - width / 2}
+              y={cy - LABEL_HEIGHT / 2}
+              width={width}
+              height={LABEL_HEIGHT}
+              rx={LABEL_HEIGHT / 2}
+              style={{ fill: "rgba(0, 0, 0, 0.78)" }}
+            />
+            <text
+              x={cx}
+              y={cy}
+              style={{
+                fontSize: LABEL_FONT_SIZE,
+                fontWeight: 600,
+                textAnchor: "middle",
+                dominantBaseline: "central",
+                fill: "#ffffff",
+              }}
+            >
+              {label.share}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 /**
  * A Juego de Posición occupation map: `<PositionalHeatmap>` for the fill,
- * with each zone's share of total touches labelled on top.
+ * with each zone's share of total touches labelled at its centre.
  *
  * The labels are the point of this one — core's `computePositionalBins`
  * is the same pure function the layer paints from, so calling it directly
@@ -45,7 +108,7 @@ export function ZoneOccupationGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(FALLBACK_WIDTH);
 
-  const labels = useMemo(() => {
+  const labels = useMemo<ZoneLabel[]>(() => {
     const bins = computePositionalBins(
       { type: "positionalHeatmap", data: touches, x: (t: Touch) => t.x, y: (t: Touch) => t.y },
       dimensions,
@@ -56,12 +119,7 @@ export function ZoneOccupationGallery() {
       .filter((bin) => bin.value > 0)
       .map((bin) => ({
         x: bin.x + bin.width / 2,
-        // Centred, except in the two penalty-area zones, whose centre sits
-        // right beside the penalty spot — a share printed there reads as
-        // "• 7%". Shifting by a fraction of the zone's own height (rather
-        // than a fixed pixel offset) keeps the nudge proportional at every
-        // card size. mplsoccer's zone names are what make this legible.
-        y: bin.y + bin.height * (bin.name.startsWith("penalty-") ? 0.24 : 0.5),
+        y: bin.y + bin.height / 2,
         share: `${Math.round((bin.value / total) * 100)}%`,
       }));
   }, []);
@@ -97,9 +155,7 @@ export function ZoneOccupationGallery() {
           strokeWidth={1}
           style={{ opacity: 0.85 }}
         />
-        {/* offsetY nudges the text's baseline so it reads vertically
-            centred on its anchor point. */}
-        <Annotate data={labels} x={(l) => l.x} y={(l) => l.y} label={(l) => l.share} offsetY={4} />
+        <ZoneShareLabels labels={labels} />
       </Pitch>
     </div>
   );
