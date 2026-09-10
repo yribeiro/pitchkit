@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/brand/pitchkit-lockup-dark.svg">
-  <img src="./assets/brand/pitchkit-lockup-light.svg" alt="PitchKit" height="44">
+  <img src="./assets/brand/pitchkit-lockup-light.svg" alt="PitchKit" height="64">
 </picture>
 
 React-native football pitch visualisation for the web — mplsoccer's feature set, built
