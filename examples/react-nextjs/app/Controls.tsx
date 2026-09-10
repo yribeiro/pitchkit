@@ -255,7 +255,11 @@ export function Controls() {
 
       <TailwindPanel appearance={appearance} />
 
-      <StatsBombPanel appearance={appearance} />
+      <StatsBombPanel
+        appearance={appearance}
+        colorMin={heatmapColors.colorMin}
+        colorMax={heatmapColors.colorMax}
+      />
     </div>
   );
 }
