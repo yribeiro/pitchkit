@@ -53,6 +53,18 @@ New mark types ship **React-only**. Core's SVG painters (`render/svg/paint-*.ts`
 are internal-only, kept solely for the `packages/core/examples/index.html` dev harness — don't
 add to them.
 
+### Brand assets
+
+The logo lives in [`assets/brand/`](./assets/brand/) — read that directory's README before
+touching anything logo-shaped.
+
+The mark's geometry is necessarily duplicated across five files: the two brand SVGs, the
+favicon cut (`apps/docs/app/icon.svg`), the two generated images (`apple-icon.tsx`,
+`opengraph-image.tsx`), and the React component. Each needs a different stroke weight or
+colour model, and **nothing links them** — a change to one will not propagate, and no test
+will catch it. Don't add a sixth: import `PitchKitMark` from
+`apps/docs/components/pitchkit-logo.tsx` rather than inlining the paths again.
+
 ## Making a change
 
 1. **Open an issue first** for anything non-trivial, so we can agree on the approach before you
