@@ -10,6 +10,8 @@ drawn without its goal line (the touchline already provides it) _is_ a square br
 | --------------------------- | -------------- | ------------------------------------------------------------ |
 | `pitchkit-mark.svg`         | `currentColor` | The canonical master. Anywhere CSS can set a colour.         |
 | `pitchkit-mark-emerald.svg` | `#10b981`      | GitHub READMEs, where `currentColor` has nothing to inherit. |
+| `pitchkit-lockup-light.svg` | `#059669` / `#1f2328` | Mark + wordmark on one line, for the README on GitHub's light theme. |
+| `pitchkit-lockup-dark.svg`  | `#34d399` / `#e6edf3` | Same lockup for GitHub's dark theme, paired via `<picture>`.         |
 
 Two more cuts live in the docs app because they are build outputs, not source:
 `apps/docs/app/icon.svg` (favicon, stroke 3.5) and `apps/docs/app/apple-icon.tsx` /
@@ -38,3 +40,14 @@ Drawn on a **48-unit grid at stroke 3**, so it rasterises to whole pixels at 16,
 - **Minimum size:** 16px. Below that, use the wordmark alone.
 - **Accent on "Kit".** In the wordmark the accent lands on the camel-case break — the one
   place a second colour carries information rather than decoration.
+
+## Why the README wordmark is an image
+
+GitHub's markdown sanitiser strips `style` attributes, so there is no way to colour the
+"Kit" in plain HTML. The lockup therefore ships as SVG, in a `<picture>` pair so it tracks
+the reader's GitHub theme.
+
+Its wordmark is set in a **system-font stack**, not a webfont: GitHub renders README SVGs
+through an `<img>`, which blocks external font loading. The `viewBox` is deliberately wider
+than the text needs — a wider fallback face (DejaVu on Linux, say) must have room to grow
+into rather than be clipped.

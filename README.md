@@ -1,24 +1,16 @@
-<p align="center">
-  <img src="./assets/brand/pitchkit-mark-emerald.svg" width="88" height="88" alt="" />
-</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/brand/pitchkit-lockup-dark.svg">
+  <img src="./assets/brand/pitchkit-lockup-light.svg" alt="PitchKit" height="44">
+</picture>
 
-<h1 align="center">PitchKit</h1>
+React-native football pitch visualisation for the web — mplsoccer's feature set, built
+for React and Next.js instead of matplotlib.
 
-<p align="center">
-  React-native football pitch visualisation for the web — mplsoccer's feature set,<br />
-  built for React and Next.js instead of matplotlib.
-</p>
+[![npm](https://img.shields.io/npm/v/@pitchkit/react)](https://www.npmjs.com/package/@pitchkit/react)
+[![CI](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml/badge.svg)](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@pitchkit/react"><img src="https://img.shields.io/npm/v/@pitchkit/react" alt="npm" /></a>
-  <a href="https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml"><img src="https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
-</p>
-
-<p align="center">
-  <strong><a href="https://pitchkitjs.com">pitchkitjs.com</a></strong> — docs, interactive examples, and the gallery.
-</p>
-
+**[pitchkitjs.com](https://pitchkitjs.com)** — docs, interactive examples, and the gallery.
 See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.
 
 > **Early days.** `0.1.x` is the first public release. The API is usable and tested, but not
