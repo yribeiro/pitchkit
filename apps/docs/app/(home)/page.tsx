@@ -22,6 +22,11 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     href: "/docs/guides/coordinates",
   },
   {
+    title: "Ships an Agent Skill",
+    body: "No model has PitchKit in its training data — so the package ships its own, symlinked into your agent's skills and updated the moment npm update is.",
+    href: "/docs/configuration/agent-skill",
+  },
+  {
     title: "Responsive by default",
     body: "Every pitch fills its container via ResizeObserver, with a correct-aspect-ratio first paint. Explicit width/height is the opt-out, not the default.",
     href: "/docs/guides/responsive",
@@ -35,11 +40,6 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     title: "SSR-ready",
     body: "Marks render to real SVG on the server — verified against Next.js App Router. No hydration flicker, no client-only placeholder boxes.",
     href: "/docs/guides/nextjs-ssr",
-  },
-  {
-    title: "Ships an Agent Skill",
-    body: "No model has PitchKit in its training data — so the package ships its own, symlinked into your agent's skills and updated the moment npm update is.",
-    href: "/docs/configuration/agent-skill",
   },
 ];
 
