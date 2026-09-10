@@ -1,6 +1,6 @@
 # ⚽ PRD — PitchKit (mplsoccer for the web)
 
-> **TL;DR** — Build the missing piece of the football-analytics web stack: a React-native visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser as first-class React/Next.js components, with responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
+> **TL;DR** — Build the missing piece of the football-analytics web stack: a React-first visualization library that brings mplsoccer's full surface (pitches, heatmaps, pass networks, radars, pizza charts) to the browser as first-class React/Next.js components, with responsive multi-device rendering, great docs, and a shadcn-style showcase site. Personal project, MIT-licensed, built in the open on GitHub.
 
 _Status: Draft v0.4 · Owner: Yohahn Ribeiro · Last updated: 06 Sep 2026_
 
@@ -18,7 +18,7 @@ The deliverable is three things: (1) the **library** (a framework-agnostic core 
 
 The modern delivery surface for analytics — internal club tools, scouting platforms, fan-facing products — is increasingly the **browser**. There, the gaps are:
 
-- **No React-native equivalent.** Existing options are thin or unmaintained.
+- **No React-first equivalent.** Existing options are thin or unmaintained.
 - **No responsive, multi-device story.** mplsoccer outputs fixed-size raster images; web needs fluid, retina-crisp, touch-friendly rendering.
 - **No first-class interactivity.** Hover tooltips, selection, animation, and data-driven updates are first-class on the web and absent from a static image pipeline.
 - **Fragmented ecosystem.** Pitch drawing, statistical layers, and player charts live in separate, incompatible micro-libraries.
@@ -33,7 +33,7 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 | **football-lineup-generator** | TS     | Lineups/formations only                         | Canvas              | Low activity | No event data, no stats layers                    |
 | **Pitch.js**                  | JS     | Pitch rendering                                 | DOM/SVG             | Minimal      | Pitch only, no analytics layer                    |
 
-**Conclusion:** there is a clear, unoccupied niche for a comprehensive, React-native library with a proper TypeScript story. Nobody has built "mplsoccer for the web."
+**Conclusion:** there is a clear, unoccupied niche for a comprehensive, React-first library with a proper TypeScript story. Nobody has built "mplsoccer for the web."
 
 ## 4. Goals & Non-Goals
 
@@ -148,10 +148,10 @@ correctness-critical rendering stays versioned and centrally maintained.
 
 **"Load open data → visualize" recipes** are a distinct category from the component-level
 recipes above, and matter specifically for agent-legibility (§4): a single, complete, minimal
-example wiring `@pitchkit/data-statsbomb` straight into a chart — e.g. "fetch a StatsBomb
+example wiring `@pitchkit/data-providers/statsbomb` straight into a chart — e.g. "fetch a StatsBomb
 open-data match → render a shot map" in one file, not a data-loading doc and a charting doc a
 consumer (or agent) has to connect themselves. At least one such end-to-end recipe per major
-chart family (shot map, pass map, heatmap) ships alongside `@pitchkit/data-statsbomb`. Phase **1**.
+chart family (shot map, pass map, heatmap) ships alongside `@pitchkit/data-providers/statsbomb`. Phase **1**.
 
 ### 7.5 Non-pitch charts
 
@@ -210,11 +210,18 @@ Layers are pure data + options; they don't own DOM. The renderer walks the scene
 
 - `@pitchkit/core` — zero-dependency TS core: dimensions, transforms, scene/layer model, geometry, SVG/Canvas renderers. **No React.**
 - `@pitchkit/react` — thin declarative React components wrapping core (`<Pitch>`, `<Scatter>`, `<Heatmap>` …) with hooks for responsive sizing and interaction.
-- `@pitchkit/data-statsbomb` — optional StatsBomb open-data adapter + tidy types.
+- `@pitchkit/data-providers` — optional open football data loaders, exported per-provider
+  (`@pitchkit/data-providers/statsbomb` first; StatsBomb-shaped tidy types). Named for the
+  provider family rather than one provider, since [issue #30](https://github.com/yribeiro/pitchkit/issues/30)
+  plans SkillCorner/Metrica tracking-data loaders under the same package — supersedes this
+  section's earlier `@pitchkit/data-statsbomb` naming.
 - `apps/docs` — the showcase + docs site; also hosts the shadcn `registry.json` that serves recipe items (see §7.4).
 - `examples/` — runnable Next.js + Vite examples.
 
-Build with **tsup** (ESM + d.ts). Tree-shakeable, `sideEffects: false`. Publish `@pitchkit/core` and `@pitchkit/react` under the `@pitchkit` npm scope — these are the only npm-published packages; composite recipes are shadcn registry items, not packages (§7.4).
+Build with **tsup** (ESM + d.ts). Tree-shakeable, `sideEffects: false`. Publish
+`@pitchkit/core`, `@pitchkit/react`, and `@pitchkit/data-providers` under the `@pitchkit` npm
+scope — composite recipes are the only thing that stays a shadcn registry item rather than a
+package (§7.4).
 
 ### 8.5 React & Next.js integration
 
@@ -384,7 +391,7 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ### 8.10 Data adapters & coordinate safety
 
-- `@pitchkit/data-statsbomb`: typed loaders for StatsBomb open-data (events/frames) → tidy shapes, coordinate model pre-wired. Free open-data only (licensing-safe).
+- `@pitchkit/data-providers/statsbomb`: typed loaders for StatsBomb open-data (events/frames) → tidy shapes, coordinate model pre-wired. Free open-data only (licensing-safe).
 - Generic accessor pattern (`x={d => d.location[0]}`) so any provider shape works without an adapter.
 
 ## 9. Documentation & Showcase Site
@@ -682,17 +689,26 @@ npx shadcn add @pitchkit/theme-broadcast
 - [ ] **AX (agent-legibility, §4).** **Partially done** — bundled Agent Skill shipped in `@pitchkit/react@0.3.0`
       (`skills/pitchkit/` in the tarball, `npx @pitchkit/react skills install`) via
       [PR #46](https://github.com/yribeiro/pitchkit/pull/46), closing the Skill slice of
-      [issue #40](https://github.com/yribeiro/pitchkit/issues/40). **`llms.txt` and
-      `AGENTS.md` — the other two AX layers #40 also scopes — are not done**; #40 stays open
-      until those ship too.
+      [issue #40](https://github.com/yribeiro/pitchkit/issues/40). `llms.txt`, `llms-full.txt`
+      and per-page Markdown followed via
+      [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (`apps/docs/app/llms.txt`,
+      `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` — the remaining AX
+      layer #40 scopes — is not done**; #40 stays open until it ships.
 - [x] **Brand identity** — the PitchKit mark (two penalty areas + halfway line + centre
       circle, reading as `[ ]`) across the README, docs nav, favicon, and OG/Twitter images,
       via [PR #47](https://github.com/yribeiro/pitchkit/pull/47). Not an original checklist
-      item; added because a public package needs a mark before "React-native" repositioning
+      item; added because a public package needs a mark before the "React-native" repositioning
       (PR #45) actually reads as a finished brand rather than a placeholder wordmark. The
       mark's geometry is duplicated across five files with nothing linking them — see
       `assets/brand/README.md` and CONTRIBUTING.md's "Brand assets" section before editing
       anything logo-shaped.
+- [x] **Positioning reworded again: "React-native" → "React-first"** — via
+      [PR #49](https://github.com/yribeiro/pitchkit/pull/49) (2026-09-10). "React-native" (PR
+      #45's term, meaning "native to the React ecosystem") reads at a glance as *React
+      Native*, the mobile framework — exactly the wrong association for a web-only SVG/Canvas
+      library. Reworded to "React-first" throughout the showcase site and README, and (this
+      pass) throughout this PRD's own older sentences (TL;DR, §2, §3), which had lagged.
+      match.
 
 ### Milestone 3 — publishing (concentrated effort)
 
@@ -707,6 +723,10 @@ a real domain. Remaining work is release *automation*, not release itself.
       release that first carried the READMEs and `LICENSE` onto the npm package pages, since
       `0.1.0`'s tarballs predated them. `0.3.0` (`@pitchkit/react` only) published
       2026-09-10 — bundled Agent Skill, see Milestone 2's AX note below.
+      [`@pitchkit/data-providers`](https://www.npmjs.com/package/@pitchkit/data-providers)
+      `0.1.0` (first publish, StatsBomb open-data loader, closing
+      [#29](https://github.com/yribeiro/pitchkit/issues/29)) — version-bumped 2026-09-10, not
+      yet confirmed live on the registry as of this writing.
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling

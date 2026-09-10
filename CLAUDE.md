@@ -1,6 +1,9 @@
 # PitchKit
 
-React-native football pitch visualisation library (mplsoccer for the web).
+React-first football pitch visualisation library (mplsoccer for the web). **Not** to be
+confused with React Native (the mobile framework) — say "React-first" in any user-facing
+copy, not "React-native" ([PR #49](https://github.com/yribeiro/pitchkit/pull/49) reworded
+this everywhere after it read as the wrong framework at a glance).
 
 Full PRD: see `docs/PRD.md` — read this before any architectural work.
 
@@ -49,17 +52,29 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
 - `appearance.linesOnTop` (mplsoccer's `line_zorder`) — paints markings above layer children
   so opaque density fills don't cover them. Off by default.
 
+- **`@pitchkit/data-providers`** — new package, first published at `0.1.0`
+  (see Milestone 3 below), closing [#29](https://github.com/yribeiro/pitchkit/issues/29) via
+  [PR #50](https://github.com/yribeiro/pitchkit/pull/50).
+  `@pitchkit/data-providers/statsbomb` takes a match id straight to chart-ready data:
+  `fetchMatchEvents(id)` → `shots()`/`passes()`/`carries()` → predicates like `isGoal` compose
+  with `.filter()`. Keeps StatsBomb's own field names/values (not re-spelled), adds only the
+  lifted `x`/`y`/`endX`/`endY`/`endZ` coordinates a PitchKit accessor needs. Zero runtime
+  deps, no dependency on `core` or `react`. **This supersedes the PRD's original
+  `@pitchkit/data-statsbomb` naming** (§7.4/§8.4/§8.10, now corrected) — named for the
+  provider family since [#30](https://github.com/yribeiro/pitchkit/issues/30) plans
+  SkillCorner/Metrica loaders under the same package.
+
 Open issues covering the rest of M2: radar/pizza charts
 ([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
 ([#22](https://github.com/yribeiro/pitchkit/issues/22)), attack/territory and pass-map
 recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
 [#24](https://github.com/yribeiro/pitchkit/issues/24)), interactive pan/zoom
-([#26](https://github.com/yribeiro/pitchkit/issues/26)), and StatsBomb/data-provider
-loaders ([#27](https://github.com/yribeiro/pitchkit/issues/27),
-[#29](https://github.com/yribeiro/pitchkit/issues/29),
-[#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding bug,
-[#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
-105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
+([#26](https://github.com/yribeiro/pitchkit/issues/26)), real StatsBomb samples in the
+docs/gallery ([#27](https://github.com/yribeiro/pitchkit/issues/27) — the gallery still uses
+hardcoded data, only `examples/react-nextjs` uses the new package so far), and tracking-data
+loaders ([#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding
+bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead
+of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
 
 Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
 depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
@@ -69,9 +84,10 @@ an internal examples registry for its own gallery, not a consumable `registry.js
 It was originally deferred until after M2's parity push, but was brought forward to claim the
 namespace and get the library installable:
 
-- **Published to npm:** [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
-  and [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react), under the
-  `pitchkit` npm org.
+- **Published to npm:** [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core),
+  [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react), and
+  [`@pitchkit/data-providers`](https://www.npmjs.com/package/@pitchkit/data-providers),
+  under the `pitchkit` npm org.
   - `0.1.0` — 2026-09-08. First publish, verified from a clean StackBlitz project installing
     off the registry.
   - `0.2.0` (both packages) — 2026-09-09. Density overlays (`<PositionalHeatmap>`,
@@ -84,9 +100,19 @@ namespace and get the library installable:
     symlinks it into the consumer's project (default `.claude/skills/`), so `npm update`
     moves the skill with the version actually installed — no stale API. This is the Skill
     slice of [issue #40](https://github.com/yribeiro/pitchkit/issues/40) ("AX: ship
-    `llms.txt`, `AGENTS.md`, and a bundled Agent Skill") — **#40 is still open**, the
-    `llms.txt` and `AGENTS.md` pieces aren't done. Shipped via
+    `llms.txt`, `AGENTS.md`, and a bundled Agent Skill"). Shipped via
     [PR #46](https://github.com/yribeiro/pitchkit/pull/46).
+  - **`@pitchkit/data-providers@0.1.0` (new package, first publish) — version-bumped, not
+    yet confirmed live on the registry as of this writing.** `@pitchkit/data-providers/statsbomb`:
+    `fetchMatchEvents(id)` → `shots()`/`passes()`/`carries()`, predicates (`isGoal`,
+    `isComplete`, …) compose via `.filter()`, lifted `x`/`y`/`endX`/`endY`/`endZ` for
+    PitchKit accessors, StatsBomb's own field names otherwise untouched. Zero runtime deps,
+    no dependency on `core`/`react`. Closes
+    [#29](https://github.com/yribeiro/pitchkit/issues/29) via
+    [PR #50](https://github.com/yribeiro/pitchkit/pull/50).
+- **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
+  [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
+  routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
 - **Brand identity** — via [PR #47](https://github.com/yribeiro/pitchkit/pull/47)
   (2026-09-10): the PitchKit mark (two penalty areas + halfway line + centre circle,
   reading as `[ ]`), applied across the README header, docs nav, favicon, and generated
@@ -95,6 +121,10 @@ namespace and get the library installable:
   React logo component) — see [CONTRIBUTING.md](./CONTRIBUTING.md)'s "Brand assets"
   section before touching anything logo-shaped; a change to one will not propagate and no
   test catches the drift.
+- **Positioning reworded again, "React-native" → "React-first"** — via
+  [PR #49](https://github.com/yribeiro/pitchkit/pull/49) (2026-09-10). "React-native" (PR
+  #45) reads at a glance as *React Native*, the mobile framework — wrong association for a
+  web-only library. This file's own opening line was one of the stragglers, now fixed.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs
@@ -138,11 +168,13 @@ same underlying reason as the PRD's existing note (§11 progress notes) on runni
 `npm`/`node` through WSL rather than Windows-native tooling: this repo's tooling assumes a
 Linux-native checkout.
 
-## Security posture (2026-09-09)
+## Security posture (2026-09-10)
 
-37 open Dependabot alerts (2 critical, 22 high) and 7 open Dependabot PRs — but scope matters
-before reacting: **the published packages are clean.** `@pitchkit/core` has zero runtime
-dependencies and `@pitchkit/react` depends only on `core`, so nobody installing from npm is
-exposed. Every alert lives in `apps/docs` or `examples/*`, all of which are `private: true`.
-The ones that genuinely matter are those affecting the **live** docs site: `next` (11 alerts,
-critical) and `sharp` (2, high). Everything else is dev-only tooling. See PRD §10.
+38 open Dependabot alerts (2 critical, 22 high, 13 medium, 1 low) and 7 open Dependabot PRs —
+but scope matters before reacting: **the published packages are clean.** `@pitchkit/core` has
+zero runtime dependencies, `@pitchkit/react` depends only on `core`, and
+`@pitchkit/data-providers` has zero runtime deps and doesn't depend on either — so nobody
+installing from npm is exposed. Every alert lives in `apps/docs` or `examples/*`, all of which
+are `private: true`. The ones that genuinely matter are those affecting the **live** docs
+site: `next` (11 alerts, critical) and `sharp` (2, high). Everything else is dev-only tooling.
+See PRD §10.
