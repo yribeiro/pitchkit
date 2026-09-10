@@ -1,0 +1,8 @@
+<svg width="96" height="96" viewBox="0 0 48 48" fill="none" stroke="#10b981" stroke-width="3"
+     stroke-linecap="round" stroke-linejoin="round"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PitchKit">
+  <path d="M17 9H7v30h10"/>
+  <path d="M31 9h10v30H31"/>
+  <path d="M24 9v9M24 30v9"/>
+  <circle cx="24" cy="24" r="6"/>
+</svg>
