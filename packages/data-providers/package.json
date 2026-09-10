@@ -1,0 +1,60 @@
+{
+  "name": "@pitchkit/data-providers",
+  "version": "0.0.0",
+  "description": "Convenience loaders for open football data (StatsBomb first) — raw JSON in, typed events out, ready for PitchKit.",
+  "license": "MIT",
+  "author": "Yohahn Ribeiro",
+  "homepage": "https://github.com/yribeiro/pitchkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yribeiro/pitchkit.git",
+    "directory": "packages/data-providers"
+  },
+  "bugs": {
+    "url": "https://github.com/yribeiro/pitchkit/issues"
+  },
+  "keywords": [
+    "football",
+    "soccer",
+    "statsbomb",
+    "open-data",
+    "event-data",
+    "analytics",
+    "dataviz",
+    "pitchkit",
+    "kloppy"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./statsbomb": {
+      "types": "./dist/statsbomb/index.d.ts",
+      "import": "./dist/statsbomb/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24",
+    "@vitest/coverage-v8": "^3",
+    "tsup": "^8",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

@@ -1,0 +1,181 @@
+[
+  {
+    "team_id": 217,
+    "team_name": "Barcelona",
+    "lineup": [
+      {
+        "player_id": 3109,
+        "player_name": "Malcom Filipe Silva de Oliveira",
+        "player_nickname": "Malcom",
+        "jersey_number": 14,
+        "country": {
+          "id": 31,
+          "name": "Brazil"
+        },
+        "cards": [],
+        "positions": []
+      },
+      {
+        "player_id": 3501,
+        "player_name": "Philippe Coutinho Correia",
+        "player_nickname": "Philippe Coutinho",
+        "jersey_number": 7,
+        "country": {
+          "id": 31,
+          "name": "Brazil"
+        },
+        "cards": [],
+        "positions": [
+          {
+            "position_id": 15,
+            "position": "Left Center Midfield",
+            "from": "45:00",
+            "to": "45:00",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Tactical Shift",
+            "end_reason": "Substitution - On (Tactical)"
+          },
+          {
+            "position_id": 2,
+            "position": "Right Back",
+            "from": "45:00",
+            "to": "76:14",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Substitution - On (Tactical)",
+            "end_reason": "Tactical Shift"
+          },
+          {
+            "position_id": 21,
+            "position": "Left Wing",
+            "from": "76:14",
+            "to": null,
+            "from_period": 2,
+            "to_period": null,
+            "start_reason": "Tactical Shift",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      },
+      {
+        "player_id": 5203,
+        "player_name": "Sergio Busquets i Burgos",
+        "player_nickname": "Sergio Busquets",
+        "jersey_number": 5,
+        "country": {
+          "id": 214,
+          "name": "Spain"
+        },
+        "cards": [],
+        "positions": [
+          {
+            "position_id": 9,
+            "position": "Right Defensive Midfield",
+            "from": "00:00",
+            "to": "45:00",
+            "from_period": 1,
+            "to_period": 2,
+            "start_reason": "Starting XI",
+            "end_reason": "Tactical Shift"
+          },
+          {
+            "position_id": 10,
+            "position": "Center Defensive Midfield",
+            "from": "45:00",
+            "to": "84:13",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Tactical Shift",
+            "end_reason": "Substitution - Off (Tactical)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "team_id": 206,
+    "team_name": "Deportivo Alavés",
+    "lineup": [
+      {
+        "player_id": 6566,
+        "player_name": "Borja González Tomás",
+        "player_nickname": "Borja Bastón",
+        "jersey_number": 18,
+        "country": {
+          "id": 214,
+          "name": "Spain"
+        },
+        "cards": [],
+        "positions": [
+          {
+            "position_id": 16,
+            "position": "Left Midfield",
+            "from": "67:52",
+            "to": "67:53",
+            "from_period": 2,
+            "to_period": 2,
+            "start_reason": "Substitution - On (Tactical)",
+            "end_reason": "Tactical Shift"
+          },
+          {
+            "position_id": 22,
+            "position": "Right Center Forward",
+            "from": "67:53",
+            "to": null,
+            "from_period": 2,
+            "to_period": null,
+            "start_reason": "Tactical Shift",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      },
+      {
+        "player_id": 6581,
+        "player_name": "Jonathan Rodríguez Menéndez",
+        "player_nickname": "Jony",
+        "jersey_number": 23,
+        "country": {
+          "id": 214,
+          "name": "Spain"
+        },
+        "cards": [],
+        "positions": [
+          {
+            "position_id": 16,
+            "position": "Left Midfield",
+            "from": "00:00",
+            "to": "67:52",
+            "from_period": 1,
+            "to_period": 2,
+            "start_reason": "Starting XI",
+            "end_reason": "Substitution - Off (Tactical)"
+          }
+        ]
+      },
+      {
+        "player_id": 6612,
+        "player_name": "Rubén Duarte Sánchez",
+        "player_nickname": "Rubén Duarte",
+        "jersey_number": 3,
+        "country": {
+          "id": 214,
+          "name": "Spain"
+        },
+        "cards": [],
+        "positions": [
+          {
+            "position_id": 6,
+            "position": "Left Back",
+            "from": "00:00",
+            "to": null,
+            "from_period": 1,
+            "to_period": null,
+            "start_reason": "Starting XI",
+            "end_reason": "Final Whistle"
+          }
+        ]
+      }
+    ]
+  }
+]

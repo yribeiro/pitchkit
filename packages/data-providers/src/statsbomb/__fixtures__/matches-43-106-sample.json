@@ -1,0 +1,272 @@
+[
+  {
+    "match_id": 3857276,
+    "match_date": "2022-12-01",
+    "kick_off": "15:00:00.000",
+    "competition": {
+      "competition_id": 43,
+      "country_name": "International",
+      "competition_name": "FIFA World Cup"
+    },
+    "season": {
+      "season_id": 106,
+      "season_name": "2022"
+    },
+    "home_team": {
+      "home_team_id": 1833,
+      "home_team_name": "Canada",
+      "home_team_gender": "male",
+      "home_team_group": "F",
+      "country": {
+        "id": 40,
+        "name": "Canada"
+      },
+      "managers": [
+        {
+          "id": 4435,
+          "name": "John Herdman",
+          "nickname": null,
+          "dob": "1975-07-19",
+          "country": {
+            "id": 68,
+            "name": "England"
+          }
+        }
+      ]
+    },
+    "away_team": {
+      "away_team_id": 788,
+      "away_team_name": "Morocco",
+      "away_team_gender": "male",
+      "away_team_group": null,
+      "country": {
+        "id": 154,
+        "name": "Morocco"
+      },
+      "managers": [
+        {
+          "id": 1000518,
+          "name": "Walid Regragui",
+          "nickname": null,
+          "dob": "1975-09-23",
+          "country": {
+            "id": 154,
+            "name": "Morocco"
+          }
+        }
+      ]
+    },
+    "home_score": 1,
+    "away_score": 2,
+    "match_status": "available",
+    "match_status_360": "available",
+    "last_updated": "2026-05-04T01:46:04.664252",
+    "last_updated_360": "2026-05-04T01:50:33.318123",
+    "metadata": {
+      "data_version": "1.1.0",
+      "shot_fidelity_version": "2",
+      "xy_fidelity_version": "2"
+    },
+    "match_week": 3,
+    "competition_stage": {
+      "id": 10,
+      "name": "Group Stage"
+    },
+    "stadium": {
+      "id": 1000838,
+      "name": "Al Thumama Stadium",
+      "country": {
+        "id": 185,
+        "name": "Qatar"
+      }
+    },
+    "referee": {
+      "id": 2638,
+      "name": "Raphael Claus",
+      "country": {
+        "id": 31,
+        "name": "Brazil"
+      }
+    }
+  },
+  {
+    "match_id": 3857271,
+    "match_date": "2022-11-21",
+    "kick_off": "13:00:00.000",
+    "competition": {
+      "competition_id": 43,
+      "country_name": "International",
+      "competition_name": "FIFA World Cup"
+    },
+    "season": {
+      "season_id": 106,
+      "season_name": "2022"
+    },
+    "home_team": {
+      "home_team_id": 768,
+      "home_team_name": "England",
+      "home_team_gender": "male",
+      "home_team_group": "B",
+      "country": {
+        "id": 68,
+        "name": "England"
+      },
+      "managers": [
+        {
+          "id": 277,
+          "name": "Gareth Southgate",
+          "nickname": null,
+          "dob": "1970-09-03",
+          "country": {
+            "id": 68,
+            "name": "England"
+          }
+        }
+      ]
+    },
+    "away_team": {
+      "away_team_id": 797,
+      "away_team_name": "Iran",
+      "away_team_gender": "male",
+      "away_team_group": "B",
+      "country": {
+        "id": 107,
+        "name": "Iran, Islamic Republic of"
+      },
+      "managers": [
+        {
+          "id": 645,
+          "name": "Carlos Manuel Brito Leal Queiróz",
+          "nickname": "Carlos Queiroz",
+          "dob": "1953-03-01",
+          "country": {
+            "id": 183,
+            "name": "Portugal"
+          }
+        }
+      ]
+    },
+    "home_score": 6,
+    "away_score": 2,
+    "match_status": "available",
+    "match_status_360": "available",
+    "last_updated": "2026-05-04T01:40:47.671394",
+    "last_updated_360": "2026-05-04T01:43:30.216315",
+    "metadata": {
+      "data_version": "1.1.0",
+      "shot_fidelity_version": "2",
+      "xy_fidelity_version": "2"
+    },
+    "match_week": 1,
+    "competition_stage": {
+      "id": 10,
+      "name": "Group Stage"
+    },
+    "stadium": {
+      "id": 1000253,
+      "name": "Sheikh Khalifa International Stadium",
+      "country": {
+        "id": 185,
+        "name": "Qatar"
+      }
+    },
+    "referee": {
+      "id": 2638,
+      "name": "Raphael Claus",
+      "country": {
+        "id": 31,
+        "name": "Brazil"
+      }
+    }
+  },
+  {
+    "match_id": 3857296,
+    "match_date": "2022-12-01",
+    "kick_off": "15:00:00.000",
+    "competition": {
+      "competition_id": 43,
+      "country_name": "International",
+      "competition_name": "FIFA World Cup"
+    },
+    "season": {
+      "season_id": 106,
+      "season_name": "2022"
+    },
+    "home_team": {
+      "home_team_id": 785,
+      "home_team_name": "Croatia",
+      "home_team_gender": "male",
+      "home_team_group": "F",
+      "country": {
+        "id": 56,
+        "name": "Croatia"
+      },
+      "managers": [
+        {
+          "id": 307,
+          "name": "Zlatko Dalić",
+          "nickname": null,
+          "dob": "1966-10-26",
+          "country": {
+            "id": 56,
+            "name": "Croatia"
+          }
+        }
+      ]
+    },
+    "away_team": {
+      "away_team_id": 782,
+      "away_team_name": "Belgium",
+      "away_team_gender": "male",
+      "away_team_group": "F",
+      "country": {
+        "id": 22,
+        "name": "Belgium"
+      },
+      "managers": [
+        {
+          "id": 263,
+          "name": "Roberto Martínez Montoliú",
+          "nickname": "Roberto Martínez",
+          "dob": "1973-07-13",
+          "country": {
+            "id": 214,
+            "name": "Spain"
+          }
+        }
+      ]
+    },
+    "home_score": 0,
+    "away_score": 0,
+    "match_status": "available",
+    "match_status_360": "available",
+    "last_updated": "2026-05-04T01:44:02.255386",
+    "last_updated_360": "2026-05-04T01:50:06.343225",
+    "metadata": {
+      "data_version": "1.1.0",
+      "shot_fidelity_version": "2",
+      "xy_fidelity_version": "2"
+    },
+    "match_week": 3,
+    "competition_stage": {
+      "id": 10,
+      "name": "Group Stage"
+    },
+    "stadium": {
+      "id": 1000793,
+      "name": "Ahmad bin Ali Stadium",
+      "country": {
+        "id": 185,
+        "name": "Qatar"
+      }
+    },
+    "referee": {
+      "id": 8,
+      "name": "Anthony Taylor",
+      "country": {
+        "id": 68,
+        "name": "England"
+      }
+    }
+  }
+]
