@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { DensityPanel } from "./DensityPanel";
 import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
+import { StatsBombPanel } from "./StatsBombPanel";
 import { TailwindPanel } from "./TailwindPanel";
 
 /** React's CSSProperties has no index signature for custom properties. */
@@ -253,6 +254,8 @@ export function Controls() {
       </div>
 
       <TailwindPanel appearance={appearance} />
+
+      <StatsBombPanel appearance={appearance} />
     </div>
   );
 }

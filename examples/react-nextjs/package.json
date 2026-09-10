@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@pitchkit/core": "*",
+    "@pitchkit/data-providers": "*",
     "@pitchkit/react": "*",
     "next": "^16",
     "react": "^19",
