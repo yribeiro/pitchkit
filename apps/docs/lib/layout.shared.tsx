@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { PitchKitLockup } from "@/components/pitchkit-logo";
 
 /**
  * Options shared between the home layout and the docs layout (nav title,
@@ -8,7 +9,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      title: "PitchKit",
+      title: <PitchKitLockup />,
     },
     links: [
       {

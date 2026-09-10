@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HeroPitch } from "@/components/hero-pitch";
 import { InstallCommand } from "@/components/install-command";
+import { PitchKitMark } from "@/components/pitchkit-logo";
 
 /**
  * The shadcn-style showcase landing page (issue #28, PRD §9): interactive
@@ -124,7 +125,10 @@ export default function HomePage() {
 
       <footer className="border-t border-fd-border">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs text-fd-muted-foreground">
-          <span>PitchKit — MIT licensed, open source.</span>
+          <span className="inline-flex items-center gap-2">
+            <PitchKitMark size={15} className="text-fd-primary" />
+            PitchKit — MIT licensed, open source.
+          </span>
           <div className="flex gap-4">
             <Link href="/docs" className="transition-colors hover:text-fd-foreground">
               Docs
