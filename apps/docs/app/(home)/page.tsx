@@ -22,8 +22,8 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     href: "/docs/guides/coordinates",
   },
   {
-    title: "Ships an Agent Skill",
-    body: "No model has PitchKit in its training data — so the package ships its own, symlinked into your agent's skills and updated the moment npm update is.",
+    title: "Agent compatible",
+    body: "No model has PitchKit in its training data — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
     href: "/docs/configuration/agent-skill",
   },
   {
