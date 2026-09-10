@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Zero-dependency TypeScript core for PitchKit: coordinate systems, transforms, scene/layer model, SVG renderer.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",

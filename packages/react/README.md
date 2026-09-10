@@ -82,6 +82,20 @@ Responsive is the default — with no size props the pitch fills its container v
 <Pitch type="statsbomb" width={1200} height={800} /> {/* fixed — exports, OG images */}
 ```
 
+## Layer order
+
+Markings paint *below* the layer children by default, so discrete marks sit on top of the
+lines. An opaque density fill will therefore cover them — set `appearance.linesOnTop` to paint
+the markings above instead (mplsoccer's `line_zorder`):
+
+```tsx
+<Pitch type="statsbomb" appearance={{ linesOnTop: true }}>
+  <KDE data={touches} x={(t) => t.x} y={(t) => t.y} />
+</Pitch>
+```
+
+Only the markings move — the grass surface and stripes stay at the bottom either way.
+
 ## Pitch types
 
 `statsbomb` · `opta` · `uefa`, each using the provider's real coordinate space so event data
