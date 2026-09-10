@@ -53,6 +53,22 @@ The agent reads the skill's one-line description at startup — costing nothing 
 relevant — and loads the rest only when a request matches: a shot map, a pass network,
 anything mentioning StatsBomb, Opta, or `<Pitch>`. Your prompts don't change.
 
+## If you can't install the skill
+
+Some tools can't read a project's `node_modules` — browser-based builders especially. For
+those, this site publishes itself in [llms.txt](https://llmstxt.org) format:
+
+| File | Contents |
+| --- | --- |
+| [`/llms.txt`](https://pitchkitjs.com/llms.txt) | An index of every page. Paste the URL into a prompt. |
+| [`/llms-full.txt`](https://pitchkitjs.com/llms-full.txt) | Every guide and overlay page as one Markdown document, examples inlined. |
+| [`/llms-api.txt`](https://pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, kept separate so it doesn't crowd out the prose. |
+
+Appending `.md` to any docs URL returns that single page as raw Markdown.
+
+The trade-off is the one above: these are scraped from whatever is deployed here, so they
+describe the latest release rather than the version in your project. The skill doesn't.
+
 ## See also
 
 - [Theming](/docs/configuration/tailwind) — the CSS-variable system the skill documents

@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(dirname, "../.."),
   },
+  // Append `.md` to any docs URL to get the raw Markdown. A route segment can't
+  // carry a literal `.md` suffix alongside a catch-all, so the extension is
+  // stripped here and the bare slug handed to app/llms-md/[[...slug]].
+  async rewrites() {
+    return [
+      { source: "/docs.md", destination: "/llms-md" },
+      { source: "/docs/:slug*.md", destination: "/llms-md/:slug*" },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
