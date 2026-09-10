@@ -1,7 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { DataProviderError } from "../errors.js";
-import { competitionsFixture, eventsFixture, lineupsFixture, matchesFixture } from "./fixtures.js";
-import { parseCompetitions, parseEvents, parseLineups, parseMatches } from "./parse.js";
+import {
+  competitionsFixture,
+  eventsFixture,
+  lineupsFixture,
+  matchesFixture,
+  threeSixtyFixture,
+  threeSixtyMatchEventsFixture,
+} from "./fixtures.js";
+import {
+  parseCompetitions,
+  parseEvents,
+  parseLineups,
+  parseMatches,
+  parseThreeSixty,
+} from "./parse.js";
 import { isCarry, isPass, isShot, ofType } from "./select.js";
 import type { StatsBombGenericEvent } from "./types.js";
 
@@ -159,5 +172,79 @@ describe("parseLineups", () => {
     expect(() => parseLineups(matchesFixture())).toThrowError(
       /lineups\[0\] is not a StatsBomb lineup/,
     );
+  });
+});
+
+describe("parseThreeSixty", () => {
+  const frames = parseThreeSixty(threeSixtyFixture());
+
+  it("parses every frame in the fixture", () => {
+    expect(frames).toHaveLength(12);
+  });
+
+  it("lifts each tracked player's location[] to x/y", () => {
+    for (const frame of frames) {
+      for (const player of frame.freeze_frame) {
+        expect(player.x).toBe(player.location[0]);
+        expect(player.y).toBe(player.location[1]);
+        expect(typeof player.x).toBe("number");
+      }
+    }
+  });
+
+  it("preserves the original location array alongside the lifted values", () => {
+    expect(frames[0]?.freeze_frame[0]?.location).toBeInstanceOf(Array);
+  });
+
+  it("preserves visible_area untouched", () => {
+    for (const frame of frames) {
+      expect(frame.visible_area).toBeInstanceOf(Array);
+      expect(frame.visible_area.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps every player's teammate/actor/keeper flags", () => {
+    for (const frame of frames) {
+      for (const player of frame.freeze_frame) {
+        expect(typeof player.teammate).toBe("boolean");
+        expect(typeof player.actor).toBe("boolean");
+        expect(typeof player.keeper).toBe("boolean");
+      }
+    }
+  });
+
+  it("joins to real events by event_uuid === event.id", () => {
+    // The paired events fixture is the same match, sampled together, so
+    // this is a genuine join, not a coincidence of matching ids.
+    const events = parseEvents(threeSixtyMatchEventsFixture());
+    const eventIds = new Set(events.map((event) => event.id));
+    for (const frame of frames) {
+      expect(eventIds.has(frame.event_uuid)).toBe(true);
+    }
+  });
+
+  it("rejects a JSON document that is not an array", () => {
+    expect(() => parseThreeSixty({ frames: [] })).toThrowError(DataProviderError);
+  });
+
+  it("rejects a different StatsBomb file with a message that names the mix-up", () => {
+    expect(() => parseThreeSixty(threeSixtyMatchEventsFixture())).toThrowError(
+      /three-sixty\[0\] is not a StatsBomb 360 frame/,
+    );
+    expect(() => parseThreeSixty(threeSixtyMatchEventsFixture())).toThrowError(
+      /events, matches, lineups or competitions/,
+    );
+  });
+
+  it("rejects a frame whose freeze_frame contains a player with no location", () => {
+    const malformed = [{ event_uuid: "abc", visible_area: [], freeze_frame: [{ teammate: true }] }];
+    expect(() => parseThreeSixty(malformed)).toThrowError(
+      /three-sixty\[0\]\.freeze_frame\[0\] is not a StatsBomb 360 player/,
+    );
+  });
+
+  it("reports the index of the offending frame", () => {
+    const malformed = [{ event_uuid: "a", visible_area: [], freeze_frame: [] }, { not: "a frame" }];
+    expect(() => parseThreeSixty(malformed)).toThrowError(/three-sixty\[1\]/);
   });
 });

@@ -1,4 +1,4 @@
-import type { StatsBombPass, StatsBombShot } from "./types.js";
+import type { StatsBombPass, StatsBombShot, StatsBombThreeSixtyPlayer } from "./types.js";
 
 /**
  * Composable filters over StatsBomb's own fields.
@@ -95,4 +95,26 @@ export function isPenalty(shot: StatsBombShot): boolean {
 export function isOnTarget(shot: StatsBombShot): boolean {
   const outcome = shot.shot.outcome.name;
   return outcome === "Goal" || outcome === "Saved" || outcome === "Saved To Post";
+}
+
+/**
+ * 360 freeze-frame predicates. `teammate` is already boolean, so `isOpponent`
+ * is its negation — read as "not on the acting player's side", not "unknown
+ * team": a 360 frame only ever tracks the 22 players actually on the pitch.
+ */
+
+export function isTeammate(player: StatsBombThreeSixtyPlayer): boolean {
+  return player.teammate;
+}
+
+export function isOpponent(player: StatsBombThreeSixtyPlayer): boolean {
+  return !player.teammate;
+}
+
+export function isActor(player: StatsBombThreeSixtyPlayer): boolean {
+  return player.actor;
+}
+
+export function isKeeper(player: StatsBombThreeSixtyPlayer): boolean {
+  return player.keeper;
 }

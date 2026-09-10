@@ -101,30 +101,66 @@ provider you don't use.
 `parseMatches`, `parseLineups`.
 
 **Load from a URL** — a mirror, your own host, anything. `loadEvents`,
-`loadCompetitions`, `loadMatches`, `loadLineups`.
+`loadCompetitions`, `loadMatches`, `loadLineups`, `loadThreeSixty`.
 
 **Fetch from open data** — builds the public URL for you. `fetchMatchEvents(matchId)`,
 `fetchCompetitions()`, `fetchMatches(competitionId, seasonId)`,
-`fetchLineups(matchId)`. Each takes optional `{ baseUrl, fetch, signal }`, so
-you can point at a mirror or wrap the request (Next.js caching, a proxy, a
-test stub). Built on the global `fetch` — no HTTP client dependency.
+`fetchLineups(matchId)`, `fetchMatchThreeSixty(matchId)`. Each takes optional
+`{ baseUrl, fetch, signal }`, so you can point at a mirror or wrap the request
+(Next.js caching, a proxy, a test stub). Built on the global `fetch` — no HTTP
+client dependency.
 
 Note that `competitions.json` rows are competition **and season** pairs, which
 is why `fetchMatches` needs both ids.
 
 **Select** — `shots`, `passes`, `carries`, `ofType`, and the `isShot` /
-`isPass` / `isCarry` guards.
+`isPass` / `isCarry` guards. For 360 data: `indexThreeSixtyByEvent` (the
+join), `teammatesIn`/`opponentsIn`/`actorIn`/`keeperIn` (filtering a frame's
+tracked players), and `visibleAreaPolygon` (the camera-coverage polygon as
+point pairs for a `Polygon` layer).
 
 **Predicates** — `isComplete`, `isCorner`, `isFreeKick`, `isThrowIn`,
 `isCross`, `isThroughBall`, `isSwitch`, `isAssist`, `isKeyPass`, `isSetPiece`,
-`isGoal`, `isPenalty`, `isOnTarget`.
+`isGoal`, `isPenalty`, `isOnTarget`. For 360 tracked players: `isTeammate`,
+`isOpponent`, `isActor`, `isKeeper`.
+
+### 360 tracking data
+
+```ts
+import {
+  fetchMatchEvents,
+  fetchMatchThreeSixty,
+  indexThreeSixtyByEvent,
+  isShot,
+} from "@pitchkit/data-providers/statsbomb";
+
+const [events, frames] = await Promise.all([
+  fetchMatchEvents(3857276),
+  fetchMatchThreeSixty(3857276),
+]);
+const frameByEvent = indexThreeSixtyByEvent(frames);
+
+const shot = events.find(isShot);
+const frame = shot && frameByEvent.get(shot.id); // undefined if this event wasn't tracked
+```
+
+Not every match has 360 coverage, and not every event within a covered match
+has a frame — coverage varies by match (85% in one sampled World Cup match)
+since 360 only runs on events the camera could see. Check
+`match.match_status_360 === "available"` before fetching, and don't assume
+`frameByEvent.get(event.id)` will hit even within a covered match.
+
+A tracked player carries no identity — `{ teammate, actor, keeper, location }`
+only, relative to the event's own team — which is why the selectors above
+read like predicates rather than lookups.
 
 ### Gotchas worth knowing
 
 - **A completed pass has no `outcome` at all.** StatsBomb encodes success as
   the _absence_ of `pass.outcome`, not as a value — testing for
   `outcome.name === "Complete"` finds nothing. That's what `isComplete` is for.
-- **Events files are large.** A match is roughly 3 MB, so fetch once and cache.
+- **Events files are large; 360 files are larger.** A match's events are
+  roughly 3 MB, its 360 tracking 5-7 MB — fetch once and cache either.
 - **`endZ` is optional**, even on shots: StatsBomb writes a two-element
   `end_location` for a shot that never left the ground.
 - **Some events have no location** — Starting XI, Half Start, Substitution and

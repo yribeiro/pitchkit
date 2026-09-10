@@ -8,18 +8,27 @@ user agreement.
 
 ## Provenance
 
-All four files were cut from the open-data repo at
+All files were cut from the open-data repo at
 `https://raw.githubusercontent.com/statsbomb/open-data/master/data`:
 
-| File                         | Source                | Trimming                                          |
-| ---------------------------- | --------------------- | ------------------------------------------------- |
-| `events-15946-sample.json`   | `events/15946.json`   | 29 of 3762 events, selected by the criteria below |
-| `competitions-sample.json`   | `competitions.json`   | first 3 of 80 rows                                |
-| `matches-43-106-sample.json` | `matches/43/106.json` | first 3 matches                                   |
-| `lineups-15946-sample.json`  | `lineups/15946.json`  | both teams, first 3 players each                  |
+| File                              | Source                     | Trimming                                            |
+| ---------------------------------- | -------------------------- | --------------------------------------------------- |
+| `events-15946-sample.json`         | `events/15946.json`        | 29 of 3762 events, selected by the criteria below    |
+| `competitions-sample.json`         | `competitions.json`        | first 3 of 80 rows                                   |
+| `matches-43-106-sample.json`       | `matches/43/106.json`      | first 3 matches                                      |
+| `lineups-15946-sample.json`        | `lineups/15946.json`       | both teams, first 3 players each                     |
+| `events-3857276-sample.json`       | `events/3857276.json`      | 12 of 3388 events, the ones matching the frames below |
+| `three-sixty-3857276-sample.json`  | `three-sixty/3857276.json` | 12 of 2873 frames, selected by the criteria below     |
 
-Events are unmodified and kept in their original `index` order. Nothing was
-synthesised — if a case isn't in this file, it wasn't in the match.
+Events and frames are unmodified and kept in their original chronological
+(`index`) order. Nothing was synthesised — if a case isn't in this file, it
+wasn't in the match.
+
+Match 15946 predates StatsBomb's 360 rollout and has no tracking data, so the
+360 fixtures use a different match (3857276) — its events sample is a
+**separate, smaller cut of the same match**, kept in step with the 360
+sample so `event_uuid`/`id` actually join (see `indexThreeSixtyByEvent`'s
+tests), rather than reusing the 15946 events fixture.
 
 ## Why these 29 events
 
@@ -39,3 +48,17 @@ regression in any of them fails a test rather than going unnoticed:
   types that carry **no `location`** at all (and Starting XI additionally
   carries a `tactics` object this package doesn't model, which must survive
   parsing intact).
+
+## Why these 12 events/frames (match 3857276)
+
+- A shot with a frame (freeze-frame players include a tracked shooter and
+  keeper) and a second shot for variety.
+- Passes and a carry, so `indexThreeSixtyByEvent` has more than one event
+  type to join against.
+- A frame with the **minimum** player count (3) and one with a **large**
+  count (20+) — density at both ends of what a `<Voronoi>`/`<Scatter>` layer
+  needs to handle.
+- At least one frame flagged with a tracked **keeper**.
+- One frame per `visible_area` length StatsBomb writes (10, 12 and 14
+  numbers — a hexagon, pentagon or heptagon of camera coverage,
+  respectively), so `visibleAreaPolygon` is exercised against all three.
