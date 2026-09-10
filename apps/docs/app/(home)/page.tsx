@@ -51,7 +51,7 @@ export default function HomePage() {
       <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-16 pt-14 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:pt-24">
         <div className="flex flex-col items-start gap-5">
           <span className="rounded-full border border-fd-border bg-fd-card px-3 py-1 text-xs font-medium text-fd-muted-foreground">
-            React-native · TypeScript-first · MIT
+            React-first for the Web · TypeScript · MIT
           </span>
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
             The football pitch layer for the web.
