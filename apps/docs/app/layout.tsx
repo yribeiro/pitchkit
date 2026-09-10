@@ -2,9 +2,9 @@ import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
-const SITE = "https://pitchkitjs.com";
 const DESCRIPTION =
   "PitchKit is a React-native football pitch visualisation library for the web, with first-class TypeScript types.";
 

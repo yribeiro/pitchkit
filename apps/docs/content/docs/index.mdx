@@ -53,7 +53,25 @@ across providers (StatsBomb, Opta, UEFA, or your own).
   [Heatmap](/docs/overlays/heatmap), [Flow](/docs/overlays/flow),
   [Polygon](/docs/overlays/polygon), [Convex Hull](/docs/overlays/convex-hull),
   [Voronoi](/docs/overlays/voronoi), and [Goal Angle](/docs/overlays/goal-angle).
-- **[Configuration](/docs/configuration/tailwind)** — Tailwind integration.
+- **[Configuration](/docs/configuration/tailwind)** — Tailwind integration, and the
+  [Agent Skill](/docs/configuration/agent-skill) that ships inside `@pitchkit/react`.
 - **[mplsoccer → PitchKit](/docs/migration)** — the migration cheatsheet.
 - **[API Reference](/docs/api)** — every public export, generated from TSDoc.
 - **[Gallery](/gallery)** — finished visualisations with full source and sandbox exports.
+
+## Reading these docs with an AI agent
+
+No model has PitchKit in its training data, so anything an agent "remembers" about the API
+is invented. Three ways to give it the real thing, cheapest first:
+
+- **[`/llms.txt`](https://pitchkitjs.com/llms.txt)** — an index of every page on this site,
+  in the [llms.txt](https://llmstxt.org) format. Paste the URL into a prompt.
+- **[`/llms-full.txt`](https://pitchkitjs.com/llms-full.txt)** — every guide, component and
+  overlay page as one Markdown document, examples inlined. Small enough to hand over whole.
+  The generated API reference is kept separate as
+  [`/llms-api.txt`](https://pitchkitjs.com/llms-api.txt) so it doesn't crowd out the prose.
+- **[The Agent Skill](/docs/configuration/agent-skill)** — the best option if you're already
+  installing the package, because it's versioned with the code rather than scraped from here.
+
+Any page on this site is also available as raw Markdown: append `.md` to its URL
+(for example [`/docs/guides/theming.md`](/docs/guides/theming.md)).
