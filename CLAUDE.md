@@ -71,9 +71,30 @@ namespace and get the library installable:
 
 - **Published to npm:** [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
   and [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react), under the
-  `pitchkit` npm org. `0.1.0` released 2026-09-08 (verified from a clean StackBlitz project
-  installing off the registry); **`0.2.0` released 2026-09-09** — density overlays
-  (`<PositionalHeatmap>`, `<Hexbin>`, `<KDE>`) and `appearance.linesOnTop`.
+  `pitchkit` npm org.
+  - `0.1.0` — 2026-09-08. First publish, verified from a clean StackBlitz project installing
+    off the registry.
+  - `0.2.0` (both packages) — 2026-09-09. Density overlays (`<PositionalHeatmap>`,
+    `<Hexbin>`, `<KDE>`) and `appearance.linesOnTop`. Also the first release whose tarballs
+    carry the READMEs/LICENSE — `0.1.0` predated them.
+  - **`0.3.0` (`@pitchkit/react` only — `core` untouched)** — 2026-09-10. Ships a bundled
+    **Agent Skill** inside the tarball (`skills/pitchkit/`): `SKILL.md` (mental model,
+    build-breaking gotchas, four worked recipes) plus `references/api.md` (full prop
+    tables). A new `pitchkit` bin: `npx @pitchkit/react skills install [--dir] [--force]`
+    symlinks it into the consumer's project (default `.claude/skills/`), so `npm update`
+    moves the skill with the version actually installed — no stale API. This is the Skill
+    slice of [issue #40](https://github.com/yribeiro/pitchkit/issues/40) ("AX: ship
+    `llms.txt`, `AGENTS.md`, and a bundled Agent Skill") — **#40 is still open**, the
+    `llms.txt` and `AGENTS.md` pieces aren't done. Shipped via
+    [PR #46](https://github.com/yribeiro/pitchkit/pull/46).
+- **Brand identity** — via [PR #47](https://github.com/yribeiro/pitchkit/pull/47)
+  (2026-09-10): the PitchKit mark (two penalty areas + halfway line + centre circle,
+  reading as `[ ]`), applied across the README header, docs nav, favicon, and generated
+  OG/Twitter images. **The mark's geometry is duplicated across five files with nothing
+  linking them** (two brand SVGs, the favicon cut, two generated-image components, the
+  React logo component) — see [CONTRIBUTING.md](./CONTRIBUTING.md)'s "Brand assets"
+  section before touching anything logo-shaped; a change to one will not propagate and no
+  test catches the drift.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs
@@ -100,6 +121,22 @@ namespace and get the library installable:
 
 Remaining: **Milestone 2 — v1.0 parity push** (see above), plus the release automation in
 issue #36.
+
+## Environment gotcha: CRLF from Windows-tool `git pull`/`checkout`
+
+If you pull or check out files using a Windows-native shell tool (git-bash/MINGW, not real
+WSL bash) against this repo, files that were just fetched can land on disk as CRLF even
+though git's stored objects are LF — `core.autocrlf=true` is a common Windows git default,
+and it converts on checkout. `git status` **will show these as modified** (not silently
+normalized), typically as a huge insertions==deletions diff across many files. Confirm with
+`git diff --ignore-space-at-eol --stat` — empty output means it's pure line-ending noise, not
+real changes, and it's safe to discard with `git checkout -- .` (never commit it). This isn't
+hypothetical: it caused 4 spurious test failures in `install-skill.test.mjs` in this exact
+scenario (its frontmatter parser splits on a literal `"---\n"`, which doesn't match
+`"---\r\n"`). Prefer running `git pull`/`checkout` through real WSL bash to avoid it happening at all —
+same underlying reason as the PRD's existing note (§11 progress notes) on running
+`npm`/`node` through WSL rather than Windows-native tooling: this repo's tooling assumes a
+Linux-native checkout.
 
 ## Security posture (2026-09-09)
 

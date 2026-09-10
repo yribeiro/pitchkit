@@ -421,7 +421,9 @@ npx shadcn add @pitchkit/theme-broadcast
   not block production. Vercel Web Analytics is enabled via `<Analytics />` in
   `apps/docs/app/layout.tsx`.
 - **Repo hygiene:** clear README with hero GIF, CONTRIBUTING, issue/PR templates, good-first-issues, MIT licence.
-  _As built:_ all done except the README hero GIF and good-first-issue labelling.
+  _As built:_ all done except the actual hero **GIF** and good-first-issue labelling — the
+  README now has the PitchKit mark/wordmark as a static header (PR #47), which is real
+  progress but not the animated hero this line originally asked for.
 - **Security posture (as of 2026-09-09):** 37 open Dependabot alerts (2 critical, 22 high,
   12 medium, 1 low) and 7 open Dependabot PRs. Important scoping: **none of these reach the
   published packages** — `@pitchkit/core` has zero runtime dependencies and `@pitchkit/react`
@@ -593,6 +595,17 @@ npx shadcn add @pitchkit/theme-broadcast
   22.4.0 that doesn't satisfy some deps' `engines` field — run `nvm alias default 22.23.1`
   (or whatever the newest installed 22.x is) once if you see `EBADENGINE` warnings on
   install.
+  **Correction to "`git`/`gh` work fine from the default shell tool" above — that's true for
+  read-only commands, not for anything that writes files to disk.** A `git pull`/`checkout`
+  run from a Windows-native shell tool (git-bash/MINGW) can check newly-fetched files out as
+  CRLF even though the git objects are LF, if that machine's `core.autocrlf=true` (a common
+  Windows default). `git status` shows this as real modifications — a huge
+  insertions==deletions diff across every touched file, not a silent no-op. Confirm with
+  `git diff --ignore-space-at-eol --stat`: empty output means it's pure line-ending noise,
+  safe to discard with `git checkout -- .` (never commit it). Hit in practice: 4 spurious
+  test failures in `install-skill.test.mjs` after a Windows-shell `git pull`, because its
+  frontmatter parser splits on a literal `"---\n"`, which doesn't match `"---\r\n"`. Prefer
+  pulling/checking out through real WSL bash.
 - **`examples/react-nextjs/`** (Next.js 16, App Router) added to verify `@pitchkit/react`'s
   SSR story under a real Next.js server, not just `renderToString` in a test. Real finding
   from building it: every `@pitchkit/react` layer takes accessor _functions_ as props
@@ -666,6 +679,20 @@ npx shadcn add @pitchkit/theme-broadcast
       `apps/docs`) + first recipe items (pass network, shot map) per §7.4.
 - [ ] Full API reference; migration cheatsheet; gallery.
 - [ ] Update the docs site / showcase website with all of the above.
+- [ ] **AX (agent-legibility, §4).** **Partially done** — bundled Agent Skill shipped in `@pitchkit/react@0.3.0`
+      (`skills/pitchkit/` in the tarball, `npx @pitchkit/react skills install`) via
+      [PR #46](https://github.com/yribeiro/pitchkit/pull/46), closing the Skill slice of
+      [issue #40](https://github.com/yribeiro/pitchkit/issues/40). **`llms.txt` and
+      `AGENTS.md` — the other two AX layers #40 also scopes — are not done**; #40 stays open
+      until those ship too.
+- [x] **Brand identity** — the PitchKit mark (two penalty areas + halfway line + centre
+      circle, reading as `[ ]`) across the README, docs nav, favicon, and OG/Twitter images,
+      via [PR #47](https://github.com/yribeiro/pitchkit/pull/47). Not an original checklist
+      item; added because a public package needs a mark before "React-native" repositioning
+      (PR #45) actually reads as a finished brand rather than a placeholder wordmark. The
+      mark's geometry is duplicated across five files with nothing linking them — see
+      `assets/brand/README.md` and CONTRIBUTING.md's "Brand assets" section before editing
+      anything logo-shaped.
 
 ### Milestone 3 — publishing (concentrated effort)
 
@@ -675,10 +702,11 @@ a real domain. Remaining work is release *automation*, not release itself.
 - [x] First npm publish — [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
       and [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react) under the
       `pitchkit` npm org. `0.1.0` published 2026-09-08, verified end-to-end from a clean
-      StackBlitz project installing straight from the registry. `0.2.0` published
-      2026-09-09 (density overlays + `appearance.linesOnTop`) — this is also the release
-      that first carried the READMEs and `LICENSE` onto the npm package pages, since
-      `0.1.0`'s tarballs predated them.
+      StackBlitz project installing straight from the registry. `0.2.0` (both packages)
+      published 2026-09-09 (density overlays + `appearance.linesOnTop`) — this is also the
+      release that first carried the READMEs and `LICENSE` onto the npm package pages, since
+      `0.1.0`'s tarballs predated them. `0.3.0` (`@pitchkit/react` only) published
+      2026-09-10 — bundled Agent Skill, see Milestone 2's AX note below.
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
