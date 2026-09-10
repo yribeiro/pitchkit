@@ -1,5 +1,29 @@
 # @pitchkit/react
 
+## 0.3.0
+
+### Minor Changes
+
+- 5706440: Ship an Agent Skill inside the published package, so coding agents get PitchKit's real API
+  instead of inventing an mplsoccer-flavoured one.
+
+  - `skills/pitchkit/SKILL.md` — the mental model (package split, provider coordinate
+    systems, accessors, responsive-by-default, CSS-variable theming), the gotchas that break
+    builds (the `"use client"` boundary, density layers needing a fixed-pixel pitch), and
+    four complete worked recipes: shot map, pass map, heatmap, pass network.
+  - `skills/pitchkit/references/api.md` — full prop tables for every component plus the
+    `@pitchkit/core` exports worth calling directly.
+  - A new `pitchkit` bin: `npx @pitchkit/react skills install [--dir <path>] [--force]`
+    symlinks the skill into a consuming project (default `.claude/skills/`), falling back to
+    a copy where the filesystem won't take a link. `npx @pitchkit/react skills path` prints
+    its location in `node_modules`.
+
+  Because the skill travels in the tarball, and the installed link points into
+  `node_modules`, `npm update @pitchkit/react` moves the skill with it — so an agent reads
+  the API of the version actually installed, which `llms.txt`-style docs can't guarantee.
+  The `skills/<name>/SKILL.md` layout is the shared convention, so generic installers pick
+  it up without this CLI.
+
 ## 0.2.0
 
 ### Minor Changes
