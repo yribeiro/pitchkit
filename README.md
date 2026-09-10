@@ -3,7 +3,7 @@
   <img src="./assets/brand/pitchkit-lockup-light.svg" alt="PitchKit" height="64">
 </picture>
 
-React-native football pitch visualisation for the web — mplsoccer's feature set, built
+React-first football pitch visualisation for the web — mplsoccer's feature set, built
 for React and Next.js instead of matplotlib.
 
 [![npm](https://img.shields.io/npm/v/@pitchkit/react)](https://www.npmjs.com/package/@pitchkit/react)

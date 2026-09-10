@@ -101,7 +101,7 @@ export default function OpengraphImage() {
           lineHeight: 1.35,
         }}
       >
-        React-native football pitch visualisation for the web.
+        A React-first football pitch visualisation library for the web.
       </div>
 
       <div

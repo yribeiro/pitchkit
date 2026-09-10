@@ -6,7 +6,7 @@ import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
 const DESCRIPTION =
-  "PitchKit is a React-native football pitch visualisation library for the web, with first-class TypeScript types.";
+  "PitchKit is a React-first football pitch visualisation library for the web, with first-class TypeScript types.";
 
 /**
  * `metadataBase` is what lets the file-convention images in this directory
