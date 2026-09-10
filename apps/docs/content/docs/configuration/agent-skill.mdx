@@ -1,0 +1,59 @@
+---
+title: Agent Skill
+description: Ship PitchKit's real API to coding agents, versioned and updated with the package.
+---
+
+No model has PitchKit in its training data. Asked to "build a shot map with PitchKit", an
+agent falls back on mplsoccer's Python API and invents props that don't exist.
+
+`@pitchkit/react` ships an [Agent Skill](https://code.claude.com/docs/en/skills) with the
+real one.
+
+## Install
+
+```bash
+npx @pitchkit/react skills install
+```
+
+That links `.claude/skills/pitchkit/` to the copy inside `node_modules`. For another agent,
+point it elsewhere:
+
+```bash
+npx @pitchkit/react skills install --dir .cursor/skills
+```
+
+## It stays current
+
+Because it's a link, not a copy, the skill tracks whatever version you have installed:
+
+```bash
+npm update @pitchkit/react   # skill is already current — nothing else to run
+```
+
+That matters more than it sounds. A copied skill is correct the day you extract it and
+silently wrong after the next breaking change — the same version ambiguity that makes
+training data unreliable, one layer down.
+
+On filesystems that reject symlinks it copies instead and tells you, in which case re-run
+with `--force` after upgrading.
+
+## What's in it
+
+| Part | Covers |
+| --- | --- |
+| The model | The core/react split, the three provider coordinate systems, accessors, responsive sizing, CSS-variable theming |
+| Anti-hallucinations | The plausible things that *don't* exist — `<ShotMap>`, a `theme` prop, `type="wyscout"` |
+| Build-breakers | The `"use client"` boundary, density layers needing a fixed-pixel `<Pitch>`, `linesOnTop` |
+| Four recipes | Shot map, pass map, heatmap, pass network — tested against the real exports |
+| API reference | Every component's props, plus the `@pitchkit/core` helpers worth calling |
+
+## How it triggers
+
+The agent reads the skill's one-line description at startup — costing nothing until it's
+relevant — and loads the rest only when a request matches: a shot map, a pass network,
+anything mentioning StatsBomb, Opta, or `<Pitch>`. Your prompts don't change.
+
+## See also
+
+- [Theming](/docs/configuration/tailwind) — the CSS-variable system the skill documents
+- [Recipes](/docs/guides/recipes) — the same examples, with live previews

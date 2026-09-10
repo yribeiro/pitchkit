@@ -35,8 +35,13 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "pitchkit": "./bin/pitchkit.mjs"
+  },
   "files": [
-    "dist"
+    "dist",
+    "bin",
+    "skills"
   ],
   "scripts": {
     "build": "tsup && node scripts/add-use-client.mjs",

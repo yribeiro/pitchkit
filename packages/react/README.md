@@ -139,6 +139,28 @@ the `<Pitch>` tree must originate inside a `"use client"` component — React Se
 can't pass functions across the client boundary. SSR still happens; only the prop-serialisation
 boundary moves. `<Heatmap>` is Canvas-backed and therefore client-only.
 
+## Agent Skill
+
+No model has PitchKit in its training data, so coding agents asked for a shot map tend to
+invent an mplsoccer-flavoured API. This package ships an Agent Skill — `skills/pitchkit/`
+inside the tarball — that documents the real one.
+
+```bash
+npx @pitchkit/react skills install          # -> .claude/skills/pitchkit/
+npx @pitchkit/react skills install --dir .cursor/skills
+npx @pitchkit/react skills path             # where it lives in node_modules
+```
+
+Install *symlinks* the target at the copy inside `node_modules`, so `npm update
+@pitchkit/react` moves the skill with it and an agent can't end up reading last version's
+API. On a filesystem that won't take a symlink it copies instead and says so — that copy is
+a snapshot, so re-run with `--force` after upgrading.
+
+The default directory suits Claude Code; for any other agent, point `--dir` at wherever it
+reads skills from, or hand it the `skills path` output to read directly. The layout follows
+the `skills/<name>/SKILL.md` convention, so generic installers like `skills-npm` find it in
+`node_modules` without needing this CLI at all.
+
 ## Links
 
 - [Documentation & gallery](https://pitchkitjs.com)

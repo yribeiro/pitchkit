@@ -23,6 +23,11 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     href: "/docs/guides/coordinates",
   },
   {
+    title: "Agent compatible",
+    body: "No model has PitchKit in its training data — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
+    href: "/docs/configuration/agent-skill",
+  },
+  {
     title: "Responsive by default",
     body: "Every pitch fills its container via ResizeObserver, with a correct-aspect-ratio first paint. Explicit width/height is the opt-out, not the default.",
     href: "/docs/guides/responsive",
@@ -36,11 +41,6 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     title: "SSR-ready",
     body: "Marks render to real SVG on the server — verified against Next.js App Router. No hydration flicker, no client-only placeholder boxes.",
     href: "/docs/guides/nextjs-ssr",
-  },
-  {
-    title: "Hybrid SVG + Canvas",
-    body: "Interactive marks stay crisp, inspectable SVG; dense heatmaps paint to canvas. Each surface does what it's actually good at.",
-    href: "/docs/overlays/heatmap",
   },
 ];
 
@@ -89,16 +89,30 @@ export default function HomePage() {
               href={f.href}
               className="group flex flex-col gap-2 rounded-lg p-5 transition-colors hover:bg-fd-accent/60"
             >
-              <h2 className="text-sm font-semibold text-fd-foreground">
-                {f.title}
-                <span
-                  aria-hidden
-                  className="ml-1 inline-block text-fd-muted-foreground/0 transition-all group-hover:translate-x-0.5 group-hover:text-fd-primary"
-                >
-                  →
-                </span>
-              </h2>
+              <h2 className="text-sm font-semibold text-fd-foreground">{f.title}</h2>
               <p className="text-sm leading-relaxed text-fd-muted-foreground">{f.body}</p>
+              {/* Always visible rather than hover-only: on a grid of cards that
+                  are entirely link, a permanent affordance is what signals
+                  they're clickable at all — hover can't advertise itself.
+                  Drawn as SVG rather than a "→" glyph so the stroke weight is
+                  ours to set instead of the body font's. */}
+              <span
+                aria-hidden
+                className="mt-auto flex justify-end pt-3 text-fd-primary/70 transition-all group-hover:translate-x-0.5 group-hover:text-fd-primary"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h13M12.5 5.5 19 12l-6.5 6.5" />
+                </svg>
+              </span>
             </Link>
           ))}
         </div>
