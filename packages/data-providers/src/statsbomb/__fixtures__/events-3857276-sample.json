@@ -1,0 +1,1058 @@
+[
+ {
+  "id": "05a57281-9295-408a-9c4f-e32d7fad4d96",
+  "index": 5,
+  "period": 1,
+  "timestamp": "00:00:00.460",
+  "minute": 0,
+  "second": 0,
+  "type": {
+   "id": 30,
+   "name": "Pass"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 6301,
+   "name": "Youssef En-Nesyri"
+  },
+  "position": {
+   "id": 23,
+   "name": "Center Forward"
+  },
+  "location": [
+   61,
+   40.1
+  ],
+  "duration": 0.83469,
+  "related_events": [
+   "1267faf9-e033-4985-925a-2f9521d63bc0"
+  ],
+  "pass": {
+   "recipient": {
+    "id": 5234,
+    "name": "Sofyan Amrabat"
+   },
+   "length": 12.557467,
+   "angle": 3.045886,
+   "height": {
+    "id": 1,
+    "name": "Ground Pass"
+   },
+   "end_location": [
+    48.5,
+    41.3
+   ],
+   "body_part": {
+    "id": 38,
+    "name": "Left Foot"
+   },
+   "type": {
+    "id": 65,
+    "name": "Kick Off"
+   }
+  }
+ },
+ {
+  "id": "1267faf9-e033-4985-925a-2f9521d63bc0",
+  "index": 6,
+  "period": 1,
+  "timestamp": "00:00:01.295",
+  "minute": 0,
+  "second": 1,
+  "type": {
+   "id": 42,
+   "name": "Ball Receipt*"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5234,
+   "name": "Sofyan Amrabat"
+  },
+  "position": {
+   "id": 10,
+   "name": "Center Defensive Midfield"
+  },
+  "location": [
+   48.5,
+   41.3
+  ],
+  "related_events": [
+   "05a57281-9295-408a-9c4f-e32d7fad4d96"
+  ]
+ },
+ {
+  "id": "fa742b13-32df-4dce-8b08-7c6ebb125d5a",
+  "index": 7,
+  "period": 1,
+  "timestamp": "00:00:01.295",
+  "minute": 0,
+  "second": 1,
+  "type": {
+   "id": 43,
+   "name": "Carry"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5234,
+   "name": "Sofyan Amrabat"
+  },
+  "position": {
+   "id": 10,
+   "name": "Center Defensive Midfield"
+  },
+  "location": [
+   48.5,
+   41.3
+  ],
+  "duration": 1.120033,
+  "related_events": [
+   "3a06bcce-1408-4a0b-be01-f6b93f142b30",
+   "1267faf9-e033-4985-925a-2f9521d63bc0"
+  ],
+  "carry": {
+   "end_location": [
+    48.4,
+    42.5
+   ]
+  }
+ },
+ {
+  "id": "3a06bcce-1408-4a0b-be01-f6b93f142b30",
+  "index": 8,
+  "period": 1,
+  "timestamp": "00:00:02.415",
+  "minute": 0,
+  "second": 2,
+  "type": {
+   "id": 30,
+   "name": "Pass"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5234,
+   "name": "Sofyan Amrabat"
+  },
+  "position": {
+   "id": 10,
+   "name": "Center Defensive Midfield"
+  },
+  "location": [
+   48.4,
+   42.5
+  ],
+  "duration": 1.47092,
+  "related_events": [
+   "d9f8538d-a5cd-4ed6-8f04-bd8394133fb1"
+  ],
+  "pass": {
+   "recipient": {
+    "id": 12149,
+    "name": "Nayef Aguerd"
+   },
+   "length": 24.344608,
+   "angle": 2.3968697,
+   "height": {
+    "id": 1,
+    "name": "Ground Pass"
+   },
+   "end_location": [
+    30.5,
+    59
+   ],
+   "body_part": {
+    "id": 40,
+    "name": "Right Foot"
+   }
+  }
+ },
+ {
+  "id": "15c4c6ba-c038-474a-9c61-d0190ce84829",
+  "index": 10,
+  "period": 1,
+  "timestamp": "00:00:03.886",
+  "minute": 0,
+  "second": 3,
+  "type": {
+   "id": 43,
+   "name": "Carry"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 12149,
+   "name": "Nayef Aguerd"
+  },
+  "position": {
+   "id": 3,
+   "name": "Right Center Back"
+  },
+  "location": [
+   30.5,
+   59
+  ],
+  "duration": 1.256779,
+  "related_events": [
+   "1f1b0ef8-1a1d-45b3-bf9c-4299ea836377",
+   "d9f8538d-a5cd-4ed6-8f04-bd8394133fb1"
+  ],
+  "carry": {
+   "end_location": [
+    30.9,
+    59
+   ]
+  }
+ },
+ {
+  "id": "1f1b0ef8-1a1d-45b3-bf9c-4299ea836377",
+  "index": 11,
+  "period": 1,
+  "timestamp": "00:00:05.143",
+  "minute": 0,
+  "second": 5,
+  "type": {
+   "id": 30,
+   "name": "Pass"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 12149,
+   "name": "Nayef Aguerd"
+  },
+  "position": {
+   "id": 3,
+   "name": "Right Center Back"
+  },
+  "location": [
+   30.9,
+   59
+  ],
+  "duration": 2.262904,
+  "related_events": [
+   "9f6ff602-783e-4527-94d3-07e216ad29d9"
+  ],
+  "pass": {
+   "recipient": {
+    "id": 5219,
+    "name": "Romain Saïss"
+   },
+   "length": 32.118843,
+   "angle": -1.6050508,
+   "height": {
+    "id": 1,
+    "name": "Ground Pass"
+   },
+   "end_location": [
+    29.8,
+    26.9
+   ],
+   "body_part": {
+    "id": 38,
+    "name": "Left Foot"
+   }
+  }
+ },
+ {
+  "id": "9f6ff602-783e-4527-94d3-07e216ad29d9",
+  "index": 12,
+  "period": 1,
+  "timestamp": "00:00:07.406",
+  "minute": 0,
+  "second": 7,
+  "type": {
+   "id": 42,
+   "name": "Ball Receipt*"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5219,
+   "name": "Romain Saïss"
+  },
+  "position": {
+   "id": 5,
+   "name": "Left Center Back"
+  },
+  "location": [
+   29.8,
+   26.9
+  ],
+  "related_events": [
+   "1f1b0ef8-1a1d-45b3-bf9c-4299ea836377"
+  ]
+ },
+ {
+  "id": "c141160a-d04c-4642-877f-70eaa32eaf8e",
+  "index": 13,
+  "period": 1,
+  "timestamp": "00:00:07.406",
+  "minute": 0,
+  "second": 7,
+  "type": {
+   "id": 43,
+   "name": "Carry"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5219,
+   "name": "Romain Saïss"
+  },
+  "position": {
+   "id": 5,
+   "name": "Left Center Back"
+  },
+  "location": [
+   29.8,
+   26.9
+  ],
+  "duration": 1.314944,
+  "related_events": [
+   "84cdb79d-76e6-408a-bbc4-34026594624a",
+   "9f6ff602-783e-4527-94d3-07e216ad29d9"
+  ],
+  "carry": {
+   "end_location": [
+    31.7,
+    26.2
+   ]
+  }
+ },
+ {
+  "id": "3e5db9c7-5032-4254-a85b-81740c588e99",
+  "index": 37,
+  "period": 1,
+  "timestamp": "00:00:25.065",
+  "minute": 0,
+  "second": 25,
+  "type": {
+   "id": 30,
+   "name": "Pass"
+  },
+  "possession": 2,
+  "possession_team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "play_pattern": {
+   "id": 9,
+   "name": "From Kick Off"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 6785,
+   "name": "Yassine Bounou"
+  },
+  "position": {
+   "id": 1,
+   "name": "Goalkeeper"
+  },
+  "location": [
+   6.6,
+   47.7
+  ],
+  "duration": 2.148421,
+  "related_events": [
+   "6b2de501-62a2-4dfc-b595-a4244b3bcd78"
+  ],
+  "pass": {
+   "recipient": {
+    "id": 5219,
+    "name": "Romain Saïss"
+   },
+   "length": 33.264095,
+   "angle": -1.4714268,
+   "height": {
+    "id": 1,
+    "name": "Ground Pass"
+   },
+   "end_location": [
+    9.9,
+    14.6
+   ],
+   "body_part": {
+    "id": 38,
+    "name": "Left Foot"
+   }
+  }
+ },
+ {
+  "id": "473df22f-d159-4416-a5ce-62838698ea12",
+  "index": 100,
+  "period": 1,
+  "timestamp": "00:02:05.857",
+  "minute": 2,
+  "second": 5,
+  "type": {
+   "id": 16,
+   "name": "Shot"
+  },
+  "possession": 6,
+  "possession_team": {
+   "id": 1833,
+   "name": "Canada"
+  },
+  "play_pattern": {
+   "id": 1,
+   "name": "Regular Play"
+  },
+  "team": {
+   "id": 1833,
+   "name": "Canada"
+  },
+  "player": {
+   "id": 16252,
+   "name": "Mark Anthony Kaye"
+  },
+  "position": {
+   "id": 11,
+   "name": "Left Defensive Midfield"
+  },
+  "location": [
+   96.5,
+   40.7
+  ],
+  "duration": 0.397304,
+  "under_pressure": true,
+  "related_events": [
+   "77529694-6561-4614-9484-ce4fe8049651",
+   "9aee6c3d-786a-4be5-b554-a34b4341630e",
+   "a1952ce5-37f9-4e17-b792-f8c486714f2c"
+  ],
+  "shot": {
+   "statsbomb_xg": 0.038882375,
+   "end_location": [
+    104.1,
+    39.4
+   ],
+   "key_pass_id": "adb7af16-6e6c-4f23-a405-e9488608b93b",
+   "technique": {
+    "id": 93,
+    "name": "Normal"
+   },
+   "body_part": {
+    "id": 38,
+    "name": "Left Foot"
+   },
+   "type": {
+    "id": 87,
+    "name": "Open Play"
+   },
+   "outcome": {
+    "id": 96,
+    "name": "Blocked"
+   },
+   "first_time": true,
+   "freeze_frame": [
+    {
+     "location": [
+      108.6,
+      34.8
+     ],
+     "player": {
+      "id": 9922,
+      "name": "David Junior Hoilett"
+     },
+     "position": {
+      "id": 19,
+      "name": "Center Attacking Midfield"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      112.7,
+      45.5
+     ],
+     "player": {
+      "id": 16459,
+      "name": "Cyle Larin"
+     },
+     "position": {
+      "id": 23,
+      "name": "Center Forward"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      108.6,
+      42.5
+     ],
+     "player": {
+      "id": 12770,
+      "name": "Jonathan Osorio"
+     },
+     "position": {
+      "id": 9,
+      "name": "Right Defensive Midfield"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      109.2,
+      27.6
+     ],
+     "player": {
+      "id": 24024,
+      "name": "Tajon Buchanan"
+     },
+     "position": {
+      "id": 16,
+      "name": "Left Midfield"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      94.4,
+      20.6
+     ],
+     "player": {
+      "id": 29758,
+      "name": "Sam Adekugbe"
+     },
+     "position": {
+      "id": 6,
+      "name": "Left Back"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      100.1,
+      49.5
+     ],
+     "player": {
+      "id": 12365,
+      "name": "Alphonso Davies"
+     },
+     "position": {
+      "id": 12,
+      "name": "Right Midfield"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      89.8,
+      57.6
+     ],
+     "player": {
+      "id": 44703,
+      "name": "Alistair Johnston"
+     },
+     "position": {
+      "id": 2,
+      "name": "Right Back"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      83.9,
+      46.1
+     ],
+     "player": {
+      "id": 11846,
+      "name": "Steven de Sousa Vitoria"
+     },
+     "position": {
+      "id": 3,
+      "name": "Right Center Back"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      108.3,
+      47.9
+     ],
+     "player": {
+      "id": 15890,
+      "name": "Noussair Mazraoui"
+     },
+     "position": {
+      "id": 6,
+      "name": "Left Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      112.5,
+      41.6
+     ],
+     "player": {
+      "id": 5234,
+      "name": "Sofyan Amrabat"
+     },
+     "position": {
+      "id": 10,
+      "name": "Center Defensive Midfield"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      102.2,
+      46.3
+     ],
+     "player": {
+      "id": 5219,
+      "name": "Romain Saïss"
+     },
+     "position": {
+      "id": 5,
+      "name": "Left Center Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      108.2,
+      36.6
+     ],
+     "player": {
+      "id": 12149,
+      "name": "Nayef Aguerd"
+     },
+     "position": {
+      "id": 3,
+      "name": "Right Center Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      108.9,
+      32.3
+     ],
+     "player": {
+      "id": 5245,
+      "name": "Achraf Hakimi Mouh"
+     },
+     "position": {
+      "id": 2,
+      "name": "Right Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      104.1,
+      39.3
+     ],
+     "player": {
+      "id": 46258,
+      "name": "Azzedine Ounahi"
+     },
+     "position": {
+      "id": 13,
+      "name": "Right Center Midfield"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      102,
+      43.2
+     ],
+     "player": {
+      "id": 3634,
+      "name": "Abdelhamid Sabiri"
+     },
+     "position": {
+      "id": 15,
+      "name": "Left Center Midfield"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      100.7,
+      52.2
+     ],
+     "player": {
+      "id": 3625,
+      "name": "Sofiane Boufal"
+     },
+     "position": {
+      "id": 21,
+      "name": "Left Wing"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      97.1,
+      38.4
+     ],
+     "player": {
+      "id": 5237,
+      "name": "Hakim Ziyech"
+     },
+     "position": {
+      "id": 17,
+      "name": "Right Wing"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      95.6,
+      41.2
+     ],
+     "player": {
+      "id": 6301,
+      "name": "Youssef En-Nesyri"
+     },
+     "position": {
+      "id": 23,
+      "name": "Center Forward"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      118.5,
+      39.1
+     ],
+     "player": {
+      "id": 6785,
+      "name": "Yassine Bounou"
+     },
+     "position": {
+      "id": 1,
+      "name": "Goalkeeper"
+     },
+     "teammate": false
+    }
+   ]
+  }
+ },
+ {
+  "id": "13b63722-8099-4cdf-818a-d2df3036a633",
+  "index": 203,
+  "period": 1,
+  "timestamp": "00:03:29.220",
+  "minute": 3,
+  "second": 29,
+  "type": {
+   "id": 16,
+   "name": "Shot"
+  },
+  "possession": 8,
+  "possession_team": {
+   "id": 1833,
+   "name": "Canada"
+  },
+  "play_pattern": {
+   "id": 4,
+   "name": "From Throw In"
+  },
+  "team": {
+   "id": 788,
+   "name": "Morocco"
+  },
+  "player": {
+   "id": 5237,
+   "name": "Hakim Ziyech"
+  },
+  "position": {
+   "id": 17,
+   "name": "Right Wing"
+  },
+  "location": [
+   83.9,
+   45
+  ],
+  "duration": 1.942491,
+  "related_events": [
+   "9fc29c67-0714-4a9d-ba83-b63832de48ca"
+  ],
+  "shot": {
+   "statsbomb_xg": 0.024477394,
+   "end_location": [
+    120,
+    43.3,
+    1.4
+   ],
+   "body_part": {
+    "id": 38,
+    "name": "Left Foot"
+   },
+   "type": {
+    "id": 87,
+    "name": "Open Play"
+   },
+   "outcome": {
+    "id": 97,
+    "name": "Goal"
+   },
+   "first_time": true,
+   "technique": {
+    "id": 92,
+    "name": "Lob"
+   },
+   "freeze_frame": [
+    {
+     "location": [
+      78.5,
+      39.3
+     ],
+     "player": {
+      "id": 46258,
+      "name": "Azzedine Ounahi"
+     },
+     "position": {
+      "id": 13,
+      "name": "Right Center Midfield"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      96.5,
+      36.4
+     ],
+     "player": {
+      "id": 6301,
+      "name": "Youssef En-Nesyri"
+     },
+     "position": {
+      "id": 23,
+      "name": "Center Forward"
+     },
+     "teammate": true
+    },
+    {
+     "location": [
+      96,
+      39.2
+     ],
+     "player": {
+      "id": 15958,
+      "name": "Milan Borjan"
+     },
+     "position": {
+      "id": 1,
+      "name": "Goalkeeper"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      101,
+      21.9
+     ],
+     "player": {
+      "id": 11846,
+      "name": "Steven de Sousa Vitoria"
+     },
+     "position": {
+      "id": 3,
+      "name": "Right Center Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      81.9,
+      59.4
+     ],
+     "player": {
+      "id": 29758,
+      "name": "Sam Adekugbe"
+     },
+     "position": {
+      "id": 6,
+      "name": "Left Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      83.5,
+      29.3
+     ],
+     "player": {
+      "id": 16252,
+      "name": "Mark Anthony Kaye"
+     },
+     "position": {
+      "id": 11,
+      "name": "Left Defensive Midfield"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      95.5,
+      43.6
+     ],
+     "player": {
+      "id": 23828,
+      "name": "Kamal Miller"
+     },
+     "position": {
+      "id": 5,
+      "name": "Left Center Back"
+     },
+     "teammate": false
+    },
+    {
+     "location": [
+      83,
+      7.8
+     ],
+     "player": {
+      "id": 44703,
+      "name": "Alistair Johnston"
+     },
+     "position": {
+      "id": 2,
+      "name": "Right Back"
+     },
+     "teammate": false
+    }
+   ]
+  }
+ },
+ {
+  "id": "e941769e-36c6-414f-902e-cbe7cd9ad662",
+  "index": 2832,
+  "period": 2,
+  "timestamp": "00:29:38.835",
+  "minute": 74,
+  "second": 38,
+  "type": {
+   "id": 42,
+   "name": "Ball Receipt*"
+  },
+  "possession": 132,
+  "possession_team": {
+   "id": 1833,
+   "name": "Canada"
+  },
+  "play_pattern": {
+   "id": 2,
+   "name": "From Corner"
+  },
+  "team": {
+   "id": 1833,
+   "name": "Canada"
+  },
+  "player": {
+   "id": 15958,
+   "name": "Milan Borjan"
+  },
+  "position": {
+   "id": 1,
+   "name": "Goalkeeper"
+  },
+  "location": [
+   31.3,
+   43.8
+  ],
+  "related_events": [
+   "d7645d58-b0f2-496b-9377-f50375917849"
+  ]
+ }
+]

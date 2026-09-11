@@ -11,6 +11,11 @@
  * Four layers, each usable on its own: `parse*` (pure, no network),
  * `load*`/`fetch*` (network), `shots`/`passes`/`carries` (narrowing
  * selectors) and the `is*` predicates (composable filters).
+ *
+ * 360 optical tracking data follows the same pattern —
+ * `parseThreeSixty`/`fetchMatchThreeSixty`, joined to events with
+ * `indexThreeSixtyByEvent` — but only exists for matches StatsBomb has
+ * tracked; check `match.match_status_360 === "available"` first.
  */
 
 export type {
@@ -34,38 +39,67 @@ export type {
   StatsBombPass,
   StatsBombRef,
   StatsBombShot,
+  StatsBombThreeSixtyFrame,
+  StatsBombThreeSixtyPlayer,
 } from "./types.js";
 
-export { parseCompetitions, parseEvents, parseLineups, parseMatches } from "./parse.js";
+export {
+  parseCompetitions,
+  parseEvents,
+  parseLineups,
+  parseMatches,
+  parseThreeSixty,
+} from "./parse.js";
 
 export {
   STATSBOMB_OPEN_DATA_BASE_URL,
   fetchCompetitions,
   fetchLineups,
   fetchMatchEvents,
+  fetchMatchThreeSixty,
   fetchMatches,
   loadCompetitions,
   loadEvents,
   loadLineups,
   loadMatches,
+  loadThreeSixty,
   matchEventsUrl,
+  matchThreeSixtyUrl,
 } from "./load.js";
 export type { StatsBombLoadOptions } from "./load.js";
 
-export { carries, isCarry, isPass, isShot, ofType, passes, shots } from "./select.js";
+export {
+  actorIn,
+  carries,
+  indexThreeSixtyByEvent,
+  isCarry,
+  isPass,
+  isShot,
+  keeperIn,
+  ofType,
+  opponentsIn,
+  passes,
+  shots,
+  teammatesIn,
+  visibleAreaPolygon,
+} from "./select.js";
 
 export {
+  isActor,
   isAssist,
   isComplete,
   isCorner,
   isCross,
   isFreeKick,
   isGoal,
+  isKeeper,
   isKeyPass,
   isOnTarget,
+  isOpponent,
   isPenalty,
   isSetPiece,
   isSwitch,
+  isTeammate,
   isThroughBall,
   isThrowIn,
 } from "./predicates.js";

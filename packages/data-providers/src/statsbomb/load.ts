@@ -1,11 +1,18 @@
 import { fetchJson } from "../fetch-json.js";
 import type { LoadOptions } from "../fetch-json.js";
-import { parseCompetitions, parseEvents, parseLineups, parseMatches } from "./parse.js";
+import {
+  parseCompetitions,
+  parseEvents,
+  parseLineups,
+  parseMatches,
+  parseThreeSixty,
+} from "./parse.js";
 import type {
   StatsBombCompetition,
   StatsBombEvent,
   StatsBombLineup,
   StatsBombMatch,
+  StatsBombThreeSixtyFrame,
 } from "./types.js";
 
 /**
@@ -70,6 +77,14 @@ export async function loadLineups(url: string, options?: LoadOptions): Promise<S
   return parseLineups(await fetchJson(url, options));
 }
 
+/** Fetch and parse a 360 file from any URL. */
+export async function loadThreeSixty(
+  url: string,
+  options?: LoadOptions,
+): Promise<StatsBombThreeSixtyFrame[]> {
+  return parseThreeSixty(await fetchJson(url, options));
+}
+
 /**
  * Every competition-and-season pair available in open data (80 of them at
  * the time of writing). Each row pairs a `competition_id` with a
@@ -109,4 +124,24 @@ export async function fetchLineups(
   options: StatsBombLoadOptions = {},
 ): Promise<StatsBombLineup[]> {
   return loadLineups(`${root(options)}/lineups/${matchId}.json`, options);
+}
+
+/** The open-data URL of one match's 360 file. */
+export function matchThreeSixtyUrl(matchId: number, options: StatsBombLoadOptions = {}): string {
+  return `${root(options)}/three-sixty/${matchId}.json`;
+}
+
+/**
+ * Every 360 tracking frame for one match.
+ *
+ * Bigger than the events file for the same match — typically 5-7 MB — and
+ * only exists for matches StatsBomb has tracked, which most haven't. Check
+ * `StatsBombMatch.match_status_360 === "available"` before fetching rather
+ * than reacting to a 404.
+ */
+export async function fetchMatchThreeSixty(
+  matchId: number,
+  options: StatsBombLoadOptions = {},
+): Promise<StatsBombThreeSixtyFrame[]> {
+  return loadThreeSixty(matchThreeSixtyUrl(matchId, options), options);
 }

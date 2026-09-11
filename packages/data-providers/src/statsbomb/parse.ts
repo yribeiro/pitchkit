@@ -4,6 +4,7 @@ import type {
   StatsBombEvent,
   StatsBombLineup,
   StatsBombMatch,
+  StatsBombThreeSixtyFrame,
 } from "./types.js";
 
 /**
@@ -142,4 +143,48 @@ export function parseLineups(json: unknown): StatsBombLineup[] {
     }
   }
   return rows as StatsBombLineup[];
+}
+
+/**
+ * Parse a match's `three-sixty/{match_id}.json` file — StatsBomb's optical
+ * tracking data.
+ *
+ * Same shape of guarantee as `parseEvents`: every frame, and every player
+ * within it, is **spread** rather than rebuilt, so nothing this package
+ * doesn't model is lost. The only addition is `x`/`y` lifted from each
+ * tracked player's `location` pair.
+ */
+export function parseThreeSixty(json: unknown): StatsBombThreeSixtyFrame[] {
+  return expectArray(json, "three-sixty").map((row, index) => parseThreeSixtyFrame(row, index));
+}
+
+function parseThreeSixtyFrame(row: unknown, index: number): StatsBombThreeSixtyFrame {
+  if (!isRecord(row) || typeof row.event_uuid !== "string" || !Array.isArray(row.freeze_frame)) {
+    throw new DataProviderError(
+      "schema",
+      `three-sixty[${index}] is not a StatsBomb 360 frame: expected an object with an "event_uuid" and a "freeze_frame" array, but got ${describe(row)}. ` +
+        `Check the URL points at a match's three-sixty file rather than an events, matches, lineups or competitions file.`,
+    );
+  }
+
+  const freezeFrame = row.freeze_frame.map((player, playerIndex) =>
+    parseThreeSixtyPlayer(player, index, playerIndex),
+  );
+
+  return { ...row, freeze_frame: freezeFrame } as unknown as StatsBombThreeSixtyFrame;
+}
+
+function parseThreeSixtyPlayer(
+  player: unknown,
+  frameIndex: number,
+  playerIndex: number,
+): StatsBombThreeSixtyFrame["freeze_frame"][number] {
+  const [x, y] = coordinatesOf(isRecord(player) ? player.location : undefined);
+  if (!isRecord(player) || x === undefined || y === undefined) {
+    throw new DataProviderError(
+      "schema",
+      `three-sixty[${frameIndex}].freeze_frame[${playerIndex}] is not a StatsBomb 360 player: expected an object with a two-number "location", but got ${describe(player)}.`,
+    );
+  }
+  return { ...player, x, y } as unknown as StatsBombThreeSixtyFrame["freeze_frame"][number];
 }

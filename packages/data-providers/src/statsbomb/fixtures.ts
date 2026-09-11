@@ -15,3 +15,9 @@ export const eventsFixture = (): unknown => loadFixture("events-15946-sample");
 export const competitionsFixture = (): unknown => loadFixture("competitions-sample");
 export const matchesFixture = (): unknown => loadFixture("matches-43-106-sample");
 export const lineupsFixture = (): unknown => loadFixture("lineups-15946-sample");
+
+// A second, smaller match (3857276) whose events and 360 frames were both
+// sampled together, so `event_uuid`/`id` actually join — match 15946 (above)
+// predates 360 tracking and has none.
+export const threeSixtyMatchEventsFixture = (): unknown => loadFixture("events-3857276-sample");
+export const threeSixtyFixture = (): unknown => loadFixture("three-sixty-3857276-sample");

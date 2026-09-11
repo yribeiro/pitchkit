@@ -1,9 +1,12 @@
+import { isActor, isKeeper, isOpponent, isTeammate } from "./predicates.js";
 import type {
   StatsBombCarry,
   StatsBombEvent,
   StatsBombGenericEvent,
   StatsBombPass,
   StatsBombShot,
+  StatsBombThreeSixtyFrame,
+  StatsBombThreeSixtyPlayer,
 } from "./types.js";
 
 /**
@@ -85,4 +88,61 @@ export function ofType(
   typeName: string,
 ): StatsBombGenericEvent[] {
   return events.filter((event) => event.type.name === typeName) as StatsBombGenericEvent[];
+}
+
+/**
+ * Join 360 frames to the events they belong to — `frame.event_uuid` equals
+ * the matching `StatsBombEvent.id`. Build this once with the frames array
+ * and reuse it via `.get(event.id)`; that's far cheaper than `.find()`-ing
+ * the frames array per event when scrubbing through a whole match's worth
+ * of them.
+ *
+ * ```ts
+ * const frames = indexThreeSixtyByEvent(await fetchMatchThreeSixty(matchId));
+ * const frame = frames.get(event.id); // undefined if this event has no 360 coverage
+ * ```
+ */
+export function indexThreeSixtyByEvent(
+  frames: readonly StatsBombThreeSixtyFrame[],
+): Map<string, StatsBombThreeSixtyFrame> {
+  return new Map(frames.map((frame) => [frame.event_uuid, frame]));
+}
+
+/** Every tracked player on the acting player's side, including the actor. */
+export function teammatesIn(frame: StatsBombThreeSixtyFrame): StatsBombThreeSixtyPlayer[] {
+  return frame.freeze_frame.filter(isTeammate);
+}
+
+/** Every tracked player on the other side. */
+export function opponentsIn(frame: StatsBombThreeSixtyFrame): StatsBombThreeSixtyPlayer[] {
+  return frame.freeze_frame.filter(isOpponent);
+}
+
+/**
+ * The player who performed the frame's event — undefined only for
+ * malformed data, since StatsBomb always marks exactly one actor per frame.
+ */
+export function actorIn(frame: StatsBombThreeSixtyFrame): StatsBombThreeSixtyPlayer | undefined {
+  return frame.freeze_frame.find(isActor);
+}
+
+/** The tracked goalkeeper in this frame, if the camera could see one. */
+export function keeperIn(frame: StatsBombThreeSixtyFrame): StatsBombThreeSixtyPlayer | undefined {
+  return frame.freeze_frame.find(isKeeper);
+}
+
+/**
+ * `visible_area` as point pairs for a PitchKit `Polygon` layer, rather than
+ * StatsBomb's flat `[x0, y0, x1, y1, ...]` encoding.
+ */
+export function visibleAreaPolygon(
+  frame: StatsBombThreeSixtyFrame,
+): ReadonlyArray<readonly [number, number]> {
+  const points: Array<readonly [number, number]> = [];
+  for (let i = 0; i + 1 < frame.visible_area.length; i += 2) {
+    const x = frame.visible_area[i];
+    const y = frame.visible_area[i + 1];
+    if (x !== undefined && y !== undefined) points.push([x, y]);
+  }
+  return points;
 }

@@ -6,9 +6,12 @@ import {
   fetchCompetitions,
   fetchLineups,
   fetchMatchEvents,
+  fetchMatchThreeSixty,
   fetchMatches,
   loadEvents,
+  loadThreeSixty,
   matchEventsUrl,
+  matchThreeSixtyUrl,
 } from "./load.js";
 import { shots } from "./select.js";
 
@@ -57,9 +60,34 @@ describe("loadEvents", () => {
   });
 });
 
+describe("loadThreeSixty", () => {
+  it("fetches and parses in one call", async () => {
+    const fetchStub = stubFetch("three-sixty-3857276-sample");
+    const frames = await loadThreeSixty("https://example.test/three-sixty.json", {
+      fetch: fetchStub,
+    });
+
+    expect(frames).toHaveLength(12);
+    expect(requestedUrl(fetchStub)).toBe("https://example.test/three-sixty.json");
+  });
+
+  it("surfaces a schema failure when the URL points at the wrong file", async () => {
+    const fetchStub = stubFetch("events-15946-sample");
+    const error = await loadThreeSixty("https://example.test/oops.json", {
+      fetch: fetchStub,
+    }).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(DataProviderError);
+    expect((error as DataProviderError).kind).toBe("schema");
+  });
+});
+
 describe("open-data URL building", () => {
   it("points at the public repo by default", () => {
     expect(matchEventsUrl(15946)).toBe(`${STATSBOMB_OPEN_DATA_BASE_URL}/events/15946.json`);
+    expect(matchThreeSixtyUrl(15946)).toBe(
+      `${STATSBOMB_OPEN_DATA_BASE_URL}/three-sixty/15946.json`,
+    );
     expect(STATSBOMB_OPEN_DATA_BASE_URL).toMatch(/^https:\/\//);
   });
 
@@ -105,6 +133,16 @@ describe("fetch helpers", () => {
 
     expect(lineups).toHaveLength(2);
     expect(requestedUrl(fetchStub)).toBe(`${STATSBOMB_OPEN_DATA_BASE_URL}/lineups/15946.json`);
+  });
+
+  it("fetchMatchThreeSixty builds the three-sixty URL", async () => {
+    const fetchStub = stubFetch("three-sixty-3857276-sample");
+    const frames = await fetchMatchThreeSixty(3857276, { fetch: fetchStub });
+
+    expect(frames).toHaveLength(12);
+    expect(requestedUrl(fetchStub)).toBe(
+      `${STATSBOMB_OPEN_DATA_BASE_URL}/three-sixty/3857276.json`,
+    );
   });
 
   it("passes baseUrl through to every helper", async () => {

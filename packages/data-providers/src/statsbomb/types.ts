@@ -234,6 +234,14 @@ export interface StatsBombMatch {
   readonly home_score: number;
   readonly away_score: number;
   readonly match_status?: string;
+  /**
+   * Whether *this specific match* has 360 tracking data available —
+   * `"available"` if `fetchMatchThreeSixty`/`matchThreeSixtyUrl` will
+   * resolve. A competition can have 360 data for some of its matches and
+   * not others (`StatsBombCompetition.match_available_360` only says the
+   * competition has *some* coverage).
+   */
+  readonly match_status_360?: string;
   readonly match_week?: number;
   readonly competition_stage?: StatsBombRef;
   readonly stadium?: StatsBombRef;
@@ -254,4 +262,51 @@ export interface StatsBombLineup {
   readonly team_id: number;
   readonly team_name: string;
   readonly lineup: readonly StatsBombLineupPlayer[];
+}
+
+/**
+ * One tracked player in a 360 freeze frame.
+ *
+ * Distinct from `StatsBombFreezeFramePlayer` (the freeze frame nested inside
+ * `shot.freeze_frame` in the *events* file): this one carries no player
+ * identity at all — 360 is optical tracking, not event annotation — just
+ * `teammate`/`actor`/`keeper` flags relative to the frame's acting player,
+ * plus a location.
+ */
+export interface StatsBombThreeSixtyPlayer {
+  /** Relative to the event's team — `false` means an opponent, not "unknown team". */
+  readonly teammate: boolean;
+  /** The player who performed the event this frame belongs to. */
+  readonly actor: boolean;
+  readonly keeper: boolean;
+  readonly location: readonly number[];
+  /** `location[0]`, lifted for direct use as a PitchKit x accessor. */
+  readonly x: number;
+  /** `location[1]`, lifted for direct use as a PitchKit y accessor. */
+  readonly y: number;
+}
+
+/**
+ * One row of a match's `three-sixty/{match_id}.json` file — StatsBomb's
+ * optical tracking data: every player the broadcast camera could see at the
+ * moment of one event.
+ *
+ * `event_uuid` is the matching `StatsBombEvent`'s `id` — join the two files
+ * with `indexThreeSixtyByEvent`. Not every event has a frame — coverage
+ * varies by match (85% of events in one sampled World Cup match, for
+ * instance) since 360 tracking only runs on events with a camera view
+ * (StatsBomb's own coverage, not something this package filters) — so
+ * always check the join rather than assuming one exists.
+ */
+export interface StatsBombThreeSixtyFrame {
+  readonly event_uuid: string;
+  /**
+   * The pitch area the broadcast camera actually covered for this frame —
+   * a polygon as StatsBomb encodes it, a flat `[x0, y0, x1, y1, ...]` list
+   * of vertex pairs rather than `[[x, y], ...]`. `freeze_frame` only lists
+   * players StatsBomb could see inside it. Use `visibleAreaPolygon` to get
+   * point pairs for a PitchKit `Polygon` layer.
+   */
+  readonly visible_area: readonly number[];
+  readonly freeze_frame: readonly StatsBombThreeSixtyPlayer[];
 }

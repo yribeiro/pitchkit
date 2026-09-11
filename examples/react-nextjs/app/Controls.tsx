@@ -7,6 +7,7 @@ import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
 import { StatsBombPanel } from "./StatsBombPanel";
 import { TailwindPanel } from "./TailwindPanel";
+import { ThreeSixtyVoronoiDemo } from "./ThreeSixtyVoronoiDemo";
 
 /** React's CSSProperties has no index signature for custom properties. */
 type CSSVars = CSSProperties & Record<`--${string}`, string>;
@@ -260,6 +261,8 @@ export function Controls() {
         colorMin={heatmapColors.colorMin}
         colorMax={heatmapColors.colorMax}
       />
+
+      <ThreeSixtyVoronoiDemo appearance={appearance} />
     </div>
   );
 }

@@ -1,27 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { eventsFixture } from "./fixtures.js";
-import { parseEvents } from "./parse.js";
+import { eventsFixture, threeSixtyFixture } from "./fixtures.js";
+import { parseEvents, parseThreeSixty } from "./parse.js";
 import {
+  isActor,
   isAssist,
   isComplete,
   isCorner,
   isCross,
   isFreeKick,
   isGoal,
+  isKeeper,
   isKeyPass,
   isOnTarget,
+  isOpponent,
   isPenalty,
   isSetPiece,
   isSwitch,
+  isTeammate,
   isThroughBall,
   isThrowIn,
 } from "./predicates.js";
 import { passes, shots } from "./select.js";
-import type { StatsBombShot } from "./types.js";
+import type { StatsBombShot, StatsBombThreeSixtyPlayer } from "./types.js";
 
 const events = parseEvents(eventsFixture());
 const allPasses = passes(events);
 const allShots = shots(events);
+const frames = parseThreeSixty(threeSixtyFixture());
+const allPlayers = frames.flatMap((frame) => frame.freeze_frame);
 
 describe("isComplete", () => {
   it("treats a missing pass.outcome as a completed pass", () => {
@@ -127,5 +133,32 @@ describe("shot predicates", () => {
     } as unknown as StatsBombShot;
     expect(isPenalty(penalty)).toBe(true);
     expect(isSetPiece(penalty)).toBe(true);
+  });
+});
+
+describe("360 tracked-player predicates", () => {
+  it("isTeammate and isOpponent are exact opposites of the raw flag", () => {
+    for (const player of allPlayers) {
+      expect(isTeammate(player)).toBe(player.teammate);
+      expect(isOpponent(player)).toBe(!player.teammate);
+      expect(isTeammate(player)).toBe(!isOpponent(player));
+    }
+  });
+
+  it("isActor is true for exactly one player per frame", () => {
+    for (const frame of frames) {
+      expect(frame.freeze_frame.filter(isActor)).toHaveLength(1);
+    }
+  });
+
+  it("isKeeper matches the raw keeper flag", () => {
+    const keeperCount = allPlayers.filter((player) => player.keeper).length;
+    expect(keeperCount).toBeGreaterThan(0);
+    expect(allPlayers.filter(isKeeper)).toHaveLength(keeperCount);
+  });
+
+  it("an opponent is never also the actor — the actor is always on their own side", () => {
+    const actor = { teammate: true, actor: true, keeper: false } as StatsBombThreeSixtyPlayer;
+    expect(isOpponent(actor)).toBe(false);
   });
 });
