@@ -1,0 +1,129 @@
+---
+title: 360 Tracking
+description: Every visible player's position at the moment of an event — joined onto the events feed.
+---
+
+StatsBomb 360 is optical tracking: for events the broadcast camera could see, a freeze frame of
+where every visible player was standing. It's a separate file per match, joined onto the
+[events feed](/docs/data/statsbomb/events) by id.
+
+Press **Load tracking data** below, then scrub — each position is one tracked event, with a
+Voronoi diagram of the space each player was closest to.
+
+<PitchPreview name="statsbomb-360-basic" />
+
+## Loading and joining
+
+Two files, one key: a frame's `event_uuid` is the matching event's `id`.
+
+```ts
+import {
+  fetchMatchEvents,
+  fetchMatchThreeSixty,
+  indexThreeSixtyByEvent,
+} from "@pitchkit/data-providers/statsbomb";
+
+const [events, frames] = await Promise.all([
+  fetchMatchEvents(3943043),
+  fetchMatchThreeSixty(3943043),
+]);
+
+const frameByEvent = indexThreeSixtyByEvent(frames);
+const frame = frameByEvent.get(someEvent.id); // undefined if this event wasn't tracked
+```
+
+`indexThreeSixtyByEvent` builds a `Map` once so lookups are cheap — much better than
+`.find()`-ing the frames array per event when you're walking a whole match.
+
+<Callout type="warn">
+  **Check availability before fetching.** Most matches have no 360 data at all. A competition
+  having *some* coverage doesn't mean every match in it does, so test the per-match field
+  rather than reacting to a 404:
+
+```ts
+const matches = await fetchMatches(55, 282);
+const tracked = matches.filter((m) => m.match_status_360 === "available");
+```
+
+360 files are also bigger than events — around 7 MB against 3 MB.
+
+</Callout>
+
+Coverage within a tracked match isn't total either. It varies by match — 85% of events in one
+sampled World Cup fixture — so treat a missing frame as normal, not exceptional.
+
+## What's in a frame
+
+```ts
+interface StatsBombThreeSixtyFrame {
+  event_uuid: string;
+  visible_area: number[]; // flat [x0, y0, x1, y1, ...] camera polygon
+  freeze_frame: StatsBombThreeSixtyPlayer[];
+}
+
+interface StatsBombThreeSixtyPlayer {
+  teammate: boolean; // relative to the event's own team
+  actor: boolean; // the player performing the event
+  keeper: boolean;
+  location: number[];
+  x: number; // lifted from location, for accessors
+  y: number;
+}
+```
+
+**A tracked player has no identity** — no name, no id, no shirt number. 360 is optical
+tracking, not event annotation, so all you get is which side they're on relative to the acting
+player. That's the source data, and the types don't pretend otherwise.
+
+Selectors read a frame's players:
+
+```ts
+import { teammatesIn, opponentsIn, actorIn, keeperIn } from "@pitchkit/data-providers/statsbomb";
+
+teammatesIn(frame); // the acting player's side, including the actor
+opponentsIn(frame); // the other side
+actorIn(frame); // whoever performed the event
+keeperIn(frame); // the tracked keeper, if one was in view
+```
+
+with `isTeammate` / `isOpponent` / `isActor` / `isKeeper` as the underlying predicates if you'd
+rather filter yourself.
+
+## Plotting a frame
+
+Any layer that takes points works directly, because `x`/`y` are already lifted:
+
+```tsx
+<Pitch type="statsbomb">
+  <Voronoi data={frame.freeze_frame} x={(p) => p.x} y={(p) => p.y} />
+  <Scatter data={frame.freeze_frame} x={(p) => p.x} y={(p) => p.y} r={3.5} />
+</Pitch>
+```
+
+`visible_area` is the pitch region the camera actually covered — the `freeze_frame` only lists
+players inside it. It arrives in StatsBomb's flat encoding, so there's a helper to pair it up
+for a [`<Polygon>`](/docs/overlays/polygon):
+
+```tsx
+import { visibleAreaPolygon } from "@pitchkit/data-providers/statsbomb";
+
+<Polygon data={[frame]} points={(f) => visibleAreaPolygon(f)} fill="none" stroke="white" />;
+```
+
+### Keeping team colours stable
+
+One thing to watch when animating a sequence: `teammate` is relative to **whoever performed
+that specific event**. Colour straight off it and the two sides swap palettes on every change
+of possession, which reads as flickering rather than as two teams.
+
+Resolve it against the event's own team once, and a colour means one team for the whole
+timeline:
+
+```ts
+function realTeamOf(player, event, teams) {
+  if (player.teammate) return event.team.name;
+  return teams[0] === event.team.name ? teams[1] : teams[0];
+}
+```
+
+That's exactly what the example above does — its full source is in the **View Code** panel.

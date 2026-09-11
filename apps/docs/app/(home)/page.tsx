@@ -38,9 +38,9 @@ const FEATURES: { title: string; body: string; href: string }[] = [
     href: "/docs/guides/theming",
   },
   {
-    title: "SSR-ready",
-    body: "Marks render to real SVG on the server — verified against Next.js App Router. No hydration flicker, no client-only placeholder boxes.",
-    href: "/docs/guides/nextjs-ssr",
+    title: "Real data in one call",
+    body: "fetchMatchEvents(id) returns typed events straight from StatsBomb open data — shots, passes, carries and 360 tracking, ready to plot. No adapter, no field mapping.",
+    href: "/docs/data",
   },
 ];
 
@@ -57,9 +57,9 @@ export default function HomePage() {
             The football pitch layer for the web.
           </h1>
           <p className="max-w-xl text-balance text-fd-muted-foreground">
-            PitchKit is mplsoccer for the browser — declarative pitch visualisations with
-            typed accessors, responsive SVG marks, canvas heatmaps, and theming that works
-            like the rest of your design system.
+            PitchKit is mplsoccer for the browser — declarative pitch visualisations with typed
+            accessors, responsive SVG marks, canvas heatmaps, and theming that works like the rest
+            of your design system.
           </p>
           <InstallCommand />
           <div className="flex flex-wrap gap-3 pt-1">
@@ -125,8 +125,8 @@ export default function HomePage() {
             Coming from mplsoccer?
           </h2>
           <p className="max-w-lg text-sm text-fd-muted-foreground">
-            The concepts map one-to-one — pitches, marks, accessors. The cheatsheet translates
-            each mplsoccer call to its PitchKit equivalent.
+            The concepts map one-to-one — pitches, marks, accessors. The cheatsheet translates each
+            mplsoccer call to its PitchKit equivalent.
           </p>
           <Link
             href="/docs/migration"

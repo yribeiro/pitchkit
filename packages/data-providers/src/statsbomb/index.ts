@@ -16,6 +16,8 @@
  * `parseThreeSixty`/`fetchMatchThreeSixty`, joined to events with
  * `indexThreeSixtyByEvent` — but only exists for matches StatsBomb has
  * tracked; check `match.match_status_360 === "available"` first.
+ *
+ * @module statsbomb
  */
 
 export type {

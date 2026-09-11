@@ -58,10 +58,11 @@ OG images, PDFs).
 
 ## What's in the box
 
-| Package                                 | What it is                                                                              |
-| --------------------------------------- | --------------------------------------------------------------------------------------- |
-| [`@pitchkit/react`](./packages/react)   | Declarative React components — the supported way to render. Start here.                  |
-| [`@pitchkit/core`](./packages/core)     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps. |
+| Package                                                 | What it is                                                                               |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [`@pitchkit/react`](./packages/react)                   | Declarative React components — the supported way to render. Start here.                  |
+| [`@pitchkit/core`](./packages/core)                     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps. |
+| [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb events + 360). Zero dependencies.     |
 
 ### Components
 
@@ -78,6 +79,38 @@ Every visual prop takes either a static value or a function of the datum, so `fi
 `statsbomb` · `opta` · `uefa` — each with the provider's real coordinate space, so your data
 goes in unmodified. `getPitchDimensions(type)` exposes the underlying numbers, and
 `cropForHalf()` crops to the attacking half.
+
+## Loading real data
+
+Layers take accessor functions, so PitchKit reads whatever shape your data is already in — no
+adapter required. When fetching the data _is_ the friction, the optional
+[`@pitchkit/data-providers`](./packages/data-providers) package goes from a match id to a chart
+in one call:
+
+```bash
+npm install @pitchkit/data-providers
+```
+
+```tsx
+import { fetchMatchEvents, shots, isGoal } from "@pitchkit/data-providers/statsbomb";
+
+const events = await fetchMatchEvents(3943043); // Spain 2–1 England, Euro 2024 final
+const spain = shots(events).filter((s) => s.team.name === "Spain");
+
+<VerticalPitch type="statsbomb">
+  <Scatter
+    data={spain}
+    x={(s) => s.x}
+    y={(s) => s.y}
+    fill={(s) => (isGoal(s) ? "orange" : "steelblue")}
+  />
+</VerticalPitch>;
+```
+
+StatsBomb [events](https://pitchkitjs.com/docs/data/statsbomb/events) and
+[360 tracking](https://pitchkitjs.com/docs/data/statsbomb/360) are both supported, keeping
+StatsBomb's own field names and values — only coordinates are lifted into the `x`/`y` an
+accessor wants. Zero runtime dependencies, and it doesn't depend on `core` or `react` either.
 
 ## Theming
 
@@ -98,7 +131,7 @@ whose JSX you don't own.
 
 ## Next.js / SSR
 
-SVG marks server-render cleanly. Because layer components take accessor *functions* as props,
+SVG marks server-render cleanly. Because layer components take accessor _functions_ as props,
 the `<Pitch>` tree must originate inside a `"use client"` component — React Server Components
 can't pass functions across the client boundary. SSR still happens normally; only the
 prop-serialisation boundary moves.

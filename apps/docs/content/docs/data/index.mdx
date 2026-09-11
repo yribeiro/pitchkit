@@ -1,0 +1,85 @@
+---
+title: Overview
+description: Load real open football data in one call — and when not to bother.
+---
+
+`@pitchkit/data-providers` takes you from a match id to chart-ready data without a pipeline in
+between. It's a separate, optional package: zero runtime dependencies, and no dependency on
+`@pitchkit/core` or `@pitchkit/react` either.
+
+```bash
+npm install @pitchkit/data-providers
+```
+
+```tsx
+import { fetchMatchEvents, shots, isGoal } from "@pitchkit/data-providers/statsbomb";
+import { Scatter, VerticalPitch } from "@pitchkit/react";
+
+const events = await fetchMatchEvents(3943043); // Spain 2–1 England, Euro 2024 final
+const spain = shots(events).filter((shot) => shot.team.name === "Spain");
+
+<VerticalPitch type="statsbomb">
+  <Scatter
+    data={spain}
+    x={(s) => s.x}
+    y={(s) => s.y}
+    fill={(s) => (isGoal(s) ? "orange" : "steelblue")}
+  />
+</VerticalPitch>;
+```
+
+That's the whole path. No adapter, no field mapping, no coordinate conversion.
+
+## You probably don't need this
+
+PitchKit's layers take **accessor functions**, so they already read whatever shape your data is
+in — that's the point of the [coordinates guide](/docs/guides/coordinates). If you have your
+own pipeline, point `x`/`y` at your own fields and skip this package entirely. Nothing in
+`@pitchkit/react` depends on it.
+
+It exists for the cases where fetching real data is the friction: tutorials, prototypes,
+learning the API, and agent-assisted builds where a complete runnable example beats a schema
+description.
+
+## How the loaders are shaped
+
+Four layers, each usable on its own:
+
+| Layer              | What it does                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| `parse*`           | Pure — already-loaded JSON in, typed objects out. No network.                                  |
+| `load*` / `fetch*` | Fetch and parse in one call. `load*` takes any URL; `fetch*` builds the open-data URL for you. |
+| Selectors          | Narrow a mixed feed: `shots()`, `passes()`, `carries()`, `ofType()`.                           |
+| Predicates         | Compose with `.filter()`: `isGoal`, `isComplete`, `isCorner`, `isCross`, …                     |
+
+Two principles run through all of it, and they're worth knowing before you read the provider
+pages:
+
+**The provider's data stays the provider's.** Field names keep their original spelling, values
+keep their original strings — a StatsBomb outcome is `"Off T"`, not a re-spelled
+`"off-target"`. You can read StatsBomb's own spec alongside these types with no mapping table
+in between. The one exception is coordinates: `location` arrays are _also_ surfaced as
+`x`/`y`/`endX`/`endY`, because that's what a PitchKit accessor wants.
+
+**Interpretation lives in functions, not fields.** There's no invented `complete: boolean` on a
+pass — there's an `isComplete(pass)` you apply. The data stays a faithful record; the reading
+of it is opt-in and inspectable. It also covers what a per-event-type accessor structurally
+can't: a corner isn't a StatsBomb event type, it's a _kind of pass_, so it can only be a
+predicate.
+
+## Providers
+
+- **[StatsBomb](/docs/data/statsbomb/events)** — open data: competitions, matches, lineups,
+  [events](/docs/data/statsbomb/events) and [360 tracking](/docs/data/statsbomb/360).
+
+More providers (SkillCorner, Metrica) are tracked in
+[issue #30](https://github.com/yribeiro/pitchkit/issues/30); they'll live on their own
+subpaths under the same package.
+
+## Licensing
+
+This package ships **no data** — it fetches from whatever URL you give it. The default URLs
+point at [StatsBomb's open-data repository](https://github.com/statsbomb/open-data), which is
+released under StatsBomb's own user agreement rather than an OSI licence, and **using it
+obliges you to credit StatsBomb** in anything you publish. Read their terms before you rely on
+it.

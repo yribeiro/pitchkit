@@ -75,7 +75,7 @@ The modern delivery surface for analytics — internal club tools, scouting plat
 
 Note: personas 1–4 increasingly mean "a person directing an AI coding agent to build this,"
 not necessarily typing every line by hand — not a fifth persona so much as a lens that applies
-across all four. It doesn't change *who* wants the library, but it does raise the bar on *how*
+across all four. It doesn't change _who_ wants the library, but it does raise the bar on _how_
 the library and its docs need to be shaped (see the agent-legibility goal in §4).
 
 ## 6. Product Principles
@@ -168,7 +168,7 @@ chart family (shot map, pass map, heatmap) ships alongside `@pitchkit/data-provi
 | Grid / jointgrid layout (pitch + title + endnote + marginals) | `grid`, `jointgrid`         | 1                                               |
 | Inset axes / inset image (e.g. badges, mini-charts on pitch)  | `inset_axes`, `inset_image` | L                                               |
 | Font management                                               | `FontManager`               | M (web fonts are trivial; document the pattern) |
-| StatsBomb open-data adapter                                   | `Sbopen`                    | 1                                               |
+| StatsBomb open-data adapter (events + 360) — **shipped**      | `Sbopen`                    | 1                                               |
 | (Out of scope) authenticated StatsBomb API/local              | `Sbapi`, `Sblocal`          | —                                               |
 | Image export (PNG/SVG download) + logo/watermark overlay      | `add_image`                 | 1                                               |
 
@@ -391,8 +391,23 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ### 8.10 Data adapters & coordinate safety
 
-- `@pitchkit/data-providers/statsbomb`: typed loaders for StatsBomb open-data (events/frames) → tidy shapes, coordinate model pre-wired. Free open-data only (licensing-safe).
+- `@pitchkit/data-providers/statsbomb`: typed loaders for StatsBomb open-data → tidy shapes,
+  coordinate model pre-wired. Free open-data only (licensing-safe). **Shipped**, covering both
+  halves of the feed:
+  - **Events** — competitions/matches/lineups indexes, typed shots/passes/carries with
+    everything else preserved as generic events, selectors and composable predicates
+    ([PR #50](https://github.com/yribeiro/pitchkit/pull/50)).
+  - **360 optical tracking** — freeze frames joined onto events by `event_uuid`, freeze-frame
+    selectors, `visible_area` ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)).
+- The provider's own vocabulary is preserved (field names and values unchanged); only
+  coordinates are lifted to the `x`/`y`/`endX`/`endY` an accessor wants, and all interpretation
+  lives in predicates rather than derived fields.
 - Generic accessor pattern (`x={d => d.location[0]}`) so any provider shape works without an adapter.
+- **Docs placement:** a top-level **Data** section (`/docs/data`, with a per-provider subtree),
+  **superseding** [issue #29](https://github.com/yribeiro/pitchkit/issues/29)'s original
+  decision to park this under _Configuration_ until 2–3 providers existed. That decision
+  weighed volume; the reversal is about positioning — "Configuration" frames data loading as
+  one-time setup, when it's a headline capability.
 
 ## 9. Documentation & Showcase Site
 
@@ -660,8 +675,8 @@ npx shadcn add @pitchkit/theme-broadcast
   gotcha hit while building this: after rebuilding `@pitchkit/core`/`@pitchkit/react` (`tsup`)
   mid-session, the Next.js dev server kept serving the stale `dist/` output through its own
   bundler cache — a plain page reload wasn't enough; restarting the dev server (`preview_stop`
-  + `preview_start`) was required to pick up the rebuilt workspace packages, same category of
-  issue as the Vite pre-bundling gotcha already documented above.
+  - `preview_start`) was required to pick up the rebuilt workspace packages, same category of
+    issue as the Vite pre-bundling gotcha already documented above.
 - Docs site skeleton ([PR #18](https://github.com/yribeiro/pitchkit/pull/18)) and the
   shadcn showcase website ([PR #32](https://github.com/yribeiro/pitchkit/pull/32)) are both
   merged, closing out Milestone 1 entirely as of 2026-09-06. Publishing (npm publish, repo
@@ -681,7 +696,10 @@ npx shadcn add @pitchkit/theme-broadcast
 - [x] Flow, polygon, convex hull, Voronoi, goal angle
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
 - [ ] Radar + Pizza charts.
-- [ ] StatsBomb open-data adapter.
+- [x] StatsBomb open-data adapter — `@pitchkit/data-providers/statsbomb`, events
+      ([PR #50](https://github.com/yribeiro/pitchkit/pull/50)) and 360 tracking
+      ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), documented under
+      [/docs/data](https://pitchkitjs.com/docs/data).
 - [ ] Grid/jointgrid layout; shadcn registry infrastructure (`registry.json` served from
       `apps/docs`) + first recipe items (pass network, shot map) per §7.4.
 - [ ] Full API reference; migration cheatsheet; gallery.
@@ -704,8 +722,8 @@ npx shadcn add @pitchkit/theme-broadcast
       anything logo-shaped.
 - [x] **Positioning reworded again: "React-native" → "React-first"** — via
       [PR #49](https://github.com/yribeiro/pitchkit/pull/49) (2026-09-10). "React-native" (PR
-      #45's term, meaning "native to the React ecosystem") reads at a glance as *React
-      Native*, the mobile framework — exactly the wrong association for a web-only SVG/Canvas
+      #45's term, meaning "native to the React ecosystem") reads at a glance as _React
+      Native_, the mobile framework — exactly the wrong association for a web-only SVG/Canvas
       library. Reworded to "React-first" throughout the showcase site and README, and (this
       pass) throughout this PRD's own older sentences (TL;DR, §2, §3), which had lagged.
       match.
@@ -713,7 +731,7 @@ npx shadcn add @pitchkit/theme-broadcast
 ### Milestone 3 — publishing (concentrated effort)
 
 **Largely complete as of 2026-09-08** — the library is public, installable, and documented at
-a real domain. Remaining work is release *automation*, not release itself.
+a real domain. Remaining work is release _automation_, not release itself.
 
 - [x] First npm publish — [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core)
       and [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react) under the
