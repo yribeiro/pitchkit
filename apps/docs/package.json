@@ -6,15 +6,11 @@
   "type": "module",
   "scripts": {
     "generate": "node scripts/generate-examples-registry.mjs && node scripts/generate-api-docs.mjs",
-    "predev": "npm run generate",
-    "dev": "next dev",
-    "prebuild": "npm run generate",
-    "build": "next build",
+    "dev": "npm run generate && next dev",
+    "build": "npm run generate && next build",
     "start": "next start",
-    "prelint": "npm run generate",
-    "lint": "eslint .",
-    "pretypecheck": "npm run generate && fumadocs-mdx",
-    "typecheck": "tsc --noEmit"
+    "lint": "npm run generate && eslint .",
+    "typecheck": "npm run generate && fumadocs-mdx && tsc --noEmit"
   },
   "dependencies": {
     "@pitchkit/core": "*",
