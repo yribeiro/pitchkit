@@ -168,6 +168,30 @@ same underlying reason as the PRD's existing note (§11 progress notes) on runni
 `npm`/`node` through WSL rather than Windows-native tooling: this repo's tooling assumes a
 Linux-native checkout.
 
+## Recurring bug: Vercel `apps/docs` build ENOENT on generated files
+
+`apps/docs` depends on two gitignored, generated inputs — `components/examples/registry.ts`
+(`scripts/generate-examples-registry.mjs`) and `content/docs/api/` (`scripts/generate-api-docs.mjs`).
+This has broken the Vercel build **twice** with `ENOENT: no such file or directory, lstat
+'.../registry.ts'` because each fix only made the *npm* invocation generate them:
+
+1. Originally wired as `predev`/`prebuild` npm lifecycle hooks — but whatever invokes the
+   Vercel build there doesn't go through npm's pre-hook convention, so they silently never
+   ran.
+2. [PR #53](https://github.com/yribeiro/pitchkit/pull/53) inlined generation into the
+   `"dev"`/`"build"` npm scripts themselves (`"build": "npm run generate && next build"`).
+   Still broke, because Vercel's Next.js framework preset runs `next build` **directly**
+   against this app's Root Directory when no `vercel.json`/dashboard override says
+   otherwise — bypassing `package.json`'s `"build"` script (and therefore the generate
+   step) entirely.
+
+The actual fix: `next.config.ts` runs both generator scripts itself (via `execFileSync`,
+unchanged otherwise — still runnable standalone through the npm `"generate"` script too).
+`next.config.ts` is the one place Next.js always loads no matter what command or tool
+invoked it, so this can't be bypassed by a differently-configured build command again. If
+this ENOENT resurfaces, check `next.config.ts` hasn't been split apart from those calls —
+don't just re-chain npm scripts.
+
 ## Security posture (2026-09-10)
 
 38 open Dependabot alerts (2 critical, 22 high, 13 medium, 1 low) and 7 open Dependabot PRs —
