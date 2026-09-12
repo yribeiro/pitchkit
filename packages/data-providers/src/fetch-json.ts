@@ -1,4 +1,5 @@
 import { DataProviderError } from "./errors.js";
+import { request } from "./http.js";
 
 export interface LoadOptions {
   /**
@@ -15,39 +16,11 @@ export interface LoadOptions {
  * GET a URL and parse it as JSON, translating every failure mode into a
  * {@link DataProviderError} with a `kind` the caller can branch on.
  *
- * Deliberately built on the global `fetch` rather than an HTTP client, which
- * is what keeps this package at zero runtime dependencies.
+ * Deliberately built on the global `fetch` rather than an HTTP client — see
+ * `http.ts` for the shared request path.
  */
 export async function fetchJson<T = unknown>(url: string, options: LoadOptions = {}): Promise<T> {
-  const doFetch = options.fetch ?? globalThis.fetch;
-  if (typeof doFetch !== "function") {
-    throw new DataProviderError(
-      "network",
-      "No global `fetch` available. Pass one via the `fetch` option (Node 18+ and all modern browsers have it built in).",
-      { url },
-    );
-  }
-
-  let response: Response;
-  try {
-    response = await doFetch(url, { signal: options.signal });
-  } catch (cause) {
-    // In a browser a CORS rejection is indistinguishable from a genuine
-    // network error — both surface as an opaque TypeError — so the message
-    // has to name both possibilities rather than guess.
-    throw new DataProviderError(
-      "network",
-      `Could not reach ${url}. The URL may be wrong, the network unavailable, or the host may not allow cross-origin requests.`,
-      { url, cause },
-    );
-  }
-
-  if (!response.ok) {
-    throw new DataProviderError("http", `${url} returned HTTP ${response.status}.`, {
-      url,
-      status: response.status,
-    });
-  }
+  const response = await request(url, options);
 
   try {
     return (await response.json()) as T;
