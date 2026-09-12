@@ -88,11 +88,12 @@ function colorOf(player: StatsBombThreeSixtyPlayer, moment: Moment, teams: strin
   return team === teams[0] ? TEAM_COLORS[0] : TEAM_COLORS[1];
 }
 
+/**
+ * `minute` runs continuously across periods (a 92nd-minute event really is
+ * `minute: 92`), so mm:ss needs no stoppage-time special case.
+ */
 function clockLabel(event: StatsBombEvent): string {
-  const { minute } = event;
-  if (minute < 45) return `${minute}'`;
-  if (minute < 90) return minute === 45 ? "45'" : `45+${minute - 45}'`;
-  return minute === 90 ? "90'" : `90+${minute - 90}'`;
+  return `${String(event.minute).padStart(2, "0")}:${String(event.second).padStart(2, "0")}`;
 }
 
 /** One tracked moment: who was where, and the space each player was closest to. */
