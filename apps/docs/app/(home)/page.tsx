@@ -77,16 +77,23 @@ export default function HomePage() {
             like the rest of your design system.
           </p>
           <InstallCommand />
-          <div className="flex flex-wrap gap-3 pt-1">
+          {/* Below `sm` the two CTAs split the column evenly; from `sm` up
+              they collapse back to their natural widths. A 2-col grid rather
+              than `flex-1` on each: with `flex-basis: 0`, the outlined
+              button's 1px border is laid out on top of the basis rather than
+              inside it, so the two came out 156.5 / 158.5 — visibly uneven at
+              the shared edge. Grid tracks size independently of each item's
+              box model, so the split is exact. */}
+          <div className="grid w-full grid-cols-2 gap-3 pt-1 sm:flex sm:w-auto sm:flex-wrap">
             <Link
               href="/docs"
-              className="rounded-lg bg-fd-primary px-5 py-2.5 text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-lg bg-fd-primary px-4 py-2.5 text-center text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 sm:px-5"
             >
               Get started
             </Link>
             <Link
               href="/gallery"
-              className="rounded-lg border border-fd-border px-5 py-2.5 text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent"
+              className="rounded-lg border border-fd-border px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:px-5"
             >
               Browse the gallery
             </Link>
