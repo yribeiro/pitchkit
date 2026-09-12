@@ -69,7 +69,7 @@ export default function HomePage() {
             React First · AI Native · TypeScript · MIT
           </span>
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
-            The football visualisation layer for the web.
+            Football visualised for the web.
           </h1>
           <p className="max-w-xl text-balance text-fd-muted-foreground">
             PitchKit is mplsoccer for the browser — declarative pitch visualisations with typed
