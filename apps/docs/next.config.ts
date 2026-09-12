@@ -1,9 +1,8 @@
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-import { generateExamplesRegistry } from "./scripts/generate-examples-registry.mjs";
-import { generateApiDocs } from "./scripts/generate-api-docs.mjs";
 
 const withMDX = createMDX();
 
@@ -14,11 +13,12 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 // hooks, then by chaining them onto the "dev"/"build" npm scripts (see
 // git history) — but Vercel's Next.js framework preset runs `next build`
 // directly against this app's Root Directory, bypassing package.json's
-// "build" script (and any npm lifecycle hooks) entirely. Generating here,
-// at the top of next.config.ts, is the one place that runs no matter what
-// invokes Next.
-await generateExamplesRegistry();
-await generateApiDocs();
+// "build" script (and any npm lifecycle hooks) entirely. Running the
+// generator scripts here, at the top of next.config.ts, is the one place
+// that runs no matter what invokes Next.
+for (const script of ["generate-examples-registry.mjs", "generate-api-docs.mjs"]) {
+  execFileSync(process.execPath, [path.join(dirname, "scripts", script)], { stdio: "inherit" });
+}
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

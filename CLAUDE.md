@@ -185,12 +185,12 @@ This has broken the Vercel build **twice** with `ENOENT: no such file or directo
    otherwise — bypassing `package.json`'s `"build"` script (and therefore the generate
    step) entirely.
 
-The actual fix: both generator scripts export a `generate*()` function (still runnable
-standalone via `node scripts/generate-*.mjs` for the npm `"generate"` script), and
-`next.config.ts` `await`s both at module top level. `next.config.ts` is the one place
-Next.js always loads no matter what command or tool invoked it, so this can't be bypassed
-by a differently-configured build command again. If this ENOENT resurfaces, check
-`next.config.ts` hasn't been split apart from these calls — don't just re-chain npm scripts.
+The actual fix: `next.config.ts` runs both generator scripts itself (via `execFileSync`,
+unchanged otherwise — still runnable standalone through the npm `"generate"` script too).
+`next.config.ts` is the one place Next.js always loads no matter what command or tool
+invoked it, so this can't be bypassed by a differently-configured build command again. If
+this ENOENT resurfaces, check `next.config.ts` hasn't been split apart from those calls —
+don't just re-chain npm scripts.
 
 ## Security posture (2026-09-10)
 
