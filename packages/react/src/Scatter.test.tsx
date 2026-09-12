@@ -113,4 +113,25 @@ describe("Scatter", () => {
     fireEvent.mouseLeave(circle);
     expect(queryByRole("tooltip")).toBeNull();
   });
+
+  it("renders no tooltip when the accessor returns nothing for that datum", () => {
+    // A per-datum accessor that only labels some marks is a normal shape —
+    // the ones it skips must show nothing, not an empty tooltip box.
+    const { container, queryByRole } = render(
+      <Pitch type="statsbomb" width={600} height={400}>
+        <Scatter
+          data={[{ x: 60, y: 40 }]}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          tooltip={() => undefined}
+        />
+      </Pitch>,
+    );
+
+    const circle = container.querySelector('[data-pitchkit-mark="scatter"]');
+    if (!circle) throw new Error("scatter mark not found");
+    fireEvent.mouseEnter(circle);
+
+    expect(queryByRole("tooltip")).toBeNull();
+  });
 });
