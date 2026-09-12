@@ -7,6 +7,7 @@ import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
 import { StatsBombPanel } from "./StatsBombPanel";
 import { TailwindPanel } from "./TailwindPanel";
+import { SkillCornerTrackingDemo } from "./SkillCornerTrackingDemo";
 import { ThreeSixtyVoronoiDemo } from "./ThreeSixtyVoronoiDemo";
 
 /** React's CSSProperties has no index signature for custom properties. */
@@ -263,6 +264,8 @@ export function Controls() {
       />
 
       <ThreeSixtyVoronoiDemo appearance={appearance} />
+
+      <SkillCornerTrackingDemo appearance={appearance} />
     </div>
   );
 }

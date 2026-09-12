@@ -68,6 +68,37 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
   `indexThreeSixtyByEvent` to join frames onto events by `event_uuid`, freeze-frame selectors
   and `visibleAreaPolygon`.
 
+- **`@pitchkit/data-providers/skillcorner`** — the second provider module: 20 A-League
+  2024/25 matches of broadcast tracking, dynamic events and phases of play. Partially
+  addresses [#30](https://github.com/yribeiro/pitchkit/issues/30) (Metrica is still open).
+  Four facts about this dataset are load-bearing and were each verified against the live
+  repository, not assumed — **re-verify before "correcting" any of them**:
+  - **Tracking is Git LFS**, so `raw.githubusercontent.com` serves a ~130-byte pointer stub
+    instead of data. Hence two base URLs; `SKILLCORNER_LFS_BASE_URL` points at
+    `media.githubusercontent.com`. This is not a typo, and a test asserts them apart.
+  - **Tracking is ~90 MB/match** at 10 fps. `streamTracking` is an async generator whose
+    `break` aborts the download (measured: the demo pulls **1.9 MB of 86.5 MB, 2.2%**);
+    `fetchTrackingWindow` does an HTTP `Range` read with a byte-offset estimate.
+  - **The two files use opposite x conventions.** Tracking is absolute and swaps ends at
+    half time; dynamic-event `x` is normalised so positive always points at the goal being
+    attacked. Confusing them mirrors half a match silently. `attackingSideOf` resolves the
+    former. Verified: team mean-x flips sign between periods exactly as `home_team_side`
+    says, while attacking-third rows are `x > 0` in both halves.
+  - **Pitch dimensions vary per match** (104/105/106 × 68), so `pitchX`/`pitchY` translate
+    by that match's own `pitch_length`/`pitch_width` and stay in its real metres. `y > 0` is
+    the attacking team's left (confirmed against every `wide_left`/`half_space_left` row of
+    a full match), which is "up" on a y-up pitch, so the transform is a pure translation
+    with no flip.
+
+  **Mapping onto a fixed pitch type is deliberately NOT in the package.** `examples/react-nextjs`
+  has a local `toUefaX`/`toUefaY` that squashes a match's real pitch onto UEFA 105×68 so
+  `<Pitch type="uefa">` can draw it; that is a rendering fudge (up to ~0.5 m at a touchline)
+  and the user asked explicitly that it stay out of the packages. Delete it when a real
+  `skillcorner` pitch type lands in core rather than promoting it.
+
+  Adding this module brought in **`csv-parse`** — see the security-posture note below; it is
+  the project's first and only third-party runtime dependency.
+
 - **Data docs** — a top-level **Data** nav section (`/docs/data` → Overview, then StatsBomb
   split into Events and 360), plus a homepage feature card, README section, and the package
   finally wired into the generated API reference. **This reverses
@@ -217,7 +248,7 @@ Linux-native checkout.
 `apps/docs` depends on two gitignored, generated inputs — `components/examples/registry.ts`
 (`scripts/generate-examples-registry.mjs`) and `content/docs/api/` (`scripts/generate-api-docs.mjs`).
 This has broken the Vercel build **twice** with `ENOENT: no such file or directory, lstat
-'.../registry.ts'` because each fix only made the *npm* invocation generate them:
+'.../registry.ts'` because each fix only made the _npm_ invocation generate them:
 
 1. Originally wired as `predev`/`prebuild` npm lifecycle hooks — but whatever invokes the
    Vercel build there doesn't go through npm's pre-hook convention, so they silently never
@@ -241,8 +272,11 @@ don't just re-chain npm scripts.
 38 open Dependabot alerts (2 critical, 22 high, 13 medium, 1 low) and 7 open Dependabot PRs —
 but scope matters before reacting: **the published packages are clean.** `@pitchkit/core` has
 zero runtime dependencies, `@pitchkit/react` depends only on `core`, and
-`@pitchkit/data-providers` has zero runtime deps and doesn't depend on either — so nobody
-installing from npm is exposed. Every alert lives in `apps/docs` or `examples/*`, all of which
+`@pitchkit/data-providers` depends on `csv-parse` alone (itself dependency-free) and on
+neither of the others — so nobody installing from npm is exposed. **`csv-parse` is the
+project's only third-party runtime dependency anywhere**, added for SkillCorner's CSV files;
+the "zero runtime dependencies" line that used to cover all three packages no longer does, so
+don't restate it. Every alert lives in `apps/docs` or `examples/*`, all of which
 are `private: true`. The ones that genuinely matter are those affecting the **live** docs
 site: `next` (11 alerts, critical) and `sharp` (2, high). Everything else is dev-only tooling.
 See PRD §10.

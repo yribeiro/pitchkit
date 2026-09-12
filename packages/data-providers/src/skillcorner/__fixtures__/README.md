@@ -5,8 +5,8 @@ Trimmed excerpts of real files from
 SkillCorner ask to be credited). Real data rather than hand-written samples, so
 the tests fail when the parsers disagree with what SkillCorner actually ships.
 
-All from **match 1874553** (Brisbane v Melbourne City, A-League 2024/25) unless
-noted, taken on 2026-09-12 from `master`.
+All from **match 1874553** (Brisbane Roar v Adelaide United, A-League 2024/25)
+unless noted, taken on 2026-09-12 from `master`.
 
 | File | Source | Trimmed to |
 | --- | --- | --- |

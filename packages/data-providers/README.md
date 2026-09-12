@@ -4,14 +4,17 @@ Convenience loaders for open football data, shaped for [PitchKit](https://pitchk
 Raw provider JSON in, typed events out — with the coordinates already where a
 `<Scatter>` accessor wants them.
 
-StatsBomb is the first (and currently only) provider module.
+Two provider modules today: **StatsBomb** (events + 360 tracking) and
+**SkillCorner** (broadcast tracking, dynamic events, phases of play), each on
+its own import subpath so you only pull in what you use.
 
 ```bash
 npm install @pitchkit/data-providers
 ```
 
-Zero runtime dependencies, and no dependency on `@pitchkit/core` or
-`@pitchkit/react` either — it's pure data transformation, useful on its own.
+One runtime dependency (`csv-parse`, for SkillCorner's CSV files), and no
+dependency on `@pitchkit/core` or `@pitchkit/react` — it's pure data
+transformation, useful on its own.
 
 ## A shot map, end to end
 
@@ -167,15 +170,61 @@ read like predicates rather than lookups.
   friends — so `x`/`y` are optional on the base event. They're required on
   shots, passes and carries, which always have one.
 
+## SkillCorner
+
+```ts
+import {
+  fetchMatch,
+  fetchDynamicEvents,
+  streamTracking,
+  offBallRuns,
+} from "@pitchkit/data-providers/skillcorner";
+
+const match = await fetchMatch(1874553);
+const runs = offBallRuns(await fetchDynamicEvents(match));
+```
+
+20 A-League 2024/25 matches of broadcast tracking, plus SkillCorner's derived
+dynamic events and phases of play. Same four layers as above, with four
+differences that matter before you plot anything:
+
+- **Coordinates are metres from the centre spot**, on a pitch whose real
+  dimensions vary by match (104, 105 and 106 m all appear in the dataset). The
+  parsers add corner-origin `pitchX`/`pitchY` using that match's own
+  dimensions, leaving `x`/`y` exactly as SkillCorner wrote them — which is why
+  the loaders take the match object, not just its id. They stay in that
+  match's real metres; mapping onto a fixed pitch type is your call.
+- **The two files disagree about direction.** Tracking positions are absolute
+  and swap ends at half time; dynamic-event `x` is normalised so positive
+  always points at the goal being attacked. Mixing them up mirrors half a
+  match silently. `attackingSideOf(match, teamId, period)` resolves the former.
+- **Tracking files are ~90 MB** and stored in **Git LFS**, so they come from
+  `media.githubusercontent.com`, not the raw host — fetching the raw URL
+  returns a 130-byte pointer stub that fails as "not valid JSON". Prefer
+  `streamTracking` (an async generator; `break` aborts the download) or
+  `fetchTrackingWindow` (an HTTP `Range` read) over `fetchTracking`.
+- **Roughly a third of positions are extrapolated, not seen.** Broadcast
+  tracking only covers what the camera framed; `is_detected` says which is
+  which, and it's worth surfacing rather than hiding.
+
+The dynamic-events CSV has **322 columns**. The ~40 you plot or filter on are
+typed; the rest stay reachable under their original names through an index
+signature.
+
+Selectors: `playerPossessions`, `passingOptions`, `offBallRuns`,
+`onBallEngagements`, `ofEventType`. Tracking joins onto the match through
+`indexPlayersById` — on `players[].id`, **not** `trackable_object`.
+
 ## Data licence and attribution
 
 This package ships **no data**. It fetches from whatever URL you give it.
 
 The default URLs point at
-[StatsBomb's open-data repository](https://github.com/statsbomb/open-data),
-which is released under StatsBomb's own user agreement. Using it obliges you
-to credit StatsBomb in anything you publish from it. Read their terms before
-you rely on it.
+[StatsBomb's open-data repository](https://github.com/statsbomb/open-data) and
+[SkillCorner's](https://github.com/SkillCorner/opendata). StatsBomb's is
+released under their own user agreement; SkillCorner's is MIT. **Both ask to
+be credited** in anything you publish from their data. Read their terms before
+you rely on either.
 
 ## Adding a provider
 
