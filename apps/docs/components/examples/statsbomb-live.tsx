@@ -32,27 +32,18 @@ export function useEuroMatches(): StatsBombMatch[] {
   const [matches, setMatches] = useState<StatsBombMatch[]>([]);
 
   useEffect(() => {
-    let cancelled = false;
     fetchMatches(EURO_2024.competitionId, EURO_2024.seasonId)
       .then((rows) => {
-        if (!cancelled) {
-          setMatches([...rows].sort((a, b) => a.match_date.localeCompare(b.match_date)));
-        }
+        setMatches([...rows].sort((a, b) => a.match_date.localeCompare(b.match_date)));
       })
       .catch(() => {
-        /* the example below surfaces its own load failure */
+        /* each example surfaces its own load failure */
       });
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   return matches;
 }
 
 /** Shared only so the two pickers look the same; nothing example-specific. */
-export const selectClass =
-  "w-full min-w-0 rounded-md border border-fd-border bg-fd-card px-2 py-1.5 text-sm sm:w-auto sm:max-w-xs";
-
-export const buttonClass =
-  "rounded-md border border-fd-border bg-fd-card px-3 py-1.5 text-sm font-medium hover:bg-fd-accent disabled:opacity-50";
+export const controlClass =
+  "rounded-md border border-fd-border bg-fd-card px-2 py-1.5 text-sm disabled:opacity-50";

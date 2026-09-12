@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Pitch, Polygon, Scatter, Voronoi } from "@pitchkit/react";
+import { Polygon, Scatter, VerticalPitch, Voronoi } from "@pitchkit/react";
 import {
   fetchMatchEvents,
   fetchMatchThreeSixty,
@@ -15,19 +15,43 @@ import type {
   StatsBombThreeSixtyPlayer,
 } from "@pitchkit/data-providers/statsbomb";
 import { docsAppearance } from "./docs-appearance";
-import {
-  DEFAULT_MATCH_ID,
-  buttonClass,
-  matchLabel,
-  selectClass,
-  useEuroMatches,
-} from "./statsbomb-live";
+import { DEFAULT_MATCH_ID, controlClass, matchLabel, useEuroMatches } from "./statsbomb-live";
 
 const TEAM_COLORS = ["var(--pitch-marker-primary)", "var(--pitch-marker-goal)"] as const;
 
 interface Moment {
   event: StatsBombEvent;
   frame: StatsBombThreeSixtyFrame;
+}
+
+/** Every Euro 2024 fixture, in kickoff order. */
+function MatchSelector({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: number;
+  disabled?: boolean;
+  onChange: (matchId: number) => void;
+}) {
+  const matches = useEuroMatches();
+
+  return (
+    <select
+      aria-label="Euro 2024 match"
+      value={value}
+      disabled={disabled ?? matches.length === 0}
+      onChange={(event) => onChange(Number(event.target.value))}
+      className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+    >
+      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+      {matches.map((match) => (
+        <option key={match.match_id} value={match.match_id}>
+          {matchLabel(match)}
+        </option>
+      ))}
+    </select>
+  );
 }
 
 /**
@@ -74,7 +98,7 @@ function MomentPitch({ moment, teams }: { moment: Moment; teams: string[] }) {
 
   return (
     <figure className="m-0">
-      <Pitch type="statsbomb" appearance={docsAppearance}>
+      <VerticalPitch type="statsbomb" appearance={docsAppearance}>
         <Polygon
           data={[moment.frame]}
           points={(frame: StatsBombThreeSixtyFrame) => visibleAreaPolygon(frame)}
@@ -103,7 +127,7 @@ function MomentPitch({ moment, teams }: { moment: Moment; teams: string[] }) {
             player.actor ? "On the ball" : isKeeper(player) ? "Goalkeeper" : undefined
           }
         />
-      </Pitch>
+      </VerticalPitch>
       <figcaption className="mt-1 text-xs tabular-nums text-fd-muted-foreground">
         {clockLabel(moment.event)} · {moment.event.type.name} · {moment.event.team.name}
       </figcaption>
@@ -119,7 +143,6 @@ function MomentPitch({ moment, teams }: { moment: Moment; teams: string[] }) {
  * 7 MB, which isn't something to pull on every page view.
  */
 export function Statsbomb360Basic() {
-  const matches = useEuroMatches();
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
   const [status, setStatus] = useState<"idle" | "loading" | "failed">("idle");
   const [moments, setMoments] = useState<Moment[]>([]);
@@ -143,31 +166,22 @@ export function Statsbomb360Basic() {
   return (
     <div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <select
-          aria-label="Euro 2024 match"
+        <MatchSelector
           value={matchId}
-          disabled={matches.length === 0 || status === "loading"}
-          onChange={(event) => {
-            setMatchId(Number(event.target.value));
+          disabled={status === "loading"}
+          onChange={(next) => {
+            setMatchId(next);
             setMoments([]);
             setStatus("idle");
           }}
-          className={selectClass}
-        >
-          {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-          {matches.map((match) => (
-            <option key={match.match_id} value={match.match_id}>
-              {matchLabel(match)}
-            </option>
-          ))}
-        </select>
+        />
         <button
           type="button"
           disabled={status === "loading"}
           onClick={() => {
             load().catch(() => setStatus("failed"));
           }}
-          className={buttonClass}
+          className={`font-medium hover:bg-fd-accent ${controlClass}`}
         >
           {status === "loading" ? "Loading…" : moments.length > 0 ? "Reload" : "Load tracking data"}
         </button>
@@ -193,7 +207,7 @@ export function Statsbomb360Basic() {
           <div className="mt-3 flex gap-2">
             <button
               type="button"
-              className={buttonClass}
+              className={`font-medium hover:bg-fd-accent ${controlClass}`}
               disabled={at === 0}
               onClick={() => setAt((current) => Math.max(0, current - 2))}
             >
@@ -201,7 +215,7 @@ export function Statsbomb360Basic() {
             </button>
             <button
               type="button"
-              className={buttonClass}
+              className={`font-medium hover:bg-fd-accent ${controlClass}`}
               disabled={at + 2 >= moments.length}
               onClick={() => setAt((current) => Math.min(moments.length - 1, current + 2))}
             >

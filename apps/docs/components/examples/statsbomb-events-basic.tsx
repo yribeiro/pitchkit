@@ -6,9 +6,37 @@ import { Scatter, VerticalPitch } from "@pitchkit/react";
 import { fetchMatchEvents, isGoal, shots } from "@pitchkit/data-providers/statsbomb";
 import type { StatsBombShot } from "@pitchkit/data-providers/statsbomb";
 import { docsAppearance } from "./docs-appearance";
-import { DEFAULT_MATCH_ID, matchLabel, selectClass, useEuroMatches } from "./statsbomb-live";
+import { DEFAULT_MATCH_ID, controlClass, matchLabel, useEuroMatches } from "./statsbomb-live";
 
 const dimensions = getPitchDimensions("statsbomb");
+
+/** Every Euro 2024 fixture, in kickoff order. */
+function MatchSelector({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (matchId: number) => void;
+}) {
+  const matches = useEuroMatches();
+
+  return (
+    <select
+      aria-label="Euro 2024 match"
+      value={value}
+      disabled={matches.length === 0}
+      onChange={(event) => onChange(Number(event.target.value))}
+      className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+    >
+      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+      {matches.map((match) => (
+        <option key={match.match_id} value={match.match_id}>
+          {matchLabel(match)}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 /**
  * A shot map built from a real Euro 2024 match, fetched in the browser.
@@ -19,7 +47,6 @@ const dimensions = getPitchDimensions("statsbomb");
  * `<Scatter>` accessors.
  */
 export function StatsbombEventsBasic() {
-  const matches = useEuroMatches();
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
   // Keyed by the match it belongs to, so "still loading" is derived rather
   // than a second state field.
@@ -29,40 +56,20 @@ export function StatsbombEventsBasic() {
   const loaded = result?.key === matchId ? result.shots : undefined;
 
   useEffect(() => {
-    let cancelled = false;
-
     fetchMatchEvents(matchId)
-      .then((events) => {
-        if (!cancelled) setResult({ key: matchId, shots: shots(events) });
-      })
-      .catch(() => {
-        if (!cancelled) setFailed(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+      .then((events) => setResult({ key: matchId, shots: shots(events) }))
+      .catch(() => setFailed(true));
   }, [matchId]);
 
   return (
     <div>
-      <select
-        aria-label="Euro 2024 match"
+      <MatchSelector
         value={matchId}
-        disabled={matches.length === 0}
-        onChange={(event) => {
+        onChange={(next) => {
           setFailed(false);
-          setMatchId(Number(event.target.value));
+          setMatchId(next);
         }}
-        className={selectClass}
-      >
-        {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-        {matches.map((match) => (
-          <option key={match.match_id} value={match.match_id}>
-            {matchLabel(match)}
-          </option>
-        ))}
-      </select>
+      />
 
       <p className="my-3 text-xs text-fd-muted-foreground">
         {failed
