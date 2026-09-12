@@ -137,3 +137,18 @@
   border-color: #262626;
   background: #262626;
 }
+
+/*
+ * Shiki emits one `<span class="line">` per source line, styled `display:
+ * block`. A blank line therefore renders as an empty block of zero height and
+ * vanishes — so every code sample on this site silently lost its paragraph
+ * breaks, the homepage quickstart included. It matters most for the
+ * copy-paste prompts on /docs/agents, which are prose and unreadable as a
+ * wall.
+ *
+ * `1lh` is the line box the surrounding text already computes, so full lines
+ * are unaffected and empty ones reserve exactly one row.
+ */
+.prose pre .line {
+  min-height: 1lh;
+}

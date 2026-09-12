@@ -32,7 +32,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   {
     title: "Agent compatible",
     body: "No model has PitchKit in its training data — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
-    href: "/docs/configuration/agent-skill",
+    href: "/docs/agents",
     icon: "M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8",
   },
   {
@@ -77,13 +77,19 @@ export default function HomePage() {
             of your design system.
           </p>
           <InstallCommand />
-          {/* Below `sm` the two CTAs split the column evenly; from `sm` up
-              they collapse back to their natural widths. A 2-col grid rather
-              than `flex-1` on each: with `flex-basis: 0`, the outlined
-              button's 1px border is laid out on top of the basis rather than
-              inside it, so the two came out 156.5 / 158.5 — visibly uneven at
-              the shared edge. Grid tracks size independently of each item's
-              box model, so the split is exact. */}
+          {/* Below `sm` the CTAs split the column evenly; from `sm` up they
+              collapse back to their natural widths. A 2-col grid rather than
+              `flex-1` on each: with `flex-basis: 0`, an outlined button's 1px
+              border is laid out on top of the basis rather than inside it, so
+              two came out 156.5 / 158.5 — visibly uneven at the shared edge.
+              Grid tracks size independently of each item's box model, so the
+              split is exact.
+
+              Three into two columns leaves an odd one out, so the gallery —
+              the least load-bearing — spans the full second row rather than
+              sitting beside a gap. "Build with AI" is tinted rather than
+              solid: a peer of "Get started", not a second primary competing
+              with it. */}
           <div className="grid w-full grid-cols-2 gap-3 pt-1 sm:flex sm:w-auto sm:flex-wrap">
             <Link
               href="/docs"
@@ -92,8 +98,28 @@ export default function HomePage() {
               Get started
             </Link>
             <Link
+              href="/docs/agents"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-fd-primary/40 bg-fd-primary/5 px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:border-fd-primary/60 hover:bg-fd-primary/10 sm:px-5"
+            >
+              <svg
+                aria-hidden
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0 text-fd-primary"
+              >
+                <path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.6 5.6l2.5 2.5M15.9 15.9l2.5 2.5M18.4 5.6l-2.5 2.5M8.1 15.9l-2.5 2.5" />
+              </svg>
+              Build with AI
+            </Link>
+            <Link
               href="/gallery"
-              className="rounded-lg border border-fd-border px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:px-5"
+              className="col-span-2 rounded-lg border border-fd-border px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1 sm:px-5"
             >
               Browse the gallery
             </Link>

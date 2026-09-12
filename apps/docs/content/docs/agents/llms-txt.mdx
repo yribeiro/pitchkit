@@ -1,0 +1,53 @@
+---
+title: llms.txt
+description: This whole site as Markdown, at a URL — for agents that can't read your node_modules.
+---
+
+Every page on this site is published in [llms.txt](https://llmstxt.org) format: plain Markdown
+at a stable URL, no scraping required. Paste a URL into a prompt and the agent has the real
+API.
+
+## The files
+
+| URL | Contents | Size |
+| --- | --- | --- |
+| [`/llms.txt`](https://pitchkitjs.com/llms.txt) | An index of every page, one line each | ~600 tokens |
+| [`/llms-full.txt`](https://pitchkitjs.com/llms-full.txt) | Every guide, component, overlay and data page as one document, code examples inlined | ~14k tokens |
+| [`/llms-api.txt`](https://pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, every symbol | ~22k tokens |
+
+Start with `/llms.txt`. It's small enough to sit in a prompt without crowding anything out, and
+it links to everything else — most agents will fetch what they need from it.
+
+Reach for `/llms-full.txt` when you want the whole thing in context up front and can afford
+~14k tokens. The generated API reference is kept out of it deliberately: a symbol-per-page dump
+is 117 pages of signatures that crowd out the prose actually teaching the library. Pull
+`/llms-api.txt` separately if you need an exact signature.
+
+## Any page as Markdown
+
+Append `.md` to any docs URL:
+
+```text
+https://pitchkitjs.com/docs/guides/theming.md
+https://pitchkitjs.com/docs/overlays/scatter.md
+https://pitchkitjs.com/docs/data/statsbomb/events.md
+```
+
+Useful when you know exactly which page is relevant and don't want to spend context on the
+rest. The examples are inlined as real source, so the overlay pages carry working code rather
+than a reference to a live preview.
+
+## The catch
+
+These describe **whatever is currently deployed** — the latest release, not the version in your
+`package.json`. For a library still below `1.0`, that gap is real.
+
+If you've installed the package, the [Agent Skill](/docs/agents/skills) doesn't have that
+problem: it's symlinked out of `node_modules`, so it moves with `npm update` and can only ever
+describe the version you're actually on. Use `llms.txt` for first contact and for tools that
+can't reach your filesystem; use the skill for everything else.
+
+## Machine discovery
+
+The files are listed in [the sitemap](https://pitchkitjs.com/sitemap.xml) alongside every page
+and its `.md` twin, so a crawler that only reads the sitemap still finds them.

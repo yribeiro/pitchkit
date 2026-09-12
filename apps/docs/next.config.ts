@@ -37,6 +37,19 @@ const nextConfig: NextConfig = {
       { source: "/docs/:slug*.md", destination: "/llms-md/:slug*" },
     ];
   },
+  // The skill page moved out of Configuration when Agents became its own
+  // section. The old URL is already published in @pitchkit/react 0.3.0's
+  // README on npm, where it can't be edited — that tarball is immutable — so
+  // this has to keep working regardless of what the site does next.
+  async redirects() {
+    return [
+      {
+        source: "/docs/configuration/agent-skill",
+        destination: "/docs/agents/skills",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
