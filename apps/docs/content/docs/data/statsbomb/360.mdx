@@ -7,8 +7,8 @@ StatsBomb 360 is optical tracking: for events the broadcast camera could see, a 
 where every visible player was standing. It's a separate file per match, joined onto the
 [events feed](/docs/data/statsbomb/events) by id.
 
-Press **Load tracking data** below, then scrub — each position is one tracked event, with a
-Voronoi diagram of the space each player was closest to.
+Press **Load tracking data** below, then step through the match two moments at a time — each
+pitch is one tracked event, with a Voronoi diagram of the space each player was closest to.
 
 <PitchPreview name="statsbomb-360-basic" />
 
@@ -112,17 +112,16 @@ import { visibleAreaPolygon } from "@pitchkit/data-providers/statsbomb";
 
 ### Keeping team colours stable
 
-One thing to watch when animating a sequence: `teammate` is relative to **whoever performed
-that specific event**. Colour straight off it and the two sides swap palettes on every change
-of possession, which reads as flickering rather than as two teams.
+One thing to watch when you show more than one frame: `teammate` is relative to **whoever
+performed that specific event**. Colour straight off it and the two sides swap palettes on
+every change of possession, so the same colour means different teams on adjacent pitches.
 
-Resolve it against the event's own team once, and a colour means one team for the whole
-timeline:
+Resolve it against the event's own team once, and a colour means one team throughout:
 
 ```ts
 function realTeamOf(player, event, teams) {
   if (player.teammate) return event.team.name;
-  return teams[0] === event.team.name ? teams[1] : teams[0];
+  return teams.find((name) => name !== event.team.name);
 }
 ```
 

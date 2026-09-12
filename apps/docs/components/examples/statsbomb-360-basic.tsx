@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Pitch, Polygon, Scatter, Voronoi } from "@pitchkit/react";
 import {
   fetchMatchEvents,
@@ -17,142 +17,142 @@ import type {
 import { docsAppearance } from "./docs-appearance";
 import {
   DEFAULT_MATCH_ID,
-  ExampleButton,
-  ExampleControls,
-  ExampleError,
-  ExampleLabel,
-  ExampleSelect,
-  ExampleStatus,
-  describeError,
+  buttonClass,
   matchLabel,
+  selectClass,
   useEuroMatches,
 } from "./statsbomb-live";
 
 const TEAM_COLORS = ["var(--pitch-marker-primary)", "var(--pitch-marker-goal)"] as const;
-const DEFAULT_FPS = 24;
 
-interface FrameEntry {
+interface Moment {
   event: StatsBombEvent;
   frame: StatsBombThreeSixtyFrame;
 }
 
 /**
- * The two files joined into one scrubbable timeline: every event that has
- * both a location and a 360 frame, in StatsBomb's own play order (`index`),
- * so dragging left-to-right really is kickoff-to-full-time.
+ * The two files joined into one list: every event that has both a location
+ * and a 360 frame, in StatsBomb's own play order (`index`).
  */
-function buildTimeline(
+function join(
   events: readonly StatsBombEvent[],
   frames: readonly StatsBombThreeSixtyFrame[],
-): FrameEntry[] {
+): Moment[] {
   const frameByEvent = indexThreeSixtyByEvent(frames);
-  const entries: FrameEntry[] = [];
+  const moments: Moment[] = [];
   for (const event of events) {
     if (typeof event.x !== "number") continue;
     const frame = frameByEvent.get(event.id);
-    if (frame) entries.push({ event, frame });
+    if (frame) moments.push({ event, frame });
   }
-  return entries.sort((a, b) => a.event.index - b.event.index);
+  return moments.sort((a, b) => a.event.index - b.event.index);
 }
 
 /**
  * `teammate` is relative to whoever performed the current event, so left
  * alone the colours would swap sides on every change of possession.
  * Resolving it to the match's real team names keeps a colour meaning one
- * team for the whole timeline.
+ * team throughout.
  */
-function realTeamOf(player: StatsBombThreeSixtyPlayer, entry: FrameEntry, teams: string[]): string {
-  const eventTeam = entry.event.team.name;
-  if (player.teammate) return eventTeam;
-  return teams[0] === eventTeam ? (teams[1] ?? eventTeam) : (teams[0] ?? eventTeam);
+function colorOf(player: StatsBombThreeSixtyPlayer, moment: Moment, teams: string[]): string {
+  const team = player.teammate
+    ? moment.event.team.name
+    : teams.find((name) => name !== moment.event.team.name);
+  return team === teams[0] ? TEAM_COLORS[0] : TEAM_COLORS[1];
 }
 
-function clockLabel(entry: FrameEntry): string {
-  const { minute } = entry.event;
+function clockLabel(event: StatsBombEvent): string {
+  const { minute } = event;
   if (minute < 45) return `${minute}'`;
   if (minute < 90) return minute === 45 ? "45'" : `45+${minute - 45}'`;
   return minute === 90 ? "90'" : `90+${minute - 90}'`;
 }
 
+/** One tracked moment: who was where, and the space each player was closest to. */
+function MomentPitch({ moment, teams }: { moment: Moment; teams: string[] }) {
+  const fill = (player: StatsBombThreeSixtyPlayer) => colorOf(player, moment, teams);
+
+  return (
+    <figure className="m-0">
+      <Pitch type="statsbomb" appearance={docsAppearance}>
+        <Polygon
+          data={[moment.frame]}
+          points={(frame: StatsBombThreeSixtyFrame) => visibleAreaPolygon(frame)}
+          fill="none"
+          stroke="rgba(255,255,255,0.15)"
+          strokeWidth={1}
+        />
+        <Voronoi
+          data={moment.frame.freeze_frame}
+          x={(player) => player.x}
+          y={(player) => player.y}
+          fill={fill}
+          fillOpacity={0.14}
+          stroke="rgba(255,255,255,0.2)"
+          strokeWidth={0.5}
+        />
+        <Scatter
+          data={moment.frame.freeze_frame}
+          x={(player) => player.x}
+          y={(player) => player.y}
+          r={(player) => (player.actor ? 5.5 : isKeeper(player) ? 5 : 3.5)}
+          fill={fill}
+          stroke={(player) => (player.actor ? "white" : "rgba(255,255,255,0.7)")}
+          strokeWidth={(player) => (player.actor ? 2.5 : 1)}
+          tooltip={(player) =>
+            player.actor ? "On the ball" : isKeeper(player) ? "Goalkeeper" : undefined
+          }
+        />
+      </Pitch>
+      <figcaption className="mt-1 text-xs tabular-nums text-fd-muted-foreground">
+        {clockLabel(moment.event)} · {moment.event.type.name} · {moment.event.team.name}
+      </figcaption>
+    </figure>
+  );
+}
+
 /**
- * Scrub a real match's 360 tracking data, one Voronoi diagram of space
- * controlled per tracked event.
+ * Two consecutive tracked moments, side by side — step through the match a
+ * pair at a time.
  *
  * Unlike the events example this waits for a click: the 360 file is around
  * 7 MB, which isn't something to pull on every page view.
  */
 export function Statsbomb360Basic() {
-  const { matches, error: matchesError } = useEuroMatches();
+  const matches = useEuroMatches();
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const [loaded, setLoaded] = useState<
-    { events: StatsBombEvent[]; frames: StatsBombThreeSixtyFrame[] } | undefined
-  >();
-  const [position, setPosition] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [fps, setFps] = useState(DEFAULT_FPS);
+  const [status, setStatus] = useState<"idle" | "loading" | "failed">("idle");
+  const [moments, setMoments] = useState<Moment[]>([]);
+  const [teams, setTeams] = useState<string[]>([]);
+  const [at, setAt] = useState(0);
 
-  const load = useCallback(async () => {
-    setPlaying(false);
-    setLoading(true);
-    setError(undefined);
-    try {
-      const [events, frames] = await Promise.all([
-        fetchMatchEvents(matchId),
-        fetchMatchThreeSixty(matchId),
-      ]);
-      setLoaded({ events, frames });
-      setPosition(0);
-    } catch (cause) {
-      setError(describeError(cause));
-      setLoaded(undefined);
-    } finally {
-      setLoading(false);
-    }
-  }, [matchId]);
+  async function load() {
+    setStatus("loading");
+    const [events, frames] = await Promise.all([
+      fetchMatchEvents(matchId),
+      fetchMatchThreeSixty(matchId),
+    ]);
+    setMoments(join(events, frames));
+    setTeams([...new Set(events.map((event) => event.team.name))]);
+    setAt(0);
+    setStatus("idle");
+  }
 
-  const timeline = useMemo(
-    () => (loaded ? buildTimeline(loaded.events, loaded.frames) : []),
-    [loaded],
-  );
-  const teams = useMemo(
-    () => (loaded ? [...new Set(loaded.events.map((event) => event.team.name))] : []),
-    [loaded],
-  );
-  const entry = timeline[position];
-
-  useEffect(() => {
-    if (!playing || timeline.length === 0) return;
-    const id = setInterval(() => {
-      setPosition((current) => {
-        const next = current + 1;
-        if (next >= timeline.length - 1) {
-          setPlaying(false);
-          return timeline.length - 1;
-        }
-        return next;
-      });
-    }, 1000 / fps);
-    return () => clearInterval(id);
-  }, [playing, fps, timeline.length]);
-
-  const colorOf = (player: StatsBombThreeSixtyPlayer) =>
-    entry && realTeamOf(player, entry, teams) === teams[0] ? TEAM_COLORS[0] : TEAM_COLORS[1];
+  const pair = moments.slice(at, at + 2);
 
   return (
     <div>
-      <ExampleControls>
-        <ExampleLabel>Match</ExampleLabel>
-        <ExampleSelect
-          label="Euro 2024 match"
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <select
+          aria-label="Euro 2024 match"
           value={matchId}
-          disabled={matches.length === 0 || loading}
-          onChange={(value) => {
-            setMatchId(Number(value));
-            setLoaded(undefined);
-            setPlaying(false);
+          disabled={matches.length === 0 || status === "loading"}
+          onChange={(event) => {
+            setMatchId(Number(event.target.value));
+            setMoments([]);
+            setStatus("idle");
           }}
+          className={selectClass}
         >
           {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
           {matches.map((match) => (
@@ -160,98 +160,56 @@ export function Statsbomb360Basic() {
               {matchLabel(match)}
             </option>
           ))}
-        </ExampleSelect>
-        <ExampleButton onClick={() => void load()} disabled={loading}>
-          {loading ? "Loading…" : loaded ? "Reload" : "Load tracking data"}
-        </ExampleButton>
-      </ExampleControls>
+        </select>
+        <button
+          type="button"
+          disabled={status === "loading"}
+          onClick={() => {
+            load().catch(() => setStatus("failed"));
+          }}
+          className={buttonClass}
+        >
+          {status === "loading" ? "Loading…" : moments.length > 0 ? "Reload" : "Load tracking data"}
+        </button>
+      </div>
 
-      {(error ?? matchesError) !== undefined && (
-        <ExampleError>{error ?? matchesError}</ExampleError>
-      )}
+      <p className="my-3 text-xs text-fd-muted-foreground">
+        {status === "failed"
+          ? "Couldn't reach StatsBomb open data."
+          : status === "loading"
+            ? "Fetching events + 360 tracking (~10 MB together)…"
+            : moments.length === 0
+              ? "360 files are around 7 MB, so this one waits for a click rather than loading with the page."
+              : `${moments.length} tracked moments · showing ${at + 1}–${at + pair.length}`}
+      </p>
 
-      {loading && <ExampleStatus>Fetching events + 360 tracking (~10 MB together)…</ExampleStatus>}
-
-      {!loading && loaded === undefined && error === undefined && (
-        <ExampleStatus>
-          360 files are around 7 MB, so this one waits for a click rather than loading with the
-          page.
-        </ExampleStatus>
-      )}
-
-      {entry !== undefined && (
+      {pair.length > 0 && (
         <>
-          <ExampleControls>
-            <ExampleButton onClick={() => setPlaying((was) => !was)}>
-              {playing ? "Pause" : "Play"}
-            </ExampleButton>
-            <input
-              type="range"
-              aria-label="Position in match"
-              min={0}
-              max={timeline.length - 1}
-              value={position}
-              onChange={(event) => {
-                setPlaying(false);
-                setPosition(Number(event.target.value));
-              }}
-              className="w-full flex-1 sm:w-auto"
-            />
-            <span className="text-xs tabular-nums text-fd-muted-foreground">
-              {clockLabel(entry)} · {entry.event.type.name} · {entry.event.team.name}
-            </span>
-          </ExampleControls>
-
-          <ExampleControls>
-            <ExampleLabel>Speed</ExampleLabel>
-            <input
-              type="range"
-              aria-label="Playback speed in frames per second"
-              min={1}
-              max={60}
-              value={fps}
-              onChange={(event) => setFps(Number(event.target.value))}
-              className="w-full sm:w-32"
-            />
-            <span className="text-xs tabular-nums text-fd-muted-foreground">{fps} fps</span>
-          </ExampleControls>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {pair.map((moment) => (
+              <MomentPitch key={moment.event.id} moment={moment} teams={teams} />
+            ))}
+          </div>
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              className={buttonClass}
+              disabled={at === 0}
+              onClick={() => setAt((current) => Math.max(0, current - 2))}
+            >
+              ← Previous
+            </button>
+            <button
+              type="button"
+              className={buttonClass}
+              disabled={at + 2 >= moments.length}
+              onClick={() => setAt((current) => Math.min(moments.length - 1, current + 2))}
+            >
+              Next →
+            </button>
+          </div>
         </>
       )}
-
-      <Pitch type="statsbomb" appearance={docsAppearance}>
-        {entry !== undefined && (
-          <>
-            <Polygon
-              data={[entry.frame]}
-              points={(frame: StatsBombThreeSixtyFrame) => visibleAreaPolygon(frame)}
-              fill="none"
-              stroke="rgba(255,255,255,0.15)"
-              strokeWidth={1}
-            />
-            <Voronoi
-              data={entry.frame.freeze_frame}
-              x={(player) => player.x}
-              y={(player) => player.y}
-              fill={colorOf}
-              fillOpacity={0.14}
-              stroke="rgba(255,255,255,0.2)"
-              strokeWidth={0.5}
-            />
-            <Scatter
-              data={entry.frame.freeze_frame}
-              x={(player) => player.x}
-              y={(player) => player.y}
-              r={(player) => (player.actor ? 5.5 : isKeeper(player) ? 5 : 3.5)}
-              fill={colorOf}
-              stroke={(player) => (player.actor ? "white" : "rgba(255,255,255,0.7)")}
-              strokeWidth={(player) => (player.actor ? 2.5 : 1)}
-              tooltip={(player) =>
-                player.actor ? "On the ball" : isKeeper(player) ? "Goalkeeper" : undefined
-              }
-            />
-          </>
-        )}
-      </Pitch>
     </div>
   );
 }
