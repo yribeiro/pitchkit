@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Polygon, Scatter, VerticalPitch, Voronoi } from "@pitchkit/react";
 import {
   fetchMatchEvents,
@@ -24,33 +24,36 @@ interface Moment {
   frame: StatsBombThreeSixtyFrame;
 }
 
-/** Every Euro 2024 fixture, in kickoff order. */
+/** Every Euro 2024 fixture, in kickoff order, over a line of status text. */
 function MatchSelector({
   value,
-  disabled,
   onChange,
+  status,
 }: {
   value: number;
-  disabled?: boolean;
   onChange: (matchId: number) => void;
+  status: string;
 }) {
   const matches = useEuroMatches();
 
   return (
-    <select
-      aria-label="Euro 2024 match"
-      value={value}
-      disabled={disabled ?? matches.length === 0}
-      onChange={(event) => onChange(Number(event.target.value))}
-      className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
-    >
-      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-      {matches.map((match) => (
-        <option key={match.match_id} value={match.match_id}>
-          {matchLabel(match)}
-        </option>
-      ))}
-    </select>
+    <>
+      <select
+        aria-label="Euro 2024 match"
+        value={value}
+        disabled={matches.length === 0}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+      >
+        {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+        {matches.map((match) => (
+          <option key={match.match_id} value={match.match_id}>
+            {matchLabel(match)}
+          </option>
+        ))}
+      </select>
+      <p className="my-3 text-xs text-fd-muted-foreground">{status}</p>
+    </>
   );
 }
 
@@ -139,69 +142,58 @@ function MomentPitch({ moment, teams }: { moment: Moment; teams: string[] }) {
  * Two consecutive tracked moments, side by side — step through the match a
  * pair at a time.
  *
- * Unlike the events example this waits for a click: the 360 file is around
- * 7 MB, which isn't something to pull on every page view.
+ * Both files are fetched together, so picking a match pulls around 10 MB.
  */
 export function Statsbomb360Basic() {
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
-  const [status, setStatus] = useState<"idle" | "loading" | "failed">("idle");
-  const [moments, setMoments] = useState<Moment[]>([]);
-  const [teams, setTeams] = useState<string[]>([]);
+  // Keyed by the match it belongs to, so "still loading" is derived rather
+  // than a second state field.
+  const [result, setResult] = useState<
+    { key: number; moments: Moment[]; teams: string[] } | undefined
+  >();
+  const [failed, setFailed] = useState(false);
   const [at, setAt] = useState(0);
 
-  async function load() {
-    setStatus("loading");
-    const [events, frames] = await Promise.all([
-      fetchMatchEvents(matchId),
-      fetchMatchThreeSixty(matchId),
-    ]);
-    setMoments(join(events, frames));
-    setTeams([...new Set(events.map((event) => event.team.name))]);
-    setAt(0);
-    setStatus("idle");
-  }
+  const loaded = result?.key === matchId ? result : undefined;
 
+  useEffect(() => {
+    Promise.all([fetchMatchEvents(matchId), fetchMatchThreeSixty(matchId)])
+      .then(([events, frames]) =>
+        setResult({
+          key: matchId,
+          moments: join(events, frames),
+          teams: [...new Set(events.map((event) => event.team.name))],
+        }),
+      )
+      .catch(() => setFailed(true));
+  }, [matchId]);
+
+  const moments = loaded?.moments ?? [];
   const pair = moments.slice(at, at + 2);
 
   return (
     <div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <MatchSelector
-          value={matchId}
-          disabled={status === "loading"}
-          onChange={(next) => {
-            setMatchId(next);
-            setMoments([]);
-            setStatus("idle");
-          }}
-        />
-        <button
-          type="button"
-          disabled={status === "loading"}
-          onClick={() => {
-            load().catch(() => setStatus("failed"));
-          }}
-          className={`font-medium hover:bg-fd-accent ${controlClass}`}
-        >
-          {status === "loading" ? "Loading…" : moments.length > 0 ? "Reload" : "Load tracking data"}
-        </button>
-      </div>
-
-      <p className="my-3 text-xs text-fd-muted-foreground">
-        {status === "failed"
-          ? "Couldn't reach StatsBomb open data."
-          : status === "loading"
-            ? "Fetching events + 360 tracking (~10 MB together)…"
-            : moments.length === 0
-              ? "360 files are around 7 MB, so this one waits for a click rather than loading with the page."
-              : `${moments.length} tracked moments · showing ${at + 1}–${at + pair.length}`}
-      </p>
+      <MatchSelector
+        value={matchId}
+        onChange={(next) => {
+          setFailed(false);
+          setAt(0);
+          setMatchId(next);
+        }}
+        status={
+          failed
+            ? "Couldn't reach StatsBomb open data."
+            : loaded === undefined
+              ? "Fetching events + 360 tracking from StatsBomb open data (~10 MB)…"
+              : `${moments.length} tracked moments · showing ${at + 1}–${at + pair.length}`
+        }
+      />
 
       {pair.length > 0 && (
         <>
           <div className="grid gap-4 sm:grid-cols-2">
             {pair.map((moment) => (
-              <MomentPitch key={moment.event.id} moment={moment} teams={teams} />
+              <MomentPitch key={moment.event.id} moment={moment} teams={loaded?.teams ?? []} />
             ))}
           </div>
           <div className="mt-3 flex gap-2">

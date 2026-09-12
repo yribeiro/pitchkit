@@ -77,8 +77,12 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
   agent-skill install — the wrong frame for a headline capability). Don't "restore" the old
   placement on the strength of the issue text alone.
   - The docs examples on those pages **fetch live from StatsBomb open data in the browser**,
-    scoped to Euro 2024 (competition 55 / season 282 — all 51 matches have 360). Events
-    auto-load (~3 MB); 360 waits for a click (~7 MB).
+    scoped to Euro 2024 (competition 55 / season 282 — all 51 matches have 360). **Both
+    auto-load on match selection** — events ~3 MB, 360 ~10 MB (it fetches the events file
+    too, to join frames onto). 360 originally sat behind a "Load tracking data" button for
+    exactly that reason; that was deliberately dropped, because a click between the page and
+    the visualisation undercuts the "one call" point these pages exist to make. Don't
+    reintroduce it as a payload optimisation.
   - Both entry points in `packages/data-providers/src` carry a TSDoc `@module` tag. Without
     it TypeDoc names multi-entry-point modules by source path and the API URLs come out as
     `/docs/api/data-providers/packages/data-providers/src/statsbomb/...`.
