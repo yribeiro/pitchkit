@@ -5,6 +5,7 @@
     "guides",
     "components",
     "overlays",
+    "agents",
     "data",
     "configuration",
     "migration",

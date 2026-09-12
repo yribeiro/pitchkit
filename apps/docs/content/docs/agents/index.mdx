@@ -1,0 +1,93 @@
+---
+title: Overview
+description: Build PitchKit charts with a coding agent — prompts to paste, a skill to install, and docs written for models.
+---
+
+No model has PitchKit in its training data. Ask an agent for a shot map and it will reach for
+the nearest thing it does know — mplsoccer's Python API — and hand you confident, invented
+JSX: a `<ShotMap>` component, a `theme` prop, a `pitchType` that doesn't exist.
+
+That's a fixable problem, and PitchKit ships three fixes. Start with a prompt.
+
+## Start here
+
+Paste one of these. Each is self-contained — the agent fetches what it needs.
+
+**Set up a new project:**
+
+```text
+Build me a football data visualisation app using PitchKit.
+
+First, read https://pitchkitjs.com/llms.txt and follow the links you need from it.
+PitchKit is not in your training data, so do not rely on what you remember about it —
+everything you need is in those docs.
+
+Scaffold a Next.js app, install @pitchkit/core, @pitchkit/react and
+@pitchkit/data-providers, then build a shot map from a real StatsBomb match.
+```
+
+**Add PitchKit to a project you already have:**
+
+```text
+Add PitchKit to this project to render football pitch visualisations.
+
+Read https://pitchkitjs.com/llms.txt first and follow the links from it — PitchKit is
+not in your training data, so anything you recall about its API is invented.
+
+Then install it, and after installing run `npx @pitchkit/react skills install` so you
+keep the API reference alongside the version we're on.
+```
+
+**Build one specific chart:**
+
+```text
+Using PitchKit, build a pass network for this data: <paste your data shape>
+
+Read https://pitchkitjs.com/llms-full.txt first for the real API — PitchKit post-dates
+your training data. Match the coordinate system to my data's provider rather than
+converting the numbers.
+```
+
+The common thread is the first instruction. Telling a model *not* to trust its recollection is
+what stops it pattern-matching to mplsoccer, and it matters more than which of the three
+sources you point it at.
+
+## What PitchKit gives an agent
+
+| | What it is | Best for |
+| --- | --- | --- |
+| **[Agent Skill](/docs/agents/skills)** | Ships inside `@pitchkit/react`; `npx @pitchkit/react skills install` symlinks it into your agent | Anything where you've already installed the package |
+| **[llms.txt](/docs/agents/llms-txt)** | This whole site as Markdown, at a URL | First contact, and tools that can't read `node_modules` |
+| **Per-page Markdown** | Append `.md` to any docs URL | Pointing an agent at one specific thing |
+| **Typed API** | Full TypeScript types on every export | Catching the mistakes that survive the above |
+
+They overlap on purpose. The skill is the strongest of them because it travels with the
+version you installed — [llms.txt](/docs/agents/llms-txt) describes whatever is deployed here,
+which is the latest release and not necessarily yours.
+
+## Works with
+
+<AgentTools />
+
+None of this is tool-specific. Every prompt above is just text, and the skill is a Markdown
+file in a directory — anything that can read your repository can use it. The install command
+writes to Claude Code's directory by default and takes `--dir` for anywhere else:
+
+```bash
+npx @pitchkit/react skills install --dir .cursor/skills
+```
+
+For tools that can't see your filesystem at all — browser-based builders especially — paste
+the `llms.txt` URL into the prompt and skip the install.
+
+## Why this is a first-class concern
+
+A library published after a model's training cutoff is invisible to it, and that doesn't
+resolve with time: once a breaking change ships, training data holds both versions forever
+with no way to tell which one you're on. Scraped documentation only half-solves it, because
+the scrape describes the current release rather than the one in your `package.json`.
+
+So the skill is versioned with the code and installed from `node_modules`, and the hosted files
+exist for the cases where that isn't possible. Neither is a substitute for reading the
+[guides](/docs/guides/coordinates) yourself — but you shouldn't have to, to get a correct first
+draft out of an agent.

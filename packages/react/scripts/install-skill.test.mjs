@@ -56,7 +56,15 @@ describe("the bundled skill", () => {
   // https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure
   describe("its frontmatter", () => {
     const read = async () => {
-      const source = await readFile(join(skillSourceDir, "SKILL.md"), "utf8");
+      // Normalised to LF first: git checks this file out with CRLF wherever
+      // core.autocrlf is on, and every delimiter below is LF — `split("---\n")`
+      // silently finds nothing on such a checkout, handing the assertions an
+      // empty string that fails for the wrong reason. The published tarball
+      // carries git's LF, so this is about where the test runs, not what ships.
+      const source = (await readFile(join(skillSourceDir, "SKILL.md"), "utf8")).replace(
+        /\r\n/g,
+        "\n",
+      );
       const [, frontmatter, ...rest] = source.split("---\n");
       return { source, frontmatter, body: rest.join("---\n") };
     };

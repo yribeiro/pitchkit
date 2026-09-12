@@ -1,13 +1,11 @@
 ---
-title: Agent Skill
-description: Ship PitchKit's real API to coding agents, versioned and updated with the package.
+title: Skills
+description: The Agent Skill that ships inside @pitchkit/react — versioned with the package, not scraped from this site.
 ---
 
-No model has PitchKit in its training data. Asked to "build a shot map with PitchKit", an
-agent falls back on mplsoccer's Python API and invents props that don't exist.
-
-`@pitchkit/react` ships an [Agent Skill](https://code.claude.com/docs/en/skills) with the
-real one.
+`@pitchkit/react` ships an [Agent Skill](https://code.claude.com/docs/en/skills) in its npm
+tarball: the real API, the gotchas that break builds, and four worked recipes, installed from
+`node_modules` rather than fetched from here.
 
 ## Install
 
@@ -22,6 +20,9 @@ point it elsewhere:
 npx @pitchkit/react skills install --dir .cursor/skills
 ```
 
+`npx @pitchkit/react skills path` prints where the skill lives if you'd rather wire it up
+yourself.
+
 ## It stays current
 
 Because it's a link, not a copy, the skill tracks whatever version you have installed:
@@ -32,7 +33,9 @@ npm update @pitchkit/react   # skill is already current — nothing else to run
 
 That matters more than it sounds. A copied skill is correct the day you extract it and
 silently wrong after the next breaking change — the same version ambiguity that makes
-training data unreliable, one layer down.
+training data unreliable, one layer down. It's also the one thing
+[llms.txt](/docs/agents/llms-txt) can't give you, since those files describe whatever is
+deployed here rather than what you installed.
 
 On filesystems that reject symlinks it copies instead and tells you, in which case re-run
 with `--force` after upgrading.
@@ -53,23 +56,8 @@ The agent reads the skill's one-line description at startup — costing nothing 
 relevant — and loads the rest only when a request matches: a shot map, a pass network,
 anything mentioning StatsBomb, Opta, or `<Pitch>`. Your prompts don't change.
 
-## If you can't install the skill
-
-Some tools can't read a project's `node_modules` — browser-based builders especially. For
-those, this site publishes itself in [llms.txt](https://llmstxt.org) format:
-
-| File | Contents |
-| --- | --- |
-| [`/llms.txt`](https://pitchkitjs.com/llms.txt) | An index of every page. Paste the URL into a prompt. |
-| [`/llms-full.txt`](https://pitchkitjs.com/llms-full.txt) | Every guide and overlay page as one Markdown document, examples inlined. |
-| [`/llms-api.txt`](https://pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, kept separate so it doesn't crowd out the prose. |
-
-Appending `.md` to any docs URL returns that single page as raw Markdown.
-
-The trade-off is the one above: these are scraped from whatever is deployed here, so they
-describe the latest release rather than the version in your project. The skill doesn't.
-
 ## See also
 
+- [llms.txt](/docs/agents/llms-txt) — the hosted alternative, for tools that can't read `node_modules`
 - [Theming](/docs/configuration/tailwind) — the CSS-variable system the skill documents
 - [Recipes](/docs/guides/recipes) — the same examples, with live previews
