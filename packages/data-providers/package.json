@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/data-providers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Convenience loaders for open football data (StatsBomb first) — raw JSON in, typed events out, ready for PitchKit.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
