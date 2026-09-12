@@ -29,7 +29,7 @@ function MatchSelector({
         value={value}
         disabled={matches.length === 0}
         onChange={(event) => onChange(Number(event.target.value))}
-        className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+        className={`w-full min-w-0 pl-2 pr-8 sm:w-auto sm:max-w-xs ${controlClass}`}
       >
         {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
         {matches.map((match) => (

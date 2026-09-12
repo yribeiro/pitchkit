@@ -43,7 +43,7 @@ function MatchSelector({
         value={value}
         disabled={matches.length === 0}
         onChange={(event) => onChange(Number(event.target.value))}
-        className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+        className={`w-full min-w-0 pl-2 pr-8 sm:w-auto sm:max-w-xs ${controlClass}`}
       >
         {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
         {matches.map((match) => (
@@ -200,7 +200,7 @@ export function Statsbomb360Basic() {
           <div className="mt-3 flex gap-2">
             <button
               type="button"
-              className={`font-medium hover:bg-fd-accent ${controlClass}`}
+              className={`px-3 font-medium hover:bg-fd-accent ${controlClass}`}
               disabled={at === 0}
               onClick={() => setAt((current) => Math.max(0, current - 2))}
             >
@@ -208,7 +208,7 @@ export function Statsbomb360Basic() {
             </button>
             <button
               type="button"
-              className={`font-medium hover:bg-fd-accent ${controlClass}`}
+              className={`px-3 font-medium hover:bg-fd-accent ${controlClass}`}
               disabled={at + 2 >= moments.length}
               onClick={() => setAt((current) => Math.min(moments.length - 1, current + 2))}
             >

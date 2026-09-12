@@ -44,6 +44,10 @@ export function useEuroMatches(): StatsBombMatch[] {
   return matches;
 }
 
-/** Shared only so the two pickers look the same; nothing example-specific. */
+/**
+ * Shared only so the two pickers look the same; nothing example-specific.
+ * Horizontal padding is left to the caller — a native select needs room on
+ * the right for its own chevron, a button doesn't.
+ */
 export const controlClass =
-  "rounded-md border border-fd-border bg-fd-card px-2 py-1.5 text-sm disabled:opacity-50";
+  "rounded-md border border-fd-border bg-fd-card py-1.5 text-sm disabled:opacity-50";
