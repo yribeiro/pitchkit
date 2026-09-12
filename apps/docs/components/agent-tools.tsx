@@ -1,9 +1,9 @@
 /**
  * The "works with" row on /docs/agents.
  *
- * Marks are inlined rather than fetched: eight `<img>` tags to a CDN is eight
- * requests, a flash of missing logos, and a third party in the render path of
- * a docs page. Inlined, they're one `currentColor` path each, so they take the
+ * Marks are inlined rather than fetched: an `<img>` per tool is a request per
+ * tool, a flash of missing logos, and a third party in the render path of a
+ * docs page. Inlined, they're one `currentColor` path each, so they take the
  * page's own foreground colour and need no light/dark variants.
  *
  * Path data is from Simple Icons (CC0-1.0) except Antigravity, which Simple
@@ -50,27 +50,27 @@ const TOOLS: AgentTool[] = [
     name: "Pi",
     icon: "M0 0v24h6v-6h6v-6H6V6h6v6h6V0Zm18 12v12h6V12Z",
   },
-  {
-    name: "Hermes",
-    icon: "m21.818 4.516-1.05 4.148h2.175L24 4.516M19.41 14.04h2.17l1.04-4.08h-2.178m-2.41 9.523h2.154l1.056-4.147h-2.16m.193-5.377H5.55v.92l3.341 3.161h9.349m2.41-9.525H0v1.116l3.206 3.032H19.6m-8.372 7.58 3.43 3.24h2.205l1.05-4.147h-6.685",
-  },
 ];
 
 export function AgentTools() {
   return (
     <div className="not-prose">
-      {/* Two fixed columns on a phone, natural widths from `sm` up.
-          Wrapping at every size looked ragged on mobile: eight chips of
-          "Pi"-to-"GitHub Copilot" widths left a torn right edge and a dead
-          gap on the last row. A 2-col grid squares that off — eight items
-          divide exactly — while wider screens keep the looser row, where
-          equal-width tracks would instead strand the short names in
-          whitespace. */}
+      {/* Two fixed columns on a phone, natural widths from `sm` up. Wrapping
+          at every size looked ragged on mobile: chips ranging from "Pi" to
+          "GitHub Copilot" left a torn right edge and a dead gap on the last
+          row. A 2-col grid squares that off; wider screens keep the looser
+          row, where equal-width tracks would instead strand the short names
+          in whitespace.
+
+          `last:odd:col-span-2` covers an odd number of tools, where the final
+          chip would otherwise sit alone beside the same gap the grid exists
+          to remove. It's inert above `sm`, since grid-column means nothing to
+          a flex container. */}
       <ul className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {TOOLS.map((tool) => (
           <li
             key={tool.name}
-            className="inline-flex items-center gap-2 rounded-lg border border-fd-border bg-fd-card px-3 py-2 text-sm text-fd-foreground"
+            className="inline-flex items-center gap-2 rounded-lg border border-fd-border bg-fd-card px-3 py-2 text-sm text-fd-foreground last:odd:col-span-2"
           >
             <svg
               aria-hidden

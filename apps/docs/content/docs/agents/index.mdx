@@ -3,11 +3,16 @@ title: Overview
 description: Build PitchKit charts with a coding agent — prompts to paste, a skill to install, and docs written for models.
 ---
 
-No model has PitchKit in its training data. Ask an agent for a shot map and it will reach for
-the nearest thing it does know — mplsoccer's Python API — and hand you confident, invented
-JSX: a `<ShotMap>` component, a `theme` prop, a `pitchType` that doesn't exist.
+Writing software is turning into directing it. You describe what you want, review what comes
+back, and less of the typing is yours. That makes a library's AI tooling part of the library —
+because the same prompt can produce something you'd have written yourself or something
+plausible that doesn't compile, and what separates them is almost entirely the context the
+model was handed.
 
-That's a fixable problem, and PitchKit ships three fixes. Start with a prompt.
+Context is the one lever you have over a process that isn't deterministic. So PitchKit ships
+it: the real API, versioned with the code, in a form an agent will actually read. It has to —
+nothing about PitchKit is in any model's training data, so an agent left to guess reaches for
+mplsoccer's Python API and invents the JSX to match.
 
 ## Start here
 
@@ -60,10 +65,6 @@ sources you point it at.
 | **[llms.txt](/docs/agents/llms-txt)** | This whole site as Markdown, at a URL | First contact, and tools that can't read `node_modules` |
 | **Per-page Markdown** | Append `.md` to any docs URL | Pointing an agent at one specific thing |
 | **Typed API** | Full TypeScript types on every export | Catching the mistakes that survive the above |
-
-They overlap on purpose. The skill is the strongest of them because it travels with the
-version you installed — [llms.txt](/docs/agents/llms-txt) describes whatever is deployed here,
-which is the latest release and not necessarily yours.
 
 ## Works with
 
