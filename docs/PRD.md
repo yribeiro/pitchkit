@@ -711,7 +711,13 @@ npx shadcn add @pitchkit/theme-broadcast
       and per-page Markdown followed via
       [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (`apps/docs/app/llms.txt`,
       `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` — the remaining AX
-      layer #40 scopes — is not done**; #40 stays open until it ships.
+      layer #40 scopes — is not done**; #40 stays open until it ships. Three follow-on AX
+      tickets opened since, all still open: [#41](https://github.com/yribeiro/pitchkit/issues/41)
+      (audit `Scene` for JSON-serialisability/SSR against a published AI-friendly-charting
+      rubric), [#42](https://github.com/yribeiro/pitchkit/issues/42) (evaluate — not
+      commit to — a PitchKit MCP server), [#43](https://github.com/yribeiro/pitchkit/issues/43)
+      (an agent eval harness, framed as a prerequisite for trusting #41/#42's results rather
+      than shipping AX changes on feel).
 - [x] **Brand identity** — the PitchKit mark (two penalty areas + halfway line + centre
       circle, reading as `[ ]`) across the README, docs nav, favicon, and OG/Twitter images,
       via [PR #47](https://github.com/yribeiro/pitchkit/pull/47). Not an original checklist
@@ -743,8 +749,11 @@ a real domain. Remaining work is release _automation_, not release itself.
       2026-09-10 — bundled Agent Skill, see Milestone 2's AX note below.
       [`@pitchkit/data-providers`](https://www.npmjs.com/package/@pitchkit/data-providers)
       `0.1.0` (first publish, StatsBomb open-data loader, closing
-      [#29](https://github.com/yribeiro/pitchkit/issues/29)) — version-bumped 2026-09-10, not
-      yet confirmed live on the registry as of this writing.
+      [#29](https://github.com/yribeiro/pitchkit/issues/29)) published 2026-09-10.
+      `@pitchkit/react@0.3.1` (patch — empty-tooltip-on-falsy-accessor fix) and
+      `@pitchkit/data-providers@0.2.0` (minor — StatsBomb 360 tracking data, `core`
+      untouched) published 2026-09-12 via [PR #52](https://github.com/yribeiro/pitchkit/pull/52)
+      and [PR #54](https://github.com/yribeiro/pitchkit/pull/54).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling

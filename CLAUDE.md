@@ -93,15 +93,26 @@ Open issues covering the rest of M2: radar/pizza charts
 recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
 [#24](https://github.com/yribeiro/pitchkit/issues/24)), interactive pan/zoom
 ([#26](https://github.com/yribeiro/pitchkit/issues/26)), real StatsBomb samples in the
-docs/gallery ([#27](https://github.com/yribeiro/pitchkit/issues/27) — the gallery still uses
-hardcoded data, only `examples/react-nextjs` uses the new package so far), and tracking-data
-loaders ([#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding
-bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead
-of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
+**gallery specifically** ([#27](https://github.com/yribeiro/pitchkit/issues/27) —
+`apps/docs/components/examples/shot-map-gallery.tsx` still uses hardcoded data; the new
+`/docs/data` pages and `examples/react-nextjs` fetch live StatsBomb data, but the gallery
+itself doesn't yet), and tracking-data loaders beyond StatsBomb
+([#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding bug,
+[#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
+105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
 
 Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
 depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
 an internal examples registry for its own gallery, not a consumable `registry.json`.
+
+**AX follow-on cluster (all open, all descend from #40):**
+[#41](https://github.com/yribeiro/pitchkit/issues/41) audits `Scene` for JSON-serialisability
+and SSR/headless rendering against a published "AI-friendly charting library" rubric;
+[#42](https://github.com/yribeiro/pitchkit/issues/42) is an **evaluate-then-maybe-build** on a
+PitchKit MCP server (deliberately not a commitment — an MCP server is an ongoing-maintenance
+runtime surface, unlike #40's static files); [#43](https://github.com/yribeiro/pitchkit/issues/43)
+is an agent eval harness to measure AX changes empirically rather than by feel, and is
+explicitly a prerequisite for trusting #41/#42's results.
 
 **Milestone 3 — publishing, largely complete (2026-09-08), pulled forward ahead of M2.**
 It was originally deferred until after M2's parity push, but was brought forward to claim the
@@ -125,14 +136,24 @@ namespace and get the library installable:
     slice of [issue #40](https://github.com/yribeiro/pitchkit/issues/40) ("AX: ship
     `llms.txt`, `AGENTS.md`, and a bundled Agent Skill"). Shipped via
     [PR #46](https://github.com/yribeiro/pitchkit/pull/46).
-  - **`@pitchkit/data-providers@0.1.0` (new package, first publish) — version-bumped, not
-    yet confirmed live on the registry as of this writing.** `@pitchkit/data-providers/statsbomb`:
-    `fetchMatchEvents(id)` → `shots()`/`passes()`/`carries()`, predicates (`isGoal`,
-    `isComplete`, …) compose via `.filter()`, lifted `x`/`y`/`endX`/`endY`/`endZ` for
-    PitchKit accessors, StatsBomb's own field names otherwise untouched. Zero runtime deps,
-    no dependency on `core`/`react`. Closes
-    [#29](https://github.com/yribeiro/pitchkit/issues/29) via
+  - **`@pitchkit/data-providers@0.1.0`** (new package, first publish) — 2026-09-10.
+    `@pitchkit/data-providers/statsbomb`: `fetchMatchEvents(id)` →
+    `shots()`/`passes()`/`carries()`, predicates (`isGoal`, `isComplete`, …) compose via
+    `.filter()`, lifted `x`/`y`/`endX`/`endY`/`endZ` for PitchKit accessors, StatsBomb's own
+    field names otherwise untouched. Zero runtime deps, no dependency on `core`/`react`.
+    Closes [#29](https://github.com/yribeiro/pitchkit/issues/29) via
     [PR #50](https://github.com/yribeiro/pitchkit/pull/50).
+  - **`@pitchkit/react@0.3.1`** (patch) **+ `@pitchkit/data-providers@0.2.0`** (minor;
+    `core` untouched) — 2026-09-12. `react`: fixes an empty tooltip box rendering when a
+    `tooltip` accessor returns a falsy value (`null`/`undefined`/`false`/`""`) for a given
+    datum, across every mark that takes the prop. `data-providers`: adds StatsBomb **360
+    tracking data** — `fetchMatchThreeSixty(id)`, `indexThreeSixtyByEvent` to join frames
+    onto events by `event_uuid`, freeze-frame role predicates (`isTeammate`, `isOpponent`,
+    `isActor`, `isKeeper`) and selectors (`teammatesIn`, `opponentsIn`, `visibleAreaPolygon`),
+    plus a typed `match_status_360` so callers can check per-match availability before
+    fetching. Via [PR #52](https://github.com/yribeiro/pitchkit/pull/52) (data) and
+    [PR #54](https://github.com/yribeiro/pitchkit/pull/54) (the tooltip fix rode along with
+    that PR's docs work).
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
