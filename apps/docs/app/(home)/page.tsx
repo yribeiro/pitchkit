@@ -48,10 +48,10 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
     icon: "M12 2.7 6.7 8a7.5 7.5 0 1 0 10.6 0L12 2.7Z",
   },
   {
-    title: "SSR-ready",
-    body: "Marks render to real SVG on the server — verified against Next.js App Router. No hydration flicker, no client-only placeholder boxes.",
-    href: "/docs/guides/nextjs-ssr",
-    icon: "M3 4h18v6H3zM3 14h18v6H3zM7 7h.01M7 17h.01",
+    title: "Real data in one call",
+    body: "fetchMatchEvents(id) returns typed events straight from StatsBomb open data — shots, passes, carries and 360 tracking, ready to plot. No adapter, no field mapping.",
+    href: "/docs/data",
+    icon: "M3 5c0-1.7 4-3 9-3s9 1.3 9 3-4 3-9 3-9-1.3-9-3ZM3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3",
   },
 ];
 
@@ -72,9 +72,9 @@ export default function HomePage() {
             The football visualisation layer for the web.
           </h1>
           <p className="max-w-xl text-balance text-fd-muted-foreground">
-            PitchKit is mplsoccer for the browser — declarative pitch visualisations with
-            typed accessors, responsive SVG marks, canvas heatmaps, and theming that works
-            like the rest of your design system.
+            PitchKit is mplsoccer for the browser — declarative pitch visualisations with typed
+            accessors, responsive SVG marks, canvas heatmaps, and theming that works like the rest
+            of your design system.
           </p>
           <InstallCommand />
           {/* Below `sm` the two CTAs split the column evenly; from `sm` up
@@ -187,8 +187,8 @@ export default function HomePage() {
             Coming from mplsoccer?
           </h2>
           <p className="max-w-lg text-sm text-fd-muted-foreground">
-            The concepts map one-to-one — pitches, marks, accessors. The cheatsheet translates
-            each mplsoccer call to its PitchKit equivalent.
+            The concepts map one-to-one — pitches, marks, accessors. The cheatsheet translates each
+            mplsoccer call to its PitchKit equivalent.
           </p>
           <Link
             href="/docs/migration"

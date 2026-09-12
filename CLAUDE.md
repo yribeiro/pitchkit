@@ -63,6 +63,29 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
   `@pitchkit/data-statsbomb` naming** (§7.4/§8.4/§8.10, now corrected) — named for the
   provider family since [#30](https://github.com/yribeiro/pitchkit/issues/30) plans
   SkillCorner/Metrica loaders under the same package.
+  **360 optical tracking** landed next via
+  [PR #52](https://github.com/yribeiro/pitchkit/pull/52) — `fetchMatchThreeSixty(id)`,
+  `indexThreeSixtyByEvent` to join frames onto events by `event_uuid`, freeze-frame selectors
+  and `visibleAreaPolygon`.
+
+- **Data docs** — a top-level **Data** nav section (`/docs/data` → Overview, then StatsBomb
+  split into Events and 360), plus a homepage feature card, README section, and the package
+  finally wired into the generated API reference. **This reverses
+  [#29](https://github.com/yribeiro/pitchkit/issues/29)'s recorded decision** to park the
+  loader docs under _Configuration_ until 2–3 providers existed: that reasoning was about
+  volume, whereas the section exists for positioning (Configuration is Tailwind setup and
+  agent-skill install — the wrong frame for a headline capability). Don't "restore" the old
+  placement on the strength of the issue text alone.
+  - The docs examples on those pages **fetch live from StatsBomb open data in the browser**,
+    scoped to Euro 2024 (competition 55 / season 282 — all 51 matches have 360). **Both
+    auto-load on match selection** — events ~3 MB, 360 ~10 MB (it fetches the events file
+    too, to join frames onto). 360 originally sat behind a "Load tracking data" button for
+    exactly that reason; that was deliberately dropped, because a click between the page and
+    the visualisation undercuts the "one call" point these pages exist to make. Don't
+    reintroduce it as a payload optimisation.
+  - Both entry points in `packages/data-providers/src` carry a TSDoc `@module` tag. Without
+    it TypeDoc names multi-entry-point modules by source path and the API URLs come out as
+    `/docs/api/data-providers/packages/data-providers/src/statsbomb/...`.
 
 Open issues covering the rest of M2: radar/pizza charts
 ([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
@@ -123,7 +146,7 @@ namespace and get the library installable:
   test catches the drift.
 - **Positioning reworded again, "React-native" → "React-first"** — via
   [PR #49](https://github.com/yribeiro/pitchkit/pull/49) (2026-09-10). "React-native" (PR
-  #45) reads at a glance as *React Native*, the mobile framework — wrong association for a
+  #45) reads at a glance as _React Native_, the mobile framework — wrong association for a
   web-only library. This file's own opening line was one of the stragglers, now fixed.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —

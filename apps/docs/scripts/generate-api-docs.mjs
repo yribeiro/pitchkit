@@ -27,6 +27,7 @@ const app = await Application.bootstrapWithPlugins({
   entryPoints: [
     path.join(docsRoot, "../../packages/core"),
     path.join(docsRoot, "../../packages/react"),
+    path.join(docsRoot, "../../packages/data-providers"),
   ],
   tsconfig: path.join(docsRoot, "scripts/typedoc.tsconfig.json"),
   out: outputDir,
@@ -134,7 +135,7 @@ writeFileSync(
   path.join(outputDir, "index.mdx"),
   `---
 title: API Reference
-description: Every public export of @pitchkit/core and @pitchkit/react, generated from TSDoc.
+description: Every public export of PitchKit's packages, generated from TSDoc.
 ---
 
 Generated from the source's TSDoc comments on every build — always in sync with the
@@ -145,16 +146,23 @@ published types. Anything marked \`@internal\` in the source (core's SVG painter
   transforms, pitch geometry, layer types, heatmap binning, theming tokens.
 - **[@pitchkit/react](/docs/api/react)** — the officially supported React bindings:
   \`<Pitch>\`, the overlay components, and \`usePitch()\`.
+- **[@pitchkit/data-providers](/docs/api/data-providers)** — the optional open-data
+  loaders: parsers, fetchers, selectors and predicates, per provider.
 
-For task-oriented documentation, start from the [guides](/docs/guides/coordinates) and
-per-component pages instead — this section is the exhaustive symbol-level reference.
+For task-oriented documentation, start from the [guides](/docs/guides/coordinates),
+[Data](/docs/data) and per-component pages instead — this section is the exhaustive
+symbol-level reference.
 `,
 );
 
 // Fumadocs sidebar metadata for the generated tree.
 writeFileSync(
   path.join(outputDir, "meta.json"),
-  `${JSON.stringify({ title: "API Reference", pages: ["index", "core", "react"] }, null, 2)}\n`,
+  `${JSON.stringify(
+    { title: "API Reference", pages: ["index", "core", "react", "data-providers"] },
+    null,
+    2,
+  )}\n`,
 );
 
 console.log(`Generated API reference into ${path.relative(docsRoot, outputDir)}.`);
