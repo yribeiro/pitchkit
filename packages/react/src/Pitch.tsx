@@ -11,11 +11,7 @@ import type {
 } from "@pitchkit/core";
 import { PitchContext } from "./context.js";
 import type { TooltipState } from "./context.js";
-import {
-  PitchGeometryShapes,
-  PitchMarkingShapes,
-  PitchSurfaceShapes,
-} from "./pitch-geometry.js";
+import { PitchGeometryShapes, PitchMarkingShapes, PitchSurfaceShapes } from "./pitch-geometry.js";
 import { TooltipOverlay } from "./TooltipOverlay.js";
 import { useResizeObserver } from "./use-resize-observer.js";
 
@@ -42,6 +38,18 @@ export interface PitchProps {
 // until the first client measurement (PRD §8.6's "explicit aspect ratio on
 // first paint, ResizeObserver refine after hydration").
 const NOMINAL_WIDTH = 600;
+
+/**
+ * Layer components set tooltip state on hover whenever a `tooltip` prop was
+ * passed, without inspecting what the accessor returned. An accessor that
+ * returns nothing for a given datum — `(d) => d.isKeeper ? "Goalkeeper" : undefined`,
+ * a common shape — means "nothing to say about this one", so skip the
+ * overlay entirely rather than painting an empty, text-less box.
+ */
+function hasTooltipContent(tooltip: TooltipState | null): tooltip is TooltipState {
+  const content = tooltip?.content;
+  return content !== null && content !== undefined && content !== false && content !== "";
+}
 
 /**
  * The root pitch component: owns the coordinate system, is responsive by
@@ -78,7 +86,8 @@ export function Pitch({
   // the right extent without needing the canonical-frame conversion.
   const cropExtentX = crop ? Math.abs(crop.x1 - crop.x0) : dimensions.length;
   const cropExtentY = crop ? Math.abs(crop.y1 - crop.y0) : dimensions.width;
-  const pitchAspect = orientation === "vertical" ? cropExtentY / cropExtentX : cropExtentX / cropExtentY;
+  const pitchAspect =
+    orientation === "vertical" ? cropExtentY / cropExtentX : cropExtentX / cropExtentY;
   const fallbackSize = { width: NOMINAL_WIDTH, height: Math.round(NOMINAL_WIDTH / pitchAspect) };
 
   const size = isExplicitSize
@@ -113,11 +122,7 @@ export function Pitch({
             stays underneath either way. Default keeps the single combined
             group, so nothing about the existing DOM changes. */}
         {linesOnTop ? (
-          <PitchSurfaceShapes
-            geometry={geometry}
-            transform={transform}
-            appearance={appearance}
-          />
+          <PitchSurfaceShapes geometry={geometry} transform={transform} appearance={appearance} />
         ) : (
           <PitchGeometryShapes
             geometry={geometry}
@@ -138,7 +143,7 @@ export function Pitch({
           />
         )}
       </svg>
-      {tooltip && <TooltipOverlay tooltip={tooltip} />}
+      {hasTooltipContent(tooltip) && <TooltipOverlay tooltip={tooltip} />}
     </div>
   );
 }

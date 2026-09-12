@@ -4,5 +4,9 @@
     "jsx": "react-jsx",
     "noEmit": true
   },
-  "include": ["../../../packages/core/src", "../../../packages/react/src"]
+  "include": [
+    "../../../packages/core/src",
+    "../../../packages/react/src",
+    "../../../packages/data-providers/src"
+  ]
 }

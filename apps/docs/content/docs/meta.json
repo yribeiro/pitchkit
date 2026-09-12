@@ -1,4 +1,13 @@
 {
   "title": "Docs",
-  "pages": ["index", "guides", "components", "overlays", "configuration", "migration", "api"]
+  "pages": [
+    "index",
+    "guides",
+    "components",
+    "overlays",
+    "data",
+    "configuration",
+    "migration",
+    "api"
+  ]
 }
