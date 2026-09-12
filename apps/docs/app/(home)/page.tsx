@@ -11,36 +11,47 @@ import { PitchKitMark } from "@/components/pitchkit-logo";
  * site — no second theming mechanism.
  */
 
-const FEATURES: { title: string; body: string; href: string }[] = [
+/**
+ * `icon` is the `d` of a single 24×24 stroked path, not a component: these
+ * are decorative scanning anchors, and six inline paths cost nothing next
+ * to pulling in an icon dependency for one section.
+ */
+const FEATURES: { title: string; body: string; href: string; icon: string }[] = [
   {
     title: "Composable layers",
     body: "Scatter, arrows, comets, heatmaps, Voronoi — declared as JSX children of <Pitch>, stacked in render order like any other React tree.",
     href: "/docs/guides/layers",
+    icon: "M12 2 2 7l10 5 10-5-10-5ZM2 12l10 5 10-5M2 17l10 5 10-5",
   },
   {
     title: "Provider-agnostic coordinates",
     body: "StatsBomb, Opta, and UEFA coordinate systems out of the box. Feed data in its native units; one transform pipeline keeps everything aligned.",
     href: "/docs/guides/coordinates",
+    icon: "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18",
   },
   {
     title: "Agent compatible",
     body: "No model has PitchKit in its training data — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
     href: "/docs/configuration/agent-skill",
+    icon: "M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8",
   },
   {
     title: "Responsive by default",
     body: "Every pitch fills its container via ResizeObserver, with a correct-aspect-ratio first paint. Explicit width/height is the opt-out, not the default.",
     href: "/docs/guides/responsive",
+    icon: "M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",
   },
   {
     title: "CSS-variable theming",
     body: "Colours are --pitch-* variables, shadcn-style — set them once in your stylesheet, get dark mode for free, override per-chart with a wrapper div.",
     href: "/docs/guides/theming",
+    icon: "M12 2.7 6.7 8a7.5 7.5 0 1 0 10.6 0L12 2.7Z",
   },
   {
     title: "SSR-ready",
     body: "Marks render to real SVG on the server — verified against Next.js App Router. No hydration flicker, no client-only placeholder boxes.",
     href: "/docs/guides/nextjs-ssr",
+    icon: "M3 4h18v6H3zM3 14h18v6H3zM7 7h.01M7 17h.01",
   },
 ];
 
@@ -86,39 +97,79 @@ export default function HomePage() {
 
       {/* Feature grid */}
       <section className="border-t border-fd-border bg-fd-card/40">
-        <div className="mx-auto grid w-full max-w-6xl gap-px overflow-hidden px-6 py-16 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <Link
-              key={f.title}
-              href={f.href}
-              className="group flex flex-col gap-2 rounded-lg p-5 transition-colors hover:bg-fd-accent/60"
-            >
-              <h2 className="text-sm font-semibold text-fd-foreground">{f.title}</h2>
-              <p className="text-sm leading-relaxed text-fd-muted-foreground">{f.body}</p>
-              {/* Always visible rather than hover-only: on a grid of cards that
-                  are entirely link, a permanent affordance is what signals
-                  they're clickable at all — hover can't advertise itself.
-                  Drawn as SVG rather than a "→" glyph so the stroke weight is
-                  ours to set instead of the body font's. */}
-              <span
-                aria-hidden
-                className="mt-auto flex justify-end pt-3 text-fd-primary/70 transition-all group-hover:translate-x-0.5 group-hover:text-fd-primary"
+        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20">
+          {/* The section had no heading at all, so six equally-weighted cards
+              were the top of its hierarchy and the page jumped from <h1> to
+              six sibling <h2>s. An eyebrow + <h2> gives the block something
+              to hang off and demotes the cards to <h3>, fixing the visual
+              hierarchy and the document outline in the same move. */}
+          <div className="flex max-w-2xl flex-col gap-3 pb-10 sm:pb-12">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-fd-primary">
+              Why PitchKit
+            </span>
+            <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground sm:text-3xl">
+              Built for the way you already write React.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((f) => (
+              <Link
+                key={f.title}
+                href={f.href}
+                className="group flex flex-col gap-3 rounded-xl border border-fd-border bg-fd-background p-5 transition-colors hover:border-fd-primary/40 hover:bg-fd-accent/50"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M5 12h13M12.5 5.5 19 12l-6.5 6.5" />
-                </svg>
-              </span>
-            </Link>
-          ))}
+                <div className="flex items-start justify-between gap-3">
+                  <span
+                    aria-hidden
+                    className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-fd-border bg-fd-card text-fd-primary transition-colors group-hover:border-fd-primary/40"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d={f.icon} />
+                    </svg>
+                  </span>
+                  {/* Always visible rather than hover-only: on a grid of cards
+                      that are entirely link, a permanent affordance is what
+                      signals they're clickable at all — hover can't advertise
+                      itself. Sits on the icon's row instead of the card's
+                      bottom edge, where uneven body lengths used to strand it
+                      below a block of dead space. Drawn as SVG rather than a
+                      "→" glyph so the stroke weight is ours to set instead of
+                      the body font's. */}
+                  <span
+                    aria-hidden
+                    className="mt-1 text-fd-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-fd-primary"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12h13M12.5 5.5 19 12l-6.5 6.5" />
+                    </svg>
+                  </span>
+                </div>
+                <h3 className="text-base font-semibold leading-snug text-fd-foreground">
+                  {f.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-fd-muted-foreground">{f.body}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
