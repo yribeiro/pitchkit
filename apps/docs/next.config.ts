@@ -2,10 +2,23 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
+import { generateExamplesRegistry } from "./scripts/generate-examples-registry.mjs";
+import { generateApiDocs } from "./scripts/generate-api-docs.mjs";
 
 const withMDX = createMDX();
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// components/examples/registry.ts and content/docs/api/ are gitignored,
+// generated content. They used to be produced by predev/prebuild npm
+// hooks, then by chaining them onto the "dev"/"build" npm scripts (see
+// git history) — but Vercel's Next.js framework preset runs `next build`
+// directly against this app's Root Directory, bypassing package.json's
+// "build" script (and any npm lifecycle hooks) entirely. Generating here,
+// at the top of next.config.ts, is the one place that runs no matter what
+// invokes Next.
+await generateExamplesRegistry();
+await generateApiDocs();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
