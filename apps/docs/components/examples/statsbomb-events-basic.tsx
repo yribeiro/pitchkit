@@ -10,31 +10,36 @@ import { DEFAULT_MATCH_ID, controlClass, matchLabel, useEuroMatches } from "./st
 
 const dimensions = getPitchDimensions("statsbomb");
 
-/** Every Euro 2024 fixture, in kickoff order. */
+/** Every Euro 2024 fixture, in kickoff order, over a line of status text. */
 function MatchSelector({
   value,
   onChange,
+  status,
 }: {
   value: number;
   onChange: (matchId: number) => void;
+  status: string;
 }) {
   const matches = useEuroMatches();
 
   return (
-    <select
-      aria-label="Euro 2024 match"
-      value={value}
-      disabled={matches.length === 0}
-      onChange={(event) => onChange(Number(event.target.value))}
-      className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
-    >
-      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-      {matches.map((match) => (
-        <option key={match.match_id} value={match.match_id}>
-          {matchLabel(match)}
-        </option>
-      ))}
-    </select>
+    <>
+      <select
+        aria-label="Euro 2024 match"
+        value={value}
+        disabled={matches.length === 0}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className={`w-full min-w-0 sm:w-auto sm:max-w-xs ${controlClass}`}
+      >
+        {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+        {matches.map((match) => (
+          <option key={match.match_id} value={match.match_id}>
+            {matchLabel(match)}
+          </option>
+        ))}
+      </select>
+      <p className="my-3 text-xs text-fd-muted-foreground">{status}</p>
+    </>
   );
 }
 
@@ -69,15 +74,14 @@ export function StatsbombEventsBasic() {
           setFailed(false);
           setMatchId(next);
         }}
+        status={
+          failed
+            ? "Couldn't reach StatsBomb open data."
+            : loaded === undefined
+              ? "Fetching the match from StatsBomb open data (~3 MB)…"
+              : `${loaded.length} shots · ${loaded.filter(isGoal).length} goals`
+        }
       />
-
-      <p className="my-3 text-xs text-fd-muted-foreground">
-        {failed
-          ? "Couldn't reach StatsBomb open data."
-          : loaded === undefined
-            ? "Fetching the match from StatsBomb open data (~3 MB)…"
-            : `${loaded.length} shots · ${loaded.filter(isGoal).length} goals`}
-      </p>
 
       <VerticalPitch type="statsbomb" appearance={docsAppearance} crop={cropForHalf(dimensions)}>
         <Scatter
