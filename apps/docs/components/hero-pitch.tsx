@@ -126,7 +126,7 @@ export function HeroPitch() {
   const dimensions = getPitchDimensions(pitchType);
 
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0">
       <div className="flex items-center justify-between gap-2 pb-3">
         <div className="flex gap-1.5" role="group" aria-label="Pitch coordinate provider">
           {PITCH_TYPES.map((t) => (

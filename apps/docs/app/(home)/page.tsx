@@ -49,12 +49,16 @@ export default function HomePage() {
     <main className="flex flex-1 flex-col">
       {/* Hero */}
       <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-16 pt-14 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:pt-24">
-        <div className="flex flex-col items-start gap-5">
+        {/* `min-w-0` is load-bearing, not decoration: a grid item defaults to
+            `min-width: auto`, so the install command's nowrap monospace string
+            set the column's min-content width and blew the whole hero past the
+            viewport on narrow screens. */}
+        <div className="flex min-w-0 flex-col items-start gap-5">
           <span className="rounded-full border border-fd-border bg-fd-card px-3 py-1 text-xs font-medium text-fd-muted-foreground">
-            React-first for the Web · TypeScript · MIT
+            React First · AI Native · TypeScript · MIT
           </span>
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
-            The football pitch layer for the web.
+            The football visualisation layer for the web.
           </h1>
           <p className="max-w-xl text-balance text-fd-muted-foreground">
             PitchKit is mplsoccer for the browser — declarative pitch visualisations with
