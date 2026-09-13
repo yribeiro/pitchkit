@@ -199,7 +199,7 @@ export function HeroPitch() {
         </button>
       </div>
 
-      <div className="pitchkit-hero-pitch relative overflow-hidden rounded-xl border border-fd-border shadow-lg">
+      <div className="pitchkit-hero-pitch relative overflow-hidden border border-fd-border shadow-lg">
         <Pitch
           type={pitchType}
           appearance={{ stripes: true, goalType: "box" }}
@@ -209,7 +209,7 @@ export function HeroPitch() {
         </Pitch>
 
         {/* Broadcast-style coordinate readout (score-bug treatment). */}
-        <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-2.5 py-1.5 font-mono text-[11px] text-white/90 backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-2.5 py-1.5 font-mono text-[11px] text-white/90 backdrop-blur-sm">
           <span className="relative flex size-1.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
             <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
