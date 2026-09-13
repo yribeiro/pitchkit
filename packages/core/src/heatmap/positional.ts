@@ -1,6 +1,7 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import type { Rect } from "../scene/geometry.js";
 import { resolve } from "../scene/resolve.js";
+import { toExtentFrame } from "../transform/canonical.js";
 import type { PositionalHeatmapLayer, PositionalLayout } from "../scene/types.js";
 
 /**
@@ -164,8 +165,10 @@ export function computePositionalBins<T>(
   const values: number[] = new Array(zones.length).fill(0);
 
   layer.data.forEach((d, i) => {
-    const x = resolve(layer.x, d, i);
-    const y = resolve(layer.y, d, i);
+    // Into the extent frame first: identity for corner-origin providers, but
+    // without it a center-origin grid's negative half fails the bounds check
+    // below and is silently dropped.
+    const [x, y] = toExtentFrame(dimensions, [resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     if (x < 0 || x > dimensions.length || y < 0 || y > dimensions.width) return;
 
     const index = zones.findIndex(

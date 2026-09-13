@@ -1,5 +1,6 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import { resolve } from "../scene/resolve.js";
+import { toExtentFrame } from "../transform/canonical.js";
 import type { KdeLayer } from "../scene/types.js";
 
 const DEFAULT_RESOLUTION = 64;
@@ -72,8 +73,10 @@ export function computeKdeGrid<T>(layer: KdeLayer<T>, dimensions: PitchDimension
   const ys: number[] = [];
   const weights: number[] = [];
   layer.data.forEach((d, i) => {
-    const x = resolve(layer.x, d, i);
-    const y = resolve(layer.y, d, i);
+    // Into the extent frame first: identity for corner-origin providers, but
+    // without it a center-origin grid's negative half fails the bounds check
+    // below and is silently dropped.
+    const [x, y] = toExtentFrame(dimensions, [resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     if (x < 0 || x > dimensions.length || y < 0 || y > dimensions.width) return;
     xs.push(x);
     ys.push(y);

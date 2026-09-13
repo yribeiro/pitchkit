@@ -1,5 +1,5 @@
 import type { PitchDimensions } from "../dimensions/types.js";
-import { fromCanonicalFrame, toCanonicalFrame } from "./canonical.js";
+import { fromCanonicalFrame, fromExtentFrame, toCanonicalFrame } from "./canonical.js";
 import type { PixelTransform, Point, Viewport } from "./types.js";
 
 const ZERO_PADDING = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -14,7 +14,17 @@ export function createPixelTransform(
   dimensions: PitchDimensions,
   viewport: Viewport,
 ): PixelTransform {
-  const crop = viewport.crop ?? { x0: 0, y0: 0, x1: dimensions.length, y1: dimensions.width };
+  // The default crop is the whole pitch, expressed in the provider's own
+  // coordinates — which for a center-origin grid starts at negative values,
+  // not zero.
+  const fullPitch = fromExtentFrame(dimensions, [dimensions.length, dimensions.width]);
+  const pitchOrigin = fromExtentFrame(dimensions, [0, 0]);
+  const crop = viewport.crop ?? {
+    x0: pitchOrigin[0],
+    y0: pitchOrigin[1],
+    x1: fullPitch[0],
+    y1: fullPitch[1],
+  };
   const padding = viewport.padding ?? ZERO_PADDING;
 
   // Resolve the crop window into the canonical frame (real provider units,

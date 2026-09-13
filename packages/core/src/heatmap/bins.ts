@@ -1,6 +1,7 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import type { Rect } from "../scene/geometry.js";
 import { resolve } from "../scene/resolve.js";
+import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { HeatmapLayer } from "../scene/types.js";
 
 const DEFAULT_BINS_X = 6;
@@ -34,8 +35,10 @@ export function computeHeatmapBins<T>(
   const values: number[] = new Array(binsX * binsY).fill(0);
 
   layer.data.forEach((d, i) => {
-    const x = resolve(layer.x, d, i);
-    const y = resolve(layer.y, d, i);
+    // Into the extent frame first: identity for corner-origin providers, but
+    // without it a center-origin grid's negative half fails the bounds check
+    // below and is silently dropped.
+    const [x, y] = toExtentFrame(dimensions, [resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     if (x < 0 || x > dimensions.length || y < 0 || y > dimensions.width) return;
 
     const col = Math.min(Math.floor(x / cellWidth), binsX - 1);
@@ -49,9 +52,12 @@ export function computeHeatmapBins<T>(
   const bins: HeatmapBin[] = [];
   for (let row = 0; row < binsY; row += 1) {
     for (let col = 0; col < binsX; col += 1) {
+      // Back out to provider-native coordinates, which is the frame
+      // `transform.toPixel` expects from every caller.
+      const [x, y] = fromExtentFrame(dimensions, [col * cellWidth, row * cellHeight]);
       bins.push({
-        x: col * cellWidth,
-        y: row * cellHeight,
+        x,
+        y,
         width: cellWidth,
         height: cellHeight,
         value: values[row * binsX + col] ?? 0,
