@@ -769,6 +769,9 @@ a real domain. Remaining work is release _automation_, not release itself.
       `@pitchkit/data-providers@0.3.0` (minor — `@pitchkit/data-providers/skillcorner`,
       `core`/`react` untouched) published 2026-09-13 via
       [PR #58](https://github.com/yribeiro/pitchkit/pull/58).
+      `@pitchkit/core@0.3.0` + `@pitchkit/react@0.4.0` (both minor — `"skillcorner"` pitch
+      type + general center-origin coordinate support, `data-providers` untouched)
+      published 2026-09-13 via [PR #62](https://github.com/yribeiro/pitchkit/pull/62).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling

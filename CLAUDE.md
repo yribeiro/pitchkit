@@ -155,11 +155,14 @@ itself doesn't yet), and tracking-data loaders beyond StatsBomb+SkillCorner
 a longstanding bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders
 square instead of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3
 notes; and [#59](https://github.com/yribeiro/pitchkit/issues/59) (follow-up to #58's
-SkillCorner loader), a real `skillcorner` pitch type in `core` supporting per-match
-dimensions (104/105/106 × 68 m — `PitchTypeId` is currently the fixed-size
-`"statsbomb" | "opta" | "uefa"` only) plus richer visualisations once it exists. **This is
-also the tracking issue for deleting `examples/react-nextjs`'s local `toUefaX`/`toUefaY`
-squash-fudge** once a real pitch type makes it unnecessary.
+SkillCorner loader) — **half done, still open for its second half.** Its "real
+`skillcorner` pitch type in `core`" half shipped via [PR #62](https://github.com/yribeiro/pitchkit/pull/62)
+(see the Milestone 2 entry above), including deleting the `toUefaX`/`toUefaY` squash-fudge
+as that half's issue text required. What's left, and why #59 is still open: **richer
+SkillCorner visualisations** — off-ball runs (`offBallRuns`) as `<Arrows>`/`<Comet>`,
+phases of play, pressure/on-ball-engagement density, passing options with
+`xpass_completion` — all backed by selectors that already exist and are tested; this
+remaining half is presentation work only.
 
 Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
 depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
@@ -220,6 +223,12 @@ namespace and get the library installable:
     pitch dimensions). Also brings in `csv-parse`, the project's first runtime dependency
     anywhere — see Security posture below. Via
     [PR #58](https://github.com/yribeiro/pitchkit/pull/58).
+  - **`@pitchkit/core@0.3.0` + `@pitchkit/react@0.4.0`** (both minor;
+    `data-providers` untouched) — 2026-09-13. The `"skillcorner"` pitch type and
+    center-origin coordinate system support generally (see the Milestone 2 entry above for
+    the `toExtentFrame`/`fromExtentFrame` mechanics and the four density-module bounds-check
+    gotcha). Widens the public `PitchTypeId` union — additive for callers, but an exhaustive
+    `switch` over it gains a case. Via [PR #62](https://github.com/yribeiro/pitchkit/pull/62).
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
