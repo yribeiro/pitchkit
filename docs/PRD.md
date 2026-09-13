@@ -93,14 +93,14 @@ Mapped directly from mplsoccer's modules so parity is auditable. Phase tags: **M
 
 ### 7.1 Pitch drawing & geometry
 
-| Feature                                                                                                        | mplsoccer ref                        | Phase                       |
-| -------------------------------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------- |
-| Horizontal pitch                                                                                               | `Pitch`                              | M                           |
-| Vertical pitch                                                                                                 | `VerticalPitch`                      | M                           |
-| Half-pitch / padding / crop                                                                                    | `half`, `pad_*`                      | M                           |
-| Pitch types: StatsBomb, Opta, Wyscout, UEFA/metric, Tracab, SkillCorner, SecondSpectrum, MetricaSports, custom | `pitch_type` (9 types)               | M (SB/Opta/UEFA) → 1 (rest) |
-| Styling: grass/stripes, line colour/width/alpha, goal types (line/box/circle)                                  | `pitch_color`, `stripe`, `goal_type` | M→1                         |
-| Coordinate standardizer (provider→provider)                                                                    | `Standardizer`                       | 1                           |
+| Feature                                                                                                        | mplsoccer ref                        | Phase                                   |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------- |
+| Horizontal pitch                                                                                               | `Pitch`                              | M                                       |
+| Vertical pitch                                                                                                 | `VerticalPitch`                      | M                                       |
+| Half-pitch / padding / crop                                                                                    | `half`, `pad_*`                      | M                                       |
+| Pitch types: StatsBomb, Opta, Wyscout, UEFA/metric, Tracab, SkillCorner, SecondSpectrum, MetricaSports, custom | `pitch_type` (9 types)               | M (SB/Opta/UEFA/SkillCorner) → 1 (rest) |
+| Styling: grass/stripes, line colour/width/alpha, goal types (line/box/circle)                                  | `pitch_color`, `stripe`, `goal_type` | M→1                                     |
+| Coordinate standardizer (provider→provider)                                                                    | `Standardizer`                       | 1                                       |
 
 ### 7.2 Plotting primitives (per-event marks)
 
@@ -698,7 +698,12 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ### Milestone 2 — v1.0 (parity push)
 
-- [ ] Remaining pitch types + Standardizer exposed.
+- [ ] Remaining pitch types + Standardizer exposed. **Partly done:** `skillcorner` landed with
+      general **center-origin** support — `PitchOrigin: \"center\"` is now honoured end to end
+      (`toExtentFrame`/`fromExtentFrame`), which is the prerequisite the remaining
+      centre-origin providers (Tracab, SecondSpectrum) were blocked on. `getPitchDimensions`
+      also takes a per-match `{ length, width }` override, since SkillCorner pitches are real
+      stadium pitches (104-106 m).
 - [x] Positional heatmap, hexbin, KDE ([issue #19](https://github.com/yribeiro/pitchkit/issues/19)).
 - [x] Flow, polygon, convex hull, Voronoi, goal angle
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
