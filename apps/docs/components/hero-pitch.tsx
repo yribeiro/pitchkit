@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { getPitchDimensions } from "@pitchkit/core";
 import type { PitchTypeId } from "@pitchkit/core";
@@ -42,7 +42,6 @@ const PRESET_MOVE: FractionPoint[] = [
 const PITCH_TYPES: { id: PitchTypeId; label: string; size: string }[] = [
   { id: "statsbomb", label: "StatsBomb", size: "120 × 80" },
   { id: "skillcorner", label: "SkillCorner", size: "105 × 68" },
-  { id: "uefa", label: "UEFA", size: "105 × 68" },
 ];
 
 interface HeroLayersProps {
@@ -114,12 +113,50 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
 
 export function HeroPitch() {
   const [pitchType, setPitchType] = useState<PitchTypeId>("statsbomb");
-  const [points, setPoints] = useState<FractionPoint[]>(PRESET_MOVE);
+  const [points, setPoints] = useState<FractionPoint[]>([]);
   const [cursor, setCursor] = useState<readonly [number, number] | null>(null);
   const [touched, setTouched] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+
+  useEffect(() => {
+    let step = 0;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const timeoutId = setTimeout(() => {
+      const reducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        setPoints(PRESET_MOVE);
+        setAnimationComplete(true);
+        return;
+      }
+
+      step = 1;
+      setPoints(PRESET_MOVE.slice(0, 1));
+
+      intervalId = setInterval(() => {
+        step++;
+        if (step <= PRESET_MOVE.length) {
+          setPoints(PRESET_MOVE.slice(0, step));
+        }
+        if (step >= PRESET_MOVE.length) {
+          if (intervalId) clearInterval(intervalId);
+          setAnimationComplete(true);
+        }
+      }, 350);
+    }, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []);
 
   const addPoint = useCallback((point: FractionPoint) => {
     setTouched(true);
+    setAnimationComplete(true);
     setPoints((prev) => [...prev, point]);
   }, []);
 
@@ -150,8 +187,11 @@ export function HeroPitch() {
           onClick={() => {
             setPoints(PRESET_MOVE);
             setTouched(false);
+            setAnimationComplete(true);
           }}
-          className="rounded-md px-2 py-1 text-xs text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+          className={`rounded-md px-2 py-1 text-xs text-fd-muted-foreground transition-all duration-500 hover:text-fd-foreground ${
+            animationComplete ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         >
           Reset
         </button>
@@ -181,7 +221,12 @@ export function HeroPitch() {
         </div>
       </div>
 
-      <p className="pt-3 text-center text-xs text-fd-muted-foreground" aria-live="polite">
+      <p
+        className={`pt-3 text-center text-xs text-fd-muted-foreground transition-opacity duration-500 ${
+          animationComplete ? "opacity-100" : "opacity-0"
+        }`}
+        aria-live="polite"
+      >
         {touched
           ? "Same move, any provider — switch coordinate systems above."
           : "Click anywhere to extend the move. The readout tracks provider coordinates."}
