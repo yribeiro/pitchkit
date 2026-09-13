@@ -1,5 +1,6 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import { resolve } from "../scene/resolve.js";
+import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { HexbinLayer } from "../scene/types.js";
 
 const DEFAULT_BINS_X = 20;
@@ -69,8 +70,10 @@ export function computeHexBins<T>(layer: HexbinLayer<T>, dimensions: PitchDimens
   const totals = new Map<string, number>();
 
   layer.data.forEach((d, i) => {
-    const x = resolve(layer.x, d, i);
-    const y = resolve(layer.y, d, i);
+    // Into the extent frame first: identity for corner-origin providers, but
+    // without it a center-origin grid's negative half fails the bounds check
+    // below and is silently dropped.
+    const [x, y] = toExtentFrame(dimensions, [resolve(layer.x, d, i), resolve(layer.y, d, i)]);
     if (x < 0 || x > dimensions.length || y < 0 || y > dimensions.width) return;
 
     const amount = layer.weight !== undefined ? resolve(layer.weight, d, i) : 1;
@@ -82,12 +85,9 @@ export function computeHexBins<T>(layer: HexbinLayer<T>, dimensions: PitchDimens
   const bins: HexBin[] = [];
   for (const [key, value] of totals) {
     const [col, row] = key.split(",").map(Number) as [number, number];
-    bins.push({
-      x: (col + rowOffset(row)) * dx,
-      y: row * dy,
-      radius,
-      value,
-    });
+    // Back out to provider-native coordinates for `transform.toPixel`.
+    const [x, y] = fromExtentFrame(dimensions, [(col + rowOffset(row)) * dx, row * dy]);
+    bins.push({ x, y, radius, value });
   }
   return bins;
 }

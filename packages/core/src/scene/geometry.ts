@@ -57,31 +57,42 @@ export interface PitchGeometry {
  */
 export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry {
   const { length, width, markings } = dimensions;
-  const centerX = length / 2;
-  const centerY = width / 2;
+
+  // The pitch's minimum corner in the provider's own coordinates: (0, 0) for
+  // every corner-origin grid, but (-length/2, -width/2) for a center-origin
+  // one like SkillCorner's. Markings are emitted in provider-native
+  // coordinates because that is what `transform.toPixel` expects — the same
+  // frame the caller's own data arrives in.
+  const minX = dimensions.origin === "center" ? -length / 2 : 0;
+  const minY = dimensions.origin === "center" ? -width / 2 : 0;
+  const maxX = minX + length;
+  const centerX = minX + length / 2;
+  const centerY = minY + width / 2;
 
   const penaltyArea = (fromLeft: boolean): Rect => ({
-    x: fromLeft ? 0 : length - markings.penaltyAreaLength,
+    x: fromLeft ? minX : maxX - markings.penaltyAreaLength,
     y: centerY - markings.penaltyAreaWidth / 2,
     width: markings.penaltyAreaLength,
     height: markings.penaltyAreaWidth,
   });
 
   const sixYardBox = (fromLeft: boolean): Rect => ({
-    x: fromLeft ? 0 : length - markings.sixYardLength,
+    x: fromLeft ? minX : maxX - markings.sixYardLength,
     y: centerY - markings.sixYardWidth / 2,
     width: markings.sixYardLength,
     height: markings.sixYardWidth,
   });
 
   const penaltySpot = (fromLeft: boolean): Point => [
-    fromLeft ? markings.penaltySpotDistance : length - markings.penaltySpotDistance,
+    fromLeft ? minX + markings.penaltySpotDistance : maxX - markings.penaltySpotDistance,
     centerY,
   ];
 
   const penaltyArc = (fromLeft: boolean): Arc => {
     const spot = penaltySpot(fromLeft);
-    const boxEdgeX = fromLeft ? markings.penaltyAreaLength : length - markings.penaltyAreaLength;
+    const boxEdgeX = fromLeft
+      ? minX + markings.penaltyAreaLength
+      : maxX - markings.penaltyAreaLength;
     const dx = Math.abs(boxEdgeX - spot[0]);
     const dy = Math.sqrt(Math.max(markings.centerCircleRadius ** 2 - dx ** 2, 0));
     return {
@@ -92,9 +103,13 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
     };
   };
 
-  const cornerArc = (cornerX: number, cornerY: number): Arc => {
-    const xSign = cornerX === 0 ? 1 : -1;
-    const ySign = cornerY === 0 ? 1 : -1;
+  // Takes which corner rather than its coordinates: comparing against a
+  // literal 0 stopped identifying the left/top corner once the origin moved.
+  const cornerArc = (isLeft: boolean, isFirstY: boolean): Arc => {
+    const cornerX = isLeft ? minX : maxX;
+    const cornerY = isFirstY ? minY : minY + width;
+    const xSign = isLeft ? 1 : -1;
+    const ySign = isFirstY ? 1 : -1;
     return {
       center: [cornerX, cornerY],
       radius: markings.cornerArcRadius,
@@ -104,7 +119,7 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
   };
 
   const goal = (fromLeft: boolean): Line => {
-    const x = fromLeft ? 0 : length;
+    const x = fromLeft ? minX : maxX;
     return {
       from: [x, centerY - markings.goalWidth / 2],
       to: [x, centerY + markings.goalWidth / 2],
@@ -112,8 +127,8 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
   };
 
   return {
-    outline: { x: 0, y: 0, width: length, height: width },
-    halfwayLine: { from: [centerX, 0], to: [centerX, width] },
+    outline: { x: minX, y: minY, width: length, height: width },
+    halfwayLine: { from: [centerX, minY], to: [centerX, minY + width] },
     centerCircle: { center: [centerX, centerY], radius: markings.centerCircleRadius },
     centerSpot: [centerX, centerY],
     penaltyAreas: [penaltyArea(true), penaltyArea(false)],
@@ -121,10 +136,10 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
     penaltySpots: [penaltySpot(true), penaltySpot(false)],
     penaltyArcs: [penaltyArc(true), penaltyArc(false)],
     cornerArcs: [
-      cornerArc(0, 0),
-      cornerArc(length, 0),
-      cornerArc(0, width),
-      cornerArc(length, width),
+      cornerArc(true, true),
+      cornerArc(false, true),
+      cornerArc(true, false),
+      cornerArc(false, false),
     ],
     goals: [goal(true), goal(false)],
   };

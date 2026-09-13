@@ -2,19 +2,47 @@ import type { PitchDimensions } from "../dimensions/types.js";
 import type { Point } from "./types.js";
 
 /**
+ * Where the pitch's minimum corner sits in the provider's own coordinates.
+ *
+ * Zero for every corner-origin provider — the offset only exists for
+ * center-origin grids like SkillCorner's, where x runs `-length/2` to
+ * `+length/2`. Which corner a corner-origin provider uses is `yDirection`'s
+ * business, not this function's.
+ */
+function originOffset(dimensions: PitchDimensions): Point {
+  return dimensions.origin === "center" ? [-dimensions.length / 2, -dimensions.width / 2] : [0, 0];
+}
+
+/**
+ * Maps a point into the pitch's **extent frame**: `0..length` by `0..width`,
+ * with the y-axis still pointing whichever way the provider points it.
+ *
+ * This is an identity function for every corner-origin provider
+ * (statsbomb/opta/uefa), and exists so that code which reasons about "is this
+ * point on the pitch" or "which bin does it fall in" can keep assuming a box
+ * that starts at zero, without silently discarding half of a center-origin
+ * provider's data.
+ */
+export function toExtentFrame(dimensions: PitchDimensions, point: Point): Point {
+  const [offsetX, offsetY] = originOffset(dimensions);
+  return [point[0] - offsetX, point[1] - offsetY];
+}
+
+/** Inverse of {@link toExtentFrame}. */
+export function fromExtentFrame(dimensions: PitchDimensions, point: Point): Point {
+  const [offsetX, offsetY] = originOffset(dimensions);
+  return [point[0] + offsetX, point[1] + offsetY];
+}
+
+/**
  * Normalizes a point into a "canonical pitch frame": real provider units,
  * origin top-left, y increasing downward — regardless of the provider's
  * native origin/yDirection. Preserves the pitch's true length:width ratio
  * (unlike a [0,1] unit-square normalization), which is what correct,
  * non-distorted pixel layout requires.
- *
- * Assumes x always increases left-to-right starting at 0 for every
- * supported provider (true for statsbomb/opta/uefa). Center-origin
- * providers (tracab, skillcorner — out of scope for M0) would need an
- * x-offset term added here.
  */
 export function toCanonicalFrame(dimensions: PitchDimensions, point: Point): Point {
-  const [x, y] = point;
+  const [x, y] = toExtentFrame(dimensions, point);
   const canonicalY = dimensions.yDirection === "down" ? y : dimensions.width - y;
   return [x, canonicalY];
 }
@@ -23,7 +51,7 @@ export function toCanonicalFrame(dimensions: PitchDimensions, point: Point): Poi
 export function fromCanonicalFrame(dimensions: PitchDimensions, point: Point): Point {
   const [x, canonicalY] = point;
   const y = dimensions.yDirection === "down" ? canonicalY : dimensions.width - canonicalY;
-  return [x, y];
+  return fromExtentFrame(dimensions, [x, y]);
 }
 
 /**

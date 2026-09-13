@@ -6,6 +6,7 @@ export type {
   PitchDimensions,
 } from "./dimensions/types.js";
 export { getPitchDimensions, PITCH_DIMENSIONS } from "./dimensions/registry.js";
+export type { PitchDimensionOverrides } from "./dimensions/registry.js";
 
 export type {
   Point,

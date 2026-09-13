@@ -1,18 +1,18 @@
 import type { PitchDimensions } from "../dimensions/types.js";
+import { fromExtentFrame } from "./canonical.js";
 import type { CropWindow } from "./types.js";
 
 /**
  * Crop window for the attacking (right-hand) half of the pitch, in the
- * provider's own coordinates. Every supported provider's x-axis increases
- * left-to-right starting at 0 (see `canonical.ts`), so halving `length` is
- * provider-agnostic; y is left full-height since `createPixelTransform`
- * normalizes crop corners via the canonical frame regardless of yDirection.
+ * provider's own coordinates.
+ *
+ * Built in the extent frame and converted back out, so it lands correctly for
+ * center-origin providers too — halving `length` alone would put the crop in
+ * the wrong place on a grid that starts at `-length/2`. `createPixelTransform`
+ * normalizes the corners regardless of yDirection, so y stays full-height.
  */
 export function cropForHalf(dimensions: PitchDimensions): CropWindow {
-  return {
-    x0: dimensions.length / 2,
-    y0: 0,
-    x1: dimensions.length,
-    y1: dimensions.width,
-  };
+  const [x0, y0] = fromExtentFrame(dimensions, [dimensions.length / 2, 0]);
+  const [x1, y1] = fromExtentFrame(dimensions, [dimensions.length, dimensions.width]);
+  return { x0, y0, x1, y1 };
 }

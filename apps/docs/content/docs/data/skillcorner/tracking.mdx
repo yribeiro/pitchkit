@@ -1,0 +1,147 @@
+---
+title: Tracking
+description: Broadcast tracking at 10 fps — streamed out of a 90 MB file, and plotted in SkillCorner's own metres.
+---
+
+SkillCorner's tracking is **broadcast** tracking: computer vision run over the TV feed, giving
+every visible player's position ten times a second. The example below streams half a minute of
+a real match and plays it back in real time.
+
+<PitchPreview name="skillcorner-tracking-basic" />
+
+## The size problem, and the answer
+
+One match's tracking file is about **90 MB**. Downloading it to draw thirty seconds would be
+absurd, so `streamTracking` is an **async generator** — leaving the loop closes the reader,
+which aborts the response mid-download:
+
+```ts
+import { fetchMatch, streamTracking } from "@pitchkit/data-providers/skillcorner";
+
+const match = await fetchMatch(1874553);
+const frames = [];
+
+for await (const frame of streamTracking(match)) {
+  if (frame.period === null || frame.player_data.length === 0) continue;
+  frames.push(frame);
+  if (frames.length >= 300) break; // ← stops the download
+}
+```
+
+Measured in a browser against the real file: **1.9 MB of 86.5 MB, 2.2%**. If you'd rather jump
+into the middle of a match, `fetchTrackingWindow(match, { fromFrame, toFrame })` does an HTTP
+`Range` read instead, estimating the byte offset and filtering to the frames you asked for.
+
+<Callout type="warn">
+  **Tracking is served from a different host.** These files are stored with Git LFS, so
+  `raw.githubusercontent.com` returns a ~130-byte pointer stub rather than data — which fails as
+  "not valid JSON" on a file that looks perfectly fine in a browser. The loaders already point at
+  `media.githubusercontent.com` for tracking and the raw host for everything else. If you mirror the
+  data yourself, `{baseUrl}` and `{lfsBaseUrl}` are separate options for this reason.
+</Callout>
+
+## Plotting it
+
+Coordinates go in **raw**. SkillCorner measures in metres from the centre spot, and
+`<Pitch type="skillcorner">` uses that same grid, so the accessors are just `(p) => p.x`:
+
+```tsx
+<Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }}>
+  <Voronoi data={frame.player_data} x={(p) => p.x} y={(p) => p.y} />
+  <Scatter data={frame.player_data} x={(p) => p.x} y={(p) => p.y} r={2.4} />
+</Pitch>
+```
+
+`dimensions` is worth passing: SkillCorner pitches are real stadium pitches, and the open data
+spans **104, 105 and 106 m**. Markings don't scale with it — a penalty area is 16.5 m deep on
+any pitch — so only the outline, halfway line and goal lines move.
+
+## What's in a frame
+
+```ts
+interface SkillCornerFrame {
+  frame: number;
+  timestamp: string | null; // "00:43:32.00", null before kickoff
+  period: number | null;
+  ball_data: { x: number | null; y: number | null; z: number | null; is_detected: boolean | null };
+  possession: { player_id: number | null; group: string | null };
+  player_data: SkillCornerTrackedPlayer[];
+}
+
+interface SkillCornerTrackedPlayer {
+  player_id: number;
+  x: number; // metres from the centre spot
+  y: number;
+  is_detected: boolean; // false = extrapolated, not seen
+  pitchX: number; // corner-origin metres, if your chart wants them
+  pitchY: number;
+}
+```
+
+Frames before kickoff carry nulls throughout with an empty `player_data`. That's the file's own
+shape, not a parse failure — skip them rather than treating them as an error.
+
+### `is_detected` is the field to respect
+
+The broadcast camera only frames part of the pitch. Players outside the shot can't be seen, so
+SkillCorner **estimates** where they are — the file is called `tracking_extrapolated` for a
+reason. Measured across 120 in-play frames of one match: **55% of positions were genuinely
+detected**, and **no frame had all 22 players visible** — the best had 19, the worst 8.
+
+That matters downstream. Distance covered, whether a player was onside, the shape of a Voronoi
+cell for someone off-camera — all inherit the estimate. The example above fades undetected
+markers rather than drawing them identically.
+
+It's the opposite choice to [StatsBomb 360](/docs/data/statsbomb/360), which lists only players
+inside the camera's `visible_area` and omits the rest. SkillCorner fills the gaps and flags
+them; StatsBomb leaves the gaps. Neither is wrong — but you need to know which you're holding.
+
+## Joining a position to a player
+
+Tracking carries only `player_id` — no name, no team. The match file is the lookup:
+
+```ts
+import { indexPlayersById } from "@pitchkit/data-providers/skillcorner";
+
+const players = indexPlayersById(match);
+const player = players.get(tracked.player_id); // name, team_id, shirt number, role
+```
+
+<Callout type="warn">
+  The join key is `players[].id`, **not** `trackable_object`. They're different id spaces, and
+  `trackable_object` matches nothing in the tracking file — an easy hour to lose.
+</Callout>
+
+## Which way is the team attacking?
+
+**Tracking coordinates are absolute**, so a team's x flips sign at half time. This is the
+opposite of the [dynamic events](/docs/data/skillcorner/dynamic-events) file, whose x is
+normalised to the attacking direction. Mixing them up mirrors half a match silently.
+
+`attackingSideOf` resolves it from the match's own `home_team_side`:
+
+```ts
+import { attackingSideOf } from "@pitchkit/data-providers/skillcorner";
+
+attackingSideOf(match, teamId, period); // "left_to_right" | "right_to_left" | undefined
+```
+
+## Official documentation
+
+This page describes how PitchKit loads the data. For the data itself, SkillCorner's own
+documentation is the authority:
+
+- **[SkillCorner Open Data docs](https://skillcorner.github.io/opendata/)** — the tracking
+  format, coordinate system and field definitions, first-hand.
+- **[SkillCorner/opendata](https://github.com/SkillCorner/opendata)** — the repository these
+  loaders fetch from, including the Jupyter tutorials in
+  [`notebooks/tutorials`](https://github.com/SkillCorner/opendata/tree/master/notebooks/tutorials).
+- **[skillcorner.com](https://skillcorner.com/)** — the company behind the data.
+
+The open data is MIT-licensed and SkillCorner ask to be credited in anything you publish from
+it.
+
+## Next
+
+[Dynamic events](/docs/data/skillcorner/dynamic-events) — SkillCorner's derived model of
+possessions, passing options, off-ball runs and pressure, sharing this file's frame counter.

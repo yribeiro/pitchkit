@@ -260,12 +260,24 @@ for await (const line of lines) {
 
 This package ships **no data**. It fetches from whatever URL you give it.
 
-The default URLs point at
-[StatsBomb's open-data repository](https://github.com/statsbomb/open-data) and
-[SkillCorner's](https://github.com/SkillCorner/opendata). StatsBomb's is
-released under their own user agreement; SkillCorner's is MIT. **Both ask to
-be credited** in anything you publish from their data. Read their terms before
-you rely on either.
+The default URLs point at each provider's own open-data repository. **Both ask
+to be credited** in anything you publish from their data.
+
+**StatsBomb** — [open-data](https://github.com/statsbomb/open-data) ·
+[specifications](https://github.com/statsbomb/open-data/tree/master/doc) ·
+[free data hub](https://statsbomb.com/what-we-do/hub/free-data/) ·
+[usage terms](https://statsbomb.com/what-we-do/hub/free-data/free-data-usage-terms/).
+Released under StatsBomb's own user agreement rather than an OSI licence, so
+read the terms before you rely on it.
+
+**SkillCorner** — [opendata](https://github.com/SkillCorner/opendata) ·
+[documentation](https://skillcorner.github.io/opendata/) ·
+[tutorials](https://github.com/SkillCorner/opendata/tree/master/notebooks/tutorials) ·
+[skillcorner.com](https://skillcorner.com/). MIT-licensed, with a request for
+credit.
+
+Both providers' documentation is the authority on what the fields mean; this
+package only covers loading them.
 
 ## Adding a provider
 

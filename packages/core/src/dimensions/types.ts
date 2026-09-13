@@ -1,5 +1,5 @@
 /** The provider coordinate systems supported in this milestone. */
-export type PitchTypeId = "statsbomb" | "opta" | "uefa";
+export type PitchTypeId = "statsbomb" | "opta" | "uefa" | "skillcorner";
 
 /** Which corner of the pitch sits at provider coordinate (0, 0). */
 export type PitchOrigin = "top-left" | "bottom-left" | "center";

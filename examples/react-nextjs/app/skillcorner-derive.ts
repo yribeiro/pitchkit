@@ -9,38 +9,14 @@ import type {
 } from "@pitchkit/data-providers/skillcorner";
 
 /**
- * App-local derivations for the SkillCorner demo.
+ * App-local derivations for the SkillCorner demo — this demo's presentation
+ * logic, deliberately kept out of `@pitchkit/data-providers`.
  *
- * Everything here is **this demo's** presentation logic, deliberately kept out
- * of `@pitchkit/data-providers` — most of all `toUefa` below, which is a
- * rendering fudge rather than anything true about the data.
+ * This file used to carry `toUefaX`/`toUefaY`, which squashed a match's real
+ * pitch onto UEFA's fixed 105x68 so `<Pitch type=\"uefa\">` could draw it.
+ * `<Pitch type=\"skillcorner\">` now takes SkillCorner's own centre-origin
+ * metres directly, so the fudge is gone rather than promoted.
  */
-
-/**
- * Squash a match's real pitch onto UEFA's fixed 105x68 so `<Pitch type="uefa">`
- * can draw it.
- *
- * **This is a hack, and it lives here on purpose.** SkillCorner's coordinates
- * are real metres on a pitch that is 104, 105 or 106 m long depending on the
- * stadium, and PitchKit has no pitch type that takes dimensions. Scaling to
- * 105x68 moves a touchline position by up to ~0.5 m — invisible in a demo,
- * wrong in an analysis.
- *
- * The loader deliberately does not do this: `pitchX`/`pitchY` stay in the
- * match's own metres, and a proper `skillcorner` pitch type in
- * `@pitchkit/core` is tracked separately. When that lands, delete this
- * function rather than promoting it.
- */
-export const UEFA_LENGTH = 105;
-export const UEFA_WIDTH = 68;
-
-export function toUefaX(pitchX: number, match: SkillCornerMatch): number {
-  return pitchX * (UEFA_LENGTH / match.pitch_length);
-}
-
-export function toUefaY(pitchY: number, match: SkillCornerMatch): number {
-  return pitchY * (UEFA_WIDTH / match.pitch_width);
-}
 
 export function matchLabel(match: SkillCornerMatchSummary): string {
   return `${match.home_team.short_name} v ${match.away_team.short_name}`;

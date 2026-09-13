@@ -71,11 +71,35 @@ predicate.
 
 - **[StatsBomb](/docs/data/statsbomb/events)** — open data: competitions, matches, lineups,
   [events](/docs/data/statsbomb/events) and [360 tracking](/docs/data/statsbomb/360).
+  - Source: [statsbomb/open-data](https://github.com/statsbomb/open-data) ·
+    [specifications](https://github.com/statsbomb/open-data/tree/master/doc) ·
+    [free data hub](https://statsbomb.com/what-we-do/hub/free-data/)
+- **[SkillCorner](/docs/data/skillcorner/tracking)** — broadcast tracking at 10 fps, plus the
+  derived [dynamic events](/docs/data/skillcorner/dynamic-events) and
+  [phases of play](/docs/data/skillcorner/phases-of-play).
+  - Source: [SkillCorner/opendata](https://github.com/SkillCorner/opendata) ·
+    [documentation](https://skillcorner.github.io/opendata/) ·
+    [skillcorner.com](https://skillcorner.com/)
+
+SkillCorner also has its own pitch type. Its coordinates are metres from the centre spot, so
+`<Pitch type="skillcorner">` plots them raw — no lifting, no conversion:
+
+```tsx
+<Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }}>
+  <Scatter data={frame.player_data} x={(p) => p.x} y={(p) => p.y} />
+</Pitch>
+```
 
 ## Licensing
 
 This package ships **no data** — it fetches from whatever URL you give it. The default URLs
-point at [StatsBomb's open-data repository](https://github.com/statsbomb/open-data), which is
-released under StatsBomb's own user agreement rather than an OSI licence, and **using it
-obliges you to credit StatsBomb** in anything you publish. Read their terms before you rely on
-it.
+point at each provider's own open-data repository, and **both providers ask to be credited** in
+anything you publish from their data:
+
+- **StatsBomb** —
+  [open-data](https://github.com/statsbomb/open-data) is released under StatsBomb's own user
+  agreement rather than an OSI licence. Read the
+  [usage terms](https://statsbomb.com/what-we-do/hub/free-data/free-data-usage-terms/) before
+  you rely on it.
+- **SkillCorner** — [opendata](https://github.com/SkillCorner/opendata) is MIT-licensed, and
+  SkillCorner ask for credit and a mention when you publish work built on it.

@@ -24,8 +24,6 @@ import {
   detectionRate,
   eventsInClip,
   matchLabel,
-  toUefaX,
-  toUefaY,
 } from "./skillcorner-derive";
 import type { ClipFrame, ClipPlayer } from "./skillcorner-derive";
 import { SkillCornerEventCarousel } from "./SkillCornerEventCarousel";
@@ -198,9 +196,10 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
         MB tracking file, then aborts the download. The dynamic-events strip below tracks the
         playhead — the two files share one frame counter, so an event&apos;s{" "}
         <code>frame_start</code> <em>is</em> a tracking frame number and the alignment is exact
-        rather than matched on timestamps. Click any card to jump there. Positions are real metres
-        on this stadium&apos;s own pitch; the demo scales them onto a UEFA 105&times;68 pitch to
-        draw them — see <code>skillcorner-derive.ts</code>.
+        rather than matched on timestamps. Click any card to jump there. Coordinates go in raw:{" "}
+        <code>&lt;Pitch type=&quot;skillcorner&quot;&gt;</code> shares SkillCorner&apos;s
+        centre-origin metres, and <code>dimensions</code> draws this stadium&apos;s real{" "}
+        {match?.pitch_length ?? 105}&times;{match?.pitch_width ?? 68} m pitch.
       </p>
 
       <div style={rowStyle}>
@@ -299,11 +298,15 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
             onSelect={seekToEvent}
           />
 
-          <Pitch type="uefa" appearance={appearance}>
+          <Pitch
+            type="skillcorner"
+            dimensions={{ length: match.pitch_length, width: match.pitch_width }}
+            appearance={appearance}
+          >
             <Voronoi
               data={current.players}
-              x={(player) => toUefaX(player.pitchX, match)}
-              y={(player) => toUefaY(player.pitchY, match)}
+              x={(player) => player.x}
+              y={(player) => player.y}
               fill={colorOf}
               fillOpacity={0.13}
               stroke="rgba(255,255,255,0.18)"
@@ -311,8 +314,8 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
             />
             <Scatter
               data={current.players}
-              x={(player) => toUefaX(player.pitchX, match)}
-              y={(player) => toUefaY(player.pitchY, match)}
+              x={(player) => player.x}
+              y={(player) => player.y}
               r={2.4}
               // Faded when the position was extrapolated rather than seen —
               // SkillCorner's own is_detected flag, surfaced rather than
@@ -329,11 +332,11 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
                 }`
               }
             />
-            {current.frame.ballPitchX !== null && current.frame.ballPitchY !== null && (
+            {current.frame.ball_data.x !== null && current.frame.ball_data.y !== null && (
               <Scatter
                 data={[current.frame]}
-                x={(frame) => toUefaX(frame.ballPitchX ?? 0, match)}
-                y={(frame) => toUefaY(frame.ballPitchY ?? 0, match)}
+                x={(frame) => frame.ball_data.x ?? 0}
+                y={(frame) => frame.ball_data.y ?? 0}
                 r={1.4}
                 fill="#fff"
                 stroke="#111"

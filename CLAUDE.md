@@ -90,18 +90,41 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
     a full match), which is "up" on a y-up pitch, so the transform is a pure translation
     with no flip.
 
-  **Mapping onto a fixed pitch type is deliberately NOT in the package.** `examples/react-nextjs`
-  has a local `toUefaX`/`toUefaY` that squashes a match's real pitch onto UEFA 105×68 so
-  `<Pitch type="uefa">` can draw it; that is a rendering fudge (up to ~0.5 m at a touchline)
-  and the user asked explicitly that it stay out of the packages. Delete it when a real
-  `skillcorner` pitch type lands in core rather than promoting it.
-
   Adding this module brought in **`csv-parse`** — see the security-posture note below; it is
   the project's first and only third-party runtime dependency.
 
+- **`skillcorner` pitch type + center-origin support in core.** SkillCorner data now plots with
+  its **raw `x`/`y`** — `<Pitch type="skillcorner">` shares its centre-origin metre grid. The
+  `toUefaX`/`toUefaY` fudge that used to live in `examples/react-nextjs` is **deleted**; don't
+  reintroduce a coordinate workaround in a caller.
+  - **`toExtentFrame`/`fromExtentFrame` (`transform/canonical.ts`) are the load-bearing piece.**
+    They map a provider's coordinates onto `0..length` × `0..width` and back, and are **identity
+    functions for every corner-origin provider** — which is the entire reason statsbomb/opta/uefa
+    are untouched. A test asserts that identity directly; keep it.
+  - The offset was needed in **more places than the transform**, and each omission fails
+    _silently_: `scene/geometry.ts` (markings would be double-shifted), the default crop in
+    `pixel-transform.ts`, `cropForHalf`, and the four density modules
+    (`heatmap/bins`, `heatmap/positional`, `hexbin/bins`, `kde/density`) whose
+    `if (x < 0 || x > dimensions.length) return;` bounds checks discard a center-origin pitch's
+    whole defending half. If you add a module that reasons about a `0..length` box, convert
+    through the extent frame first.
+  - `getPitchDimensions(type, { length, width })` and `<Pitch dimensions>` handle SkillCorner's
+    real 104–106 m pitches. **Markings deliberately do not scale** — a penalty area is 16.5 m on
+    any pitch — so only the outline, halfway line and goal lines move. Overriding a normalized
+    grid (Opta) throws.
+  - `packages/react/src/skill-doc.test.ts` asserts the bundled Agent Skill's pitch-type table
+    matches the registry exactly, so adding a pitch type fails CI until `SKILL.md` catches up.
+    That is intentional.
+
+- **Hero shows SkillCorner, not Opta.** `apps/docs/components/hero-pitch.tsx`'s switcher is
+  StatsBomb / SkillCorner / UEFA. Opta is **still a supported pitch type** and
+  [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta renders square) is **still open** —
+  the swap was a shop-window decision, explicitly not a fix, so don't record #2 as resolved.
+
 - **Data docs** — a top-level **Data** nav section (`/docs/data` → Overview, then StatsBomb
-  split into Events and 360), plus a homepage feature card, README section, and the package
-  finally wired into the generated API reference. **This reverses
+  split into Events and 360, and SkillCorner into Tracking / Dynamic Events / Phases of Play),
+  plus a homepage feature card, README section, and the package finally wired into the
+  generated API reference. **This reverses
   [#29](https://github.com/yribeiro/pitchkit/issues/29)'s recorded decision** to park the
   loader docs under _Configuration_ until 2–3 providers existed: that reasoning was about
   volume, whereas the section exists for positioning (Configuration is Tailwind setup and

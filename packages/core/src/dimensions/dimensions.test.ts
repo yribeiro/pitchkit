@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import { getPitchDimensions, PITCH_DIMENSIONS } from "./registry.js";
 import type { PitchTypeId } from "./types.js";
 
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+// Every registered type, so a new provider is held to the same invariants
+// rather than only being covered by its own test file.
+const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa", "skillcorner"];
 
 describe("PITCH_DIMENSIONS", () => {
   it.each(PITCH_TYPES)("%s has a positive extent", (pitchType) => {

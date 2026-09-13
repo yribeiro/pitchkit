@@ -142,12 +142,7 @@ describe("Pitch", () => {
     // there's no contain-fit margin for the other half's markings to leak
     // into — the crop's near edge (x0=60) should land exactly at pixel x=0.
     const { container } = render(
-      <Pitch
-        type="statsbomb"
-        width={300}
-        height={400}
-        crop={{ x0: 60, y0: 0, x1: 120, y1: 80 }}
-      />,
+      <Pitch type="statsbomb" width={300} height={400} crop={{ x0: 60, y0: 0, x1: 120, y1: 80 }} />,
     );
     const outline = container.querySelector('[data-pitchkit-part="outline"]');
     // The full outline still spans provider x=[0,120] (unclipped, relying on
@@ -232,5 +227,54 @@ describe("Pitch responsive sizing (no explicit width/height)", () => {
 
     const svg = container.querySelector("svg");
     expect(svg?.getAttribute("viewBox")).toBe("0 0 300 200");
+  });
+});
+
+describe("Pitch with a center-origin provider", () => {
+  it("draws SkillCorner's raw coordinates without any lifting", () => {
+    // The whole point of the pitch type: (0, 0) is the centre spot, so data
+    // straight out of @pitchkit/data-providers/skillcorner plots as-is.
+    const { container } = render(
+      <Pitch type="skillcorner" width={1050} height={680}>
+        <Scatter data={[{ x: 0, y: 0 }]} x={(d) => d.x} y={(d) => d.y} />
+      </Pitch>,
+    );
+
+    const mark = container.querySelector('[data-pitchkit-mark="scatter"]');
+    expect(Number(mark?.getAttribute("cx"))).toBeCloseTo(525, 6);
+    expect(Number(mark?.getAttribute("cy"))).toBeCloseTo(340, 6);
+  });
+
+  it("puts the negative corner at the bottom left, since y points up", () => {
+    const { container } = render(
+      <Pitch type="skillcorner" width={1050} height={680}>
+        <Scatter data={[{ x: -52.5, y: -34 }]} x={(d) => d.x} y={(d) => d.y} />
+      </Pitch>,
+    );
+
+    const mark = container.querySelector('[data-pitchkit-mark="scatter"]');
+    expect(Number(mark?.getAttribute("cx"))).toBeCloseTo(0, 6);
+    expect(Number(mark?.getAttribute("cy"))).toBeCloseTo(680, 6);
+  });
+
+  it("honours a per-match extent override", () => {
+    // A 106 m pitch: the touchline moves out, so the same coordinate lands
+    // slightly further in than it would on the 105 m default.
+    const { container } = render(
+      <Pitch type="skillcorner" dimensions={{ length: 106, width: 68 }} width={1060} height={680}>
+        <Scatter data={[{ x: -53, y: 0 }]} x={(d) => d.x} y={(d) => d.y} />
+      </Pitch>,
+    );
+
+    const mark = container.querySelector('[data-pitchkit-mark="scatter"]');
+    expect(Number(mark?.getAttribute("cx"))).toBeCloseTo(0, 6);
+  });
+
+  it("refuses to rescale a normalized grid", () => {
+    expect(() =>
+      render(
+        <Pitch type="opta" dimensions={{ length: 105, width: 68 }} width={100} height={100} />,
+      ),
+    ).toThrow(/normalized/);
   });
 });
