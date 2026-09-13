@@ -10,16 +10,34 @@ aligned.
 
 ## Supported pitch types
 
-| `type` | Extent | Origin | y direction | Notes |
-| --- | --- | --- | --- | --- |
-| `statsbomb` | 120 × 80 | top-left | down | Abstract units |
-| `opta` | 100 × 100 | bottom-left | up | Normalized percentage grid |
-| `uefa` | 105 × 68 | bottom-left | up | Real metres |
+| `type`        | Extent    | Origin          | y direction | Notes                         |
+| ------------- | --------- | --------------- | ----------- | ----------------------------- |
+| `statsbomb`   | 120 × 80  | top-left        | down        | Abstract units                |
+| `opta`        | 100 × 100 | bottom-left     | up          | Normalized percentage grid    |
+| `uefa`        | 105 × 68  | bottom-left     | up          | Real metres                   |
+| `skillcorner` | 105 × 68  | **centre spot** | up          | Real metres, per-match extent |
 
 ```tsx
 <Pitch type="statsbomb">{/* data in 120x80, y-down */}</Pitch>
 <Pitch type="opta">{/* data in 0-100, y-up */}</Pitch>
+<Pitch type="skillcorner">{/* metres from the centre spot */}</Pitch>
 ```
+
+`skillcorner` is the one grid whose origin is not a corner: its coordinates are metres
+measured from the centre spot, so x runs `-52.5..52.5` and y `-34..34`. Layers take that
+raw, with no lifting step — see [the data loaders](/docs/data/skillcorner/tracking).
+
+It is also the one grid whose real-world extent varies. SkillCorner pitches are the
+stadiums’ actual sizes (104, 105 and 106 m across their open data), so pass the match’s own
+values when you want the outline exact:
+
+```tsx
+<Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }} />
+```
+
+The markings deliberately do not scale with it — a penalty area is 16.5 m deep on any pitch
+— so only the outline, halfway line and goal lines move. Overriding a normalized grid like
+`opta` throws instead, because a percentage grid has no metres to set.
 
 Marking positions (box sizes, penalty spots, circle radii) are sourced from mplsoccer's
 published per-provider constants rather than derived from real-world metres — real event

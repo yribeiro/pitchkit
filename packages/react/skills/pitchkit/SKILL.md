@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react and @pitchkit/core packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core or the Pitch component; when they mention StatsBomb, Opta or UEFA pitch coordinates; or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Opta or UEFA pitch coordinates; when they want to load StatsBomb or SkillCorner open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -24,15 +24,16 @@ needed is not in those, say so rather than inventing it.
 
 Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 `<PassNetwork>` component, a `theme` prop or JS theme object, a `type="wyscout"` (or
-`"tracab"`, `"skillcorner"`, `"custom"`) pitch, a `responsive` prop, a `<Pitch>`
-`onClick` handler that hands back pitch coordinates.
+`"tracab"`, `"custom"`) pitch, a `responsive` prop, a `<Pitch>` `onClick` handler that
+hands back pitch coordinates.
 
 ## Package split
 
-| Package           | What it is                                                             | When it's imported from                                                                 |
-| ----------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `@pitchkit/react` | The rendering surface: `<Pitch>` + layer components + `usePitch()`     | Almost always                                                                           |
-| `@pitchkit/core`  | Zero-dependency maths: pitch dimensions, transforms, geometry, binning | Only for helpers like `cropForHalf`, `getPitchDimensions`, `createStandardizeTransform` |
+| Package                    | What it is                                                             | When it's imported from                                                                 |
+| -------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `@pitchkit/react`          | The rendering surface: `<Pitch>` + layer components + `usePitch()`     | Almost always                                                                           |
+| `@pitchkit/core`           | Zero-dependency maths: pitch dimensions, transforms, geometry, binning | Only for helpers like `cropForHalf`, `getPitchDimensions`, `createStandardizeTransform` |
+| `@pitchkit/data-providers` | Optional loaders for StatsBomb and SkillCorner **open data**           | Only when the user wants real match data rather than their own (recipe 5)               |
 
 `@pitchkit/react` is the **only supported rendering surface**. `@pitchkit/core` exports
 `svgRenderer` / `renderSceneToSVGElement`; those are internal building blocks for the
@@ -42,10 +43,14 @@ repo's own dev harness and must never appear in consumer code.
 npm install @pitchkit/react
 # add @pitchkit/core explicitly only when importing its helpers directly:
 npm install @pitchkit/react @pitchkit/core
+# data-providers is NOT pulled in by @pitchkit/react — install it deliberately:
+npm install @pitchkit/data-providers
 ```
 
 `@pitchkit/core` arrives transitively as a dependency of `@pitchkit/react`, but importing
 from it without declaring it is a phantom dependency — declare it when it's imported.
+`@pitchkit/data-providers` is not a dependency of either, so it is never already present:
+tell the user to install it before writing an import from it.
 
 ## The five rules
 
@@ -80,7 +85,7 @@ since a penalty area is 16.5 m deep on any pitch:
 <Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }} />
 ```
 
-Those three are the whole list. For a provider that isn't one of them, standardise the
+Those four are the whole list. For a provider that isn't one of them, standardise the
 data first and render in the target grid:
 
 ```tsx
@@ -386,10 +391,78 @@ export function PassNetwork() {
 
 Layer order is paint order: arrows first, then nodes, then labels on top.
 
+## Recipe 5 — real open data
+
+Only when the user wants **real matches** rather than their own data. Requires the separate
+`npm install @pitchkit/data-providers`; it is not a dependency of `@pitchkit/react`.
+
+Two providers, each on its own import subpath, each keeping that provider's own field
+names and values — a StatsBomb outcome is `"Off T"`, not a re-spelled `"off-target"`.
+
+```tsx
+"use client";
+
+import { fetchMatchEvents, isGoal, shots } from "@pitchkit/data-providers/statsbomb";
+import { Scatter, VerticalPitch } from "@pitchkit/react";
+
+// One call, match id in: 3943043 is the Euro 2024 final.
+const events = await fetchMatchEvents(3943043);
+const spain = shots(events).filter((shot) => shot.team.name === "Spain");
+
+<VerticalPitch type="statsbomb">
+  <Scatter
+    data={spain}
+    x={(shot) => shot.x}
+    y={(shot) => shot.y}
+    r={(shot) => 3 + Math.sqrt(shot.shot.statsbomb_xg) * 11}
+    fill={(shot) => (isGoal(shot) ? "#fb923c" : "#38bdf8")}
+  />
+</VerticalPitch>;
+```
+
+Four layers, each usable alone: `parse*` (pure, no network), `fetch*`/`load*` (network —
+`fetch*` builds the open-data URL from an id, `load*` takes any URL), narrowing selectors
+(`shots`, `passes`, `carries`, `ofType`), and composable predicates (`isGoal`,
+`isComplete`, `isCorner`, …) that chain off `.filter()`.
+
+**Narrowing goes through the selectors and guards, never through `event.type.name`.**
+StatsBomb's discriminant is nested inside `type`, and TypeScript only narrows on
+_top-level_ literal discriminants — so `if (event.type.name === "Shot") event.shot` runs
+correctly but fails to typecheck. Use `shots(events)` or `isShot(event)`.
+
+Coordinates: StatsBomb's `location` arrays are surfaced as lifted `x`/`y` (and
+`endX`/`endY`/`endZ`) for accessors. SkillCorner's are already metres from the centre
+spot, so `<Pitch type="skillcorner">` plots them raw.
+
+```ts
+import { fetchMatch, offBallRuns, streamTracking } from "@pitchkit/data-providers/skillcorner";
+
+const match = await fetchMatch(1874553);
+
+// Tracking is ~90 MB a match. streamTracking is an async generator, so leaving
+// the loop aborts the download — take a clip rather than the file.
+const frames = [];
+for await (const frame of streamTracking(match)) {
+  if (frame.period === null || frame.player_data.length === 0) continue;
+  frames.push(frame);
+  if (frames.length >= 300) break;
+}
+```
+
+Two SkillCorner traps worth knowing before plotting: tracking coordinates are **absolute**
+and swap ends at half time, while dynamic-event coordinates are **normalised to the
+attacking direction** and never flip — mixing them mirrors half a match silently. And
+`is_detected: false` means the position was extrapolated, not seen, because broadcast
+tracking only covers what the camera framed.
+
+Neither provider's data ships with the package — it is fetched from their open-data
+repositories, and **both ask to be credited** in anything published from it.
+
 ## Where to look next
 
 - [references/api.md](references/api.md) — every component's full prop list, plus the
   `@pitchkit/core` exports worth calling directly.
+- <https://pitchkitjs.com/docs/data> — the data loaders in depth, per provider and file.
 - <https://pitchkitjs.com/docs> — narrative guides.
 - <https://pitchkitjs.com/gallery> — worked examples with source.
 - The installed package's `dist/index.d.ts` — the authoritative types.

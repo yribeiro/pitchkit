@@ -76,9 +76,9 @@ Every visual prop takes either a static value or a function of the datum, so `fi
 
 ## Pitch types
 
-`statsbomb` · `opta` · `uefa` — each with the provider's real coordinate space, so your data
-goes in unmodified. `getPitchDimensions(type)` exposes the underlying numbers, and
-`cropForHalf()` crops to the attacking half.
+`statsbomb` · `opta` · `uefa` · `skillcorner` — each with the provider's real coordinate
+space, so your data goes in unmodified. `getPitchDimensions(type)` exposes the underlying
+numbers, and `cropForHalf()` crops to the attacking half.
 
 ## Loading real data
 
