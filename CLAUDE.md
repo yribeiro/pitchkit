@@ -127,10 +127,16 @@ recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
 **gallery specifically** ([#27](https://github.com/yribeiro/pitchkit/issues/27) —
 `apps/docs/components/examples/shot-map-gallery.tsx` still uses hardcoded data; the new
 `/docs/data` pages and `examples/react-nextjs` fetch live StatsBomb data, but the gallery
-itself doesn't yet), and tracking-data loaders beyond StatsBomb
-([#30](https://github.com/yribeiro/pitchkit/issues/30)). Also open: a longstanding bug,
-[#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders square instead of
-105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3 notes.
+itself doesn't yet), and tracking-data loaders beyond StatsBomb+SkillCorner
+([#30](https://github.com/yribeiro/pitchkit/issues/30) — Metrica is still open). Also open:
+a longstanding bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders
+square instead of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3
+notes; and [#59](https://github.com/yribeiro/pitchkit/issues/59) (follow-up to #58's
+SkillCorner loader), a real `skillcorner` pitch type in `core` supporting per-match
+dimensions (104/105/106 × 68 m — `PitchTypeId` is currently the fixed-size
+`"statsbomb" | "opta" | "uefa"` only) plus richer visualisations once it exists. **This is
+also the tracking issue for deleting `examples/react-nextjs`'s local `toUefaX`/`toUefaY`
+squash-fudge** once a real pitch type makes it unnecessary.
 
 Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
 depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
@@ -185,6 +191,12 @@ namespace and get the library installable:
     fetching. Via [PR #52](https://github.com/yribeiro/pitchkit/pull/52) (data) and
     [PR #54](https://github.com/yribeiro/pitchkit/pull/54) (the tooltip fix rode along with
     that PR's docs work).
+  - **`@pitchkit/data-providers@0.3.0`** (minor; `core`/`react` untouched) — 2026-09-13.
+    Adds `@pitchkit/data-providers/skillcorner` — see the Milestone 2 entry above for the
+    load-bearing dataset facts (Git LFS, ~90 MB/match, opposite x-conventions, per-match
+    pitch dimensions). Also brings in `csv-parse`, the project's first runtime dependency
+    anywhere — see Security posture below. Via
+    [PR #58](https://github.com/yribeiro/pitchkit/pull/58).
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
@@ -200,6 +212,10 @@ namespace and get the library installable:
   [PR #49](https://github.com/yribeiro/pitchkit/pull/49) (2026-09-10). "React-native" (PR
   #45) reads at a glance as _React Native_, the mobile framework — wrong association for a
   web-only library. This file's own opening line was one of the stragglers, now fixed.
+- **Docs polish** — a dedicated agents/AI section plus a "Build with AI" entry point
+  ([PR #57](https://github.com/yribeiro/pitchkit/pull/57)), a shortened hero tagline
+  ("Football visualised for the web.", [PR #60](https://github.com/yribeiro/pitchkit/pull/60)),
+  and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs

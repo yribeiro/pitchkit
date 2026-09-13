@@ -210,11 +210,18 @@ Layers are pure data + options; they don't own DOM. The renderer walks the scene
 
 - `@pitchkit/core` — zero-dependency TS core: dimensions, transforms, scene/layer model, geometry, SVG/Canvas renderers. **No React.**
 - `@pitchkit/react` — thin declarative React components wrapping core (`<Pitch>`, `<Scatter>`, `<Heatmap>` …) with hooks for responsive sizing and interaction.
-- `@pitchkit/data-providers` — optional open football data loaders, exported per-provider
-  (`@pitchkit/data-providers/statsbomb` first; StatsBomb-shaped tidy types). Named for the
-  provider family rather than one provider, since [issue #30](https://github.com/yribeiro/pitchkit/issues/30)
-  plans SkillCorner/Metrica tracking-data loaders under the same package — supersedes this
-  section's earlier `@pitchkit/data-statsbomb` naming.
+- `@pitchkit/data-providers` — optional open football data loaders, exported per-provider:
+  `@pitchkit/data-providers/statsbomb` (events + 360 tracking) and
+  `@pitchkit/data-providers/skillcorner` (broadcast tracking + dynamic events + phases of
+  play, added via [PR #58](https://github.com/yribeiro/pitchkit/pull/58), partially
+  addressing [issue #30](https://github.com/yribeiro/pitchkit/issues/30) — Metrica loaders
+  are still open). Named for the provider family rather than one provider — supersedes this
+  section's earlier `@pitchkit/data-statsbomb` naming. Each provider keeps that provider's
+  own field names/values untouched, adding only lifted pitch-space coordinates
+  (`x`/`y`/`pitchX`/`pitchY`) for direct use as a PitchKit accessor. Brought in
+  `csv-parse` for SkillCorner's CSV files — the project's only third-party runtime
+  dependency anywhere; `@pitchkit/core` and `@pitchkit/react` remain dependency-free
+  (react on core aside).
 - `apps/docs` — the showcase + docs site; also hosts the shadcn `registry.json` that serves recipe items (see §7.4).
 - `examples/` — runnable Next.js + Vite examples.
 
@@ -754,6 +761,9 @@ a real domain. Remaining work is release _automation_, not release itself.
       `@pitchkit/data-providers@0.2.0` (minor — StatsBomb 360 tracking data, `core`
       untouched) published 2026-09-12 via [PR #52](https://github.com/yribeiro/pitchkit/pull/52)
       and [PR #54](https://github.com/yribeiro/pitchkit/pull/54).
+      `@pitchkit/data-providers@0.3.0` (minor — `@pitchkit/data-providers/skillcorner`,
+      `core`/`react` untouched) published 2026-09-13 via
+      [PR #58](https://github.com/yribeiro/pitchkit/pull/58).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
