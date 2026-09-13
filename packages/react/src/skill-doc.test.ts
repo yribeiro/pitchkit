@@ -2,8 +2,6 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import * as core from "@pitchkit/core";
-import * as skillcorner from "@pitchkit/data-providers/skillcorner";
-import * as statsbomb from "@pitchkit/data-providers/statsbomb";
 import * as react from "./index.js";
 
 /**
@@ -23,8 +21,56 @@ const skillPath = [
 
 if (!skillPath) throw new Error("Could not locate skills/pitchkit/SKILL.md from " + process.cwd());
 
-const skill = readFileSync(skillPath, "utf8");
-const apiReference = readFileSync(join(skillPath, "..", "references", "api.md"), "utf8");
+// Re-bound so the narrowing survives into the helper below; TypeScript won't
+// carry a `string | undefined` narrowing across a function boundary.
+const skillFile: string = skillPath;
+
+const skill = readFileSync(skillFile, "utf8");
+const apiReference = readFileSync(join(skillFile, "..", "references", "api.md"), "utf8");
+
+/**
+ * Names a `@pitchkit/data-providers` subpath re-exports, read straight from
+ * its barrel file's source.
+ *
+ * Deliberately text, not an import. The package's entry points resolve to
+ * `dist/`, and CI runs `lint` and `test` *before* `build` — so importing it
+ * here fails on a clean checkout, exactly as `vitest.config.ts` already
+ * notes for `@pitchkit/core`. Reading the barrel needs no build, no
+ * dependency edge, and no alias, and it is the same trick this file already
+ * plays on SKILL.md.
+ */
+function providerExports(provider: "statsbomb" | "skillcorner"): Set<string> {
+  // skillPath is <pkg>/skills/pitchkit/SKILL.md, so three levels up is the
+  // react package and its sibling is data-providers.
+  const barrel = join(
+    skillFile,
+    "..",
+    "..",
+    "..",
+    "..",
+    "data-providers",
+    "src",
+    provider,
+    "index.ts",
+  );
+  const source = readFileSync(barrel, "utf8");
+
+  const names = new Set<string>();
+  // Value re-exports only — `export type { ... }` names aren't importable
+  // as values, and the recipes only import values.
+  for (const [, clause] of source.matchAll(/(?<!type\s)export\s+\{([^}]+)\}\s+from/g)) {
+    if (clause === undefined) continue;
+    for (const specifier of clause.split(",")) {
+      const name = specifier
+        .trim()
+        .split(/\s+as\s+/)
+        .pop()
+        ?.trim();
+      if (name) names.add(name);
+    }
+  }
+  return names;
+}
 
 const IMPORT_PATTERN =
   /import\s+\{([^}]+)\}\s+from\s+"(@pitchkit\/(?:react|core|data-providers\/statsbomb|data-providers\/skillcorner))"/g;
@@ -63,16 +109,19 @@ describe("the bundled skill's recipes", () => {
   it("only import values @pitchkit/data-providers actually exports", () => {
     // Recipe 5 imports from the two provider subpaths. Without this the
     // newest recipe would be the only unchecked one.
-    const missingStatsBomb = importedNames("@pitchkit/data-providers/statsbomb").filter(
-      (name) => !(name in statsbomb),
-    );
-    const missingSkillCorner = importedNames("@pitchkit/data-providers/skillcorner").filter(
-      (name) => !(name in skillcorner),
-    );
-    expect({ statsbomb: missingStatsBomb, skillcorner: missingSkillCorner }).toEqual({
-      statsbomb: [],
-      skillcorner: [],
-    });
+    const statsbomb = providerExports("statsbomb");
+    const skillcorner = providerExports("skillcorner");
+    expect(statsbomb.size).toBeGreaterThan(10);
+    expect(skillcorner.size).toBeGreaterThan(10);
+
+    expect({
+      statsbomb: importedNames("@pitchkit/data-providers/statsbomb").filter(
+        (name) => !statsbomb.has(name),
+      ),
+      skillcorner: importedNames("@pitchkit/data-providers/skillcorner").filter(
+        (name) => !skillcorner.has(name),
+      ),
+    }).toEqual({ statsbomb: [], skillcorner: [] });
   });
 
   it("names every pitch type the dimensions registry knows about, and no others", () => {
