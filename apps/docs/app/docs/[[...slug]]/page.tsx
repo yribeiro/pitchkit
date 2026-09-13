@@ -1,6 +1,7 @@
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import { notFound } from "next/navigation";
+import { docsOgImageUrl, OG_SIZE } from "@/lib/og-meta";
 import { source } from "@/lib/source";
 import { AgentLogos, AgentTools } from "@/components/agent-tools";
 import { PitchPreview } from "@/components/pitch-preview";
@@ -17,7 +18,9 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent components={{ ...defaultMdxComponents, PitchPreview, AgentTools, AgentLogos }} />
+        <MDXContent
+          components={{ ...defaultMdxComponents, PitchPreview, AgentTools, AgentLogos }}
+        />
       </DocsBody>
     </DocsPage>
   );
@@ -35,5 +38,15 @@ export async function generateMetadata(props: { params: Promise<{ slug?: string[
   return {
     title: page.data.title,
     description: page.data.description,
+    openGraph: {
+      images: [
+        {
+          url: docsOgImageUrl(page.slugs),
+          width: OG_SIZE.width,
+          height: OG_SIZE.height,
+          alt: `${page.data.title} — PitchKit documentation`,
+        },
+      ],
+    },
   };
 }

@@ -3,6 +3,7 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SITE_URL as SITE } from "@/lib/site";
+import { OG_SIZE } from "@/lib/og-meta";
 import "./globals.css";
 
 const DESCRIPTION =
@@ -40,6 +41,14 @@ export const metadata: Metadata = {
     url: SITE,
     title: "PitchKit — React football pitch visualisation",
     description: DESCRIPTION,
+    images: [
+      {
+        url: "/og",
+        width: OG_SIZE.width,
+        height: OG_SIZE.height,
+        alt: "PitchKit — React football pitch visualisation",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
