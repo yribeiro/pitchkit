@@ -229,6 +229,16 @@ namespace and get the library installable:
     the `toExtentFrame`/`fromExtentFrame` mechanics and the four density-module bounds-check
     gotcha). Widens the public `PitchTypeId` union — additive for callers, but an exhaustive
     `switch` over it gains a case. Via [PR #62](https://github.com/yribeiro/pitchkit/pull/62).
+  - **`@pitchkit/react@0.4.1`** (patch; `core`/`data-providers` untouched) — 2026-09-13.
+    Fixes the bundled Agent Skill contradicting itself: it listed `"skillcorner"` under
+    "things that do not exist" while also documenting it in the pitch-type table, so an
+    agent reading top-down would refuse a feature `0.3.0`/`0.4.0` had already shipped. Also
+    adds `@pitchkit/data-providers` to the skill (previously near-invisible — no
+    package-table row, absent from frontmatter). Via
+    [PR #63](https://github.com/yribeiro/pitchkit/pull/63) — **that PR shipped without a
+    changeset**, so the fix sat unreleased on `main` until this pass added one
+    retroactively. When reviewing a PR that touches `packages/react/skills/`, check for a
+    changeset explicitly; it's easy to file skill-content fixes as "just docs."
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
@@ -252,9 +262,19 @@ namespace and get the library installable:
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs
   get preview deployments too. Deploys are independent of `ci.yml` (a red CI run won't block
-  production). Vercel Web Analytics is wired up in `apps/docs/app/layout.tsx`.
+  production). Vercel Web Analytics **and** PostHog (`posthog-js`, via
+  [PR #64](https://github.com/yribeiro/pitchkit/pull/64), `apps/docs/components/posthog-provider.tsx`)
+  are both wired up in `apps/docs/app/layout.tsx` — two analytics tools side by side, not a
+  replacement of one by the other.
 - **Repo hygiene done:** MIT `LICENSE` (root + both packages), root + per-package READMEs,
   `CONTRIBUTING.md`, issue/PR templates, npm metadata.
+- **READMEs had drifted, fixed 2026-09-13.** All three carried a stable "`0.1.x` is the
+  first public release" claim from launch day, long past `0.1.x`, plus two "zero
+  dependencies" lines for `@pitchkit/data-providers` that `csv-parse` had already falsified.
+  Reworded the version claim to a durable "pre-`1.0`" framing that won't need editing every
+  release. **Check root `README.md`, `packages/*/README.md` for staleness whenever a
+  dependency or version changes** — nothing currently enforces they stay in sync with
+  `package.json` or the changelog.
 - **Release automation NOT done.** `.github/workflows/release.yml` (changesets/action) is
   `disabled_manually` — it failed with `ENEEDAUTH` since no `NPM_TOKEN` was configured, so
   both `0.1.0` and `0.2.0` were published by hand. Tracked in

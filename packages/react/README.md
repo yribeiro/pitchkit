@@ -8,8 +8,8 @@ the web. Responsive by default, themed with CSS variables, SSR-safe.
 
 **Docs and live examples: [pitchkitjs.com](https://pitchkitjs.com)**
 
-> **Early days.** `0.1.x` is the first public release. Usable and tested, but the API isn't
-> stable yet — expect breaking changes before `1.0`.
+> **Early days — pre-`1.0`.** Usable and tested, but the API isn't stable yet; expect
+> breaking changes before `1.0`.
 
 ## Install
 

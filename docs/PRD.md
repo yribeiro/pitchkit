@@ -447,8 +447,10 @@ npx shadcn add @pitchkit/theme-broadcast
   auto-deploying on every push to `main` via Vercel's GitHub App integration — note this is
   **not** a workflow in this repo, so there is no `vercel.json` or deploy job to find; PRs get
   preview deployments automatically. Deploys are independent of `ci.yml`, so a red CI run does
-  not block production. Vercel Web Analytics is enabled via `<Analytics />` in
-  `apps/docs/app/layout.tsx`.
+  not block production. Vercel Web Analytics **and** PostHog are both enabled in
+  `apps/docs/app/layout.tsx` (`<Analytics />` and `posthog-provider.tsx` respectively,
+  the latter via [PR #64](https://github.com/yribeiro/pitchkit/pull/64)) — side by side,
+  not one replacing the other.
 - **Repo hygiene:** clear README with hero GIF, CONTRIBUTING, issue/PR templates, good-first-issues, MIT licence.
   _As built:_ all done except the actual hero **GIF** and good-first-issue labelling — the
   README now has the PitchKit mark/wordmark as a static header (PR #47), which is real
@@ -772,6 +774,10 @@ a real domain. Remaining work is release _automation_, not release itself.
       `@pitchkit/core@0.3.0` + `@pitchkit/react@0.4.0` (both minor — `"skillcorner"` pitch
       type + general center-origin coordinate support, `data-providers` untouched)
       published 2026-09-13 via [PR #62](https://github.com/yribeiro/pitchkit/pull/62).
+      `@pitchkit/react@0.4.1` (patch — fixes the bundled Agent Skill's SkillCorner
+      self-contradiction; `core`/`data-providers` untouched) published 2026-09-13 via
+      [PR #63](https://github.com/yribeiro/pitchkit/pull/63), which shipped with no
+      changeset — added retroactively.
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling

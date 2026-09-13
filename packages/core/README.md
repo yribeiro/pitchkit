@@ -13,7 +13,7 @@ transforms, the scene/layer model, geometry algorithms, and heatmap binning.
 > useful directly if you're computing pitch geometry outside React, or building bindings for
 > another framework.
 
-> **Early days.** `0.1.x` is the first public release; the API isn't stable yet.
+> **Early days — pre-`1.0`.** The API isn't stable yet.
 
 ## Install
 

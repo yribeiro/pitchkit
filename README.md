@@ -13,8 +13,8 @@ for React and Next.js instead of matplotlib.
 **[pitchkitjs.com](https://pitchkitjs.com)** — docs, interactive examples, and the gallery.
 See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.
 
-> **Early days.** `0.1.x` is the first public release. The API is usable and tested, but not
-> yet stable — expect breaking changes before `1.0`.
+> **Early days — pre-`1.0`.** The API is usable and tested, but not yet stable; expect
+> breaking changes before `1.0`.
 
 ## Install
 
@@ -62,7 +62,7 @@ OG images, PDFs).
 | ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | [`@pitchkit/react`](./packages/react)                   | Declarative React components — the supported way to render. Start here.                  |
 | [`@pitchkit/core`](./packages/core)                     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps. |
-| [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb events + 360). Zero dependencies.     |
+| [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb, SkillCorner). One dependency (`csv-parse`), and not on `core`/`react`. |
 
 ### Components
 
@@ -108,9 +108,11 @@ const spain = shots(events).filter((s) => s.team.name === "Spain");
 ```
 
 StatsBomb [events](https://pitchkitjs.com/docs/data/statsbomb/events) and
-[360 tracking](https://pitchkitjs.com/docs/data/statsbomb/360) are both supported, keeping
-StatsBomb's own field names and values — only coordinates are lifted into the `x`/`y` an
-accessor wants. Zero runtime dependencies, and it doesn't depend on `core` or `react` either.
+[360 tracking](https://pitchkitjs.com/docs/data/statsbomb/360) are supported, along with
+[SkillCorner](https://pitchkitjs.com/docs/data/skillcorner/tracking) broadcast tracking, dynamic
+events and phases of play — each keeping that provider's own field names and values, only
+lifting coordinates into the `x`/`y` an accessor wants. One dependency (`csv-parse`, for
+SkillCorner's CSV files), and no dependency on `core` or `react` either.
 
 ## Theming
 
