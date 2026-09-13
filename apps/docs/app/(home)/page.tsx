@@ -72,7 +72,7 @@ export default function HomePage() {
             Football visualised for the web.
           </h1>
           <p className="max-w-xl text-fd-muted-foreground">
-            The React library that brings the beautiful game to the web. Your design, your way.
+            The React library built for the beautiful game. Your design, your way.
           </p>
           <InstallCommand />
           {/* Below `sm` the CTAs split as 2-cols with the gallery spanning full
