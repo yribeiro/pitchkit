@@ -74,7 +74,7 @@ export function AgentLogos() {
     <div className="not-prose mb-8 mt-6">
       <ul
         aria-label="Coding agents PitchKit works with"
-        className="flex flex-wrap items-center gap-x-6 gap-y-4"
+        className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4"
       >
         {TOOLS.map((tool) => (
           <li key={tool.name} className="flex items-center">
