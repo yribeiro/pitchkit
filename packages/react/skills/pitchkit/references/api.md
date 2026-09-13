@@ -198,7 +198,10 @@ layers, `<KDE>` fades to transparent at low density instead of filling with `col
 
 **Dimensions**
 
-- `getPitchDimensions(type)` → `PitchDimensions`; `PITCH_DIMENSIONS` is the record of all three.
+- `getPitchDimensions(type, overrides?)` → `PitchDimensions`; `PITCH_DIMENSIONS` is the record
+  of all four. `overrides` is `{ length?, width? }`, for real-unit providers whose pitches vary
+  by stadium (SkillCorner's are 104–106 m). Markings never scale with it; overriding a
+  normalized grid throws.
 - `PitchDimensions.markings` → `{ penaltyAreaLength, penaltyAreaWidth, sixYardLength, sixYardWidth, centerCircleRadius, penaltySpotDistance, cornerArcRadius, goalWidth }`, in provider units.
 
 **Transforms**

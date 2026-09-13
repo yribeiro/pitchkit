@@ -59,6 +59,7 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@pitchkit/data-providers": "*",
     "@testing-library/react": "^16",
     "@types/react": "^19",
     "@types/react-dom": "^19",
