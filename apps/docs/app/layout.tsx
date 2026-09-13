@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { PostHogProvider } from "@/components/posthog-provider";
 import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -57,7 +58,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
          * surface first, Linear/Supabase-style) — visitors can still switch
          * to light or system via the theme toggle.
          */}
-        <RootProvider theme={{ defaultTheme: "dark" }}>{children}</RootProvider>
+        <PostHogProvider>
+          <RootProvider theme={{ defaultTheme: "dark" }}>{children}</RootProvider>
+        </PostHogProvider>
         <Analytics />
       </body>
     </html>

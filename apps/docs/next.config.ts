@@ -31,12 +31,24 @@ const nextConfig: NextConfig = {
   // Append `.md` to any docs URL to get the raw Markdown. A route segment can't
   // carry a literal `.md` suffix alongside a catch-all, so the extension is
   // stripped here and the bare slug handed to app/llms-md/[[...slug]].
+  //
+  // The /ingest/* rules proxy PostHog analytics through this domain (PostHog's
+  // documented Next.js reverse-proxy pattern) so browser ad-blockers that
+  // target posthog.com/eu.i.posthog.com by hostname don't strip the requests.
+  // Pinned to EU Cloud endpoints to match where the project actually lives —
+  // swap both hosts if the PostHog project ever moves region.
   async rewrites() {
     return [
       { source: "/docs.md", destination: "/llms-md" },
       { source: "/docs/:slug*.md", destination: "/llms-md/:slug*" },
+      { source: "/ingest/static/:path*", destination: "https://eu-assets.i.posthog.com/static/:path*" },
+      { source: "/ingest/:path*", destination: "https://eu.i.posthog.com/:path*" },
+      { source: "/ingest/decide", destination: "https://eu.i.posthog.com/decide" },
     ];
   },
+  // Required alongside the /ingest proxy above — PostHog's /decide endpoint
+  // is sensitive to an auto-inserted trailing-slash redirect.
+  skipTrailingSlashRedirect: true,
   // The skill page moved out of Configuration when Agents became its own
   // section. The old URL is already published in @pitchkit/react 0.3.0's
   // README on npm, where it can't be edited — that tarball is immutable — so
