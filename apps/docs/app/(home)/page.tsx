@@ -107,8 +107,25 @@ export default function HomePage() {
             </Link>
             <Link
               href="/gallery"
-              className="col-span-2 inline-flex items-center justify-center rounded-lg border border-fd-border px-3 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1"
+              className="col-span-2 inline-flex items-center justify-center gap-1.5 rounded-lg border border-fd-border px-3 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1"
             >
+              <svg
+                aria-hidden
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0 text-fd-foreground/80"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8.5 9.5h.01" strokeWidth={2.5} />
+                <path d="M14.5 9.5c.5-.8 1.5-.8 2 0" />
+                <path d="M8 14.5s1.5 2 4 2 4-2 4-2" />
+              </svg>
               Browse the gallery
             </Link>
           </div>
