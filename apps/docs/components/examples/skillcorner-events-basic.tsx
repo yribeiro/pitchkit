@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Comet, Pitch, Scatter } from "@pitchkit/react";
 import {
   fetchDynamicEvents,
@@ -58,7 +59,18 @@ function useRuns(matchId: number) {
   return { loaded: loaded?.key === matchId ? loaded.value : undefined, failed };
 }
 
-function MatchPicker({ value, onChange }: { value: number; onChange: (id: number) => void }) {
+/** Match picker, any extra controls, and the status line. */
+function MatchPicker({
+  value,
+  onChange,
+  status,
+  children,
+}: {
+  value: number;
+  onChange: (id: number) => void;
+  status: ReactNode;
+  children?: ReactNode;
+}) {
   const [matches, setMatches] = useState<SkillCornerMatchSummary[]>([]);
 
   useEffect(() => {
@@ -68,77 +80,58 @@ function MatchPicker({ value, onChange }: { value: number; onChange: (id: number
   }, []);
 
   return (
-    <select
-      aria-label="SkillCorner match"
-      value={value}
-      disabled={matches.length === 0}
-      onChange={(event) => onChange(Number(event.target.value))}
-      className={selectClass}
-    >
-      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-      {matches.map((match) => (
-        <option key={match.id} value={match.id}>
-          {matchLabel(match)}
-        </option>
-      ))}
-    </select>
+    <>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <select
+          aria-label="SkillCorner match"
+          value={value}
+          disabled={matches.length === 0}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className={selectClass}
+        >
+          {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+          {matches.map((match) => (
+            <option key={match.id} value={match.id}>
+              {matchLabel(match)}
+            </option>
+          ))}
+        </select>
+        {children}
+      </div>
+      <p className="my-3 text-xs text-fd-muted-foreground">{status}</p>
+    </>
   );
 }
 
 /**
- * Off-ball runs as comets, tapering from where the run began to where it
- * ended. Event coordinates are already normalised to the attacking
- * direction, so every run here points the same way regardless of half.
+ * Off-ball runs from a real SkillCorner match, drawn as comets that taper
+ * from where the run began to where it ended.
+ *
+ * Event coordinates are normalised to the attacking direction, so every run
+ * points the same way regardless of which half it happened in.
  */
-function RunMap({ loaded, sprintsOnly }: { loaded: Loaded; sprintsOnly: boolean }) {
-  const runs = sprintsOnly ? loaded.runs.filter(isSprint) : loaded.runs;
-  const color = (run: SkillCornerOffBallRun) =>
-    run.team_id === loaded.match.home_team.id ? TEAM_COLORS[0] : TEAM_COLORS[1];
-
-  return (
-    <Pitch
-      type="skillcorner"
-      dimensions={{ length: loaded.match.pitch_length, width: loaded.match.pitch_width }}
-      appearance={docsAppearance}
-    >
-      <Comet
-        data={runs}
-        x={(run) => run.x_start ?? 0}
-        y={(run) => run.y_start ?? 0}
-        x2={(run) => run.x_end ?? 0}
-        y2={(run) => run.y_end ?? 0}
-        color={color}
-        startWidth={0.3}
-        endWidth={1.4}
-        gradient
-        tooltip={(run) =>
-          `${run.player_name ?? "Unknown"} — ${run.event_subtype?.replace(/_/g, " ") ?? "run"}, ${
-            run.distance_covered?.toFixed(0) ?? "?"
-          } m`
-        }
-      />
-      <Scatter
-        data={runs}
-        x={(run) => run.x_end ?? 0}
-        y={(run) => run.y_end ?? 0}
-        r={1.2}
-        fill={color}
-        fillOpacity={0.9}
-      />
-    </Pitch>
-  );
-}
-
-/** Off-ball runs from a real SkillCorner match, fetched in the browser. */
 export function SkillcornerEventsBasic() {
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
   const [sprintsOnly, setSprintsOnly] = useState(false);
   const { loaded, failed } = useRuns(matchId);
 
+  const runs = (loaded?.runs ?? []).filter((run) => !sprintsOnly || isSprint(run));
+  const color = (run: SkillCornerOffBallRun) =>
+    run.team_id === loaded?.match.home_team.id ? TEAM_COLORS[0] : TEAM_COLORS[1];
+
   return (
     <div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <MatchPicker value={matchId} onChange={setMatchId} />
+      <MatchPicker
+        value={matchId}
+        onChange={setMatchId}
+        status={
+          failed
+            ? "Couldn't reach SkillCorner open data."
+            : loaded === undefined
+              ? "Fetching dynamic events (~4 MB)…"
+              : `${runs.length} off-ball runs`
+        }
+      >
         <button
           type="button"
           className={buttonClass}
@@ -147,21 +140,40 @@ export function SkillcornerEventsBasic() {
         >
           {sprintsOnly ? "All runs" : "Sprints only"}
         </button>
-      </div>
+      </MatchPicker>
 
-      <p className="my-3 text-xs text-fd-muted-foreground">
-        {failed
-          ? "Couldn't reach SkillCorner open data."
-          : loaded === undefined
-            ? "Fetching dynamic events (~4 MB)…"
-            : `${(sprintsOnly ? loaded.runs.filter(isSprint) : loaded.runs).length} off-ball runs`}
-      </p>
-
-      {loaded ? (
-        <RunMap loaded={loaded} sprintsOnly={sprintsOnly} />
-      ) : (
-        <Pitch type="skillcorner" appearance={docsAppearance} />
-      )}
+      <Pitch
+        type="skillcorner"
+        dimensions={
+          loaded && { length: loaded.match.pitch_length, width: loaded.match.pitch_width }
+        }
+        appearance={docsAppearance}
+      >
+        <Comet
+          data={runs}
+          x={(run) => run.x_start ?? 0}
+          y={(run) => run.y_start ?? 0}
+          x2={(run) => run.x_end ?? 0}
+          y2={(run) => run.y_end ?? 0}
+          color={color}
+          startWidth={0.3}
+          endWidth={1.4}
+          gradient
+          tooltip={(run) =>
+            `${run.player_name ?? "Unknown"} — ${run.event_subtype?.replace(/_/g, " ") ?? "run"}, ${
+              run.distance_covered?.toFixed(0) ?? "?"
+            } m`
+          }
+        />
+        <Scatter
+          data={runs}
+          x={(run) => run.x_end ?? 0}
+          y={(run) => run.y_end ?? 0}
+          r={1.2}
+          fill={color}
+          fillOpacity={0.9}
+        />
+      </Pitch>
     </div>
   );
 }

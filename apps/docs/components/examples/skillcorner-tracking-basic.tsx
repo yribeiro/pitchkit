@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Pitch, Scatter, Voronoi } from "@pitchkit/react";
 import { fetchMatch, fetchMatches, streamTracking } from "@pitchkit/data-providers/skillcorner";
 import type {
@@ -86,8 +87,16 @@ function usePlayhead(length: number) {
   return Math.min(at, Math.max(length - 1, 0));
 }
 
-/** Every Cup match SkillCorner have published. */
-function MatchPicker({ value, onChange }: { value: number; onChange: (id: number) => void }) {
+/** Match picker and status line — the chrome, kept out of the way. */
+function MatchPicker({
+  value,
+  onChange,
+  status,
+}: {
+  value: number;
+  onChange: (id: number) => void;
+  status: ReactNode;
+}) {
   const [matches, setMatches] = useState<SkillCornerMatchSummary[]>([]);
 
   useEffect(() => {
@@ -97,100 +106,98 @@ function MatchPicker({ value, onChange }: { value: number; onChange: (id: number
   }, []);
 
   return (
-    <select
-      aria-label="SkillCorner match"
-      value={value}
-      disabled={matches.length === 0}
-      onChange={(event) => onChange(Number(event.target.value))}
-      className={selectClass}
-    >
-      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-      {matches.map((match) => (
-        <option key={match.id} value={match.id}>
-          {matchLabel(match)}
-        </option>
-      ))}
-    </select>
+    <>
+      <select
+        aria-label="SkillCorner match"
+        value={value}
+        disabled={matches.length === 0}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className={selectClass}
+      >
+        {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+        {matches.map((match) => (
+          <option key={match.id} value={match.id}>
+            {matchLabel(match)}
+          </option>
+        ))}
+      </select>
+      <p className="my-3 text-xs text-fd-muted-foreground">{status}</p>
+    </>
   );
 }
 
 /**
- * One frame on the pitch.
+ * A streamed clip of SkillCorner broadcast tracking, playing at 10 fps.
  *
  * Coordinates go in **raw**: `<Pitch type="skillcorner">` uses SkillCorner's
  * own centre-origin metres, so the accessors are just `(p) => p.x`. The
  * `dimensions` prop draws this stadium's real pitch — they run 104 to 106 m.
  */
-function TrackingFrame({ clip, frame }: { clip: Clip; frame: SkillCornerFrame }) {
-  const fill = (player: { player_id: number }) =>
-    clip.isHome.get(player.player_id) ? TEAM_COLORS[0] : TEAM_COLORS[1];
-
-  return (
-    <Pitch
-      type="skillcorner"
-      dimensions={{ length: clip.match.pitch_length, width: clip.match.pitch_width }}
-      appearance={docsAppearance}
-    >
-      <Voronoi
-        data={frame.player_data}
-        x={(player) => player.x}
-        y={(player) => player.y}
-        fill={fill}
-        fillOpacity={0.13}
-        stroke="rgba(255,255,255,0.18)"
-        strokeWidth={0.4}
-      />
-      <Scatter
-        data={frame.player_data}
-        x={(player) => player.x}
-        y={(player) => player.y}
-        r={2.4}
-        fill={fill}
-        // Broadcast tracking only sees what the camera framed; the rest is
-        // extrapolated between sightings, and `is_detected` says which.
-        fillOpacity={(player) => (player.is_detected ? 1 : 0.25)}
-        stroke={fill}
-        strokeWidth={0.7}
-      />
-      {frame.ball_data.x !== null && frame.ball_data.y !== null && (
-        <Scatter
-          data={[frame.ball_data]}
-          x={(ball) => ball.x ?? 0}
-          y={(ball) => ball.y ?? 0}
-          r={1.4}
-          fill="#fff"
-          stroke="#111"
-          strokeWidth={0.4}
-        />
-      )}
-    </Pitch>
-  );
-}
-
-/** A streamed clip of SkillCorner broadcast tracking, playing at 10 fps. */
 export function SkillcornerTrackingBasic() {
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
   const { clip, failed } = useClip(matchId);
   const at = usePlayhead(clip?.frames.length ?? 0);
   const frame = clip?.frames[at];
 
+  const fill = (player: { player_id: number }) =>
+    clip?.isHome.get(player.player_id) ? TEAM_COLORS[0] : TEAM_COLORS[1];
+
   return (
     <div>
-      <MatchPicker value={matchId} onChange={setMatchId} />
+      <MatchPicker
+        value={matchId}
+        onChange={setMatchId}
+        status={
+          failed
+            ? "Couldn't reach SkillCorner open data."
+            : clip === undefined
+              ? `Streaming ${CLIP_FRAMES} frames out of a ~90 MB tracking file…`
+              : `${clip.frames.length} frames · ${clip.match.pitch_length}×${clip.match.pitch_width} m pitch · playing at ${FPS} fps`
+        }
+      />
 
-      <p className="my-3 text-xs text-fd-muted-foreground">
-        {failed
-          ? "Couldn't reach SkillCorner open data."
-          : clip === undefined
-            ? `Streaming ${CLIP_FRAMES} frames out of a ~90 MB tracking file…`
-            : `${clip.frames.length} frames · ${clip.match.pitch_length}×${clip.match.pitch_width} m pitch · playing at ${FPS} fps`}
-      </p>
-
-      {clip && frame ? (
-        <TrackingFrame clip={clip} frame={frame} />
-      ) : (
-        <Pitch type="skillcorner" appearance={docsAppearance} />
-      )}
+      <Pitch
+        type="skillcorner"
+        dimensions={clip && { length: clip.match.pitch_length, width: clip.match.pitch_width }}
+        appearance={docsAppearance}
+      >
+        {frame && (
+          <>
+            <Voronoi
+              data={frame.player_data}
+              x={(player) => player.x}
+              y={(player) => player.y}
+              fill={fill}
+              fillOpacity={0.13}
+              stroke="rgba(255,255,255,0.18)"
+              strokeWidth={0.4}
+            />
+            <Scatter
+              data={frame.player_data}
+              x={(player) => player.x}
+              y={(player) => player.y}
+              r={2.4}
+              fill={fill}
+              // Broadcast tracking only sees what the camera framed; the rest
+              // is extrapolated between sightings, and `is_detected` says which.
+              fillOpacity={(player) => (player.is_detected ? 1 : 0.25)}
+              stroke={fill}
+              strokeWidth={0.7}
+            />
+            {frame.ball_data.x !== null && frame.ball_data.y !== null && (
+              <Scatter
+                data={[frame.ball_data]}
+                x={(ball) => ball.x ?? 0}
+                y={(ball) => ball.y ?? 0}
+                r={1.4}
+                fill="#fff"
+                stroke="#111"
+                strokeWidth={0.4}
+              />
+            )}
+          </>
+        )}
+      </Pitch>
     </div>
   );
 }

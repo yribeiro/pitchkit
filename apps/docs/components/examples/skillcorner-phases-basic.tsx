@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { Arrows, Pitch } from "@pitchkit/react";
 import {
   fetchMatch,
@@ -57,7 +58,18 @@ function usePhases(matchId: number) {
   return { loaded: loaded?.key === matchId ? loaded.value : undefined, failed };
 }
 
-function MatchPicker({ value, onChange }: { value: number; onChange: (id: number) => void }) {
+/** Match picker, any extra controls, and the status line. */
+function MatchPicker({
+  value,
+  onChange,
+  status,
+  children,
+}: {
+  value: number;
+  onChange: (id: number) => void;
+  status: ReactNode;
+  children?: ReactNode;
+}) {
   const [matches, setMatches] = useState<SkillCornerMatchSummary[]>([]);
 
   useEffect(() => {
@@ -67,60 +79,34 @@ function MatchPicker({ value, onChange }: { value: number; onChange: (id: number
   }, []);
 
   return (
-    <select
-      aria-label="SkillCorner match"
-      value={value}
-      disabled={matches.length === 0}
-      onChange={(event) => onChange(Number(event.target.value))}
-      className={selectClass}
-    >
-      {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
-      {matches.map((match) => (
-        <option key={match.id} value={match.id}>
-          {matchLabel(match)}
-        </option>
-      ))}
-    </select>
+    <>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <select
+          aria-label="SkillCorner match"
+          value={value}
+          disabled={matches.length === 0}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className={selectClass}
+        >
+          {matches.length === 0 && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+          {matches.map((match) => (
+            <option key={match.id} value={match.id}>
+              {matchLabel(match)}
+            </option>
+          ))}
+        </select>
+        {children}
+      </div>
+      <p className="my-3 text-xs text-fd-muted-foreground">{status}</p>
+    </>
   );
 }
 
-/** Where each possession started and where it got to. */
-function PhaseMap({ loaded, phaseType }: { loaded: Loaded; phaseType: string }) {
-  const phases =
-    phaseType === "all"
-      ? loaded.phases
-      : loaded.phases.filter((phase) => phase.team_in_possession_phase_type === phaseType);
-
-  return (
-    <Pitch
-      type="skillcorner"
-      dimensions={{ length: loaded.match.pitch_length, width: loaded.match.pitch_width }}
-      appearance={docsAppearance}
-    >
-      <Arrows
-        data={phases}
-        x={(phase) => phase.x_start ?? 0}
-        y={(phase) => phase.y_start ?? 0}
-        x2={(phase) => phase.x_end ?? 0}
-        y2={(phase) => phase.y_end ?? 0}
-        // The ones that produced a shot are what you're looking for.
-        stroke={(phase: SkillCornerPhase) =>
-          phaseLedToShot(phase) ? TEAM_COLORS[1] : TEAM_COLORS[0]
-        }
-        strokeOpacity={(phase: SkillCornerPhase) => (phaseLedToShot(phase) ? 0.9 : 0.22)}
-        strokeWidth={(phase: SkillCornerPhase) => (phaseLedToShot(phase) ? 0.7 : 0.3)}
-        headSize={4}
-        tooltip={(phase) =>
-          `${phase.team_in_possession_shortname ?? "?"} — ${
-            phase.team_in_possession_phase_type?.replace(/_/g, " ") ?? "phase"
-          }${phaseLedToShot(phase) ? " → shot" : ""}`
-        }
-      />
-    </Pitch>
-  );
-}
-
-/** Phases of play from a real SkillCorner match. */
+/**
+ * Phases of play from a real SkillCorner match: one arrow per possession,
+ * from where it started to where it got to. The ones that produced a shot
+ * are what you're looking for, so they're the ones picked out.
+ */
 export function SkillcornerPhasesBasic() {
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
   const [phaseType, setPhaseType] = useState("all");
@@ -134,15 +120,23 @@ export function SkillcornerPhasesBasic() {
     return [...seen].sort();
   }, [loaded]);
 
-  const shown =
-    phaseType === "all"
-      ? (loaded?.phases ?? [])
-      : (loaded?.phases ?? []).filter((p) => p.team_in_possession_phase_type === phaseType);
+  const phases = (loaded?.phases ?? []).filter(
+    (phase) => phaseType === "all" || phase.team_in_possession_phase_type === phaseType,
+  );
 
   return (
     <div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <MatchPicker value={matchId} onChange={setMatchId} />
+      <MatchPicker
+        value={matchId}
+        onChange={setMatchId}
+        status={
+          failed
+            ? "Couldn't reach SkillCorner open data."
+            : loaded === undefined
+              ? "Fetching phases of play (~110 KB)…"
+              : `${phases.length} phases · ${phases.filter(phaseLedToShot).length} led to a shot (highlighted)`
+        }
+      >
         {phaseTypes.length > 0 && (
           <select
             aria-label="Phase type"
@@ -158,21 +152,34 @@ export function SkillcornerPhasesBasic() {
             ))}
           </select>
         )}
-      </div>
+      </MatchPicker>
 
-      <p className="my-3 text-xs text-fd-muted-foreground">
-        {failed
-          ? "Couldn't reach SkillCorner open data."
-          : loaded === undefined
-            ? "Fetching phases of play (~110 KB)…"
-            : `${shown.length} phases · ${shown.filter(phaseLedToShot).length} led to a shot (highlighted)`}
-      </p>
-
-      {loaded ? (
-        <PhaseMap loaded={loaded} phaseType={phaseType} />
-      ) : (
-        <Pitch type="skillcorner" appearance={docsAppearance} />
-      )}
+      <Pitch
+        type="skillcorner"
+        dimensions={
+          loaded && { length: loaded.match.pitch_length, width: loaded.match.pitch_width }
+        }
+        appearance={docsAppearance}
+      >
+        <Arrows
+          data={phases}
+          x={(phase) => phase.x_start ?? 0}
+          y={(phase) => phase.y_start ?? 0}
+          x2={(phase) => phase.x_end ?? 0}
+          y2={(phase) => phase.y_end ?? 0}
+          stroke={(phase: SkillCornerPhase) =>
+            phaseLedToShot(phase) ? TEAM_COLORS[1] : TEAM_COLORS[0]
+          }
+          strokeOpacity={(phase: SkillCornerPhase) => (phaseLedToShot(phase) ? 0.9 : 0.22)}
+          strokeWidth={(phase: SkillCornerPhase) => (phaseLedToShot(phase) ? 0.7 : 0.3)}
+          headSize={4}
+          tooltip={(phase) =>
+            `${phase.team_in_possession_shortname ?? "?"} — ${
+              phase.team_in_possession_phase_type?.replace(/_/g, " ") ?? "phase"
+            }${phaseLedToShot(phase) ? " → shot" : ""}`
+          }
+        />
+      </Pitch>
     </div>
   );
 }
