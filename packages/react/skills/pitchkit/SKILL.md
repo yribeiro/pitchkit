@@ -63,11 +63,22 @@ from it without declaring it is a phantom dependency — declare it when it's im
 
 ## Pitch types
 
-| `type`        | Extent    | Origin      | y direction | Notes                      |
-| ------------- | --------- | ----------- | ----------- | -------------------------- |
-| `"statsbomb"` | 120 × 80  | top-left    | down        | Abstract units             |
-| `"opta"`      | 100 × 100 | bottom-left | up          | Normalised percentage grid |
-| `"uefa"`      | 105 × 68  | bottom-left | up          | Real metres                |
+| `type`          | Extent    | Origin      | y direction | Notes                      |
+| --------------- | --------- | ----------- | ----------- | -------------------------- |
+| `"statsbomb"`   | 120 × 80  | top-left    | down        | Abstract units             |
+| `"opta"`        | 100 × 100 | bottom-left | up          | Normalised percentage grid |
+| `"uefa"`        | 105 × 68  | bottom-left | up          | Real metres                |
+| `"skillcorner"` | 105 × 68  | center      | up          | Real metres, centre origin |
+
+`"skillcorner"` is the only centre-origin type: x runs `-52.5` to `+52.5`, so
+data from `@pitchkit/data-providers/skillcorner` plots with its raw `x`/`y`
+and needs no conversion. Their pitches are really 104–106 m, so pass the
+match's own size when you want the touchlines exact — markings don't move,
+since a penalty area is 16.5 m deep on any pitch:
+
+```tsx
+<Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }} />
+```
 
 Those three are the whole list. For a provider that isn't one of them, standardise the
 data first and render in the target grid:

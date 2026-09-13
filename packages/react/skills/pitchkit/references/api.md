@@ -14,18 +14,19 @@ without the marker are plain static values.
 
 ### `<Pitch>`
 
-| Prop          | Type                              | Default        | Notes                                                          |
-| ------------- | --------------------------------- | -------------- | -------------------------------------------------------------- |
-| `type`        | `"statsbomb" \| "opta" \| "uefa"` | —              | Required. The provider coordinate system.                      |
-| `orientation` | `"horizontal" \| "vertical"`      | `"horizontal"` | Display concern only; never changes the data's units.          |
-| `width`       | `number`                          | —              | Fixed pixel width. Pass with `height` or not at all.           |
-| `height`      | `number`                          | —              | Fixed pixel height.                                            |
-| `crop`        | `{ x0, y0, x1, y1 }`              | —              | Window in provider units. Drives the container's aspect ratio. |
-| `padding`     | `{ top, right, bottom, left }`    | zero           | Pixel padding inside the viewport.                             |
-| `appearance`  | `PitchAppearance`                 | —              | `{ stripes?, goalType?, linesOnTop? }` — see below.            |
-| `className`   | `string`                          | —              | On the wrapper `<div>`, not the `<svg>`.                       |
-| `style`       | `CSSProperties`                   | —              | Merged into the wrapper's own positioning styles.              |
-| `children`    | `ReactNode`                       | —              | Layer components.                                              |
+| Prop          | Type                                               | Default        | Notes                                                                                                                              |
+| ------------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `type`        | `"statsbomb" \| "opta" \| "uefa" \| "skillcorner"` | —              | Required. The provider coordinate system.                                                                                          |
+| `dimensions`  | `{ length?, width? }`                              | —              | Real extent of this pitch, for real-unit providers (SkillCorner is 104-106 m). Markings do not scale. Throws for normalized grids. |
+| `orientation` | `"horizontal" \| "vertical"`                       | `"horizontal"` | Display concern only; never changes the data's units.                                                                              |
+| `width`       | `number`                                           | —              | Fixed pixel width. Pass with `height` or not at all.                                                                               |
+| `height`      | `number`                                           | —              | Fixed pixel height.                                                                                                                |
+| `crop`        | `{ x0, y0, x1, y1 }`                               | —              | Window in provider units. Drives the container's aspect ratio.                                                                     |
+| `padding`     | `{ top, right, bottom, left }`                     | zero           | Pixel padding inside the viewport.                                                                                                 |
+| `appearance`  | `PitchAppearance`                                  | —              | `{ stripes?, goalType?, linesOnTop? }` — see below.                                                                                |
+| `className`   | `string`                                           | —              | On the wrapper `<div>`, not the `<svg>`.                                                                                           |
+| `style`       | `CSSProperties`                                    | —              | Merged into the wrapper's own positioning styles.                                                                                  |
+| `children`    | `ReactNode`                                        | —              | Layer components.                                                                                                                  |
 
 `PitchAppearance`:
 

@@ -5,6 +5,7 @@ import type {
   CropWindow,
   Orientation,
   PitchAppearance,
+  PitchDimensionOverrides,
   PitchTypeId,
   Viewport,
   ViewportPadding,
@@ -17,6 +18,19 @@ import { useResizeObserver } from "./use-resize-observer.js";
 
 export interface PitchProps {
   type: PitchTypeId;
+  /**
+   * The real extent of this particular pitch, for providers whose coordinates
+   * are metres on an actual pitch rather than a fixed grid.
+   *
+   * SkillCorner is the case that needs it: their pitches really are 104 to
+   * 106 m long, and the data is in real metres, so passing the match's own
+   * `pitch_length`/`pitch_width` draws the touchlines where they actually
+   * were. Markings don't move — a penalty area is 16.5 m deep on any pitch.
+   *
+   * Leave it unset for grid-based providers; overriding a normalized grid
+   * (Opta's 0-100) throws rather than silently rescaling.
+   */
+  dimensions?: PitchDimensionOverrides;
   /** @default "horizontal" */
   orientation?: Orientation;
   /** Fixed pixel size — the opt-out from the responsive default. Provide both, or neither. */
@@ -59,6 +73,7 @@ function hasTooltipContent(tooltip: TooltipState | null): tooltip is TooltipStat
  */
 export function Pitch({
   type,
+  dimensions: dimensionOverrides,
   orientation = "horizontal",
   width: explicitWidth,
   height: explicitHeight,
@@ -69,7 +84,7 @@ export function Pitch({
   style,
   children,
 }: PitchProps) {
-  const dimensions = getPitchDimensions(type);
+  const dimensions = getPitchDimensions(type, dimensionOverrides);
   const [containerRef, measuredSize] = useResizeObserver<HTMLDivElement>();
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
