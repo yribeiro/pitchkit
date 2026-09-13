@@ -72,9 +72,7 @@ export default function HomePage() {
             Football visualised for the web.
           </h1>
           <p className="max-w-xl text-balance text-fd-muted-foreground">
-            PitchKit is mplsoccer for the browser — declarative pitch visualisations with typed
-            accessors, responsive SVG marks, canvas heatmaps, and theming that works like the rest
-            of your design system.
+            The React library to build beautiful football web apps — your design, your way.
           </p>
           <InstallCommand />
           {/* Below `sm` the CTAs split the column evenly; from `sm` up they

@@ -11,7 +11,7 @@ import { ImageResponse } from "next/og";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "PitchKit — React football pitch visualisation";
+export const alt = "PitchKit — Football visualised for the web";
 
 /** A full UEFA pitch (105x68m) at real marking proportions. */
 const PITCH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105 68" width="900" height="583">
