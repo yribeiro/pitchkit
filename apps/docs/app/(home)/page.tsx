@@ -71,35 +71,23 @@ export default function HomePage() {
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
             Football visualised for the web.
           </h1>
-          <p className="max-w-xl text-balance text-fd-muted-foreground">
-            PitchKit is mplsoccer for the browser — declarative pitch visualisations with typed
-            accessors, responsive SVG marks, canvas heatmaps, and theming that works like the rest
-            of your design system.
+          <p className="max-w-xl text-fd-muted-foreground">
+            The React library built for the beautiful game. Your design, your way.
           </p>
           <InstallCommand />
-          {/* Below `sm` the CTAs split the column evenly; from `sm` up they
-              collapse back to their natural widths. A 2-col grid rather than
-              `flex-1` on each: with `flex-basis: 0`, an outlined button's 1px
-              border is laid out on top of the basis rather than inside it, so
-              two came out 156.5 / 158.5 — visibly uneven at the shared edge.
-              Grid tracks size independently of each item's box model, so the
-              split is exact.
-
-              Three into two columns leaves an odd one out, so the gallery —
-              the least load-bearing — spans the full second row rather than
-              sitting beside a gap. "Build with AI" is tinted rather than
-              solid: a peer of "Get started", not a second primary competing
-              with it. */}
-          <div className="grid w-full grid-cols-2 gap-3 pt-1 sm:flex sm:w-auto sm:flex-wrap">
+          {/* Below `sm` the CTAs split as 2-cols with the gallery spanning full
+              width; from `sm` up they form a 3-column equal-width grid filling
+              the available width. */}
+          <div className="grid w-full max-w-xl grid-cols-2 gap-3 pt-1 sm:grid-cols-3">
             <Link
               href="/docs"
-              className="rounded-lg bg-fd-primary px-4 py-2.5 text-center text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 sm:px-5"
+              className="inline-flex items-center justify-center rounded-lg bg-fd-primary px-3 py-2.5 text-center text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
             >
               Get started
             </Link>
             <Link
               href="/docs/agents"
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-fd-primary/40 bg-fd-primary/5 px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:border-fd-primary/60 hover:bg-fd-primary/10 sm:px-5"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-fd-primary/40 bg-fd-primary/5 px-3 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:border-fd-primary/60 hover:bg-fd-primary/10"
             >
               <svg
                 aria-hidden
@@ -119,7 +107,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/gallery"
-              className="col-span-2 rounded-lg border border-fd-border px-4 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1 sm:px-5"
+              className="col-span-2 inline-flex items-center justify-center rounded-lg border border-fd-border px-3 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1"
             >
               Browse the gallery
             </Link>

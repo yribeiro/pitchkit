@@ -7,7 +7,7 @@ import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
 const DESCRIPTION =
-  "PitchKit is a React-first football pitch visualisation library for the web, with first-class TypeScript types.";
+  "The React library built for the beautiful game. Your design, your way.";
 
 /**
  * `metadataBase` is what lets the file-convention images in this directory
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
     template: "%s | PitchKit",
-    default: "PitchKit — React football pitch visualisation",
+    default: "PitchKit — Football visualised for the web",
   },
   description: DESCRIPTION,
   applicationName: "PitchKit",
@@ -39,12 +39,12 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "PitchKit",
     url: SITE,
-    title: "PitchKit — React football pitch visualisation",
+    title: "PitchKit — Football visualised for the web",
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "PitchKit — React football pitch visualisation",
+    title: "PitchKit — Football visualised for the web",
     description: DESCRIPTION,
   },
 };

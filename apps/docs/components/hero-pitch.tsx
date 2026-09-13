@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { getPitchDimensions } from "@pitchkit/core";
 import type { PitchTypeId } from "@pitchkit/core";
@@ -42,7 +42,6 @@ const PRESET_MOVE: FractionPoint[] = [
 const PITCH_TYPES: { id: PitchTypeId; label: string; size: string }[] = [
   { id: "statsbomb", label: "StatsBomb", size: "120 × 80" },
   { id: "skillcorner", label: "SkillCorner", size: "105 × 68" },
-  { id: "uefa", label: "UEFA", size: "105 × 68" },
 ];
 
 interface HeroLayersProps {
@@ -64,6 +63,8 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
   );
   const segments = providerPoints.slice(1).map((to, i) => ({ from: providerPoints[i]!, to }));
   const last = providerPoints[providerPoints.length - 1];
+  const lastFraction = points[points.length - 1];
+  const isPastHalfway = lastFraction ? lastFraction.fx > 0.5 : false;
 
   // Event coordinates -> the SVG viewBox's pixel space (the space
   // `toProvider` inverts). The viewBox is `0 0 viewport.width
@@ -78,7 +79,7 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
 
   return (
     <>
-      {last && <GoalAngle data={[last]} x={(p) => p[0]} y={(p) => p[1]} />}
+      {last && isPastHalfway && <GoalAngle data={[last]} x={(p) => p[0]} y={(p) => p[1]} />}
       <Comet
         data={segments}
         x={(s) => s.from[0]}
@@ -114,12 +115,50 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
 
 export function HeroPitch() {
   const [pitchType, setPitchType] = useState<PitchTypeId>("statsbomb");
-  const [points, setPoints] = useState<FractionPoint[]>(PRESET_MOVE);
+  const [points, setPoints] = useState<FractionPoint[]>([]);
   const [cursor, setCursor] = useState<readonly [number, number] | null>(null);
   const [touched, setTouched] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+
+  useEffect(() => {
+    let step = 0;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const timeoutId = setTimeout(() => {
+      const reducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        setPoints(PRESET_MOVE);
+        setAnimationComplete(true);
+        return;
+      }
+
+      step = 1;
+      setPoints(PRESET_MOVE.slice(0, 1));
+
+      intervalId = setInterval(() => {
+        step++;
+        if (step <= PRESET_MOVE.length) {
+          setPoints(PRESET_MOVE.slice(0, step));
+        }
+        if (step >= PRESET_MOVE.length) {
+          if (intervalId) clearInterval(intervalId);
+          setAnimationComplete(true);
+        }
+      }, 400);
+    }, 250);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []);
 
   const addPoint = useCallback((point: FractionPoint) => {
     setTouched(true);
+    setAnimationComplete(true);
     setPoints((prev) => [...prev, point]);
   }, []);
 
@@ -150,14 +189,17 @@ export function HeroPitch() {
           onClick={() => {
             setPoints(PRESET_MOVE);
             setTouched(false);
+            setAnimationComplete(true);
           }}
-          className="rounded-md px-2 py-1 text-xs text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+          className={`rounded-md px-2 py-1 text-xs text-fd-muted-foreground transition-all duration-500 hover:text-fd-foreground ${
+            animationComplete ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         >
           Reset
         </button>
       </div>
 
-      <div className="pitchkit-hero-pitch relative overflow-hidden rounded-xl border border-fd-border shadow-lg">
+      <div className="pitchkit-hero-pitch relative overflow-hidden border border-fd-border shadow-lg">
         <Pitch
           type={pitchType}
           appearance={{ stripes: true, goalType: "box" }}
@@ -167,7 +209,7 @@ export function HeroPitch() {
         </Pitch>
 
         {/* Broadcast-style coordinate readout (score-bug treatment). */}
-        <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-2.5 py-1.5 font-mono text-[11px] text-white/90 backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-2.5 py-1.5 font-mono text-[11px] text-white/90 backdrop-blur-sm">
           <span className="relative flex size-1.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
             <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
@@ -181,7 +223,12 @@ export function HeroPitch() {
         </div>
       </div>
 
-      <p className="pt-3 text-center text-xs text-fd-muted-foreground" aria-live="polite">
+      <p
+        className={`pt-3 text-center text-xs text-fd-muted-foreground transition-opacity duration-500 ${
+          animationComplete ? "opacity-100" : "opacity-0"
+        }`}
+        aria-live="polite"
+      >
         {touched
           ? "Same move, any provider — switch coordinate systems above."
           : "Click anywhere to extend the move. The readout tracks provider coordinates."}
