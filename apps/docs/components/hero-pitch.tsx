@@ -41,7 +41,7 @@ const PRESET_MOVE: FractionPoint[] = [
 
 const PITCH_TYPES: { id: PitchTypeId; label: string; size: string }[] = [
   { id: "statsbomb", label: "StatsBomb", size: "120 × 80" },
-  { id: "opta", label: "Opta", size: "100 × 100" },
+  { id: "skillcorner", label: "SkillCorner", size: "105 × 68" },
   { id: "uefa", label: "UEFA", size: "105 × 68" },
 ];
 
@@ -59,8 +59,8 @@ interface HeroLayersProps {
 function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
   const { transform, viewport } = usePitch();
 
-  const providerPoints = points.map(
-    (p) => transform.toProvider([p.fx * viewport.width, p.fy * viewport.height]),
+  const providerPoints = points.map((p) =>
+    transform.toProvider([p.fx * viewport.width, p.fy * viewport.height]),
   );
   const segments = providerPoints.slice(1).map((to, i) => ({ from: providerPoints[i]!, to }));
   const last = providerPoints[providerPoints.length - 1];

@@ -71,6 +71,18 @@ predicate.
 
 - **[StatsBomb](/docs/data/statsbomb/events)** — open data: competitions, matches, lineups,
   [events](/docs/data/statsbomb/events) and [360 tracking](/docs/data/statsbomb/360).
+- **[SkillCorner](/docs/data/skillcorner/tracking)** — broadcast tracking at 10 fps, plus the
+  derived [dynamic events](/docs/data/skillcorner/dynamic-events) and
+  [phases of play](/docs/data/skillcorner/phases-of-play).
+
+SkillCorner also has its own pitch type. Its coordinates are metres from the centre spot, so
+`<Pitch type="skillcorner">` plots them raw — no lifting, no conversion:
+
+```tsx
+<Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }}>
+  <Scatter data={frame.player_data} x={(p) => p.x} y={(p) => p.y} />
+</Pitch>
+```
 
 ## Licensing
 

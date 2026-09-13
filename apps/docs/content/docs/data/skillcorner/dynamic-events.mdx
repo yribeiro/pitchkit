@@ -1,0 +1,131 @@
+---
+title: Dynamic Events
+description: Possessions, passing options, off-ball runs and pressure — SkillCorner's derived event model, 322 columns wide.
+---
+
+Dynamic events are SkillCorner's _derived_ layer: what the tracking data implies about
+possessions, the options a player had, the runs made off the ball, and the pressure applied.
+The example plots off-ball runs as comets, from where each run began to where it ended.
+
+<PitchPreview name="skillcorner-events-basic" />
+
+## Loading them
+
+```ts
+import { fetchMatch, fetchDynamicEvents } from "@pitchkit/data-providers/skillcorner";
+
+const match = await fetchMatch(1874553);
+const events = await fetchDynamicEvents(match);
+```
+
+`fetchDynamicEvents` takes the **match**, not just its id, because the coordinates are metres
+from the centre spot and placing them needs that pitch's real dimensions. The file is around
+4 MB — fetch once and cache.
+
+Already have the CSV on disk? `parseDynamicEvents(text, match)` is pure, no network. And
+`loadDynamicEvents(url, match)` takes any URL if you keep a mirror.
+
+## Four event types
+
+```ts
+import {
+  playerPossessions,
+  passingOptions,
+  offBallRuns,
+  onBallEngagements,
+  ofEventType,
+} from "@pitchkit/data-providers/skillcorner";
+
+playerPossessions(events); // a player's time on the ball
+passingOptions(events); // every team-mate who was available to receive
+offBallRuns(events); // movement away from the ball
+onBallEngagements(events); // pressure, presses, duels
+```
+
+In one sampled match those split roughly 2,500 / 960 / 880 / 540 — so **`passing_option` is
+over half of everything**, because SkillCorner emits one per available receiver per possession.
+Plot them unfiltered and they bury the rest.
+
+Unlike StatsBomb's, this discriminant is top level, so `event.event_type === "off_ball_run"`
+narrows natively. The guards exist anyway, and also check the row carries what the type
+implies.
+
+## Predicates
+
+```ts
+import {
+  breaksDefensiveLine,
+  isRunBehind,
+  isSprint,
+  wasReceived,
+  isCompletePass,
+  leadToShot,
+  hasPath,
+} from "@pitchkit/data-providers/skillcorner";
+
+offBallRuns(events).filter(isSprint).filter(breaksDefensiveLine);
+passingOptions(events).filter(wasReceived);
+```
+
+`isSprint` reads SkillCorner's own `speed_avg_band`, not a threshold invented here.
+`hasPath` keeps only events with both a start and an end — which is what `<Comet>` and
+`<Arrows>` need.
+
+<Callout>
+  **A completed pass is explicit here.** `pass_outcome === "successful"`, unlike StatsBomb where
+  success is the *absence* of `pass.outcome`. `isCompletePass` is a real equality check rather than
+  a workaround.
+</Callout>
+
+## The 322 columns
+
+The source CSV is **322 columns wide** — expected possession value, line breaks, pressure
+bands, passing-option scoring, distances to the last defensive line, and much more. Typing all
+of them would be a worse lie than leaving them honest, so the roughly forty you plot or filter
+on are typed, and every other column stays reachable under its original name:
+
+```ts
+const run = offBallRuns(events)[0];
+run.distance_covered; // typed
+run.xthreat; // typed
+run["affected_line_breaking_passing_option_xthreat"]; // still there, as the CSV wrote it
+```
+
+## Coordinates point at the goal being attacked
+
+**Dynamic-event `x` is normalised to the attacking direction**: positive x always points at the
+goal that team is attacking, in both halves. So a shot-ending phase is at high x whichever way
+the team kicked.
+
+<Callout type="warn">
+  This is the **opposite** of the [tracking](/docs/data/skillcorner/tracking) file, whose
+  coordinates are absolute and swap ends at half time. Plot one with the other's assumption and you
+  mirror half a match with no error to tell you. The two files share a frame counter but not a
+  coordinate convention.
+</Callout>
+
+Verified against a full match: every `wide_left` and `half_space_left` row has `y > 0` and every
+`*_right` row `y < 0`, with no crossover — so `y > 0` is the attacking team's left, which is
+"up" on a y-up pitch. The parser also adds corner-origin `pitchX`/`pitchY` if your chart wants
+them, but `<Pitch type="skillcorner">` takes `x_start`/`y_start` directly.
+
+## Reading the fields
+
+```tsx
+<Comet
+  data={offBallRuns(events).filter(hasPath)}
+  x={(run) => run.x_start}
+  y={(run) => run.y_start}
+  x2={(run) => run.x_end}
+  y2={(run) => run.y_end}
+  tooltip={(run) => `${run.player_name} — ${run.event_subtype}, ${run.distance_covered} m`}
+/>
+```
+
+Run subtypes are SkillCorner's own vocabulary — `run_ahead_of_the_ball`, `coming_short`,
+`dropping_off`, `support`, `cross_receiver`, `overlap` — kept as they're spelled.
+
+## Next
+
+[Phases of play](/docs/data/skillcorner/phases-of-play) — the same match described as a
+sequence of possessions rather than individual actions.

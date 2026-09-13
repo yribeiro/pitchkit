@@ -1,0 +1,104 @@
+---
+title: Phases of Play
+description: A match as a sequence of possessions — where each one started, where it got to, and whether it produced a shot.
+---
+
+Phases of play describe a match at the level above individual actions: each stretch with the
+ball in play and one team in possession, classified by what both teams were doing. It's the
+smallest of SkillCorner's three files at around **110 KB**, and often the fastest way into a
+match.
+
+<PitchPreview name="skillcorner-phases-basic" />
+
+Each arrow is one possession, start to end. The highlighted ones produced a shot.
+
+## Loading them
+
+```ts
+import { fetchMatch, fetchPhasesOfPlay } from "@pitchkit/data-providers/skillcorner";
+
+const match = await fetchMatch(1874553);
+const phases = await fetchPhasesOfPlay(match);
+```
+
+Like the other loaders it takes the match, since coordinates are metres from the centre spot.
+One match has roughly 400 phases.
+
+## What a phase carries
+
+```ts
+interface SkillCornerPhase {
+  index: number;
+  frame_start: number; // a tracking frame number
+  frame_end: number;
+  period: number | null;
+  minute_start: number | null;
+
+  team_in_possession_id: number | null;
+  team_in_possession_shortname: string | null;
+  team_in_possession_phase_type: string | null; // build_up, counter, …
+  team_out_of_possession_phase_type: string | null; // high_press, mid_block, low_block, …
+
+  team_possession_lead_to_shot: boolean | null;
+  team_possession_lead_to_goal: boolean | null;
+
+  x_start: number | null; // normalised to the attacking direction
+  y_start: number | null;
+  x_end: number | null;
+  y_end: number | null;
+
+  team_in_possession_width_start: number | null; // how spread the team was, in metres
+  team_in_possession_length_start: number | null;
+  // …and the rest of the 44 columns, under their own names
+}
+```
+
+Two things here are hard to get anywhere else in open data. **Both teams are classified at
+once** — a phase says what the team in possession was doing _and_ what the team out of
+possession was doing, so "build-up against a high press" is a filter rather than a judgement
+call. And **team width and length** are given directly in metres, which otherwise means
+deriving shape from tracking yourself.
+
+## Filtering
+
+```ts
+import { isPhaseType, phaseLedToShot, phaseLedToGoal } from "@pitchkit/data-providers/skillcorner";
+
+const counters = phases.filter(isPhaseType("counter"));
+const dangerous = phases.filter(phaseLedToShot);
+const goals = phases.filter(phaseLedToGoal);
+```
+
+`isPhaseType` is a factory — it returns the predicate — so it composes with `.filter()` the
+same way the fixed ones do.
+
+## Lining phases up with the other files
+
+`frame_start` and `frame_end` are **tracking frame numbers**, the same counter the
+[tracking file](/docs/data/skillcorner/tracking) uses and the same one
+[dynamic events](/docs/data/skillcorner/dynamic-events) carry. So going from "this possession
+led to a shot" to "show me it" needs no timestamp matching:
+
+```ts
+const phase = phases.filter(phaseLedToShot)[0];
+
+// The tracking frames for exactly that possession
+const frames = await fetchTrackingWindow(match, {
+  fromFrame: phase.frame_start,
+  toFrame: phase.frame_end,
+});
+
+// The dynamic events inside it
+const inPhase = events.filter(
+  (event) => event.frame_start >= phase.frame_start && event.frame_start <= phase.frame_end,
+);
+```
+
+That shared counter is the most useful property of this dataset, and the reason the three files
+are worth treating as one thing rather than three.
+
+<Callout type="warn">
+  Phase coordinates follow the **dynamic-events** convention, not tracking's: `x` is normalised so
+  positive always points at the goal being attacked. Don't overlay them on absolute tracking
+  positions without converting.
+</Callout>

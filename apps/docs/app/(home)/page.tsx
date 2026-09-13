@@ -25,7 +25,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
   {
     title: "Provider-agnostic coordinates",
-    body: "StatsBomb, Opta, and UEFA coordinate systems out of the box. Feed data in its native units; one transform pipeline keeps everything aligned.",
+    body: "StatsBomb, SkillCorner, Opta and UEFA coordinate systems out of the box — including SkillCorner's centre-origin metres. Feed data in its native units; one transform pipeline keeps everything aligned.",
     href: "/docs/guides/coordinates",
     icon: "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18",
   },
