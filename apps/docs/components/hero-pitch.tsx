@@ -63,6 +63,8 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
   );
   const segments = providerPoints.slice(1).map((to, i) => ({ from: providerPoints[i]!, to }));
   const last = providerPoints[providerPoints.length - 1];
+  const lastFraction = points[points.length - 1];
+  const isPastHalfway = lastFraction ? lastFraction.fx > 0.5 : false;
 
   // Event coordinates -> the SVG viewBox's pixel space (the space
   // `toProvider` inverts). The viewBox is `0 0 viewport.width
@@ -77,7 +79,7 @@ function HeroLayers({ points, onAddPoint, onCursor }: HeroLayersProps) {
 
   return (
     <>
-      {last && <GoalAngle data={[last]} x={(p) => p[0]} y={(p) => p[1]} />}
+      {last && isPastHalfway && <GoalAngle data={[last]} x={(p) => p[0]} y={(p) => p[1]} />}
       <Comet
         data={segments}
         x={(s) => s.from[0]}
@@ -145,8 +147,8 @@ export function HeroPitch() {
           if (intervalId) clearInterval(intervalId);
           setAnimationComplete(true);
         }
-      }, 350);
-    }, 200);
+      }, 400);
+    }, 250);
 
     return () => {
       clearTimeout(timeoutId);
