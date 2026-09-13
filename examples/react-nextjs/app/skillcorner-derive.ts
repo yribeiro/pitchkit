@@ -1,5 +1,6 @@
 import { indexPlayersById } from "@pitchkit/data-providers/skillcorner";
 import type {
+  SkillCornerEvent,
   SkillCornerFrame,
   SkillCornerMatch,
   SkillCornerMatchPlayer,
@@ -59,6 +60,59 @@ export function clockLabel(frame: SkillCornerFrame): string {
 export interface ClipPlayer extends SkillCornerTrackedPlayer {
   readonly player: SkillCornerMatchPlayer | undefined;
   readonly isHome: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Dynamic events along the clip
+// ---------------------------------------------------------------------------
+
+/**
+ * The dynamic events that fall inside a clip's frame range.
+ *
+ * The two files share a frame counter — an event's `frame_start` is a tracking
+ * frame number — so no timestamp matching is needed, which is the whole reason
+ * this alignment is reliable rather than approximate.
+ */
+export function eventsInClip(
+  events: readonly SkillCornerEvent[],
+  frames: readonly SkillCornerFrame[],
+): SkillCornerEvent[] {
+  const first = frames[0]?.frame;
+  const last = frames[frames.length - 1]?.frame;
+  if (first === undefined || last === undefined) return [];
+  return events
+    .filter((event) => event.frame_start >= first && event.frame_start <= last)
+    .sort((a, b) => a.frame_start - b.frame_start);
+}
+
+/**
+ * Index of the most recent event at or before `frame` — the one "happening
+ * now" as the clip plays. `-1` before the first event.
+ */
+export function activeEventIndex(events: readonly SkillCornerEvent[], frame: number): number {
+  let found = -1;
+  for (let i = 0; i < events.length; i += 1) {
+    const event = events[i];
+    if (event === undefined) break;
+    if (event.frame_start > frame) break;
+    found = i;
+  }
+  return found;
+}
+
+/** `"18:56.5"` → `"18:56"`. Events carry their own period-relative clock. */
+export function eventTime(event: SkillCornerEvent): string {
+  const stamp = event.time_start;
+  if (stamp === null) return "--:--";
+  return stamp.split(".")[0] ?? stamp;
+}
+
+/** `"off_ball_run"` → `"off ball run"`, and the subtype when there is one. */
+export function eventHeadline(event: SkillCornerEvent): string {
+  const type = event.event_type.replace(/_/g, " ");
+  return event.event_subtype === null
+    ? type
+    : `${type} · ${event.event_subtype.replace(/_/g, " ")}`;
 }
 
 export interface ClipFrame {

@@ -77,10 +77,17 @@ export {
   fetchPhasesOfPlay,
   fetchTracking,
   fetchTrackingWindow,
+  loadDynamicEvents,
+  loadMatch,
+  loadMatches,
+  loadPhasesOfPlay,
+  loadTracking,
+  loadTrackingWindow,
   matchUrl,
   matchesUrl,
   phasesOfPlayUrl,
   streamTracking,
+  streamTrackingFrom,
   trackingUrl,
 } from "./load.js";
 export type { SkillCornerLoadOptions, TrackingWindowOptions } from "./load.js";

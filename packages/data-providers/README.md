@@ -215,6 +215,47 @@ Selectors: `playerPossessions`, `passingOptions`, `offBallRuns`,
 `onBallEngagements`, `ofEventType`. Tracking joins onto the match through
 `indexPlayersById` — on `players[].id`, **not** `trackable_object`.
 
+### Files you already have
+
+Both provider modules split the network layer in two: `loadX(url)` takes any
+URL — a mirror, your own bucket, a static server — and `fetchX(id)` is sugar
+that builds the open-data URL for you.
+
+If the files are on disk, skip both and use the `parse*` layer, which is pure:
+
+```ts
+import { readFileSync, createReadStream } from "node:fs";
+import { createInterface } from "node:readline";
+import {
+  parseMatch,
+  parseDynamicEvents,
+  parseTrackingFrame,
+  pitchProjection,
+} from "@pitchkit/data-providers/skillcorner";
+
+// The match file first — everything else needs its pitch dimensions.
+const match = parseMatch(JSON.parse(readFileSync("1874553_match.json", "utf8")));
+const events = parseDynamicEvents(readFileSync("1874553_dynamic_events.csv", "utf8"), match);
+```
+
+Tracking files are far too big to read into a string, so parse them a line at
+a time — which is exactly what `parseTrackingFrame` and `pitchProjection` are
+exported for:
+
+```ts
+const project = pitchProjection(match);
+const lines = createInterface({
+  input: createReadStream("1874553_tracking_extrapolated.jsonl"),
+  crlfDelay: Infinity,
+});
+
+for await (const line of lines) {
+  if (!line.trim()) continue;
+  const frame = parseTrackingFrame(JSON.parse(line), project);
+  // …one frame at a time, constant memory
+}
+```
+
 ## Data licence and attribution
 
 This package ships **no data**. It fetches from whatever URL you give it.

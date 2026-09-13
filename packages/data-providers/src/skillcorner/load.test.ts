@@ -16,7 +16,14 @@ import {
   fetchPhasesOfPlay,
   fetchTracking,
   fetchTrackingWindow,
+  loadDynamicEvents,
+  loadMatch,
+  loadMatches,
+  loadPhasesOfPlay,
+  loadTracking,
+  matchUrl,
   streamTracking,
+  streamTrackingFrom,
   trackingUrl,
 } from "./load.js";
 import { parseMatch } from "./parse.js";
@@ -94,6 +101,80 @@ describe("the small files", () => {
     ) as unknown as typeof globalThis.fetch;
     const error = await fetchMatches({ fetch: fetchImpl }).catch((cause: unknown) => cause);
     expect((error as DataProviderError).kind).toBe("network");
+  });
+});
+
+describe("load* — the any-URL primitives", () => {
+  const MIRROR = "https://files.example.test/skillcorner";
+
+  it("take a URL the open-data layout doesn't cover", async () => {
+    const { fetchImpl, calls } = mockFetch((url) =>
+      url.endsWith(".json")
+        ? textResponse(JSON.stringify(matchFixture()))
+        : textResponse(dynamicEventsFixture()),
+    );
+
+    const loaded = await loadMatch(`${MIRROR}/my-match.json`, { fetch: fetchImpl });
+    const events = await loadDynamicEvents(`${MIRROR}/whatever.csv`, loaded, { fetch: fetchImpl });
+
+    expect(loaded.id).toBe(1874553);
+    expect(events).toHaveLength(70);
+    expect(calls.map((call) => call.url)).toEqual([
+      `${MIRROR}/my-match.json`,
+      `${MIRROR}/whatever.csv`,
+    ]);
+  });
+
+  it("cover the index, phases and whole-file tracking too", async () => {
+    const matches = await loadMatches(`${MIRROR}/index.json`, {
+      fetch: mockFetch(() => textResponse(JSON.stringify(matchesFixture()))).fetchImpl,
+    });
+    expect(matches).toHaveLength(20);
+
+    const phases = await loadPhasesOfPlay(`${MIRROR}/p.csv`, match, {
+      fetch: mockFetch(() => textResponse(phasesFixture())).fetchImpl,
+    });
+    expect(phases).toHaveLength(40);
+
+    const frames = await loadTracking(`${MIRROR}/t.jsonl`, match, {
+      fetch: mockFetch(() => textResponse(trackingFixture())).fetchImpl,
+    });
+    expect(frames).toHaveLength(123);
+  });
+
+  it("stream from an arbitrary URL, still aborting on break", async () => {
+    let cancelled = false;
+    const body = new ReadableStream<Uint8Array>({
+      // Chunked and left open: a single enqueue-then-close stream is already
+      // finished by the time the consumer breaks, and cancelling a closed
+      // stream never reaches the source — so a one-chunk body would assert
+      // nothing about aborting.
+      pull(controller) {
+        controller.enqueue(new TextEncoder().encode(`${trackingFixture().split("\n")[0] ?? ""}\n`));
+      },
+      cancel() {
+        cancelled = true;
+      },
+    });
+    const fetchImpl = vi.fn(() =>
+      Promise.resolve(new Response(body, { status: 200 })),
+    ) as unknown as typeof globalThis.fetch;
+
+    const frames = [];
+    for await (const frame of streamTrackingFrom(`${MIRROR}/t.jsonl`, match, {
+      fetch: fetchImpl,
+    })) {
+      frames.push(frame);
+      if (frames.length === 3) break;
+    }
+    expect(frames).toHaveLength(3);
+    expect(cancelled).toBe(true);
+  });
+
+  it("are what the fetch* sugar delegates to, so both hit the same URL", async () => {
+    const { fetchImpl, calls } = mockFetch(() => textResponse(JSON.stringify(matchFixture())));
+    await fetchMatch(1874553, { fetch: fetchImpl });
+    expect(calls[0]?.url).toBe(matchUrl(1874553));
   });
 });
 

@@ -82,6 +82,66 @@ export function trackingUrl(matchId: number, options: SkillCornerLoadOptions = {
 }
 
 // ---------------------------------------------------------------------------
+// Load from any URL — the primitives
+// ---------------------------------------------------------------------------
+
+/**
+ * Two tiers, the same split as the StatsBomb module: `loadX(url)` takes any
+ * URL — a mirror, your own bucket, a local static server — and is the
+ * primitive; `fetchX(id)` is sugar that builds the open-data URL for you.
+ *
+ * Everything that reads coordinates also takes the `match`, because those are
+ * metres from the centre spot and placing them needs that match's own pitch
+ * dimensions. Files already on disk don't need any of this — hand their text
+ * straight to `parseDynamicEvents` and friends.
+ */
+
+/** Fetch and parse a matches index from any URL. */
+export async function loadMatches(
+  url: string,
+  options?: LoadOptions,
+): Promise<SkillCornerMatchSummary[]> {
+  return parseMatches(await fetchJson(url, options));
+}
+
+/** Fetch and parse a match metadata file from any URL. */
+export async function loadMatch(url: string, options?: LoadOptions): Promise<SkillCornerMatch> {
+  return parseMatch(await fetchJson(url, options));
+}
+
+/** Fetch and parse a dynamic-events CSV from any URL. */
+export async function loadDynamicEvents(
+  url: string,
+  match: SkillCornerMatch,
+  options?: LoadOptions,
+): Promise<SkillCornerEvent[]> {
+  return parseDynamicEvents(await fetchText(url, options), match);
+}
+
+/** Fetch and parse a phases-of-play CSV from any URL. */
+export async function loadPhasesOfPlay(
+  url: string,
+  match: SkillCornerMatch,
+  options?: LoadOptions,
+): Promise<SkillCornerPhase[]> {
+  return parsePhasesOfPlay(await fetchText(url, options), match);
+}
+
+/**
+ * Fetch and parse a whole tracking file from any URL (~90 MB upstream).
+ *
+ * Prefer `streamTrackingFrom` or `loadTrackingWindow` unless you really want
+ * every frame in memory at once.
+ */
+export async function loadTracking(
+  url: string,
+  match: SkillCornerMatch,
+  options?: LoadOptions,
+): Promise<SkillCornerFrame[]> {
+  return parseTracking(await fetchText(url, options), match);
+}
+
+// ---------------------------------------------------------------------------
 // The small files
 // ---------------------------------------------------------------------------
 
@@ -89,7 +149,7 @@ export function trackingUrl(matchId: number, options: SkillCornerLoadOptions = {
 export async function fetchMatches(
   options: SkillCornerLoadOptions = {},
 ): Promise<SkillCornerMatchSummary[]> {
-  return parseMatches(await fetchJson(matchesUrl(options), options));
+  return loadMatches(matchesUrl(options), options);
 }
 
 /** One match's metadata (~30 KB): lineups, periods, pitch dimensions. */
@@ -97,7 +157,7 @@ export async function fetchMatch(
   matchId: number,
   options: SkillCornerLoadOptions = {},
 ): Promise<SkillCornerMatch> {
-  return parseMatch(await fetchJson(matchUrl(matchId, options), options));
+  return loadMatch(matchUrl(matchId, options), options);
 }
 
 /**
@@ -111,8 +171,7 @@ export async function fetchDynamicEvents(
   match: SkillCornerMatch,
   options: SkillCornerLoadOptions = {},
 ): Promise<SkillCornerEvent[]> {
-  const text = await fetchText(dynamicEventsUrl(match.id, options), options);
-  return parseDynamicEvents(text, match);
+  return loadDynamicEvents(dynamicEventsUrl(match.id, options), match, options);
 }
 
 /** A match's phases of play (~110 KB). */
@@ -120,8 +179,7 @@ export async function fetchPhasesOfPlay(
   match: SkillCornerMatch,
   options: SkillCornerLoadOptions = {},
 ): Promise<SkillCornerPhase[]> {
-  const text = await fetchText(phasesOfPlayUrl(match.id, options), options);
-  return parsePhasesOfPlay(text, match);
+  return loadPhasesOfPlay(phasesOfPlayUrl(match.id, options), match, options);
 }
 
 // ---------------------------------------------------------------------------
@@ -152,7 +210,21 @@ export async function* streamTracking(
   match: SkillCornerMatch,
   options: SkillCornerLoadOptions = {},
 ): AsyncGenerator<SkillCornerFrame, void, undefined> {
-  const url = trackingUrl(match.id, options);
+  yield* streamTrackingFrom(trackingUrl(match.id, options), match, options);
+}
+
+/**
+ * Stream tracking frames from any URL — the primitive `streamTracking` is
+ * sugar over.
+ *
+ * Same contract: `break`ing out of the loop cancels the reader, which aborts
+ * the download rather than letting the rest arrive unread.
+ */
+export async function* streamTrackingFrom(
+  url: string,
+  match: SkillCornerMatch,
+  options: LoadOptions = {},
+): AsyncGenerator<SkillCornerFrame, void, undefined> {
   const response = await request(url, options);
   const body = response.body;
 
@@ -218,15 +290,23 @@ export async function fetchTrackingWindow(
   match: SkillCornerMatch,
   options: TrackingWindowOptions,
 ): Promise<SkillCornerFrame[]> {
+  return loadTrackingWindow(trackingUrl(match.id, options), match, options);
+}
+
+/** Read a window of frames from any URL — the primitive behind `fetchTrackingWindow`. */
+export async function loadTrackingWindow(
+  url: string,
+  match: SkillCornerMatch,
+  options: TrackingWindowOptions,
+): Promise<SkillCornerFrame[]> {
   const { fromFrame, toFrame } = options;
   if (!Number.isInteger(fromFrame) || !Number.isInteger(toFrame) || toFrame < fromFrame) {
     throw new DataProviderError(
       "schema",
-      `fetchTrackingWindow needs whole frame numbers with toFrame >= fromFrame, got ${String(fromFrame)}..${String(toFrame)}.`,
+      `A tracking window needs whole frame numbers with toFrame >= fromFrame, got ${String(fromFrame)}..${String(toFrame)}.`,
     );
   }
 
-  const url = trackingUrl(match.id, options);
   // A generous pad either side: enough to absorb the size variation between
   // an empty pre-kickoff frame and a busy one with 22 players.
   const pad = 64 * 1024;
@@ -270,6 +350,5 @@ export async function fetchTracking(
   match: SkillCornerMatch,
   options: SkillCornerLoadOptions = {},
 ): Promise<SkillCornerFrame[]> {
-  const text = await fetchText(trackingUrl(match.id, options), options);
-  return parseTracking(text, match);
+  return loadTracking(trackingUrl(match.id, options), match, options);
 }

@@ -6,24 +6,29 @@ import type { PitchAppearance } from "@pitchkit/core";
 import { Pitch, Scatter, Voronoi } from "@pitchkit/react";
 import {
   DataProviderError,
+  fetchDynamicEvents,
   fetchMatch,
   fetchMatches,
   streamTracking,
 } from "@pitchkit/data-providers/skillcorner";
 import type {
+  SkillCornerEvent,
   SkillCornerFrame,
   SkillCornerMatch,
   SkillCornerMatchSummary,
 } from "@pitchkit/data-providers/skillcorner";
 import {
+  activeEventIndex,
   buildClip,
   clockLabel,
   detectionRate,
+  eventsInClip,
   matchLabel,
   toUefaX,
   toUefaY,
 } from "./skillcorner-derive";
 import type { ClipFrame, ClipPlayer } from "./skillcorner-derive";
+import { SkillCornerEventCarousel } from "./SkillCornerEventCarousel";
 
 /** Brisbane Roar v Adelaide United — the match the package fixtures were cut from. */
 const DEFAULT_MATCH_ID = 1874553;
@@ -85,6 +90,11 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
   const [playing, setPlaying] = useState(false);
   const [fps, setFps] = useState(DEFAULT_FPS);
   const [rate, setRate] = useState(0);
+  const [clipEvents, setClipEvents] = useState<SkillCornerEvent[]>([]);
+  // SkillCorner emits a passing_option per available receiver, so they
+  // outnumber everything else roughly two to one and bury the narrative.
+  // Off by default, with the count shown so nothing looks hidden.
+  const [showPassingOptions, setShowPassingOptions] = useState(false);
 
   // Lets a new load cancel one already in flight, rather than racing it.
   const abortRef = useRef<AbortController | undefined>(undefined);
@@ -103,12 +113,17 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
     setLoading(true);
     setError(undefined);
     setClip([]);
+    setClipEvents([]);
     setProgress(0);
     setPlaying(false);
 
     try {
       const loaded = await fetchMatch(matchId, { signal: controller.signal });
       setMatch(loaded);
+
+      // Kicked off before the tracking stream so the ~4 MB CSV downloads
+      // alongside it rather than after.
+      const eventsPromise = fetchDynamicEvents(loaded, { signal: controller.signal });
 
       const frames: SkillCornerFrame[] = [];
       for await (const frame of streamTracking(loaded, { signal: controller.signal })) {
@@ -125,6 +140,7 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
       setClip(buildClip(frames, loaded));
       setRate(detectionRate(frames));
       setAt(0);
+      setClipEvents(eventsInClip(await eventsPromise, frames));
     } catch (cause) {
       if (controller.signal.aborted) return;
       setError(
@@ -155,6 +171,23 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
 
   const current = clip[at];
   const colorOf = (player: ClipPlayer) => (player.isHome ? TEAM_COLORS[0] : TEAM_COLORS[1]);
+  const colorOfTeam = (teamId: number | null) =>
+    teamId !== null && teamId === match?.home_team.id ? TEAM_COLORS[0] : TEAM_COLORS[1];
+
+  const visibleEvents = showPassingOptions
+    ? clipEvents
+    : clipEvents.filter((event) => event.event_type !== "passing_option");
+  const hiddenCount = clipEvents.length - visibleEvents.length;
+  const activeEvent = current ? activeEventIndex(visibleEvents, current.frame.frame) : -1;
+
+  /** Jump the clip to the frame an event starts on. */
+  const seekToEvent = (event: SkillCornerEvent) => {
+    const index = clip.findIndex((entry) => entry.frame.frame >= event.frame_start);
+    if (index !== -1) {
+      setPlaying(false);
+      setAt(index);
+    }
+  };
 
   return (
     <section>
@@ -162,9 +195,12 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
 
       <p style={noteStyle}>
         Streams a {CLIP_FRAMES}-frame clip (~{Math.round(CLIP_FRAMES / 10)}s at 10 fps) out of a ~90
-        MB tracking file, then aborts the download. Positions are real metres on this stadium&apos;s
-        own pitch; the demo scales them onto a UEFA 105&times;68 pitch to draw them — see{" "}
-        <code>skillcorner-derive.ts</code>.
+        MB tracking file, then aborts the download. The dynamic-events strip below tracks the
+        playhead — the two files share one frame counter, so an event&apos;s{" "}
+        <code>frame_start</code> <em>is</em> a tracking frame number and the alignment is exact
+        rather than matched on timestamps. Click any card to jump there. Positions are real metres
+        on this stadium&apos;s own pitch; the demo scales them onto a UEFA 105&times;68 pitch to
+        draw them — see <code>skillcorner-derive.ts</code>.
       </p>
 
       <div style={rowStyle}>
@@ -240,6 +276,28 @@ export function SkillCornerTrackingDemo({ appearance }: { appearance: PitchAppea
             &times;{match.pitch_width} m · {Math.round(rate * 100)}% of positions genuinely
             detected, the rest extrapolated between sightings (faded markers).
           </p>
+
+          <div style={rowStyle}>
+            <span style={{ fontSize: "0.75rem", color: "#999" }}>
+              Dynamic events ({visibleEvents.length})
+            </span>
+            <label style={{ fontSize: "0.75rem", color: "#999", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={showPassingOptions}
+                onChange={(event) => setShowPassingOptions(event.target.checked)}
+                style={{ marginRight: "0.3rem" }}
+              />
+              show passing options{hiddenCount > 0 ? ` (${hiddenCount} hidden)` : ""}
+            </label>
+          </div>
+
+          <SkillCornerEventCarousel
+            events={visibleEvents}
+            activeIndex={activeEvent}
+            colorOfTeam={colorOfTeam}
+            onSelect={seekToEvent}
+          />
 
           <Pitch type="uefa" appearance={appearance}>
             <Voronoi
