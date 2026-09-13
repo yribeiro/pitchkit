@@ -2,7 +2,7 @@ import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import { notFound } from "next/navigation";
 import { source } from "@/lib/source";
-import { AgentTools } from "@/components/agent-tools";
+import { AgentLogos, AgentTools } from "@/components/agent-tools";
 import { PitchPreview } from "@/components/pitch-preview";
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
@@ -17,7 +17,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent components={{ ...defaultMdxComponents, PitchPreview, AgentTools }} />
+        <MDXContent components={{ ...defaultMdxComponents, PitchPreview, AgentTools, AgentLogos }} />
       </DocsBody>
     </DocsPage>
   );
