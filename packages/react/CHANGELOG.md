@@ -1,5 +1,17 @@
 # @pitchkit/react
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix the bundled Agent Skill (`skills/pitchkit/`) contradicting itself: it listed
+  `"skillcorner"` under "things that do not exist" while also documenting it in the
+  pitch-type table two sections later, so an agent reading top-down would refuse a
+  feature that shipped in `@pitchkit/core@0.3.0`. Also adds `@pitchkit/data-providers`
+  to the skill — it was nearly invisible (no package-table row, absent from frontmatter),
+  so an agent asked to plot real match data had no idea `fetchMatchEvents` existed.
+  `skill-doc.test.ts` gained guards against both classes of drift recurring.
+
 ## 0.4.0
 
 ### Minor Changes
