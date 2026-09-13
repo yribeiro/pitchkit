@@ -7,7 +7,7 @@ import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
 const DESCRIPTION =
-  "The React library to build beautiful football web apps — your design, your way.";
+  "The React library that brings the beautiful game to the web. Your design, your way.";
 
 /**
  * `metadataBase` is what lets the file-convention images in this directory

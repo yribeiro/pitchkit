@@ -71,8 +71,8 @@ export default function HomePage() {
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
             Football visualised for the web.
           </h1>
-          <p className="max-w-xl text-balance text-fd-muted-foreground">
-            The React library to build beautiful football web apps — your design, your way.
+          <p className="max-w-xl text-fd-muted-foreground">
+            The React library that brings the beautiful game to the web. Your design, your way.
           </p>
           <InstallCommand />
           {/* Below `sm` the CTAs split the column evenly; from `sm` up they
