@@ -158,7 +158,6 @@ is in `apps/docs`.
 
 - **[pitchkitjs.com](https://pitchkitjs.com)** — guides, API reference, and the
   [gallery](https://pitchkitjs.com/gallery) (every card ships its full source).
-- [docs/PRD.md](./docs/PRD.md) — product spec, architecture decisions and roadmap.
 
 ## Licence
 
