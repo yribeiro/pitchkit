@@ -60,19 +60,28 @@ export default function OpengraphImage() {
         height={583}
         src={uri(PITCH)}
         alt=""
-        style={{ position: "absolute", right: -300, top: 24 }}
+        /*
+         * -420 puts the pitch's left edge at 700px (1200 + 420 - 900). The
+         * copy column starts at the 84px padding and its widest box is 560,
+         * so it ends at 644 — at the old -300 the edge landed at 600 and the
+         * left penalty area ran straight through the headline.
+         */
+        style={{ position: "absolute", right: -420, top: 24 }}
       />
 
       {/* Scrim: fades the pitch into the ground so the copy keeps clean contrast
             however the text reflows. Declared before the content, so content paints
-            on top of it. */}
+            on top of it. The solid stop runs to 52% (624px) — past the copy
+            column's 644px right edge once you allow for the text being narrower
+            than its max — so a longer line than today's still lands on solid
+            ground rather than on a marking. */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           display: "flex",
           background:
-            "linear-gradient(90deg, #08100d 0%, #08100d 40%, rgba(8,16,13,0.55) 62%, rgba(8,16,13,0) 80%)",
+            "linear-gradient(90deg, #08100d 0%, #08100d 52%, rgba(8,16,13,0.55) 70%, rgba(8,16,13,0) 88%)",
         }}
       />
 
