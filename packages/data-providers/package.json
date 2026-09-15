@@ -24,7 +24,11 @@
     "analytics",
     "dataviz",
     "pitchkit",
-    "kloppy"
+    "kloppy",
+    "typescript",
+    "football-data",
+    "soccer-analytics",
+    "sports-data"
   ],
   "type": "module",
   "sideEffects": false,

@@ -1,10 +1,28 @@
 import type { Metadata } from "next";
 import { GalleryGrid } from "@/components/gallery-grid";
+import { SITE_URL } from "@/lib/site";
+
+const DESCRIPTION =
+  "Finished football visualisations built with PitchKit, the React and TypeScript charting " +
+  "library for football — shot maps, pass networks, heatmaps, hexbins, KDE surfaces, Voronoi " +
+  "— each with its full source.";
 
 export const metadata: Metadata = {
   title: "Gallery",
-  description:
-    "Finished football visualisations built with PitchKit — shot maps, pass networks, heatmaps, hexbins, KDE surfaces, Voronoi — each with its full source.",
+  description: DESCRIPTION,
+  alternates: { canonical: "/gallery" },
+  openGraph: {
+    type: "website",
+    siteName: "PitchKit",
+    url: `${SITE_URL}/gallery`,
+    title: "Gallery | PitchKit",
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gallery | PitchKit",
+    description: DESCRIPTION,
+  },
 };
 
 export default function GalleryPage() {
