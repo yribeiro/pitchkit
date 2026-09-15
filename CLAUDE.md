@@ -119,7 +119,7 @@ reintroduce a coordinate workaround in a caller.
   matches the registry exactly, so adding a pitch type fails CI until `SKILL.md` catches up.
   That is intentional.
 
-### Docs decisions that reverse an issue's recorded text
+### Docs decisions that look like bugs but aren't
 
 - **Data docs live at a top-level `/docs/data` section**, which **reverses
   [#29](https://github.com/yribeiro/pitchkit/issues/29)**'s decision to park loader docs under
@@ -138,6 +138,21 @@ reintroduce a coordinate workaround in a caller.
 - **The hero shows StatsBomb / SkillCorner / UEFA, not Opta**
   (`apps/docs/components/hero-pitch.tsx`). Opta is still a supported pitch type and #2 is
   still open — the swap was a shop-window decision, explicitly not a fix.
+- **`<title>` and the visible `<h1>` deliberately say different things**
+  ([PR #67](https://github.com/yribeiro/pitchkit/pull/67)): the title is keyword-bearing for
+  cold search ("React & TypeScript football visualisation library"), the `<h1>` is the brand
+  line ("Football visualised for the web."). Same split for `description` (keywords) versus
+  `og:`/`twitter:` (hero copy, so a shared link previews as the page it opens). **Not drift —
+  don't "fix" it by making them match.** `TAGLINE`/`SUBHEAD`/`SEARCH_DESCRIPTION` live in
+  `apps/docs/lib/site.ts` and are read by the hero, the metadata and the OG image alike,
+  because those three had already drifted into three taglines once.
+- The homepage FAQ (`apps/docs/app/(home)/page.tsx`) is the only part written for people who
+  *don't* already know mplsoccer — it's what targets cold search queries. It renders as plain
+  `<details>` (in the DOM without JS, for crawlers) **and** as `FAQPage` JSON-LD from the same
+  array; keep both generated from that one source, since structured data that disagrees with
+  the visible page gets discounted. `apps/docs/app/robots.ts` names AI crawlers explicitly
+  even though the wildcard already allows them — `Google-Extended`/`Applebot-Extended` are
+  opt-*out* tokens, where silence is ambiguous.
 
 ### Things with no test or tooling to catch drift
 
@@ -145,10 +160,15 @@ reintroduce a coordinate workaround in a caller.
   brand SVGs, the favicon cut, two generated-image components, the React logo component). See
   [CONTRIBUTING.md](./CONTRIBUTING.md)'s "Brand assets" section before touching anything
   logo-shaped; a change to one will not propagate.
-- **READMEs drift.** All three once carried a stale "`0.1.x` is the first public release" line
-  and two "zero dependencies" claims that `csv-parse` had falsified. Check root `README.md`
-  and `packages/*/README.md` whenever a dependency or version changes — nothing enforces they
-  stay in sync with `package.json` or the changelog.
+- **Prose that enumerates packages, pitch types or dependencies drifts, and nothing checks
+  it.** Instances caught so far: all three READMEs carrying a stale "`0.1.x` is the first
+  public release" line plus "zero dependencies" claims that `csv-parse` had falsified;
+  `llms.txt` listing the coordinate systems as "StatsBomb, Opta, UEFA" (no SkillCorner) and
+  describing two packages rather than three; the root `package.json` still saying
+  "React-native" long after [PR #49](https://github.com/yribeiro/pitchkit/pull/49). When you
+  add a package, pitch type or dependency, grep the whole repo for the old list — `README.md`,
+  `packages/*/README.md`, `apps/docs/lib/llms.ts`, `package.json` descriptions, and the
+  bundled skill. (The skill's pitch-type table is the one surface a test *does* guard.)
 - **A PR touching `packages/react/skills/` still needs a changeset.**
   [PR #63](https://github.com/yribeiro/pitchkit/pull/63) shipped without one and the fix sat
   unreleased on `main`; it's easy to file skill-content fixes as "just docs."

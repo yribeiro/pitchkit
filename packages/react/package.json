@@ -1,7 +1,7 @@
 {
   "name": "@pitchkit/react",
   "version": "0.4.1",
-  "description": "Thin React bindings for @pitchkit/core: declarative <Pitch> + layer components, responsive by default.",
+  "description": "React football (soccer) visualisation library — declarative <Pitch> + layer components for shot maps, pass networks and heatmaps. TypeScript, responsive by default, Next.js ready.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
   "homepage": "https://github.com/yribeiro/pitchkit#readme",
@@ -23,7 +23,17 @@
     "mplsoccer",
     "statsbomb",
     "react",
-    "nextjs"
+    "nextjs",
+    "typescript",
+    "charting",
+    "charts",
+    "data-visualization",
+    "visualisation",
+    "football-pitch",
+    "soccer-analytics",
+    "shot-map",
+    "pass-network",
+    "heatmap"
   ],
   "type": "module",
   "sideEffects": false,
