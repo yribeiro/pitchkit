@@ -9,6 +9,13 @@ copy, never "React-native" ([PR #49](https://github.com/yribeiro/pitchkit/pull/4
 it was moved out of the repo on 2026-09-15 and is **not** on GitHub any more. Read it before
 any architectural work — section references below (§7.4, §8.7, §11 …) point at that page.
 
+**Issue tracking is in Notion, not GitHub.** All 22 issues moved to the
+[PitchKit Task Board](https://app.notion.com/p/53438fe518ec441296b99e88dc75c14e) (a subpage of
+the same PitchKit area) on 2026-09-15, and every GitHub issue was closed. **`#N` throughout
+this file still means the original GitHub issue number** — that's the board's `GH #` column,
+and it stays the shared vocabulary because code comments, changelogs and PR bodies all cite it.
+Look work up by that number on the board; don't file new GitHub issues.
+
 Per-release detail lives in `packages/*/CHANGELOG.md`; don't duplicate it here.
 
 ## Architecture decisions (settled)
@@ -19,7 +26,7 @@ Per-release detail lives in `packages/*/CHANGELOG.md`; don't duplicate it here.
 - **`@pitchkit/react` is the only supported rendering surface.** Core's SVG painters
   (`render/svg/paint-*.ts`, `svgRenderer`) are internal-only, kept solely for the
   `packages/core/examples/index.html` dev harness — new marks ship React-only
-  ([issue #6](https://github.com/yribeiro/pitchkit/issues/6), resolved).
+  (issue #6, resolved).
 - Theming = CSS variables only (shadcn-style), no JS theme objects.
 - Responsive is the default (no prop); explicit width/height is the opt-out.
 - **Distribution split** (PRD §7.4/§8.4): the marks (`<Pitch>`, `<Scatter>`, `<Arrows>`,
@@ -29,7 +36,7 @@ Per-release detail lives in `packages/*/CHANGELOG.md`; don't duplicate it here.
   (`npx shadcn add pass-map`) with `@pitchkit/react` auto-installed underneath. Note the
   registry infrastructure **does not exist yet** — `apps/docs` has only an internal examples
   registry for its own gallery, not a consumable `registry.json`, which blocks
-  [#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24).
+  #23/#24.
 
 ## Status
 
@@ -38,7 +45,7 @@ Per-release detail lives in `packages/*/CHANGELOG.md`; don't duplicate it here.
 - **Milestone 3 — publishing: largely complete**, pulled forward ahead of M2 to claim the
   namespace. All three packages are on npm; docs live at
   [pitchkitjs.com](https://pitchkitjs.com). Only release _automation_ is outstanding
-  ([#36](https://github.com/yribeiro/pitchkit/issues/36)).
+  (#36).
 - **Milestone 2 — v1.0 parity push: in progress.** This plus #36 is all that remains.
 
 Landed in M2 so far: geometric overlays (Flow, Polygon, Convex Hull, Voronoi, Goal Angle);
@@ -46,34 +53,34 @@ density overlays (`<PositionalHeatmap>`, `<Hexbin>`, `<KDE>`, sharing `createCol
 `color/scale.ts`); `appearance.linesOnTop` (mplsoccer's `line_zorder`, off by default);
 `@pitchkit/data-providers`; the `skillcorner` pitch type; and the `/docs/data` section.
 
-Still open for M2: radar/pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)),
-goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)), attack/territory and
-pass-map recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
-[#24](https://github.com/yribeiro/pitchkit/issues/24)), pan/zoom
-([#26](https://github.com/yribeiro/pitchkit/issues/26)), real StatsBomb data in the **gallery
-specifically** ([#27](https://github.com/yribeiro/pitchkit/issues/27) —
-`apps/docs/components/examples/shot-map-gallery.tsx` is still hardcoded, even though
-`/docs/data` and `examples/react-nextjs` fetch live), Metrica loaders
-([#30](https://github.com/yribeiro/pitchkit/issues/30)), and the second half of
-[#59](https://github.com/yribeiro/pitchkit/issues/59) — richer SkillCorner visualisations
-(off-ball runs as `<Arrows>`/`<Comet>`, phases of play, pressure density, passing options with
-`xpass_completion`). Every selector #59 needs already exists and is tested; what's left is
-presentation only. Its other half (a real `skillcorner` pitch type in core) shipped in
-[PR #62](https://github.com/yribeiro/pitchkit/pull/62).
+Still outstanding for M2 (all on the board as Backlog / In progress): radar/pizza charts (#21),
+goal view (#22), attack/territory and pass-map recipes (#23, #24), pan/zoom (#26), and Metrica
+loaders (#30 — its SkillCorner half shipped).
 
-Also open and **not** milestone-scoped: [#2](https://github.com/yribeiro/pitchkit/issues/2)
-(Opta pitch renders square instead of 105×68) — root cause is recorded in PRD §11's
-Milestone 3 notes.
+Two items are **closed on the board but not actually finished** — don't read the status as
+"done" and skip them:
 
-**AX cluster, all open, all descending from
-[#40](https://github.com/yribeiro/pitchkit/issues/40)** (itself still open — only `AGENTS.md`
-remains; the bundled Agent Skill and `llms*.txt` shipped):
-[#41](https://github.com/yribeiro/pitchkit/issues/41) audits `Scene` for JSON-serialisability
-and SSR/headless rendering; [#42](https://github.com/yribeiro/pitchkit/issues/42) is
-**evaluate-then-maybe-build** on a PitchKit MCP server, deliberately not a commitment (an MCP
-server is an ongoing-maintenance runtime surface, unlike #40's static files);
-[#43](https://github.com/yribeiro/pitchkit/issues/43) is an agent eval harness, and is
-explicitly a prerequisite for trusting #41/#42's results.
+- **#59's second half, richer SkillCorner visualisations** — off-ball runs as
+  `<Arrows>`/`<Comet>`, phases of play, pressure density, passing options with
+  `xpass_completion`. Every selector it needs already exists and is tested; what's left is
+  presentation only. Its first half (a real `skillcorner` pitch type in core) shipped in
+  [PR #62](https://github.com/yribeiro/pitchkit/pull/62), and the issue was closed as
+  completed on the strength of that.
+- **#27 was closed as _not planned_**, superseded by `@pitchkit/data-providers` and the live
+  `/docs/data` pages — but the **gallery specifically** was never converted:
+  `apps/docs/components/examples/shot-map-gallery.tsx` is still hardcoded. That's a fresh,
+  smaller task if it still matters, not a reopening of #27.
+
+Also outstanding and **not** milestone-scoped: #2 (Opta pitch renders square instead of
+105×68) — root cause is recorded in PRD §11's Milestone 3 notes.
+
+**AX cluster, all outstanding, all descending from #40** (itself only part-done — `AGENTS.md`
+is all that remains; the bundled Agent Skill and `llms*.txt` shipped): #41 audits `Scene` for
+JSON-serialisability and SSR/headless rendering; #42 is **evaluate-then-maybe-build** on a
+PitchKit MCP server, deliberately not a commitment (an MCP server is an ongoing-maintenance
+runtime surface, unlike #40's static files); #43 is an agent eval harness, and is explicitly a
+prerequisite for trusting #41/#42's results — though its whole point was a _cold_ baseline
+recorded before #40 shipped, which didn't happen, so that baseline is unrecoverable.
 
 ## Load-bearing facts (get these wrong and things break silently)
 
@@ -122,7 +129,7 @@ reintroduce a coordinate workaround in a caller.
 ### Docs decisions that look like bugs but aren't
 
 - **Data docs live at a top-level `/docs/data` section**, which **reverses
-  [#29](https://github.com/yribeiro/pitchkit/issues/29)**'s decision to park loader docs under
+  #29**'s decision to park loader docs under
   _Configuration_ until 2–3 providers existed. That reasoning was about volume; the section
   exists for positioning (Configuration is Tailwind setup and agent-skill install — the wrong
   frame for a headline capability). Don't "restore" the old placement on the issue text alone.
@@ -177,7 +184,7 @@ reintroduce a coordinate workaround in a caller.
 
 `.github/workflows/release.yml` is `disabled_manually` — it failed with `ENEEDAUTH` (no
 `NPM_TOKEN`), so every release so far was published by hand. Tracked in
-[#36](https://github.com/yribeiro/pitchkit/issues/36); preferred fix is npm Trusted Publishing
+#36; preferred fix is npm Trusted Publishing
 (OIDC) rather than a stored token. Until then:
 
 ```bash
