@@ -1,7 +1,7 @@
 {
   "name": "@pitchkit/core",
   "version": "0.3.0",
-  "description": "Zero-dependency TypeScript core for PitchKit: coordinate systems, transforms, scene/layer model, SVG renderer.",
+  "description": "Zero-dependency TypeScript core for PitchKit, the football (soccer) visualisation library: coordinate systems, transforms, scene/layer model, SVG renderer.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
   "homepage": "https://github.com/yribeiro/pitchkit#readme",
@@ -22,8 +22,15 @@
     "analytics",
     "mplsoccer",
     "statsbomb",
+    "skillcorner",
     "opta",
-    "svg"
+    "svg",
+    "typescript",
+    "charting",
+    "data-visualization",
+    "visualisation",
+    "football-pitch",
+    "soccer-analytics"
   ],
   "type": "module",
   "sideEffects": false,

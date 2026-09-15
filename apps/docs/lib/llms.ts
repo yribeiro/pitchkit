@@ -143,9 +143,9 @@ export function renderIndex(): string {
 
   return `# PitchKit
 
-> React-first football pitch visualisation for the web — mplsoccer's feature set, built for React and Next.js instead of matplotlib. Declarative \`<Pitch>\` + layer components, provider-native coordinates (StatsBomb, Opta, UEFA), responsive by default, themed with CSS variables.
+> A React and TypeScript football (soccer) visualisation library for the web — mplsoccer's feature set, built for React and Next.js instead of matplotlib. Declarative \`<Pitch>\` + layer components for shot maps, pass networks, heatmaps, hexbins, KDE surfaces and Voronoi control zones; provider-native coordinates (StatsBomb, SkillCorner, Opta, UEFA), responsive by default, themed with CSS variables, MIT licensed.
 
-PitchKit ships two packages: \`@pitchkit/core\` (zero-dependency coordinate transforms, geometry and Canvas painters) and \`@pitchkit/react\` (the only supported rendering surface). Composite recipes and theme presets are copied into your project rather than imported.
+PitchKit ships three packages: \`@pitchkit/core\` (zero-dependency coordinate transforms, geometry and Canvas painters), \`@pitchkit/react\` (the only supported rendering surface) and \`@pitchkit/data-providers\` (typed loaders for StatsBomb open data and SkillCorner tracking). Composite recipes and theme presets are copied into your project rather than imported.
 
 Every page below is also available as raw Markdown by appending \`.md\` to its URL.
 

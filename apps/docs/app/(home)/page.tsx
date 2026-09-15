@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { HeroPitch } from "@/components/hero-pitch";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
+import { SEARCH_DESCRIPTION, SITE_URL, SUBHEAD, TAGLINE } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * The shadcn-style showcase landing page (issue #28, PRD §9): interactive
@@ -55,9 +61,105 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
 ];
 
+/**
+ * The questions people actually type when they're looking for something like
+ * this, answered in prose.
+ *
+ * Everything else on this page is written for someone who already knows what
+ * PitchKit is — "mplsoccer for the web" only parses if you know mplsoccer.
+ * This block is the other door: it says "React", "TypeScript", "charting
+ * library", "football web application" in plain sentences, which is both what
+ * a search engine matches on and what an AI answer engine can lift and cite.
+ *
+ * Rendered visibly AND as FAQPage JSON-LD below, from this same array. The two
+ * must agree — structured data that doesn't match the visible page is
+ * discounted, and hand-maintaining a second copy is how they stop agreeing.
+ */
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "Is there a React library for football visualisations?",
+    a: "PitchKit is one. It renders football (soccer) pitches and the data plotted on them as ordinary React components — <Pitch> with layers like <Scatter>, <Arrows>, <Comet>, <Heatmap> and <Voronoi> declared as its children. There is no imperative drawing API and no canvas to manage: you compose marks in JSX the way you compose anything else in a React tree, and the pitch re-renders when your data changes.",
+  },
+  {
+    q: "What is a good charting library for football data?",
+    a: "General-purpose charting libraries draw axes and bars; football data wants a pitch. PitchKit is a charting library built specifically for it — shot maps, pass networks, pass maps, heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges all ship as layers, with pitch markings, aspect ratio and coordinate handling already correct. For anything genuinely non-spatial, it composes fine alongside a conventional charting library.",
+  },
+  {
+    q: "Can I build football visualisations in TypeScript?",
+    a: "PitchKit is written in TypeScript and ships its own types — no @types package and no any at the boundary. Accessors are generic over your row type, so <Scatter data={shots} x={(s) => s.x} /> infers the element type from the array you pass and your editor autocompletes the fields. The data loaders are typed to each provider's real schema, so a mistyped event field is a compile error rather than an empty pitch.",
+  },
+  {
+    q: "Can I use PitchKit in a football web application?",
+    a: "Yes — it is a web-first library, not a notebook tool. It works in any React application, including Next.js with server-side rendering, and pitches are responsive by default: each one fills its container via ResizeObserver with a correct-aspect-ratio first paint, so it behaves inside a dashboard, a match report or a scouting tool without fixed sizing. Theming is CSS variables, so it inherits your application's design tokens and dark mode instead of bringing its own.",
+  },
+  {
+    q: "How does PitchKit compare to mplsoccer?",
+    a: "mplsoccer is the reference football visualisation library for Python and matplotlib. PitchKit covers the same ground for the web: the concepts map one-to-one — pitches, marks, accessors — so a shot map you know how to build in mplsoccer has a direct PitchKit equivalent. The difference is the output: interactive, responsive DOM you can ship in an application, rather than a rendered image. The migration guide translates each mplsoccer call to its PitchKit equivalent.",
+  },
+  {
+    q: "Which football data providers does PitchKit support?",
+    a: "StatsBomb, SkillCorner, Opta and UEFA coordinate systems are handled natively — feed data in its own units and one transform pipeline keeps everything aligned. @pitchkit/data-providers goes further and fetches it for you: fetchMatchEvents(id) returns typed StatsBomb open-data events ready to plot, including 360 freeze frames, and the SkillCorner module streams broadcast tracking, dynamic events and phases of play.",
+  },
+];
+
+/**
+ * Structured data, so an answer engine can state what this is without having
+ * to infer it from marketing copy, and so a search result can carry the FAQ.
+ *
+ * SoftwareSourceCode rather than SoftwareApplication: this is a library a
+ * developer installs, not an app anyone runs, and the wrong type invites
+ * "free / requires iOS" style rendering in results.
+ */
+function StructuredData() {
+  const graph = [
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": `${SITE_URL}/#software`,
+      name: "PitchKit",
+      alternateName: "@pitchkit/react",
+      description: SEARCH_DESCRIPTION,
+      url: SITE_URL,
+      codeRepository: "https://github.com/yribeiro/pitchkit",
+      programmingLanguage: ["TypeScript", "JavaScript"],
+      runtimePlatform: ["React", "Next.js", "Node.js", "Browser"],
+      license: "https://opensource.org/licenses/MIT",
+      applicationCategory: "DeveloperApplication",
+      keywords:
+        "react library for football, football visualisation library, charting library for football, typescript football visualisations, football web application library, soccer analytics",
+      author: {
+        "@type": "Person",
+        name: "Yohahn Ribeiro",
+        url: "https://github.com/yribeiro",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE_URL}/#faq`,
+      mainEntity: FAQ.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    },
+  ];
+
+  return (
+    <script
+      type="application/ld+json"
+      // Safe: every value in `graph` is a literal in this file, so there is no
+      // untrusted input to escape.
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
+      }}
+    />
+  );
+}
+
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
+      <StructuredData />
+
       {/* Hero */}
       <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-16 pt-14 lg:grid-cols-[1fr_1.1fr] lg:gap-14 lg:pt-24">
         {/* `min-w-0` is load-bearing, not decoration: a grid item defaults to
@@ -68,12 +170,13 @@ export default function HomePage() {
           <span className="rounded-full border border-fd-border bg-fd-card px-3 py-1 text-xs font-medium text-fd-muted-foreground">
             React First · AI Native · TypeScript · MIT
           </span>
+          {/* Both strings come from lib/site.ts, which the page metadata and
+              the generated OG image also read — a shared link has to preview
+              as the page it opens. */}
           <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl">
-            Football visualised for the web.
+            {TAGLINE}
           </h1>
-          <p className="max-w-xl text-fd-muted-foreground">
-            The React library built for the beautiful game. Your design, your way.
-          </p>
+          <p className="max-w-xl text-fd-muted-foreground">{SUBHEAD}</p>
           <InstallCommand />
           {/* Below `sm` the CTAs split as 2-cols with the gallery spanning full
               width; from `sm` up they form a 3-column equal-width grid filling
@@ -189,6 +292,54 @@ export default function HomePage() {
                 </h3>
                 <p className="text-sm leading-relaxed text-fd-muted-foreground">{f.body}</p>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ — see the FAQ constant for why this section exists. */}
+      <section className="border-t border-fd-border">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20">
+          <div className="flex max-w-2xl flex-col gap-3 pb-10">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-fd-primary">
+              Questions
+            </span>
+            <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground sm:text-3xl">
+              What PitchKit is, in plain terms.
+            </h2>
+          </div>
+
+          {/* Plain <details> rather than an accordion component: these answers
+              have to be in the DOM and readable with no JavaScript for a
+              crawler to use them, and native disclosure gives that for free
+              along with keyboard behaviour and find-in-page expansion. */}
+          <div className="grid gap-3 lg:grid-cols-2">
+            {FAQ.map((item) => (
+              <details
+                key={item.q}
+                className="group rounded-xl border border-fd-border bg-fd-card/40 p-5 transition-colors open:bg-fd-card/70 hover:border-fd-primary/40"
+              >
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-base font-semibold leading-snug text-fd-foreground marker:content-none">
+                  <h3 className="text-base font-semibold leading-snug">{item.q}</h3>
+                  <span
+                    aria-hidden
+                    className="mt-0.5 shrink-0 text-fd-muted-foreground/60 transition-transform group-open:rotate-45"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                      strokeLinecap="round"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="pt-3 text-sm leading-relaxed text-fd-muted-foreground">{item.a}</p>
+              </details>
             ))}
           </div>
         </div>

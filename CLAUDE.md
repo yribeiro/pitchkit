@@ -258,6 +258,27 @@ namespace and get the library installable:
   ([PR #57](https://github.com/yribeiro/pitchkit/pull/57)), a shortened hero tagline
   ("Football visualised for the web.", [PR #60](https://github.com/yribeiro/pitchkit/pull/60)),
   and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
+- **SEO / AI-search pass.** Target queries: "react library for football", "football web
+  application library", "typescript football visualisations", "charting library for
+  football", "visualisation library football". The load-bearing decisions:
+  - **`<title>` and the visible hero deliberately say different things.** The `<title>` is
+    "PitchKit — React & TypeScript football visualisation library" (what people search for);
+    the `<h1>` is still "Football visualised for the web." (the brand line from
+    [PR #60](https://github.com/yribeiro/pitchkit/pull/60)/[PR #65](https://github.com/yribeiro/pitchkit/pull/65)).
+    This is not drift — **don't "fix" it by making them match.** Likewise `description` is
+    keyword-bearing while `og:`/`twitter:` carry the hero copy, so a shared link previews as
+    the page it opens.
+  - `TAGLINE`, `SUBHEAD` and `SEARCH_DESCRIPTION` live in `apps/docs/lib/site.ts`. The hero,
+    the page metadata and the generated OG image all read them, because those three had
+    already drifted into three different taglines once.
+  - The homepage FAQ section (`FAQ` in `apps/docs/app/(home)/page.tsx`) is the part that
+    actually targets the queries — the rest of the site is written for people who already
+    know mplsoccer. It renders as plain `<details>` (in the DOM with no JS, for crawlers)
+    **and** as `FAQPage` JSON-LD from the same array; structured data that disagrees with
+    the visible page gets discounted, so keep them generated from the one source.
+  - `apps/docs/app/robots.ts` names the AI crawlers explicitly. The wildcard already allows
+    them; the point is that `Google-Extended`/`Applebot-Extended` are opt-*out* tokens where
+    silence is ambiguous.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs

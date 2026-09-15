@@ -3,11 +3,8 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { PostHogProvider } from "@/components/posthog-provider";
-import { SITE_URL as SITE } from "@/lib/site";
+import { SEARCH_DESCRIPTION, SITE_URL as SITE, SUBHEAD, TAGLINE } from "@/lib/site";
 import "./globals.css";
-
-const DESCRIPTION =
-  "The React library built for the beautiful game. Your design, your way.";
 
 /**
  * `metadataBase` is what lets the file-convention images in this directory
@@ -19,33 +16,58 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
     template: "%s | PitchKit",
-    default: "PitchKit — Football visualised for the web",
+    /*
+     * The <title> is the strongest single ranking signal the site has, so it
+     * spends its characters on what the library *is* rather than on the
+     * tagline. The tagline is not lost: it still opens the page itself, and
+     * still fronts every social card below.
+     */
+    default: "PitchKit — React & TypeScript football visualisation library",
   },
-  description: DESCRIPTION,
+  description: SEARCH_DESCRIPTION,
   applicationName: "PitchKit",
+  /*
+   * Whole phrases, not single words. The value of this tag is no longer in
+   * ranking — Google has ignored it for years — but in handing an LLM crawler
+   * a compact, unambiguous statement of what the library competes as.
+   */
   keywords: [
-    "football",
-    "soccer",
-    "data visualisation",
-    "react",
-    "mplsoccer",
-    "pitch",
-    "analytics",
-    "statsbomb",
-    "opta",
+    "react library for football",
+    "football visualisation library",
+    "visualisation library football",
+    "charting library for football",
+    "football web application library",
+    "typescript football visualisations",
+    "soccer data visualization react",
+    "football pitch react component",
+    "shot map react",
+    "pass network chart",
+    "football analytics javascript",
+    "mplsoccer alternative javascript",
+    "statsbomb react",
+    "skillcorner tracking data",
+    "nextjs football charts",
   ],
+  category: "technology",
   authors: [{ name: "Yohahn Ribeiro", url: "https://github.com/yribeiro" }],
+  creator: "Yohahn Ribeiro",
+  alternates: { canonical: "/" },
+  /*
+   * Social cards carry the landing page's own copy, not the search
+   * description: a shared link should preview as the page it opens.
+   */
   openGraph: {
     type: "website",
     siteName: "PitchKit",
     url: SITE,
-    title: "PitchKit — Football visualised for the web",
-    description: DESCRIPTION,
+    locale: "en_GB",
+    title: `PitchKit — ${TAGLINE}`,
+    description: SUBHEAD,
   },
   twitter: {
     card: "summary_large_image",
-    title: "PitchKit — Football visualised for the web",
-    description: DESCRIPTION,
+    title: `PitchKit — ${TAGLINE}`,
+    description: SUBHEAD,
   },
 };
 

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SUBHEAD, TAGLINE } from "@/lib/site";
 
 /**
  * The social card every share of pitchkitjs.com renders.
@@ -11,7 +12,7 @@ import { ImageResponse } from "next/og";
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "PitchKit — Football visualised for the web";
+export const alt = `PitchKit — ${TAGLINE}`;
 
 /** A full UEFA pitch (105x68m) at real marking proportions. */
 const PITCH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105 68" width="900" height="583">
@@ -91,23 +92,41 @@ export default function OpengraphImage() {
         </div>
       </div>
 
+      {/* The landing page's own <h1> and subhead, so a shared link previews as
+          the page it opens rather than as a fourth restatement of what the
+          library is. Both come from lib/site.ts, which the hero also reads. */}
       <div
         style={{
           display: "flex",
-          marginTop: 28,
-          fontSize: 34,
-          color: "#a9bcb4",
-          maxWidth: 540,
-          lineHeight: 1.35,
+          marginTop: 30,
+          fontSize: 40,
+          fontWeight: 600,
+          color: "#e2ede8",
+          maxWidth: 560,
+          lineHeight: 1.2,
+          letterSpacing: "-0.02em",
         }}
       >
-        A React-first football pitch visualisation library for the web.
+        {TAGLINE}
       </div>
 
       <div
         style={{
           display: "flex",
-          marginTop: 42,
+          marginTop: 18,
+          fontSize: 26,
+          color: "#a9bcb4",
+          maxWidth: 540,
+          lineHeight: 1.35,
+        }}
+      >
+        {SUBHEAD}
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          marginTop: 36,
           fontSize: 24,
           color: "#74897f",
           letterSpacing: "0.04em",
