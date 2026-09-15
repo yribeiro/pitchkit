@@ -82,7 +82,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What is a good charting library for football data?",
-    a: "General-purpose charting libraries draw axes and bars; football data wants a pitch. PitchKit is a charting library built specifically for it — shot maps, pass networks, pass maps, heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges all ship as layers, with pitch markings, aspect ratio and coordinate handling already correct. For anything genuinely non-spatial, it composes fine alongside a conventional charting library.",
+    a: "PitchKit is a charting library built specifically for football data. Shot maps, pass networks, pass maps, heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges all ship as layers, with pitch markings, aspect ratio and coordinate handling already correct — so you plot events in their own coordinates rather than mapping them onto a generic set of axes first. For non-spatial charts it composes happily alongside whichever general-purpose charting library you already use.",
   },
   {
     q: "Can I build football visualisations in TypeScript?",
@@ -90,11 +90,11 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Can I use PitchKit in a football web application?",
-    a: "Yes — it is a web-first library, not a notebook tool. It works in any React application, including Next.js with server-side rendering, and pitches are responsive by default: each one fills its container via ResizeObserver with a correct-aspect-ratio first paint, so it behaves inside a dashboard, a match report or a scouting tool without fixed sizing. Theming is CSS variables, so it inherits your application's design tokens and dark mode instead of bringing its own.",
+    a: "Yes — it is built for the browser. It works in any React application, including Next.js with server-side rendering, and pitches are responsive by default: each one fills its container via ResizeObserver with a correct-aspect-ratio first paint, so it behaves inside a dashboard, a match report or a scouting tool without fixed sizing. Theming is CSS variables, so it inherits your application's design tokens and dark mode instead of bringing its own.",
   },
   {
     q: "How does PitchKit compare to mplsoccer?",
-    a: "mplsoccer is the reference football visualisation library for Python and matplotlib. PitchKit covers the same ground for the web: the concepts map one-to-one — pitches, marks, accessors — so a shot map you know how to build in mplsoccer has a direct PitchKit equivalent. The difference is the output: interactive, responsive DOM you can ship in an application, rather than a rendered image. The migration guide translates each mplsoccer call to its PitchKit equivalent.",
+    a: "mplsoccer is the reference football visualisation library for Python and matplotlib, and PitchKit covers the same ground for the web. The concepts map one-to-one — pitches, marks, accessors — so a shot map you know how to build in mplsoccer has a direct PitchKit equivalent. The difference is the target: mplsoccer renders figures for Python analysis and publication, PitchKit renders interactive DOM for shipping inside a web application. Pick whichever matches where the chart needs to end up. The migration guide translates each mplsoccer call to its PitchKit equivalent.",
   },
   {
     q: "Which football data providers does PitchKit support?",
@@ -313,7 +313,11 @@ export default function HomePage() {
               have to be in the DOM and readable with no JavaScript for a
               crawler to use them, and native disclosure gives that for free
               along with keyboard behaviour and find-in-page expansion. */}
-          <div className="grid gap-3 lg:grid-cols-2">
+          {/* One column, not a two-up grid: as a grid, opening a card grew its
+              row and shunted its neighbour, and the eye had no single reading
+              order through the questions. Capped at 3xl so an open answer stays
+              at a readable measure instead of running the full 6xl width. */}
+          <div className="flex max-w-3xl flex-col gap-3">
             {FAQ.map((item) => (
               <details
                 key={item.q}
