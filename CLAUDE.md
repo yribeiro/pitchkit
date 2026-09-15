@@ -37,7 +37,7 @@ Per-release detail lives in `packages/*/CHANGELOG.md`; don't duplicate it here.
   `@pitchkit/react`, Tailwind integration, docs site + showcase website).
 - **Milestone 3 — publishing: largely complete**, pulled forward ahead of M2 to claim the
   namespace. All three packages are on npm; docs live at
-  [pitchkitjs.com](https://pitchkitjs.com). Only release *automation* is outstanding
+  [pitchkitjs.com](https://pitchkitjs.com). Only release _automation_ is outstanding
   ([#36](https://github.com/yribeiro/pitchkit/issues/36)).
 - **Milestone 2 — v1.0 parity push: in progress.** This plus #36 is all that remains.
 
@@ -147,12 +147,12 @@ reintroduce a coordinate workaround in a caller.
   `apps/docs/lib/site.ts` and are read by the hero, the metadata and the OG image alike,
   because those three had already drifted into three taglines once.
 - The homepage FAQ (`apps/docs/app/(home)/page.tsx`) is the only part written for people who
-  *don't* already know mplsoccer — it's what targets cold search queries. It renders as plain
+  _don't_ already know mplsoccer — it's what targets cold search queries. It renders as plain
   `<details>` (in the DOM without JS, for crawlers) **and** as `FAQPage` JSON-LD from the same
   array; keep both generated from that one source, since structured data that disagrees with
   the visible page gets discounted. `apps/docs/app/robots.ts` names AI crawlers explicitly
   even though the wildcard already allows them — `Google-Extended`/`Applebot-Extended` are
-  opt-*out* tokens, where silence is ambiguous.
+  opt-_out_ tokens, where silence is ambiguous.
 
 ### Things with no test or tooling to catch drift
 
@@ -168,7 +168,7 @@ reintroduce a coordinate workaround in a caller.
   "React-native" long after [PR #49](https://github.com/yribeiro/pitchkit/pull/49). When you
   add a package, pitch type or dependency, grep the whole repo for the old list — `README.md`,
   `packages/*/README.md`, `apps/docs/lib/llms.ts`, `package.json` descriptions, and the
-  bundled skill. (The skill's pitch-type table is the one surface a test *does* guard.)
+  bundled skill. (The skill's pitch-type table is the one surface a test _does_ guard.)
 - **A PR touching `packages/react/skills/` still needs a changeset.**
   [PR #63](https://github.com/yribeiro/pitchkit/pull/63) shipped without one and the fix sat
   unreleased on `main`; it's easy to file skill-content fixes as "just docs."
