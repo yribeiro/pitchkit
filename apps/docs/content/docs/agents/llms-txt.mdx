@@ -11,9 +11,9 @@ API.
 
 | URL | Contents | Size |
 | --- | --- | --- |
-| [`/llms.txt`](https://pitchkitjs.com/llms.txt) | An index of every page, one line each | ~600 tokens |
-| [`/llms-full.txt`](https://pitchkitjs.com/llms-full.txt) | Every guide, component, overlay and data page as one document, code examples inlined | ~14k tokens |
-| [`/llms-api.txt`](https://pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, every symbol | ~22k tokens |
+| [`/llms.txt`](https://www.pitchkitjs.com/llms.txt) | An index of every page, one line each | ~600 tokens |
+| [`/llms-full.txt`](https://www.pitchkitjs.com/llms-full.txt) | Every guide, component, overlay and data page as one document, code examples inlined | ~14k tokens |
+| [`/llms-api.txt`](https://www.pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, every symbol | ~22k tokens |
 
 Start with `/llms.txt`. It's small enough to sit in a prompt without crowding anything out, and
 it links to everything else — most agents will fetch what they need from it.
@@ -28,9 +28,9 @@ is 117 pages of signatures that crowd out the prose actually teaching the librar
 Append `.md` to any docs URL:
 
 ```text
-https://pitchkitjs.com/docs/guides/theming.md
-https://pitchkitjs.com/docs/overlays/scatter.md
-https://pitchkitjs.com/docs/data/statsbomb/events.md
+https://www.pitchkitjs.com/docs/guides/theming.md
+https://www.pitchkitjs.com/docs/overlays/scatter.md
+https://www.pitchkitjs.com/docs/data/statsbomb/events.md
 ```
 
 Useful when you know exactly which page is relevant and don't want to spend context on the
@@ -49,5 +49,5 @@ can't reach your filesystem; use the skill for everything else.
 
 ## Machine discovery
 
-The files are listed in [the sitemap](https://pitchkitjs.com/sitemap.xml) alongside every page
+The files are listed in [the sitemap](https://www.pitchkitjs.com/sitemap.xml) alongside every page
 and its `.md` twin, so a crawler that only reads the sitemap still finds them.

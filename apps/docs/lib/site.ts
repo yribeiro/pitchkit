@@ -1,10 +1,21 @@
 /**
  * The canonical origin. Shared rather than repeated because it's baked into
- * absolute URLs in three unrelated places — `metadataBase` for social images,
- * the sitemap, and the links inside /llms.txt — and a stale copy in any of
- * them fails silently rather than loudly.
+ * absolute URLs in four unrelated places — `metadataBase` for social images,
+ * every page's canonical, the sitemap, and the links inside /llms.txt — and a
+ * stale copy in any of them fails silently rather than loudly.
+ *
+ * **It must match the host Vercel actually serves, including the `www`.** The
+ * apex 308-redirects to `www`, so while this said `https://pitchkitjs.com`
+ * every canonical pointed at a URL that redirected, all ~470 sitemap entries
+ * cost a hop, and any fetcher that does not follow redirects — which includes
+ * some of the agent crawlers these absolute URLs exist for — got a bodyless
+ * 308 instead of the page.
+ *
+ * If the Vercel domain settings are ever flipped so the apex is primary and
+ * `www` redirects to it, change this back in the same commit; the two have to
+ * agree, and nothing here can detect that they have stopped agreeing.
  */
-export const SITE_URL = "https://pitchkitjs.com";
+export const SITE_URL = "https://www.pitchkitjs.com";
 
 /**
  * The landing page's own headline and subhead.
