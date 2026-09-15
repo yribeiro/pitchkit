@@ -14,8 +14,16 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = `PitchKit — ${TAGLINE}`;
 
-/** A full UEFA pitch (105x68m) at real marking proportions. */
-const PITCH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105 68" width="900" height="583">
+/**
+ * A full UEFA pitch (105x68m) at real marking proportions.
+ *
+ * 840x544 is 8px per metre exactly, which is what makes the centre circle fit:
+ * its right edge sits at (52.5 + 9.15) * 8 = 493px from the pitch's left edge,
+ * so with that edge at 660px the circle closes at 1153 — inside the 1200px
+ * card with room to spare. At the previous 900px wide it closed past the right
+ * edge and the circle was cut in half.
+ */
+const PITCH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105 68" width="840" height="544">
   <g fill="none" stroke="#34d399" stroke-width="0.3" stroke-opacity="0.45">
     <rect x="0.25" y="0.25" width="104.5" height="67.5"/>
     <path d="M52.5 0.25V67.75"/>
@@ -56,23 +64,37 @@ export default function OpengraphImage() {
     >
       {/* The pitch as ground, bleeding off the right edge. */}
       <img
-        width={900}
-        height={583}
+        width={840}
+        height={544}
         src={uri(PITCH)}
         alt=""
-        style={{ position: "absolute", right: -300, top: 24 }}
+        /*
+         * Left edge at 660px (1200 + 300 - 840), which has to satisfy two
+         * constraints at once: clear of the copy column, which starts at the
+         * 84px padding and whose widest box is 560 so it ends at 644; and far
+         * enough left that the centre circle still closes before 1200. See the
+         * PITCH comment for why the pitch is 840 wide rather than 900 — at the
+         * original size no offset satisfied both, and the markings either ran
+         * through the headline or cut the circle in half.
+         *
+         * `top` centres the 544-tall pitch in the 630-tall card.
+         */
+        style={{ position: "absolute", right: -300, top: 43 }}
       />
 
       {/* Scrim: fades the pitch into the ground so the copy keeps clean contrast
             however the text reflows. Declared before the content, so content paints
-            on top of it. */}
+            on top of it. The solid stop runs to 52% (624px) — past the copy
+            column's 644px right edge once you allow for the text being narrower
+            than its max — so a longer line than today's still lands on solid
+            ground rather than on a marking. */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           display: "flex",
           background:
-            "linear-gradient(90deg, #08100d 0%, #08100d 40%, rgba(8,16,13,0.55) 62%, rgba(8,16,13,0) 80%)",
+            "linear-gradient(90deg, #08100d 0%, #08100d 52%, rgba(8,16,13,0.55) 70%, rgba(8,16,13,0) 88%)",
         }}
       />
 
