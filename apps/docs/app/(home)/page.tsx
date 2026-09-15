@@ -313,11 +313,12 @@ export default function HomePage() {
               have to be in the DOM and readable with no JavaScript for a
               crawler to use them, and native disclosure gives that for free
               along with keyboard behaviour and find-in-page expansion. */}
-          {/* One column, not a two-up grid: as a grid, opening a card grew its
-              row and shunted its neighbour, and the eye had no single reading
-              order through the questions. Capped at 3xl so an open answer stays
-              at a readable measure instead of running the full 6xl width. */}
-          <div className="flex max-w-3xl flex-col gap-3">
+          {/* One full-width column, not a two-up grid: as a grid, opening a
+              card grew its row and shunted its neighbour, and the eye had no
+              single reading order through the questions. The answer paragraph
+              carries its own max-w-3xl so a long answer still reads at a
+              sensible measure inside the wide card. */}
+          <div className="flex flex-col gap-3">
             {FAQ.map((item) => (
               <details
                 key={item.q}
@@ -342,7 +343,9 @@ export default function HomePage() {
                     </svg>
                   </span>
                 </summary>
-                <p className="pt-3 text-sm leading-relaxed text-fd-muted-foreground">{item.a}</p>
+                <p className="max-w-3xl pt-3 text-sm leading-relaxed text-fd-muted-foreground">
+                  {item.a}
+                </p>
               </details>
             ))}
           </div>
