@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Annotate, Arrows, Comet, Pitch, Scatter } from "@pitchkit/react";
-import { fetchMatchEvents, isCarry, isPass, isShot } from "@pitchkit/data-providers/statsbomb";
+import {
+  fetchMatchEvents,
+  isCarry,
+  isGoal,
+  isPass,
+  shots,
+} from "@pitchkit/data-providers/statsbomb";
 import type {
   StatsBombCarry,
   StatsBombEvent,
@@ -15,53 +21,50 @@ import { docsAppearance } from "./docs-appearance";
 const EURO_2024_FINAL = 3943043;
 
 interface Chain {
-  /** The first pass of the move — where the build-up begins. */
-  start: StatsBombPass;
   passes: StatsBombPass[];
   carries: StatsBombCarry[];
-  shot: StatsBombShot;
+  goal: StatsBombShot;
 }
 
 /**
- * The possession that produced the match's first shot, cut off at the shot.
+ * The possession that produced England's goal, cut off at the goal itself.
  *
  * StatsBomb stamps every event with a `possession` number and the team that
- * owned it, so the chain is a filter rather than a reconstruction. Two
+ * owned it, so the move is a filter rather than a reconstruction. Two
  * details do the real work:
  *
  * - A possession does **not** end at the shot — it runs on until the ball
- *   changes hands, so it has to be truncated at the shot itself.
+ *   changes hands, so it has to be truncated at the goal itself.
  * - A possession contains the *other* team's events too (pressures, blocks,
  *   an interception that didn't stick), so it's filtered down to the team
  *   that owned it.
  */
-function firstShotChain(events: StatsBombEvent[]): Chain | undefined {
-  const shot = events.find(isShot);
-  if (!shot) return undefined;
+function goalChain(events: StatsBombEvent[]): Chain | undefined {
+  const goal = shots(events)
+    .filter(isGoal)
+    .find((shot) => shot.team.name === "England");
+  if (!goal) return undefined;
 
-  const possession = events.filter((event) => event.possession === shot.possession);
-  const upToShot = possession.slice(0, possession.indexOf(shot) + 1);
-  const attacking = upToShot.filter((event) => event.team.id === event.possession_team.id);
-
-  const passes = attacking.filter(isPass);
-  const start = passes[0];
-  if (!start) return undefined;
+  const possession = events.filter((event) => event.possession === goal.possession);
+  const upToGoal = possession.slice(0, possession.indexOf(goal) + 1);
+  const attacking = upToGoal.filter((event) => event.team.id === event.possession_team.id);
 
   return {
-    start,
-    passes,
-    // Carries that stayed still are noise on a pitch, not progression.
+    passes: attacking.filter(isPass),
+    // A unit or two is a touch adjustment, not progression — and it
+    // renders as a speck rather than a trail. (StatsBomb x/y are abstract
+    // units on a 120 x 80 grid, not metres.)
     carries: attacking
       .filter(isCarry)
-      .filter((carry) => Math.hypot(carry.endX - carry.x, carry.endY - carry.y) > 1),
-    shot,
+      .filter((carry) => Math.hypot(carry.endX - carry.x, carry.endY - carry.y) > 2),
+    goal,
   };
 }
 
 /**
- * The quickstart's finished chart: load a real match, isolate the first
- * possession that ends in a shot, and plot it — passes as arrows, carries
- * as comet trails, the shot as a highlighted marker.
+ * The quickstart's finished chart: load a real match, isolate the move that
+ * produced a goal, and plot it — passes as arrows, carries as comet trails,
+ * the goal as a labelled marker.
  */
 export function QuickstartChainBasic() {
   const [chain, setChain] = useState<Chain | undefined>();
@@ -69,7 +72,7 @@ export function QuickstartChainBasic() {
 
   useEffect(() => {
     fetchMatchEvents(EURO_2024_FINAL)
-      .then((events) => setChain(firstShotChain(events)))
+      .then((events) => setChain(goalChain(events)))
       .catch(() => setFailed(true));
   }, []);
 
@@ -80,7 +83,7 @@ export function QuickstartChainBasic() {
           ? "Couldn't reach StatsBomb open data."
           : chain === undefined
             ? "Fetching Spain 2–1 England from StatsBomb open data (~3 MB)…"
-            : `${chain.passes.length} passes · ${chain.carries.length} carries · ${chain.shot.player?.name ?? "Unknown"}, ${chain.shot.minute}'`}
+            : `${chain.passes.length} passes · ${chain.carries.length} ${chain.carries.length === 1 ? "carry" : "carries"} · ${chain.goal.player?.name ?? "Unknown"}, ${chain.goal.minute}'`}
       </p>
 
       <Pitch type="statsbomb" appearance={docsAppearance}>
@@ -114,24 +117,22 @@ export function QuickstartChainBasic() {
           tooltip={(pass) => pass.player?.name ?? "Unknown"}
         />
         <Scatter
-          data={chain ? [chain.shot] : []}
-          x={(shot) => shot.x}
-          y={(shot) => shot.y}
+          data={chain ? [chain.goal] : []}
+          x={(goal) => goal.x}
+          y={(goal) => goal.y}
           r={6}
           fill="var(--pitch-marker-goal)"
           stroke="white"
           strokeWidth={2}
-          tooltip={(shot) =>
-            `${shot.player?.name ?? "Unknown"} — ${shot.shot.outcome.name}, ${shot.shot.statsbomb_xg.toFixed(2)} xG`
+          tooltip={(goal) =>
+            `${goal.player?.name ?? "Unknown"} — goal, ${goal.shot.statsbomb_xg.toFixed(2)} xG`
           }
         />
-        {/* Labelled at the chain's start, not the shot: the shot sits on the
-            byline, where a centred label would run off the edge of the pitch. */}
         <Annotate
-          data={chain ? [chain.start] : []}
-          x={(event) => event.x}
-          y={(event) => event.y}
-          label={(event) => `${event.player?.name ?? "Build-up"} starts it`}
+          data={chain ? [chain.goal] : []}
+          x={(goal) => goal.x}
+          y={(goal) => goal.y}
+          label={(goal) => `Goal · ${goal.shot.statsbomb_xg.toFixed(2)} xG`}
           offsetY={-12}
         />
       </Pitch>
