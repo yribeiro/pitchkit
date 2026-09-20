@@ -1,0 +1,153 @@
+---
+title: Quickstart
+description: Build a real chart from real data — the possession that produced the first shot of the Euro 2024 final.
+---
+
+By the end of this page you'll have plotted a real passage of play from a real match: the
+possession Spain built out of their own box in the 11th minute of the **Euro 2024 final**
+against England, ending in Nico Williams' shot.
+
+Nothing here is hardcoded. The match arrives over the network, the chain is found by
+filtering it, and the chart is a stack of PitchKit layers over the result.
+
+<PitchPreview name="quickstart-chain-basic" />
+
+## Install
+
+`core` is the engine and `react` the bindings; `data-providers` is optional, and is what
+turns a match id into typed events.
+
+```bash
+npm install @pitchkit/core @pitchkit/react @pitchkit/data-providers
+```
+
+## Step 1 — load a match
+
+One call, one match id. The Euro 2024 final is `3943043`; every fixture is discoverable
+through `fetchCompetitions` and `fetchMatches` (see [Events](/docs/data/statsbomb/events)).
+
+```ts
+import { fetchMatchEvents } from "@pitchkit/data-providers/statsbomb";
+
+const events = await fetchMatchEvents(3943043); // Spain 2–1 England
+```
+
+`events` is ~3,500 StatsBomb events in StatsBomb's own shape — nothing is renamed. The one
+addition is that `location` arrays are lifted to `x` / `y` (and `end_location` to
+`endX` / `endY`), so an accessor can read them directly.
+
+<Callout type="warn">
+  A match file is roughly 3 MB. Fetch it once and cache it — don't call `fetchMatchEvents` inside a
+  render.
+</Callout>
+
+## Step 2 — draw a pitch
+
+`<Pitch>` owns the coordinate system. Tell it which provider's grid your numbers are on and
+it does the rest — StatsBomb's is 120 × 80, so nothing needs normalising.
+
+```tsx
+import { Pitch } from "@pitchkit/react";
+
+<Pitch type="statsbomb" />;
+```
+
+It's responsive by default: it fills its container and keeps the pitch's aspect ratio.
+Passing explicit `width`/`height` is the opt-out, not the norm.
+
+## Step 3 — find the chain
+
+This is the part that's actually football rather than plumbing. StatsBomb stamps every event
+with a `possession` number and the team that owned it, so "the move that led to the first
+shot" is a filter, not a reconstruction:
+
+```ts
+import { isCarry, isPass, isShot } from "@pitchkit/data-providers/statsbomb";
+
+const shot = events.find(isShot);
+if (!shot) return; // no shots in the match
+
+const possession = events.filter((event) => event.possession === shot.possession);
+const upToShot = possession.slice(0, possession.indexOf(shot) + 1);
+const attacking = upToShot.filter((event) => event.team.id === event.possession_team.id);
+
+const passes = attacking.filter(isPass);
+const carries = attacking.filter(isCarry);
+```
+
+Two details there are easy to get wrong, and both fail quietly:
+
+- **A possession doesn't end at the shot.** It runs on until the ball genuinely changes
+  hands — rebound, clearance, restart — so without the `slice` you'd draw everything that
+  happened afterwards too.
+- **A possession contains the other team's events.** Pressures, blocks, an interception that
+  didn't stick are all stamped with the same `possession` number. Comparing `team` against
+  `possession_team` keeps the chain to the side building it.
+
+`isPass`, `isCarry` and `isShot` are type guards, so `passes` is `StatsBombPass[]` from here
+on — `pass.endX` and `shot.shot.statsbomb_xg` typecheck. (Testing `event.type.name === "Shot"`
+yourself won't narrow, because StatsBomb's discriminant is nested inside `type`; see
+[Events](/docs/data/statsbomb/events).)
+
+## Step 4 — plot the moves
+
+Layers stack inside the `<Pitch>`, in paint order. Each one takes plain data plus **accessor
+functions** — which is why the StatsBomb objects go in untranslated:
+
+```tsx
+import { Arrows, Comet, Pitch, Scatter } from "@pitchkit/react";
+
+<Pitch type="statsbomb">
+  <Comet
+    data={carries}
+    x={(carry) => carry.x}
+    y={(carry) => carry.y}
+    x2={(carry) => carry.endX}
+    y2={(carry) => carry.endY}
+    gradient
+  />
+  <Arrows
+    data={passes}
+    x={(pass) => pass.x}
+    y={(pass) => pass.y}
+    x2={(pass) => pass.endX}
+    y2={(pass) => pass.endY}
+  />
+  <Scatter
+    data={[shot]}
+    x={(s) => s.x}
+    y={(s) => s.y}
+    r={6}
+    tooltip={(s) => `${s.player?.name} — ${s.shot.outcome.name}`}
+  />
+</Pitch>;
+```
+
+Passes get arrows because direction is the whole point; carries get comet trails so a run
+with the ball reads differently from a pass; the shot gets a marker of its own. Swap in any
+other overlay the same way — the data never changes shape to suit the layer.
+
+Most props accept a static value _or_ a per-datum function, so styling is data-driven
+without a separate encoding step:
+
+```tsx
+<Scatter data={shots} x={(s) => s.x} y={(s) => s.y} r={(s) => 3 + s.shot.statsbomb_xg * 9} />
+```
+
+## The finished chart
+
+That's the example at the top of this page: 11 passes and 7 carries from Laporte's first
+touch, back through Unai Simón, out to Cucurella and Fabián Ruiz, and forward to Williams —
+blocked by John Stones at 0.07 xG. Expand **View Code** on the preview for the complete
+component, including the loading states.
+
+## Where to go next
+
+- **[Coordinates & pitch types](/docs/guides/coordinates)** — what `type="statsbomb"`
+  actually sets, and how to plot Opta, UEFA, SkillCorner or your own grid.
+- **[Overlays](/docs/overlays/scatter)** — every layer, one page each, with a live example.
+- **[Data](/docs/data)** — the rest of `@pitchkit/data-providers`: StatsBomb
+  [360 tracking](/docs/data/statsbomb/360) and [SkillCorner](/docs/data/skillcorner/tracking).
+- **[Theming](/docs/guides/theming)** — the pitch is styled with CSS variables, so it
+  inherits your app's look.
+- **[Build with AI](/docs/agents)** — hand an agent the real API instead of letting it guess.

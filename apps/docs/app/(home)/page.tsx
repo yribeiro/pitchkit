@@ -183,10 +183,10 @@ export default function HomePage() {
               the available width. */}
           <div className="grid w-full max-w-xl grid-cols-2 gap-3 pt-1 sm:grid-cols-3">
             <Link
-              href="/docs"
+              href="/docs/quickstart"
               className="inline-flex items-center justify-center rounded-lg bg-fd-primary px-3 py-2.5 text-center text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
             >
-              Get started
+              Quickstart
             </Link>
             <Link
               href="/docs/agents"
