@@ -51,16 +51,38 @@
 }
 
 /*
- * The landing hero's pitch: a deliberately darker, broadcast-graphics look
+ * The landing hero's showcase pitch: a deliberately darker, broadcast-graphics look
  * (near-black surface, low-contrast markings, one bright accent) that reads
  * as a product screenshot in both site themes — themed through the same
  * --pitch-* variables as every other pitch on the site.
  */
-.pitchkit-hero-pitch {
+.pitchkit-hero-showcase {
   --pitch-surface: #0b1712;
   --pitch-stripe: rgba(255, 255, 255, 0.025);
   --pitch-lines: rgba(255, 255, 255, 0.32);
   --pitch-marker-primary: #34d399;
+}
+
+/*
+ * The carousel countdown that runs along the bottom of that pitch. The
+ * duration is set inline from CYCLE_MS in hero-showcase.tsx so the bar and
+ * the JS timer can't drift apart; `forwards` holds it full while React
+ * swaps in the next example.
+ */
+.pitchkit-hero-showcase__progress {
+  width: 0;
+  animation-name: pitchkit-hero-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pitchkit-hero-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 /* Live-example preview card: the frame every <PitchPreview> renders inside. */
