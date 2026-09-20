@@ -76,6 +76,22 @@
 }
 
 /*
+ * Shot-map tooltips go up and to the LEFT of the marker instead of
+ * centred above it, so they never sit on the goal-angle wedge that opens
+ * to the right of the hovered shot.
+ *
+ * `!important` because @pitchkit/react's TooltipOverlay sets
+ * `transform: translate(-50%, -100%)` as an inline style, which a class
+ * can't otherwise beat. Scoped to this one example on purpose: every shot
+ * lives in the right-hand third, so there is room to the left. The pass
+ * network and voronoi have marks hard against the left touchline, where
+ * the same offset would push the tooltip out of the clipped frame.
+ */
+[data-hero-example="shot-map"] [role="tooltip"] {
+  transform: translate(calc(-100% - 6px), calc(-100% - 6px)) !important;
+}
+
+/*
  * The carousel countdown that runs along the bottom of that pitch. The
  * duration is set inline from CYCLE_MS in hero-showcase.tsx so the bar and
  * the JS timer can't drift apart; `forwards` holds it full while React

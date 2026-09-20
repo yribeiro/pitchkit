@@ -435,6 +435,9 @@ export function HeroShowcase() {
       <div
         id="hero-showcase-panel"
         role="tabpanel"
+        // Read by globals.css to re-anchor the shot map's tooltip; see the
+        // `[data-hero-example="shot-map"]` rule there.
+        data-hero-example={active.id}
         className="pitchkit-hero-showcase relative overflow-hidden border border-fd-border shadow-lg"
       >
         {/* Keyed on the active example so each tab mounts its own layers
