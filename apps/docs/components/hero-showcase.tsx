@@ -337,10 +337,10 @@ export function HeroShowcase() {
 
   return (
     <div className="w-full min-w-0">
-      {/* Stacked below `sm`: three tabs plus the CTA on one row wraps into a
-          ragged two-line block on a phone. */}
-      <div className="flex flex-col gap-2 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-        <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Example visualisations">
+      {/* One row at every width. It only fits on a phone because the CTA
+          shortens to "Gallery" below `sm` — see the two spans in it. */}
+      <div className="flex items-center justify-between gap-2 pb-3 sm:gap-3">
+        <div className="flex gap-1 sm:gap-1.5" role="tablist" aria-label="Example visualisations">
           {EXAMPLES.map((e) => (
             <button
               key={e.id}
@@ -352,7 +352,7 @@ export function HeroShowcase() {
                 setActiveId(e.id);
                 setRestarts((n) => n + 1);
               }}
-              className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`whitespace-nowrap rounded-md border px-2 py-1 text-xs font-medium transition-colors sm:px-2.5 ${
                 e.id === activeId
                   ? "border-fd-primary/50 bg-fd-primary/10 text-fd-primary"
                   : "border-fd-border text-fd-muted-foreground hover:text-fd-foreground"
@@ -364,9 +364,10 @@ export function HeroShowcase() {
         </div>
         <Link
           href="/gallery"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-fd-primary px-2.5 py-1.5 text-xs font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md bg-fd-primary px-2 py-1.5 text-xs font-medium text-fd-primary-foreground transition-opacity hover:opacity-90 sm:px-2.5"
         >
-          Browse the gallery
+          <span className="sm:hidden">Gallery</span>
+          <span className="hidden sm:inline">Browse the gallery</span>
           <svg
             aria-hidden
             width="13"
