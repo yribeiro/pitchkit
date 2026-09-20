@@ -2,13 +2,14 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Annotate, Arrows, GoalAngle, Pitch, Scatter, Voronoi } from "@pitchkit/react";
+import { Arrows, GoalAngle, Pitch, Scatter, Voronoi, usePitch } from "@pitchkit/react";
 
 /**
  * The landing hero: a tabbed carousel of three real gallery visualisations
  * — shot map, pass network, voronoi — that advances itself every five
- * seconds behind a countdown bar, with a "Browse the gallery" CTA in the
- * corner. It replaces the earlier click-to-plot toy pitch: what sells
+ * seconds behind a countdown bar (pausable from the pitch's bottom-left
+ * corner), with a "Browse the gallery" CTA in the top-right. It replaces
+ * the earlier click-to-plot toy pitch: what sells
  * the library is the finished charts you can build with it, and every tab
  * doubles as a funnel into /gallery where the source for each is on show.
  *
@@ -138,8 +139,61 @@ function HeroPassNetwork() {
         strokeWidth={1.5}
         tooltip={(p) => `${p.id} · ${p.touches} touches`}
       />
-      <Annotate data={players} x={(p) => p.x} y={(p) => p.y} label={(p) => p.id} offsetY={-14} />
+      <PositionLabels />
     </>
+  );
+}
+
+const LABEL_FONT_SIZE = 9;
+const LABEL_PADDING_X = 4;
+const LABEL_HEIGHT = 13;
+/** Rough advance width per character at LABEL_FONT_SIZE, for the box. */
+const LABEL_CHAR_WIDTH = 5.6;
+
+/**
+ * Position labels as white text on a black chip, which `<Annotate>` can't
+ * do — it paints a bare `<text>`, and against a pass network's own nodes
+ * and edges the plain glyphs disappear. Rather than widen the library's
+ * API for one hero, this drops to `usePitch()` — the documented escape
+ * hatch for custom coordinate math — and draws the rect itself.
+ */
+function PositionLabels() {
+  const { transform } = usePitch();
+
+  return (
+    <g data-pitchkit-layer="hero-position-labels">
+      {players.map((p) => {
+        const [px, py] = transform.toPixel([p.x, p.y]);
+        const cy = py - 15;
+        const width = p.id.length * LABEL_CHAR_WIDTH + LABEL_PADDING_X * 2;
+
+        return (
+          <g key={p.id}>
+            <rect
+              x={px - width / 2}
+              y={cy - LABEL_HEIGHT / 2}
+              width={width}
+              height={LABEL_HEIGHT}
+              rx={2}
+              fill="#000"
+              stroke="rgba(255, 255, 255, 0.18)"
+              strokeWidth={0.75}
+            />
+            <text
+              x={px}
+              y={cy}
+              fill="#fff"
+              fontSize={LABEL_FONT_SIZE}
+              fontWeight={500}
+              textAnchor="middle"
+              dominantBaseline="central"
+            >
+              {p.id}
+            </text>
+          </g>
+        );
+      })}
+    </g>
   );
 }
 
@@ -223,7 +277,7 @@ const EXAMPLES: Example[] = [
   {
     id: "pass-network",
     label: "Pass Network",
-    caption: "Nodes by touches, edges by pass volume — Arrows + Scatter + Annotate.",
+    caption: "Nodes by touches, edges by pass volume — Arrows + Scatter.",
     ariaLabel: "Pass network — average player positions joined by pass volume",
     Layers: HeroPassNetwork,
   },
@@ -257,6 +311,7 @@ export function HeroShowcase() {
   // clicking the tab that's already showing sets the same id, React bails
   // out of the re-render, and the countdown would run out mid-look.
   const [restarts, setRestarts] = useState(0);
+  const [paused, setPaused] = useState(false);
   const active = EXAMPLES.find((e) => e.id === activeId) ?? EXAMPLES[0]!;
   const { Layers } = active;
 
@@ -266,16 +321,19 @@ export function HeroShowcase() {
   // external store, and it keeps the server snapshot explicit.
   const autoCycle = !useSyncExternalStore(subscribeToReducedMotion, reducedMotionNow, () => false);
 
-  // Keyed on the same pair as the progress bar below, so the timer and the
-  // bar always restart together.
+  // Keyed on the same values as the progress bar below, so the timer and
+  // the bar always restart together. Pausing drops the timer entirely and
+  // freezes the bar mid-fill; resuming bumps `restarts`, so both go back
+  // to zero rather than the bar resuming from a point the timer has no
+  // memory of.
   useEffect(() => {
-    if (!autoCycle) return;
+    if (!autoCycle || paused) return;
     const timeoutId = setTimeout(() => {
       const i = EXAMPLES.findIndex((e) => e.id === activeId);
       setActiveId(EXAMPLES[(i + 1) % EXAMPLES.length]!.id);
     }, CYCLE_MS);
     return () => clearTimeout(timeoutId);
-  }, [activeId, restarts, autoCycle]);
+  }, [activeId, restarts, autoCycle, paused]);
 
   return (
     <div className="w-full min-w-0">
@@ -352,17 +410,45 @@ export function HeroShowcase() {
           <span className="tabular-nums">120 × 80</span>
         </div>
 
-        {/* Carousel countdown. The fill is a pure CSS animation remounted on
-            the same key the timer restarts on, so the two can't drift — no
-            per-frame state in React. */}
+        {/* Carousel controls. Both are hidden outright under reduced
+            motion, where there's no cycle to countdown or pause. */}
         {autoCycle && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-white/10">
-            <div
-              key={`${active.id}-${restarts}`}
-              className="pitchkit-hero-showcase__progress h-full bg-fd-primary"
-              style={{ animationDuration: `${CYCLE_MS}ms` }}
-            />
-          </div>
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                setPaused((p) => !p);
+                if (paused) setRestarts((n) => n + 1);
+              }}
+              aria-pressed={paused}
+              aria-label={paused ? "Resume cycling examples" : "Pause cycling examples"}
+              className="absolute bottom-3 left-3 flex size-7 items-center justify-center rounded-md border border-white/10 bg-black/60 text-white/80 backdrop-blur-sm transition-colors hover:border-white/25 hover:text-white"
+            >
+              {paused ? (
+                <svg aria-hidden width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M3 1.5v9l7-4.5-7-4.5Z" />
+                </svg>
+              ) : (
+                <svg aria-hidden width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M2.5 1.5h2.5v9H2.5v-9ZM7 1.5h2.5v9H7v-9Z" />
+                </svg>
+              )}
+            </button>
+
+            {/* The countdown. A pure CSS animation remounted on the same key
+                the timer restarts on, so the two can't drift — no per-frame
+                state in React. */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-white/10">
+              <div
+                key={`${active.id}-${restarts}`}
+                className="pitchkit-hero-showcase__progress h-full bg-fd-primary"
+                style={{
+                  animationDuration: `${CYCLE_MS}ms`,
+                  animationPlayState: paused ? "paused" : "running",
+                }}
+              />
+            </div>
+          </>
         )}
       </div>
 
