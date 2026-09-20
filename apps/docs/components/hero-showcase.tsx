@@ -116,6 +116,17 @@ const passes = [
   { from: "RW", to: "ST", count: 6 },
 ];
 
+/**
+ * Node radius in pixels — `Scatter` passes `r` straight through as the
+ * SVG radius, so this is the same space `transform.toPixel` returns.
+ * Shared with PositionLabels, which has to clear the circle it labels.
+ */
+function nodeRadius(p: (typeof players)[number]) {
+  return 4 + p.touches / 12;
+}
+
+const NODE_STROKE_WIDTH = 1.5;
+
 function HeroPassNetwork() {
   return (
     <>
@@ -134,9 +145,9 @@ function HeroPassNetwork() {
         data={players}
         x={(p) => p.x}
         y={(p) => p.y}
-        r={(p) => 4 + p.touches / 12}
+        r={nodeRadius}
         stroke="rgba(255, 255, 255, 0.9)"
-        strokeWidth={1.5}
+        strokeWidth={NODE_STROKE_WIDTH}
         tooltip={(p) => `${p.id} · ${p.touches} touches`}
       />
       <PositionLabels />
@@ -149,6 +160,8 @@ const LABEL_PADDING_X = 4;
 const LABEL_HEIGHT = 13;
 /** Rough advance width per character at LABEL_FONT_SIZE, for the box. */
 const LABEL_CHAR_WIDTH = 5.6;
+/** Clear air between the top of a node's stroke and the chip beneath it. */
+const LABEL_GAP = 4;
 
 /**
  * Position labels as white text on a black chip, which `<Annotate>` can't
@@ -164,7 +177,10 @@ function PositionLabels() {
     <g data-pitchkit-layer="hero-position-labels">
       {players.map((p) => {
         const [px, py] = transform.toPixel([p.x, p.y]);
-        const cy = py - 15;
+        // Sits clear of this node's own circle rather than a fixed offset:
+        // radii run 7.5 (GK) to 11.3 (DM), so one offset either overlapped
+        // the big nodes or floated off the small ones.
+        const cy = py - (nodeRadius(p) + NODE_STROKE_WIDTH / 2 + LABEL_GAP + LABEL_HEIGHT / 2);
         const width = p.id.length * LABEL_CHAR_WIDTH + LABEL_PADDING_X * 2;
 
         return (
@@ -455,9 +471,7 @@ export function HeroShowcase() {
 
       {/* Deliberately not a live region: the carousel rewrites this every
           five seconds, and a polite announcement on that cadence is noise. */}
-      <p className="pt-3 text-center text-xs text-fd-muted-foreground">
-        {active.caption}
-      </p>
+      <p className="pt-3 text-center text-xs text-fd-muted-foreground">{active.caption}</p>
     </div>
   );
 }
