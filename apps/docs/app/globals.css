@@ -64,6 +64,18 @@
 }
 
 /*
+ * Shot-map markers. Hovering one dims the rest and swings the goal-angle
+ * wedge onto it (see hero-showcase.tsx); the transition is here because
+ * the fade is styling, not state — React only flips the target values.
+ */
+.pitchkit-hero-showcase__shot {
+  cursor: pointer;
+  transition:
+    fill-opacity 150ms ease,
+    stroke 150ms ease;
+}
+
+/*
  * The carousel countdown that runs along the bottom of that pitch. The
  * duration is set inline from CYCLE_MS in hero-showcase.tsx so the bar and
  * the JS timer can't drift apart; `forwards` holds it full while React
@@ -99,7 +111,11 @@
   justify-content: center;
   padding: 2rem 1.5rem;
   background:
-    radial-gradient(circle at top, color-mix(in oklch, var(--color-fd-primary) 6%, transparent), transparent 60%),
+    radial-gradient(
+      circle at top,
+      color-mix(in oklch, var(--color-fd-primary) 6%, transparent),
+      transparent 60%
+    ),
     var(--color-fd-background);
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import type { MouseEvent } from "react";
 import Link from "next/link";
 import { Arrows, GoalAngle, Pitch, Scatter, Voronoi, usePitch } from "@pitchkit/react";
 
@@ -46,27 +47,57 @@ const shots = [
 
 const bestChance = shots.reduce((a, b) => (b.xg > a.xg ? b : a));
 
+/**
+ * Reads which shot the pointer is over from the event that bubbled out of
+ * `<Scatter>`. The alternative — a transparent hit layer of our own on top
+ * — would swallow the events `<Scatter>` needs for its tooltip, and
+ * `usePitch()` deliberately doesn't hand out `setTooltip`, so we'd have to
+ * reimplement the tooltip to get the highlight. Instead this leans on the
+ * `data-pitchkit-mark` attribute the library stamps on every mark for
+ * exactly this kind of targeting; `<Scatter>` renders one `<circle>` per
+ * datum in order, so the child index is the datum index.
+ */
+function shotIndexFromEvent(event: MouseEvent<SVGGElement>): number | null {
+  const mark = (event.target as Element).closest?.('[data-pitchkit-mark="scatter"]');
+  const siblings = mark?.parentElement?.children;
+  if (!mark || !siblings) return null;
+  const index = Array.prototype.indexOf.call(siblings, mark);
+  return index >= 0 && index < shots.length ? index : null;
+}
+
 function HeroShotMap() {
+  const [hovered, setHovered] = useState<number | null>(null);
+  // The wedge is part of the resting composition (drawn for the best
+  // chance), and follows the pointer once there is one.
+  const focus = hovered === null ? bestChance : shots[hovered]!;
+  const dimmed = (i: number) => hovered !== null && hovered !== i;
+
   return (
     <>
       <GoalAngle
-        data={[bestChance]}
+        data={[focus]}
         x={(s) => s.x}
         y={(s) => s.y}
-        fillOpacity={0.12}
-        stroke="rgba(255, 255, 255, 0.35)"
+        fillOpacity={hovered === null ? 0.12 : 0.24}
+        stroke={hovered === null ? "rgba(255, 255, 255, 0.35)" : "rgba(255, 255, 255, 0.6)"}
       />
-      <Scatter
-        data={shots}
-        x={(s) => s.x}
-        y={(s) => s.y}
-        r={(s) => 3 + s.xg * 9}
-        fill={(s) => (s.outcome === "goal" ? CONTRAST : ACCENT)}
-        fillOpacity={(s) => (s.outcome === "goal" ? 0.95 : 0.6)}
-        stroke="rgba(255, 255, 255, 0.9)"
-        strokeWidth={(s) => (s.outcome === "goal" ? 2 : 1)}
-        tooltip={(s) => `${s.outcome} · xG ${s.xg.toFixed(2)}`}
-      />
+      <g
+        onMouseOver={(e) => setHovered(shotIndexFromEvent(e))}
+        onMouseLeave={() => setHovered(null)}
+      >
+        <Scatter
+          data={shots}
+          x={(s) => s.x}
+          y={(s) => s.y}
+          r={(s) => 3 + s.xg * 9}
+          fill={(s) => (s.outcome === "goal" ? CONTRAST : ACCENT)}
+          fillOpacity={(s, i) => (dimmed(i) ? 0.12 : s.outcome === "goal" ? 0.95 : 0.6)}
+          stroke={(_, i) => (dimmed(i) ? "rgba(255, 255, 255, 0.15)" : "rgba(255, 255, 255, 0.9)")}
+          strokeWidth={(s) => (s.outcome === "goal" ? 2 : 1)}
+          tooltip={(s) => `${s.outcome} · xG ${s.xg.toFixed(2)}`}
+          className="pitchkit-hero-showcase__shot"
+        />
+      </g>
     </>
   );
 }
