@@ -17,6 +17,7 @@ export type {
   PixelTransform,
 } from "./transform/types.js";
 export { createPixelTransform } from "./transform/pixel-transform.js";
+export { displayUnitScale } from "./transform/canonical.js";
 export { createStandardizeTransform } from "./transform/standardize.js";
 export { cropForHalf } from "./transform/half.js";
 

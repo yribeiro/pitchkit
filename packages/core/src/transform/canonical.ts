@@ -14,6 +14,30 @@ function originOffset(dimensions: PitchDimensions): Point {
 }
 
 /**
+ * How many real-world metres one grid unit covers, per axis.
+ *
+ * `[1, 1]` for every provider whose grid is already in real units — a UEFA or
+ * SkillCorner unit *is* a metre — and for StatsBomb, whose abstract 120x80
+ * grid has always been rendered at its own shape and stays that way.
+ *
+ * Percentage grids are the exception, and the reason this exists. Opta and
+ * Wyscout both run `0..100` on *both* axes, but those axes measure different
+ * amounts of grass: x spans 105 m, y only 68 m. Deriving the pitch's shape
+ * from `length`/`width` alone therefore draws a square, which is
+ * [issue #2](https://github.com/yribeiro/pitchkit/issues/2). Converting to
+ * metres first fixes it and keeps the pixel scale a single number — pixels
+ * per metre — rather than stretching the two axes independently, so a centre
+ * circle stays a circle.
+ */
+export function displayUnitScale(dimensions: PitchDimensions): Point {
+  if (!dimensions.normalized) return [1, 1];
+  return [
+    dimensions.realLengthMeters / dimensions.length,
+    dimensions.realWidthMeters / dimensions.width,
+  ];
+}
+
+/**
  * Maps a point into the pitch's **extent frame**: `0..length` by `0..width`,
  * with the y-axis still pointing whichever way the provider points it.
  *

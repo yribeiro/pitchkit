@@ -1,6 +1,11 @@
 import { useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { computePitchGeometry, createPixelTransform, getPitchDimensions } from "@pitchkit/core";
+import {
+  computePitchGeometry,
+  createPixelTransform,
+  displayUnitScale,
+  getPitchDimensions,
+} from "@pitchkit/core";
 import type {
   CropWindow,
   Orientation,
@@ -99,8 +104,13 @@ export function Pitch({
   // space as `dimensions.length`/`width`), and x never gets axis-swapped
   // by yDirection (see `canonical.ts`), so a plain abs-difference gives
   // the right extent without needing the canonical-frame conversion.
-  const cropExtentX = crop ? Math.abs(crop.x1 - crop.x0) : dimensions.length;
-  const cropExtentY = crop ? Math.abs(crop.y1 - crop.y0) : dimensions.width;
+  //
+  // The unit scale converts a percentage grid's units to metres, exactly as
+  // `createPixelTransform` does — without it the container would stay square
+  // for Opta and Wyscout while the pitch drawn inside it was not.
+  const [unitScaleX, unitScaleY] = displayUnitScale(dimensions);
+  const cropExtentX = (crop ? Math.abs(crop.x1 - crop.x0) : dimensions.length) * unitScaleX;
+  const cropExtentY = (crop ? Math.abs(crop.y1 - crop.y0) : dimensions.width) * unitScaleY;
   const pitchAspect =
     orientation === "vertical" ? cropExtentY / cropExtentX : cropExtentX / cropExtentY;
   const fallbackSize = { width: NOMINAL_WIDTH, height: Math.round(NOMINAL_WIDTH / pitchAspect) };

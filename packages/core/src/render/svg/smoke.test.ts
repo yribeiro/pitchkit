@@ -3,9 +3,12 @@ import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
 import type { PitchTypeId } from "../../dimensions/types.js";
 import type { Scene } from "../../scene/types.js";
 import type { Orientation } from "../../transform/types.js";
+import { displayUnitScale } from "../../transform/canonical.js";
 import { renderSceneToSVGElement } from "./render-scene.js";
 
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+// From the registry, so a new provider is smoke-tested without anyone
+// remembering to add it here.
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 const ORIENTATIONS: Orientation[] = ["horizontal", "vertical"];
 const VIEWPORT = { width: 600, height: 400 };
 
@@ -113,10 +116,17 @@ describe("SVG renderer smoke test", () => {
         // Uniform scale must never distort the pitch: the rendered
         // outline's aspect ratio should equal the pitch's true
         // length:width ratio (swapped for vertical orientation),
-        // regardless of the viewport's own aspect ratio.
+        // regardless of the viewport's own aspect ratio. "True" means the
+        // display extent, not the grid — on a percentage grid those differ,
+        // because 100 units of x is 105 m while 100 units of y is 68 m.
         const dims = PITCH_DIMENSIONS[pitchType];
+        const [unitScaleX, unitScaleY] = displayUnitScale(dims);
+        const displayLength = dims.length * unitScaleX;
+        const displayWidth = dims.width * unitScaleY;
         const expectedPitchAspect =
-          orientation === "vertical" ? dims.width / dims.length : dims.length / dims.width;
+          orientation === "vertical"
+            ? displayWidth / displayLength
+            : displayLength / displayWidth;
         expect(outlineWidth / outlineHeight).toBeCloseTo(expectedPitchAspect, 2);
 
         // Strongest end-to-end signal: every marking falls within the

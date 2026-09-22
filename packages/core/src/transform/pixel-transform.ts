@@ -1,5 +1,10 @@
 import type { PitchDimensions } from "../dimensions/types.js";
-import { fromCanonicalFrame, fromExtentFrame, toCanonicalFrame } from "./canonical.js";
+import {
+  displayUnitScale,
+  fromCanonicalFrame,
+  fromExtentFrame,
+  toCanonicalFrame,
+} from "./canonical.js";
 import type { PixelTransform, Point, Viewport } from "./types.js";
 
 const ZERO_PADDING = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -39,8 +44,13 @@ export function createPixelTransform(
   const canonicalMinY = Math.min(cropCornerA[1], cropCornerB[1]);
   const canonicalMaxY = Math.max(cropCornerA[1], cropCornerB[1]);
 
-  const extentX = canonicalMaxX - canonicalMinX;
-  const extentY = canonicalMaxY - canonicalMinY;
+  // Grid units are not the same physical size on both axes for a percentage
+  // grid, so convert to metres before anything reasons about shape. Identity
+  // for every provider whose coordinates are already real units.
+  const [unitScaleX, unitScaleY] = displayUnitScale(dimensions);
+
+  const extentX = (canonicalMaxX - canonicalMinX) * unitScaleX;
+  const extentY = (canonicalMaxY - canonicalMinY) * unitScaleY;
 
   // Orientation swaps which canonical axis maps to the viewport's physical
   // width vs height.
@@ -65,8 +75,8 @@ export function createPixelTransform(
 
   function toPixel(point: Point): Point {
     const [canonicalX, canonicalY] = toCanonicalFrame(dimensions, point);
-    const relX = canonicalX - canonicalMinX;
-    const relY = canonicalY - canonicalMinY;
+    const relX = (canonicalX - canonicalMinX) * unitScaleX;
+    const relY = (canonicalY - canonicalMinY) * unitScaleY;
 
     const [physX, physY] = viewport.orientation === "vertical" ? [relY, relX] : [relX, relY];
 
@@ -80,8 +90,8 @@ export function createPixelTransform(
 
     const [relX, relY] = viewport.orientation === "vertical" ? [physY, physX] : [physX, physY];
 
-    const canonicalX = canonicalMinX + relX;
-    const canonicalY = canonicalMinY + relY;
+    const canonicalX = canonicalMinX + relX / unitScaleX;
+    const canonicalY = canonicalMinY + relY / unitScaleY;
 
     return fromCanonicalFrame(dimensions, [canonicalX, canonicalY]);
   }
