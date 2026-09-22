@@ -443,7 +443,7 @@ npx shadcn add @pitchkit/theme-broadcast
   _As built:_ Changesets drives versioning and changelogs, but publishing is **manual** —
   `.github/workflows/release.yml` exists and is `disabled_manually`. See
   [issue #36](https://github.com/yribeiro/pitchkit/issues/36).
-- **Docs deploy:** Vercel. _As built:_ live at **[pitchkitjs.com](https://pitchkitjs.com)**,
+- **Docs deploy:** Vercel. _As built:_ live at **[pitchkitjs.com](https://www.pitchkitjs.com)**,
   auto-deploying on every push to `main` via Vercel's GitHub App integration — note this is
   **not** a workflow in this repo, so there is no `vercel.json` or deploy job to find; PRs get
   preview deployments automatically. Deploys are independent of `ci.yml`, so a red CI run does
@@ -465,6 +465,15 @@ npx shadcn add @pitchkit/theme-broadcast
   (`brace-expansion`, `js-yaml`, `browserslist`, `vitest`, `esbuild`).
 
 ## 11. Roadmap (phased)
+
+> **Day-to-day backlog tracking moved to a Notion task board on 2026-09-15.** Every
+> then-open GitHub issue was bulk-closed that day with `state_reason: completed`, but that
+> label is an artifact of the closing method, not a claim the work shipped — two closed
+> issues were verified still-unresolved in code the same day this note was written (see
+> `CLAUDE.md`'s current-phase section for specifics and the verification method). This PRD
+> and `CLAUDE.md` remain the source of truth for architecture and shipped-feature history;
+> for what's next, ask the user rather than trusting GitHub issue state, since this
+> environment has no Notion access.
 
 ### Milestone 0 — Foundations ✅ Complete
 
@@ -713,7 +722,7 @@ npx shadcn add @pitchkit/theme-broadcast
 - [x] StatsBomb open-data adapter — `@pitchkit/data-providers/statsbomb`, events
       ([PR #50](https://github.com/yribeiro/pitchkit/pull/50)) and 360 tracking
       ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), documented under
-      [/docs/data](https://pitchkitjs.com/docs/data).
+      [/docs/data](https://www.pitchkitjs.com/docs/data).
 - [ ] Grid/jointgrid layout; shadcn registry infrastructure (`registry.json` served from
       `apps/docs`) + first recipe items (pass network, shot map) per §7.4.
 - [ ] Full API reference; migration cheatsheet; gallery.
@@ -724,14 +733,15 @@ npx shadcn add @pitchkit/theme-broadcast
       [issue #40](https://github.com/yribeiro/pitchkit/issues/40). `llms.txt`, `llms-full.txt`
       and per-page Markdown followed via
       [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (`apps/docs/app/llms.txt`,
-      `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` — the remaining AX
-      layer #40 scopes — is not done**; #40 stays open until it ships. Three follow-on AX
-      tickets opened since, all still open: [#41](https://github.com/yribeiro/pitchkit/issues/41)
+      `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` was not done as of
+      the last verification (2026-09-22)** — grep the repo root before assuming otherwise.
+      Three follow-on AX tickets — [#41](https://github.com/yribeiro/pitchkit/issues/41)
       (audit `Scene` for JSON-serialisability/SSR against a published AI-friendly-charting
       rubric), [#42](https://github.com/yribeiro/pitchkit/issues/42) (evaluate — not
       commit to — a PitchKit MCP server), [#43](https://github.com/yribeiro/pitchkit/issues/43)
-      (an agent eval harness, framed as a prerequisite for trusting #41/#42's results rather
-      than shipping AX changes on feel).
+      (an agent eval harness) — were all closed in a bulk migration to a Notion task board
+      on 2026-09-15 with no corresponding code; **their closed state does not mean done,
+      see the current-phase note on the issue-tracking migration.**
 - [x] **Brand identity** — the PitchKit mark (two penalty areas + halfway line + centre
       circle, reading as `[ ]`) across the README, docs nav, favicon, and OG/Twitter images,
       via [PR #47](https://github.com/yribeiro/pitchkit/pull/47). Not an original checklist
@@ -778,6 +788,11 @@ a real domain. Remaining work is release _automation_, not release itself.
       self-contradiction; `core`/`data-providers` untouched) published 2026-09-13 via
       [PR #63](https://github.com/yribeiro/pitchkit/pull/63), which shipped with no
       changeset — added retroactively.
+      `@pitchkit/core@0.3.1` + `@pitchkit/react@0.4.2` + `@pitchkit/data-providers@0.3.1`
+      (all patch) published 2026-09-22 — reworded npm metadata for discoverability, and
+      every `pitchkitjs.com` link in the READMEs/`SKILL.md` now points at `www`
+      (follow-up to [PR #69](https://github.com/yribeiro/pitchkit/pull/69), which fixed
+      the docs site's own links but left the published packages for a later release).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
@@ -790,7 +805,7 @@ a real domain. Remaining work is release _automation_, not release itself.
       [issue #36](https://github.com/yribeiro/pitchkit/issues/36) — preferred fix is npm
       Trusted Publishing (OIDC), which avoids storing a publish token and adds provenance
       attestation.
-- [x] Docs site deployed at a real domain — **[pitchkitjs.com](https://pitchkitjs.com)**
+- [x] Docs site deployed at a real domain — **[pitchkitjs.com](https://www.pitchkitjs.com)**
       (landing page with interactive hero, `/gallery`, docs, API reference). Auto-deploys on
       every push to `main` via Vercel's GitHub App (no workflow in this repo); PRs get preview
       deployments. Vercel Web Analytics enabled via `<Analytics />` in the docs root layout,
@@ -837,7 +852,7 @@ fields.
 
 ## 14. Naming
 
-**Settled: PitchKit.** The `@pitchkit` npm scope is claimed (via the `pitchkit` org), the repo is `yribeiro/pitchkit`, and the docs site is live at [pitchkitjs.com](https://pitchkitjs.com). The shortlist considered and rejected: _Pitchwright, Touchline, Chalkboard, Footwork, Tifo_. Criteria were: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
+**Settled: PitchKit.** The `@pitchkit` npm scope is claimed (via the `pitchkit` org), the repo is `yribeiro/pitchkit`, and the docs site is live at [pitchkitjs.com](https://www.pitchkitjs.com). The shortlist considered and rejected: _Pitchwright, Touchline, Chalkboard, Footwork, Tifo_. Criteria were: short, npm-scope-friendly, not trademark-conflicting, evokes football + toolkit.
 
 ---
 
