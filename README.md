@@ -10,7 +10,7 @@ for React and Next.js instead of matplotlib.
 [![CI](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml/badge.svg)](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-**[pitchkitjs.com](https://pitchkitjs.com)** — docs, interactive examples, and the gallery.
+**[pitchkitjs.com](https://www.pitchkitjs.com)** — docs, interactive examples, and the gallery.
 See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.
 
 > **Early days — pre-`1.0`.** The API is usable and tested, but not yet stable; expect
@@ -107,9 +107,9 @@ const spain = shots(events).filter((s) => s.team.name === "Spain");
 </VerticalPitch>;
 ```
 
-StatsBomb [events](https://pitchkitjs.com/docs/data/statsbomb/events) and
-[360 tracking](https://pitchkitjs.com/docs/data/statsbomb/360) are supported, along with
-[SkillCorner](https://pitchkitjs.com/docs/data/skillcorner/tracking) broadcast tracking, dynamic
+StatsBomb [events](https://www.pitchkitjs.com/docs/data/statsbomb/events) and
+[360 tracking](https://www.pitchkitjs.com/docs/data/statsbomb/360) are supported, along with
+[SkillCorner](https://www.pitchkitjs.com/docs/data/skillcorner/tracking) broadcast tracking, dynamic
 events and phases of play — each keeping that provider's own field names and values, only
 lifting coordinates into the `x`/`y` an accessor wants. One dependency (`csv-parse`, for
 SkillCorner's CSV files), and no dependency on `core` or `react` either.
@@ -156,8 +156,8 @@ is in `apps/docs`.
 
 ## Documentation
 
-- **[pitchkitjs.com](https://pitchkitjs.com)** — guides, API reference, and the
-  [gallery](https://pitchkitjs.com/gallery) (every card ships its full source).
+- **[pitchkitjs.com](https://www.pitchkitjs.com)** — guides, API reference, and the
+  [gallery](https://www.pitchkitjs.com/gallery) (every card ships its full source).
 - [docs/PRD.md](./docs/PRD.md) — product spec, architecture decisions and roadmap.
 
 ## Licence

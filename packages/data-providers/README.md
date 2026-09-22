@@ -1,6 +1,6 @@
 # @pitchkit/data-providers
 
-Convenience loaders for open football data, shaped for [PitchKit](https://pitchkitjs.com).
+Convenience loaders for open football data, shaped for [PitchKit](https://www.pitchkitjs.com).
 Raw provider JSON in, typed events out — with the coordinates already where a
 `<Scatter>` accessor wants them.
 
