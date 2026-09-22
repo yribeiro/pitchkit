@@ -51,16 +51,66 @@
 }
 
 /*
- * The landing hero's pitch: a deliberately darker, broadcast-graphics look
+ * The landing hero's showcase pitch: a deliberately darker, broadcast-graphics look
  * (near-black surface, low-contrast markings, one bright accent) that reads
  * as a product screenshot in both site themes — themed through the same
  * --pitch-* variables as every other pitch on the site.
  */
-.pitchkit-hero-pitch {
+.pitchkit-hero-showcase {
   --pitch-surface: #0b1712;
   --pitch-stripe: rgba(255, 255, 255, 0.025);
   --pitch-lines: rgba(255, 255, 255, 0.32);
   --pitch-marker-primary: #34d399;
+}
+
+/*
+ * Shot-map markers. Hovering one dims the rest and swings the goal-angle
+ * wedge onto it (see hero-showcase.tsx); the transition is here because
+ * the fade is styling, not state — React only flips the target values.
+ */
+.pitchkit-hero-showcase__shot {
+  cursor: pointer;
+  transition:
+    fill-opacity 150ms ease,
+    stroke 150ms ease;
+}
+
+/*
+ * Shot-map tooltips go up and to the LEFT of the marker instead of
+ * centred above it, so they never sit on the goal-angle wedge that opens
+ * to the right of the hovered shot.
+ *
+ * `!important` because @pitchkit/react's TooltipOverlay sets
+ * `transform: translate(-50%, -100%)` as an inline style, which a class
+ * can't otherwise beat. Scoped to this one example on purpose: every shot
+ * lives in the right-hand third, so there is room to the left. The pass
+ * network and voronoi have marks hard against the left touchline, where
+ * the same offset would push the tooltip out of the clipped frame.
+ */
+[data-hero-example="shot-map"] [role="tooltip"] {
+  transform: translate(calc(-100% - 6px), calc(-100% - 6px)) !important;
+}
+
+/*
+ * The carousel countdown that runs along the bottom of that pitch. The
+ * duration is set inline from CYCLE_MS in hero-showcase.tsx so the bar and
+ * the JS timer can't drift apart; `forwards` holds it full while React
+ * swaps in the next example.
+ */
+.pitchkit-hero-showcase__progress {
+  width: 0;
+  animation-name: pitchkit-hero-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pitchkit-hero-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 /* Live-example preview card: the frame every <PitchPreview> renders inside. */
@@ -77,7 +127,11 @@
   justify-content: center;
   padding: 2rem 1.5rem;
   background:
-    radial-gradient(circle at top, color-mix(in oklch, var(--color-fd-primary) 6%, transparent), transparent 60%),
+    radial-gradient(
+      circle at top,
+      color-mix(in oklch, var(--color-fd-primary) 6%, transparent),
+      transparent 60%
+    ),
     var(--color-fd-background);
 }
 

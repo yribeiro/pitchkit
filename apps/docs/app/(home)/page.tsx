@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeroPitch } from "@/components/hero-pitch";
+import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
 import { SEARCH_DESCRIPTION, SITE_URL, SUBHEAD, TAGLINE } from "@/lib/site";
@@ -10,8 +10,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * The shadcn-style showcase landing page (issue #28, PRD §9): interactive
- * hero pitch, feature grid, and a gallery/docs funnel. Chrome uses the
+ * The shadcn-style showcase landing page (issue #28, PRD §9): a tabbed
+ * hero showcase of gallery visualisations, feature grid, and a
+ * gallery/docs funnel. Chrome uses the
  * fumadocs theme tokens (fd-*) + Tailwind only; the hero pitch itself is
  * themed through `--pitch-*` CSS variables like every other pitch on the
  * site — no second theming mechanism.
@@ -178,10 +179,10 @@ export default function HomePage() {
           </h1>
           <p className="max-w-xl text-fd-muted-foreground">{SUBHEAD}</p>
           <InstallCommand />
-          {/* Below `sm` the CTAs split as 2-cols with the gallery spanning full
-              width; from `sm` up they form a 3-column equal-width grid filling
-              the available width. */}
-          <div className="grid w-full max-w-xl grid-cols-2 gap-3 pt-1 sm:grid-cols-3">
+          {/* Two equal-width CTAs. "Browse the gallery" used to sit here as a
+              third; it now lives on the hero showcase itself, next to the
+              example tabs it belongs with — one gallery entry point, not two. */}
+          <div className="grid w-full max-w-xl grid-cols-2 gap-3 pt-1">
             <Link
               href="/docs/quickstart"
               className="inline-flex items-center justify-center rounded-lg bg-fd-primary px-3 py-2.5 text-center text-sm font-medium text-fd-primary-foreground transition-opacity hover:opacity-90"
@@ -208,15 +209,9 @@ export default function HomePage() {
               </svg>
               Build with AI
             </Link>
-            <Link
-              href="/gallery"
-              className="col-span-2 inline-flex items-center justify-center rounded-lg border border-fd-border px-3 py-2.5 text-center text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent sm:col-span-1"
-            >
-              Browse the gallery
-            </Link>
           </div>
         </div>
-        <HeroPitch />
+        <HeroShowcase />
       </section>
 
       {/* Feature grid */}
