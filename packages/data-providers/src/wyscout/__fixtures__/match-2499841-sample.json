@@ -1,0 +1,942 @@
+{
+ "events": [
+  {
+   "eventId": 8,
+   "subEventName": "Simple pass",
+   "tags": [
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 38377,
+   "positions": [
+    {
+     "y": 50,
+     "x": 50
+    },
+    {
+     "y": 71,
+     "x": 39
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 1.644106999999991,
+   "subEventId": 85,
+   "id": 209378794
+  },
+  {
+   "eventId": 8,
+   "subEventName": "Simple pass",
+   "tags": [
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 15823,
+   "positions": [
+    {
+     "y": 71,
+     "x": 39
+    },
+    {
+     "y": 37,
+     "x": 27
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 2.47746699999999,
+   "subEventId": 85,
+   "id": 209378802
+  },
+  {
+   "eventId": 1,
+   "subEventName": "Air duel",
+   "tags": [
+    {
+     "id": 703
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 8277,
+   "positions": [
+    {
+     "y": 81,
+     "x": 42
+    },
+    {
+     "y": 69,
+     "x": 65
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Duel",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 10.094745999999986,
+   "subEventId": 10,
+   "id": 209378773
+  },
+  {
+   "eventId": 1,
+   "subEventName": "Air duel",
+   "tags": [
+    {
+     "id": 701
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 173,
+   "positions": [
+    {
+     "y": 19,
+     "x": 58
+    },
+    {
+     "y": 31,
+     "x": 35
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Duel",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 10.094745999999986,
+   "subEventId": 10,
+   "id": 209378807
+  },
+  {
+   "eventId": 8,
+   "subEventName": "High pass",
+   "tags": [
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 9280,
+   "positions": [
+    {
+     "y": 4,
+     "x": 40
+    },
+    {
+     "y": 14,
+     "x": 82
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 13.960379999999986,
+   "subEventId": 83,
+   "id": 209378811
+  },
+  {
+   "eventId": 8,
+   "subEventName": "Head pass",
+   "tags": [
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 8307,
+   "positions": [
+    {
+     "y": 86,
+     "x": 18
+    },
+    {
+     "y": 100,
+     "x": 26
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 17.95563100000001,
+   "subEventId": 82,
+   "id": 209378774
+  },
+  {
+   "eventId": 5,
+   "subEventName": "Ball out of the field",
+   "tags": [],
+   "playerId": 0,
+   "positions": [
+    {
+     "y": 0,
+     "x": 74
+    },
+    {
+     "y": 0,
+     "x": 0
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Interruption",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 21.106524000000007,
+   "subEventId": 50,
+   "id": 209378812
+  },
+  {
+   "eventId": 3,
+   "subEventName": "Throw in",
+   "tags": [
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 9280,
+   "positions": [
+    {
+     "y": 0,
+     "x": 78
+    },
+    {
+     "y": 5,
+     "x": 93
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 28.829418000000004,
+   "subEventId": 36,
+   "id": 209378815
+  },
+  {
+   "eventId": 1,
+   "subEventName": "Ground defending duel",
+   "tags": [
+    {
+     "id": 702
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 11066,
+   "positions": [
+    {
+     "y": 92,
+     "x": 2
+    },
+    {
+     "y": 100,
+     "x": 3
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Duel",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 31.789243999999997,
+   "subEventId": 12,
+   "id": 209378776
+  },
+  {
+   "eventId": 3,
+   "subEventName": "Throw in",
+   "tags": [
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 9280,
+   "positions": [
+    {
+     "y": 0,
+     "x": 97
+    },
+    {
+     "y": 16,
+     "x": 95
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 44.66035199999999,
+   "subEventId": 36,
+   "id": 209378828
+  },
+  {
+   "eventId": 8,
+   "subEventName": "Simple pass",
+   "tags": [
+    {
+     "id": 1401
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 105339,
+   "positions": [
+    {
+     "y": 84,
+     "x": 5
+    },
+    {
+     "y": 91,
+     "x": 23
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 46.246222999999986,
+   "subEventId": 85,
+   "id": 209378777
+  },
+  {
+   "eventId": 3,
+   "subEventName": "Goal kick",
+   "tags": [],
+   "playerId": 71654,
+   "positions": [
+    {
+     "y": 100,
+     "x": 100
+    },
+    {
+     "y": 54,
+     "x": 20
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 66.08039,
+   "subEventId": 34,
+   "id": 209378779
+  },
+  {
+   "eventId": 8,
+   "subEventName": "High pass",
+   "tags": [
+    {
+     "id": 901
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 105339,
+   "positions": [
+    {
+     "y": 51,
+     "x": 35
+    },
+    {
+     "y": 70,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 82.33514500000001,
+   "subEventId": 83,
+   "id": 209378784
+  },
+  {
+   "eventId": 7,
+   "subEventName": "Touch",
+   "tags": [],
+   "playerId": 70086,
+   "positions": [
+    {
+     "y": 35,
+     "x": 28
+    },
+    {
+     "y": 35,
+     "x": 41
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Others on the ball",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 121.56400100000002,
+   "subEventId": 72,
+   "id": 209378788
+  },
+  {
+   "eventId": 3,
+   "subEventName": "Corner",
+   "tags": [
+    {
+     "id": 801
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 245364,
+   "positions": [
+    {
+     "y": 0,
+     "x": 100
+    },
+    {
+     "y": 60,
+     "x": 92
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 343.04942200000005,
+   "subEventId": 30,
+   "id": 209378871
+  },
+  {
+   "eventId": 3,
+   "subEventName": "Corner",
+   "tags": [
+    {
+     "id": 302
+    },
+    {
+     "id": 801
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 38021,
+   "positions": [
+    {
+     "y": 100,
+     "x": 100
+    },
+    {
+     "y": 45,
+     "x": 90
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 372.29589599999997,
+   "subEventId": 30,
+   "id": 209378872
+  },
+  {
+   "eventId": 10,
+   "subEventName": "Shot",
+   "tags": [
+    {
+     "id": 403
+    },
+    {
+     "id": 201
+    },
+    {
+     "id": 1216
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 8307,
+   "positions": [
+    {
+     "y": 46,
+     "x": 89
+    },
+    {
+     "y": 100,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Shot",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 373.93482700000004,
+   "subEventId": 100,
+   "id": 209378875
+  },
+  {
+   "eventId": 2,
+   "subEventName": "Foul",
+   "tags": [],
+   "playerId": 9419,
+   "positions": [
+    {
+     "y": 88,
+     "x": 68
+    },
+    {
+     "y": 87,
+     "x": 69
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Foul",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 613.923567,
+   "subEventId": 20,
+   "id": 209379028
+  },
+  {
+   "eventId": 6,
+   "subEventName": "",
+   "tags": [],
+   "playerId": 8325,
+   "positions": [
+    {
+     "y": 61,
+     "x": 90
+    },
+    {
+     "y": 100,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Offside",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 755.377355,
+   "subEventId": "",
+   "id": 209378991
+  },
+  {
+   "eventId": 10,
+   "subEventName": "Shot",
+   "tags": [
+    {
+     "id": 402
+    },
+    {
+     "id": 2101
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 105339,
+   "positions": [
+    {
+     "y": 42,
+     "x": 72
+    },
+    {
+     "y": 100,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Shot",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 902.2398410000001,
+   "subEventId": 100,
+   "id": 209379051
+  },
+  {
+   "eventId": 8,
+   "subEventName": "High pass",
+   "tags": [
+    {
+     "id": 1901
+    },
+    {
+     "id": 901
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 9419,
+   "positions": [
+    {
+     "y": 76,
+     "x": 43
+    },
+    {
+     "y": 95,
+     "x": 70
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 995.929965,
+   "subEventId": 83,
+   "id": 209379187
+  },
+  {
+   "eventId": 10,
+   "subEventName": "Shot",
+   "tags": [
+    {
+     "id": 401
+    },
+    {
+     "id": 1215
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 11078,
+   "positions": [
+    {
+     "y": 73,
+     "x": 82
+    },
+    {
+     "y": 0,
+     "x": 0
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Shot",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 1006.056313,
+   "subEventId": 100,
+   "id": 209379200
+  },
+  {
+   "eventId": 8,
+   "subEventName": "Smart pass",
+   "tags": [
+    {
+     "id": 302
+    },
+    {
+     "id": 901
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 8317,
+   "positions": [
+    {
+     "y": 39,
+     "x": 68
+    },
+    {
+     "y": 40,
+     "x": 87
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 2018.6371749999998,
+   "subEventId": 86,
+   "id": 209379375
+  },
+  {
+   "eventId": 9,
+   "subEventName": "Reflexes",
+   "tags": [
+    {
+     "id": 1203
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 56038,
+   "positions": [
+    {
+     "y": 0,
+     "x": 0
+    },
+    {
+     "y": 56,
+     "x": 13
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Save attempt",
+   "teamId": 1673,
+   "matchPeriod": "1H",
+   "eventSec": 2259.107029,
+   "subEventId": 90,
+   "id": 209379632
+  },
+  {
+   "eventId": 9,
+   "subEventName": "Reflexes",
+   "tags": [
+    {
+     "id": 101
+    },
+    {
+     "id": 1802
+    }
+   ],
+   "playerId": 71654,
+   "positions": [
+    {
+     "y": 100,
+     "x": 100
+    },
+    {
+     "y": 41,
+     "x": 3
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Save attempt",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 2747.326254,
+   "subEventId": 90,
+   "id": 209379574
+  },
+  {
+   "eventId": 8,
+   "subEventName": "Simple pass",
+   "tags": [
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 8325,
+   "positions": [
+    {
+     "y": 51,
+     "x": 52
+    },
+    {
+     "y": 57,
+     "x": 40
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Pass",
+   "teamId": 1625,
+   "matchPeriod": "2H",
+   "eventSec": 1.0483170000002247,
+   "subEventId": 85,
+   "id": 209379576
+  },
+  {
+   "eventId": 2,
+   "subEventName": "Foul",
+   "tags": [
+    {
+     "id": 1702
+    }
+   ],
+   "playerId": 8897,
+   "positions": [
+    {
+     "y": 35,
+     "x": 24
+    },
+    {
+     "y": 37,
+     "x": 25
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Foul",
+   "teamId": 1673,
+   "matchPeriod": "2H",
+   "eventSec": 639.4059830000001,
+   "subEventId": 20,
+   "id": 209379879
+  }
+ ],
+ "teams": {
+  "1673": {
+   "city": "Huddersfield, West Yorkshire",
+   "name": "Huddersfield Town",
+   "wyId": 1673,
+   "officialName": "Huddersfield Town FC",
+   "area": {
+    "name": "England",
+    "id": "0",
+    "alpha3code": "XEN",
+    "alpha2code": ""
+   },
+   "type": "club"
+  },
+  "1625": {
+   "city": "Manchester",
+   "name": "Manchester City",
+   "wyId": 1625,
+   "officialName": "Manchester City FC",
+   "area": {
+    "name": "England",
+    "id": "0",
+    "alpha3code": "XEN",
+    "alpha2code": ""
+   },
+   "type": "club"
+  }
+ },
+ "players": {
+  "1673": [
+   {
+    "playerId": 9280,
+    "player": {
+     "passportArea": {
+      "name": "England",
+      "id": 0,
+      "alpha3code": "XEN",
+      "alpha2code": ""
+     },
+     "weight": 75,
+     "firstName": "Scott",
+     "middleName": "",
+     "lastName": "Malone",
+     "currentTeamId": 1647,
+     "birthDate": "1991-03-25",
+     "height": 189,
+     "role": {
+      "code2": "DF",
+      "code3": "DEF",
+      "name": "Defender"
+     },
+     "birthArea": {
+      "name": "England",
+      "id": 0,
+      "alpha3code": "XEN",
+      "alpha2code": ""
+     },
+     "wyId": 9280,
+     "foot": "left",
+     "shortName": "S. Malone",
+     "currentNationalTeamId": "null"
+    }
+   },
+   {
+    "playerId": 9419,
+    "player": {
+     "passportArea": {
+      "name": "England",
+      "id": 0,
+      "alpha3code": "XEN",
+      "alpha2code": ""
+     },
+     "weight": 66,
+     "firstName": "Tom",
+     "middleName": "",
+     "lastName": "Ince",
+     "currentTeamId": 1639,
+     "birthDate": "1992-01-30",
+     "height": 178,
+     "role": {
+      "code2": "MD",
+      "code3": "MID",
+      "name": "Midfielder"
+     },
+     "birthArea": {
+      "name": "England",
+      "id": 0,
+      "alpha3code": "XEN",
+      "alpha2code": ""
+     },
+     "wyId": 9419,
+     "foot": "left",
+     "shortName": "T. Ince",
+     "currentNationalTeamId": "null"
+    }
+   }
+  ],
+  "1625": [
+   {
+    "playerId": 8307,
+    "player": {
+     "passportArea": {
+      "name": "Congo DR",
+      "id": "180",
+      "alpha3code": "COD",
+      "alpha2code": "CD"
+     },
+     "weight": 85,
+     "firstName": "Vincent",
+     "middleName": "",
+     "lastName": "Kompany",
+     "currentTeamId": 1625,
+     "birthDate": "1986-04-10",
+     "height": 193,
+     "role": {
+      "code2": "DF",
+      "code3": "DEF",
+      "name": "Defender"
+     },
+     "birthArea": {
+      "name": "Belgium",
+      "id": "56",
+      "alpha3code": "BEL",
+      "alpha2code": "BE"
+     },
+     "wyId": 8307,
+     "foot": "right",
+     "shortName": "V. Kompany",
+     "currentNationalTeamId": 5629
+    }
+   },
+   {
+    "playerId": 8325,
+    "player": {
+     "passportArea": {
+      "name": "Spain",
+      "id": "724",
+      "alpha3code": "ESP",
+      "alpha2code": "ES"
+     },
+     "weight": 70,
+     "firstName": "Sergio Leonel",
+     "middleName": "",
+     "lastName": "Ag\\u00fcero del Castillo",
+     "currentTeamId": 1625,
+     "birthDate": "1988-06-02",
+     "height": 173,
+     "role": {
+      "code2": "FW",
+      "code3": "FWD",
+      "name": "Forward"
+     },
+     "birthArea": {
+      "name": "Argentina",
+      "id": "32",
+      "alpha3code": "ARG",
+      "alpha2code": "AR"
+     },
+     "wyId": 8325,
+     "foot": "right",
+     "shortName": "S. Ag\\u00fcero",
+     "currentNationalTeamId": 12274
+    }
+   }
+  ]
+ }
+}

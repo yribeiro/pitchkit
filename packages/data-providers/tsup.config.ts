@@ -5,7 +5,7 @@ export default defineConfig({
   // "@pitchkit/data-providers/statsbomb" never pulls in code for providers
   // they don't use. That matters more here than usual, since this package
   // accumulates a provider module per open-data source over time.
-  entry: ["src/index.ts", "src/statsbomb/index.ts", "src/skillcorner/index.ts"],
+  entry: ["src/index.ts", "src/statsbomb/index.ts", "src/skillcorner/index.ts", "src/wyscout/index.ts"],
   format: ["esm"],
   dts: true,
   sourcemap: true,
