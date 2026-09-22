@@ -466,15 +466,6 @@ npx shadcn add @pitchkit/theme-broadcast
 
 ## 11. Roadmap (phased)
 
-> **Day-to-day backlog tracking moved to a Notion task board on 2026-09-15.** Every
-> then-open GitHub issue was bulk-closed that day with `state_reason: completed`, but that
-> label is an artifact of the closing method, not a claim the work shipped — two closed
-> issues were verified still-unresolved in code the same day this note was written (see
-> `CLAUDE.md`'s current-phase section for specifics and the verification method). This PRD
-> and `CLAUDE.md` remain the source of truth for architecture and shipped-feature history;
-> for what's next, ask the user rather than trusting GitHub issue state, since this
-> environment has no Notion access.
-
 ### Milestone 0 — Foundations ✅ Complete
 
 - [x] Monorepo scaffold (npm workspaces/Turborepo/tsup), CI, lint/test baseline.
@@ -733,15 +724,14 @@ npx shadcn add @pitchkit/theme-broadcast
       [issue #40](https://github.com/yribeiro/pitchkit/issues/40). `llms.txt`, `llms-full.txt`
       and per-page Markdown followed via
       [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (`apps/docs/app/llms.txt`,
-      `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` was not done as of
-      the last verification (2026-09-22)** — grep the repo root before assuming otherwise.
-      Three follow-on AX tickets — [#41](https://github.com/yribeiro/pitchkit/issues/41)
+      `llms-full.txt`, `llms-api.txt`, `llms-md` routes). **`AGENTS.md` — the remaining AX
+      layer #40 scopes — is not done**; #40 stays open until it ships. Three follow-on AX
+      tickets opened since, all still open: [#41](https://github.com/yribeiro/pitchkit/issues/41)
       (audit `Scene` for JSON-serialisability/SSR against a published AI-friendly-charting
       rubric), [#42](https://github.com/yribeiro/pitchkit/issues/42) (evaluate — not
       commit to — a PitchKit MCP server), [#43](https://github.com/yribeiro/pitchkit/issues/43)
-      (an agent eval harness) — were all closed in a bulk migration to a Notion task board
-      on 2026-09-15 with no corresponding code; **their closed state does not mean done,
-      see the current-phase note on the issue-tracking migration.**
+      (an agent eval harness, framed as a prerequisite for trusting #41/#42's results rather
+      than shipping AX changes on feel).
 - [x] **Brand identity** — the PitchKit mark (two penalty areas + halfway line + centre
       circle, reading as `[ ]`) across the README, docs nav, favicon, and OG/Twitter images,
       via [PR #47](https://github.com/yribeiro/pitchkit/pull/47). Not an original checklist

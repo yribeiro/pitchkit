@@ -141,21 +141,41 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
     it TypeDoc names multi-entry-point modules by source path and the API URLs come out as
     `/docs/api/data-providers/packages/data-providers/src/statsbomb/...`.
 
-**Backlog tracking moved off GitHub Issues to a Notion task board on 2026-09-15.** Every
-open issue (`#2`, `#21`–`#24`, `#26`, `#27`, `#29`, `#30`, `#36`, `#40`–`#43`, `#59`) was
-closed in one batch that day with the comment "Migrated to the PitchKit task board in
-Notion; tracking continues there." **`state_reason: completed` on these is an artifact of
-however the bulk-close was done, not a claim the work shipped** — verified directly against
-code before writing this: `release.yml` is still `disabled_manually` (so #36's Trusted
-Publishing OIDC did not land), and nothing outside the dimension-definition files reads
-`realLengthMeters`/`realWidthMeters` (so #2's Opta-renders-square root cause, diagnosed in
-an earlier PRD pass, is still unfixed). **Treat every one of those issue numbers as
-unknown status, not resolved, and don't trust GitHub's open/closed state for backlog
-priority going forward** — this environment has no Notion access, so a session working
-here cannot see current priorities and should ask the user rather than infer them from
-GitHub. PR links to now-closed issues elsewhere in this file (e.g. "closes #29") remain
-accurate as historical record of what that specific PR did; only the *backlog-tracking*
-role of GitHub Issues is gone.
+Open issues covering the rest of M2: radar/pizza charts
+([#21](https://github.com/yribeiro/pitchkit/issues/21)), goal view
+([#22](https://github.com/yribeiro/pitchkit/issues/22)), attack/territory and pass-map
+recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
+[#24](https://github.com/yribeiro/pitchkit/issues/24)), interactive pan/zoom
+([#26](https://github.com/yribeiro/pitchkit/issues/26)), real StatsBomb samples in the
+**gallery specifically** ([#27](https://github.com/yribeiro/pitchkit/issues/27) —
+`apps/docs/components/examples/shot-map-gallery.tsx` still uses hardcoded data; the new
+`/docs/data` pages and `examples/react-nextjs` fetch live StatsBomb data, but the gallery
+itself doesn't yet), and tracking-data loaders beyond StatsBomb+SkillCorner
+([#30](https://github.com/yribeiro/pitchkit/issues/30) — Metrica is still open). Also open:
+a longstanding bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders
+square instead of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3
+notes; and [#59](https://github.com/yribeiro/pitchkit/issues/59) (follow-up to #58's
+SkillCorner loader) — **half done, still open for its second half.** Its "real
+`skillcorner` pitch type in `core`" half shipped via [PR #62](https://github.com/yribeiro/pitchkit/pull/62)
+(see the Milestone 2 entry above), including deleting the `toUefaX`/`toUefaY` squash-fudge
+as that half's issue text required. What's left, and why #59 is still open: **richer
+SkillCorner visualisations** — off-ball runs (`offBallRuns`) as `<Arrows>`/`<Comet>`,
+phases of play, pressure/on-ball-engagement density, passing options with
+`xpass_completion` — all backed by selectors that already exist and are tested; this
+remaining half is presentation work only.
+
+Note the recipe issues ([#23](https://github.com/yribeiro/pitchkit/issues/23)/[#24](https://github.com/yribeiro/pitchkit/issues/24))
+depend on shadcn registry infrastructure that **does not exist yet** — `apps/docs` has only
+an internal examples registry for its own gallery, not a consumable `registry.json`.
+
+**AX follow-on cluster (all open, all descend from #40):**
+[#41](https://github.com/yribeiro/pitchkit/issues/41) audits `Scene` for JSON-serialisability
+and SSR/headless rendering against a published "AI-friendly charting library" rubric;
+[#42](https://github.com/yribeiro/pitchkit/issues/42) is an **evaluate-then-maybe-build** on a
+PitchKit MCP server (deliberately not a commitment — an MCP server is an ongoing-maintenance
+runtime surface, unlike #40's static files); [#43](https://github.com/yribeiro/pitchkit/issues/43)
+is an agent eval harness to measure AX changes empirically rather than by feel, and is
+explicitly a prerequisite for trusting #41/#42's results.
 
 **Milestone 3 — publishing, largely complete (2026-09-08), pulled forward ahead of M2.**
 It was originally deferred until after M2's parity push, but was brought forward to claim the
@@ -229,7 +249,7 @@ namespace and get the library installable:
     agent fetching a `SKILL.md` link verbatim.
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
-  routes.
+  routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
 - **Brand identity** — via [PR #47](https://github.com/yribeiro/pitchkit/pull/47)
   (2026-09-10): the PitchKit mark (two penalty areas + halfway line + centre circle,
   reading as `[ ]`), applied across the README header, docs nav, favicon, and generated
@@ -254,8 +274,7 @@ namespace and get the library installable:
   hovered — `usePitch()` deliberately withholds `setTooltip`, so the hover-focus effect
   reads `data-pitchkit-mark` off the bubbled DOM event instead. If interactive recipes
   become a pattern, an `onHover` accessor (or exposing `setTooltip`) would remove the need
-  for that lookup. Worth raising on the Notion board rather than filing a GitHub issue,
-  per the tracking-migration note above.
+  for that lookup. Worth a GitHub issue if interactive recipes become a real theme.
 - **SEO / AI-search pass.** Target queries: "react library for football", "football web
   application library", "typescript football visualisations", "charting library for
   football", "visualisation library football". The load-bearing decisions:
