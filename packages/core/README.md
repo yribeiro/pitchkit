@@ -6,7 +6,7 @@
 The zero-dependency, framework-agnostic engine behind PitchKit: pitch dimensions, coordinate
 transforms, the scene/layer model, geometry algorithms, and heatmap binning.
 
-**Docs: [pitchkitjs.com](https://pitchkitjs.com)**
+**Docs: [pitchkitjs.com](https://www.pitchkitjs.com)**
 
 > **Most people want [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react)
 > instead.** That's the supported rendering surface. This package is the maths underneath it —
@@ -65,7 +65,7 @@ unaffected — `@pitchkit/react`'s `<Heatmap>` calls straight into it.)
 
 ## Links
 
-- [Documentation & gallery](https://pitchkitjs.com)
+- [Documentation & gallery](https://www.pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
 - [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react) — the React bindings

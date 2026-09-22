@@ -239,6 +239,14 @@ namespace and get the library installable:
     changeset**, so the fix sat unreleased on `main` until this pass added one
     retroactively. When reviewing a PR that touches `packages/react/skills/`, check for a
     changeset explicitly; it's easy to file skill-content fixes as "just docs."
+  - **`@pitchkit/core@0.3.1` + `@pitchkit/react@0.4.2` + `@pitchkit/data-providers@0.3.1`**
+    (all three patch) — 2026-09-22. Reworded npm `description`/`keywords` on all three for
+    discoverability. Also a follow-up to [PR #69](https://github.com/yribeiro/pitchkit/pull/69)
+    below: every `pitchkitjs.com` link in the READMEs and the bundled Agent Skill now points
+    at `https://www.pitchkitjs.com`, the host actually served (the apex 308-redirects) —
+    #69 fixed the docs site's own links but explicitly left the published packages for a
+    follow-up release, since a redirect-following client was never actually broken, only an
+    agent fetching a `SKILL.md` link verbatim.
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
@@ -258,6 +266,15 @@ namespace and get the library installable:
   ([PR #57](https://github.com/yribeiro/pitchkit/pull/57)), a shortened hero tagline
   ("Football visualised for the web.", [PR #60](https://github.com/yribeiro/pitchkit/pull/60)),
   and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
+- **Hero rebuilt as a gallery carousel** — via [PR #70](https://github.com/yribeiro/pitchkit/pull/70)
+  (2026-09-20), replacing the old click-to-plot toy pitch with three real gallery
+  visualisations (shot map, pass network, Voronoi) auto-cycling on a countdown, pause
+  control, and hover-to-focus on the shot map. **Surfaced a real library gap, worth
+  knowing before anyone else hits it:** there is no public way to react to a mark being
+  hovered — `usePitch()` deliberately withholds `setTooltip`, so the hover-focus effect
+  reads `data-pitchkit-mark` off the bubbled DOM event instead. If interactive recipes
+  become a pattern, an `onHover` accessor (or exposing `setTooltip`) would remove the need
+  for that lookup. Worth a GitHub issue if interactive recipes become a real theme.
 - **SEO / AI-search pass.** Target queries: "react library for football", "football web
   application library", "typescript football visualisations", "charting library for
   football", "visualisation library football". The load-bearing decisions:
@@ -279,6 +296,15 @@ namespace and get the library installable:
   - `apps/docs/app/robots.ts` names the AI crawlers explicitly. The wildcard already allows
     them; the point is that `Google-Extended`/`Applebot-Extended` are opt-*out* tokens where
     silence is ambiguous.
+  - **Follow-up bug, fixed by [PR #69](https://github.com/yribeiro/pitchkit/pull/69)
+    (2026-09-13):** `SITE_URL` was the apex (`https://pitchkitjs.com`), but Vercel serves
+    from `www` and 308-redirects the apex there — so every canonical, `og:url`, sitemap
+    entry, and every link inside `llms.txt` pointed at a redirecting URL. Fine for Google
+    (it resolves redirecting canonicals) but not for an agent crawler that doesn't follow
+    redirects, which is the exact audience `llms.txt` exists for. `SITE_URL` now points at
+    `www` directly. The published packages' own `pitchkitjs.com` links (READMEs,
+    `SKILL.md`) had the same bug and were fixed in the `0.3.1`/`0.4.2`/`0.3.1` release
+    below, one release later than the docs site itself.
 - **Docs site live:** [pitchkitjs.com](https://pitchkitjs.com) — interactive hero, `/gallery`,
   docs, API reference. **Auto-deploys on every push to `main`** via Vercel's GitHub App —
   there is no deploy workflow or `vercel.json` in this repo, so don't go looking for one; PRs

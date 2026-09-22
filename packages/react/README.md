@@ -6,7 +6,7 @@
 Declarative React components for football pitch visualisation — mplsoccer's feature set for
 the web. Responsive by default, themed with CSS variables, SSR-safe.
 
-**Docs and live examples: [pitchkitjs.com](https://pitchkitjs.com)**
+**Docs and live examples: [pitchkitjs.com](https://www.pitchkitjs.com)**
 
 > **Early days — pre-`1.0`.** Usable and tested, but the API isn't stable yet; expect
 > breaking changes before `1.0`.
@@ -163,7 +163,7 @@ the `skills/<name>/SKILL.md` convention, so generic installers like `skills-npm`
 
 ## Links
 
-- [Documentation & gallery](https://pitchkitjs.com)
+- [Documentation & gallery](https://www.pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
 - [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core) — the framework-agnostic engine

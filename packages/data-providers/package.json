@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/data-providers",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Convenience loaders for open football data (StatsBomb events + 360, SkillCorner tracking, Wyscout events) — raw files in, typed events out, ready for PitchKit.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",

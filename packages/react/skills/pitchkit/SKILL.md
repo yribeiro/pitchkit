@@ -12,7 +12,7 @@ rebuilt for React, not a port of matplotlib.
 This skill ships inside the installed `@pitchkit/react` tarball, so it describes the
 exact version in the consuming project's `node_modules`. Check
 `node_modules/@pitchkit/react/package.json` for that version before assuming any API
-described here is present. Full docs: <https://pitchkitjs.com>.
+described here is present. Full docs: <https://www.pitchkitjs.com>.
 
 ## Never guess the API
 
@@ -469,7 +469,7 @@ repositories, and **both ask to be credited** in anything published from it.
 
 - [references/api.md](references/api.md) — every component's full prop list, plus the
   `@pitchkit/core` exports worth calling directly.
-- <https://pitchkitjs.com/docs/data> — the data loaders in depth, per provider and file.
-- <https://pitchkitjs.com/docs> — narrative guides.
-- <https://pitchkitjs.com/gallery> — worked examples with source.
+- <https://www.pitchkitjs.com/docs/data> — the data loaders in depth, per provider and file.
+- <https://www.pitchkitjs.com/docs> — narrative guides.
+- <https://www.pitchkitjs.com/gallery> — worked examples with source.
 - The installed package's `dist/index.d.ts` — the authoritative types.
