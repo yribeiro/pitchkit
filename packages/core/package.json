@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Zero-dependency TypeScript core for PitchKit, the football (soccer) visualisation library: coordinate systems, transforms, scene/layer model, SVG renderer.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
