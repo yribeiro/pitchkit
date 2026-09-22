@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
 import type { PitchDimensions, PitchTypeId } from "../dimensions/types.js";
+import { fromExtentFrame } from "./canonical.js";
 import { createStandardizeTransform } from "./standardize.js";
 import type { Point } from "./types.js";
 
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 
 function approxPoint(actual: Point, expected: Point, precision = 4): void {
   expect(actual[0]).toBeCloseTo(expected[0], precision);
@@ -20,13 +21,16 @@ function approxPoint(actual: Point, expected: Point, precision = 4): void {
  * must preserve.
  */
 function geographicCorners(dims: PitchDimensions) {
+  // Built in the extent frame and converted back, so a center-origin grid —
+  // whose own corner is (-length/2, -width/2), not (0, 0) — is described
+  // correctly rather than being quietly left out of this suite.
   const topY = dims.yDirection === "down" ? 0 : dims.width;
   const bottomY = dims.yDirection === "down" ? dims.width : 0;
   return {
-    topLeft: [0, topY] as Point,
-    topRight: [dims.length, topY] as Point,
-    bottomLeft: [0, bottomY] as Point,
-    bottomRight: [dims.length, bottomY] as Point,
+    topLeft: fromExtentFrame(dims, [0, topY]),
+    topRight: fromExtentFrame(dims, [dims.length, topY]),
+    bottomLeft: fromExtentFrame(dims, [0, bottomY]),
+    bottomRight: fromExtentFrame(dims, [dims.length, bottomY]),
   };
 }
 

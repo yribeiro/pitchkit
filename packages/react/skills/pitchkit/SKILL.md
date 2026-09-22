@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Opta or UEFA pitch coordinates; when they want to load StatsBomb or SkillCorner open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb or SkillCorner open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -23,8 +23,8 @@ export a PitchKit answer uses must come from this file, from
 needed is not in those, say so rather than inventing it.
 
 Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
-`<PassNetwork>` component, a `theme` prop or JS theme object, a `type="wyscout"` (or
-`"tracab"`, `"custom"`) pitch, a `responsive` prop, a `<Pitch>` `onClick` handler that
+`<PassNetwork>` component, a `theme` prop or JS theme object, a `type="tracab"` (or
+`"custom"`) pitch, a `responsive` prop, a `<Pitch>` `onClick` handler that
 hands back pitch coordinates.
 
 ## Package split
@@ -74,6 +74,13 @@ tell the user to install it before writing an import from it.
 | `"opta"`        | 100 × 100 | bottom-left | up          | Normalised percentage grid |
 | `"uefa"`        | 105 × 68  | bottom-left | up          | Real metres                |
 | `"skillcorner"` | 105 × 68  | center      | up          | Real metres, centre origin |
+| `"wyscout"`     | 100 × 100 | top-left    | down        | Normalised percentage grid |
+
+`"wyscout"` is **not** `"opta"` under another name, even though both are
+0–100 on both axes: Wyscout's origin is top-left with y increasing downward,
+Opta's is bottom-left with y increasing upward. Plotting one on the other
+mirrors the pitch vertically and nothing errors, because every coordinate is
+still in range.
 
 `"skillcorner"` is the only centre-origin type: x runs `-52.5` to `+52.5`, so
 data from `@pitchkit/data-providers/skillcorner` plots with its raw `x`/`y`
@@ -85,7 +92,7 @@ since a penalty area is 16.5 m deep on any pitch:
 <Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }} />
 ```
 
-Those four are the whole list. For a provider that isn't one of them, standardise the
+Those five are the whole list. For a provider that isn't one of them, standardise the
 data first and render in the target grid:
 
 ```tsx

@@ -10,7 +10,7 @@ import { cropForHalf } from "../transform/half.js";
 import { getPitchDimensions } from "./registry.js";
 import type { PitchTypeId } from "./types.js";
 
-const CORNER_ORIGIN: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+const CORNER_ORIGIN: PitchTypeId[] = ["statsbomb", "opta", "uefa", "wyscout"];
 const skillcorner = getPitchDimensions("skillcorner");
 
 describe("the extent frame", () => {

@@ -4,7 +4,7 @@ import type { PitchTypeId } from "../../dimensions/types.js";
 import type { AnnotateLayer, ScatterLayer, Scene } from "../../scene/types.js";
 import { renderSceneToSVGElement } from "./render-scene.js";
 
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 
 function buildScene(pitchType: PitchTypeId): Scene {
   return {

@@ -3,8 +3,10 @@ import { getPitchDimensions, PITCH_DIMENSIONS } from "./registry.js";
 import type { PitchTypeId } from "./types.js";
 
 // Every registered type, so a new provider is held to the same invariants
-// rather than only being covered by its own test file.
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa", "skillcorner"];
+// rather than only being covered by its own test file. Read from the
+// registry rather than listed: a hardcoded copy of this list is how
+// skillcorner went uncovered here for a release.
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 
 describe("PITCH_DIMENSIONS", () => {
   it.each(PITCH_TYPES)("%s has a positive extent", (pitchType) => {
@@ -61,13 +63,19 @@ describe("PITCH_DIMENSIONS", () => {
   );
 
   it.each(PITCH_TYPES)(
-    "%s center circle radius converts to a plausible ~9.15m via the length-axis scale",
+    "%s center circle radius works out to a plausible ~9.15m",
     (pitchType) => {
       const dims = PITCH_DIMENSIONS[pitchType];
-      const lengthScale = dims.realLengthMeters / dims.length;
-      const radiusMeters = dims.markings.centerCircleRadius * lengthScale;
-      // Generous tolerance: StatsBomb/Opta grids are approximations of the
-      // real pitch, not exact per-axis conversions (see PitchMarkings doc).
+      // A radius is a single number, so it can only live in the frame where
+      // both axes scale alike. On a percentage grid that frame is metres —
+      // the renderer multiplies it by pixels-per-metre directly — so it is
+      // already a real measurement. Everywhere else the grid *is* the frame,
+      // and the length-axis scale converts it.
+      const radiusMeters = dims.normalized
+        ? dims.markings.centerCircleRadius
+        : dims.markings.centerCircleRadius * (dims.realLengthMeters / dims.length);
+      // Generous tolerance: StatsBomb's grid is an approximation of the real
+      // pitch, not an exact per-axis conversion (see PitchMarkings doc).
       expect(radiusMeters).toBeGreaterThan(8);
       expect(radiusMeters).toBeLessThan(10.5);
     },
