@@ -6,6 +6,7 @@ import { SITE_URL } from "@/lib/site";
 import { source } from "@/lib/source";
 import { AgentLogos, AgentTools } from "@/components/agent-tools";
 import { PitchPreview } from "@/components/pitch-preview";
+import { YouTubeClip } from "@/components/youtube-clip";
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
   const params = await props.params;
@@ -19,7 +20,15 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent components={{ ...defaultMdxComponents, PitchPreview, AgentTools, AgentLogos }} />
+        <MDXContent
+          components={{
+            ...defaultMdxComponents,
+            PitchPreview,
+            YouTubeClip,
+            AgentTools,
+            AgentLogos,
+          }}
+        />
       </DocsBody>
     </DocsPage>
   );

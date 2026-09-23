@@ -36,7 +36,10 @@ export function PitchPreview({ name }: PitchPreviewProps) {
   const { Component, source } = entry;
 
   return (
-    <div className="pitchkit-preview not-prose">
+    // `id` is the example's own name, so any page can link to its preview
+    // ("Expand View Code on the preview" in quickstart.mdx). `scroll-mt-24`
+    // keeps the target clear of the sticky header when jumped to.
+    <div id={name} className="pitchkit-preview not-prose scroll-mt-24">
       <div className="pitchkit-preview__stage">
         <div className="pitchkit-preview__stage-inner pitchkit-docs-pitch">
           <Component />
@@ -47,13 +50,19 @@ export function PitchPreview({ name }: PitchPreviewProps) {
       </div>
       <div
         className={
-          expanded ? "pitchkit-preview__code" : "pitchkit-preview__code pitchkit-preview__code--collapsed"
+          expanded
+            ? "pitchkit-preview__code"
+            : "pitchkit-preview__code pitchkit-preview__code--collapsed"
         }
       >
         <CodeBlock code={source} lang="tsx" />
         {!expanded && (
           <div className="pitchkit-preview__code-fade">
-            <button type="button" className="pitchkit-preview__code-toggle" onClick={() => setExpanded(true)}>
+            <button
+              type="button"
+              className="pitchkit-preview__code-toggle"
+              onClick={() => setExpanded(true)}
+            >
               View Code
             </button>
           </div>

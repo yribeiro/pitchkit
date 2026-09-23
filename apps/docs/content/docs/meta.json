@@ -2,6 +2,7 @@
   "title": "Docs",
   "pages": [
     "index",
+    "quickstart",
     "guides",
     "components",
     "overlays",

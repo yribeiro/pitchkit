@@ -42,7 +42,7 @@ export const apiPages = () => allPages().filter(isApiPage);
  */
 export async function renderPage(page: DocsPage): Promise<string> {
   const processed = await page.data.getText("processed");
-  const body = stripHeadingAnchors(await inlineExamples(processed));
+  const body = stripHeadingAnchors(youTubeLink(await inlineExamples(processed)));
   const description = page.data.description ? `\n> ${page.data.description}\n` : "";
 
   return `# ${page.data.title}
@@ -102,6 +102,36 @@ async function readExample(name: string): Promise<string | undefined> {
     .replace(/^[ \t]*appearance=\{docs\w*Appearance\}\n/gm, "")
     .replace(/ appearance=\{docs\w*Appearance\}/g, "")
     .trim();
+}
+
+const YOUTUBE_CLIP = /^[ \t]*<YouTubeClip\b([\s\S]*?)\/>[ \t]*$/gm;
+/** One JSX attribute: `id="x"` (quoted) or `start={315}` (braced). */
+const YOUTUBE_ATTR = /(\w+)=(?:"([^"]*)"|\{(\d+)\})/g;
+
+/**
+ * Replaces each `<YouTubeClip … />` with a plain timestamped link.
+ *
+ * The rendered page embeds a player; as text an iframe is nothing at all, and
+ * dropping the tag would lose the fact that a clip of the passage exists. A
+ * link carrying the `t=` offset is the honest plain-text equivalent — a reader,
+ * or a model summarising the page, can still follow it to the right moment.
+ */
+function youTubeLink(markdown: string): string {
+  return markdown.replace(YOUTUBE_CLIP, (match, attrs: string) => {
+    const values = new Map<string, string>();
+    for (const [, name, quoted, braced] of attrs.matchAll(YOUTUBE_ATTR)) {
+      values.set(name!, quoted ?? braced ?? "");
+    }
+
+    const id = values.get("id");
+    if (!id) return match;
+
+    const title = values.get("title") ?? "Watch on YouTube";
+    const start = values.get("start");
+    const url = `https://www.youtube.com/watch?v=${id}${start ? `&t=${start}s` : ""}`;
+
+    return `[${title}](${url}) (video)`;
+  });
 }
 
 /**
