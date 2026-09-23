@@ -51,16 +51,15 @@ addition is that `location` arrays are lifted to `x` / `y` (and `end_location` t
 ## Step 2 — draw a pitch
 
 `<Pitch>` owns the coordinate system. Tell it which provider's grid your numbers are on and
-it does the rest — StatsBomb's is 120 × 80, so nothing needs normalising.
+it does the rest — StatsBomb's is 120 × 80, so nothing needs normalising. It's responsive by
+default: it fills its container and keeps the pitch's aspect ratio. Passing explicit
+`width`/`height` is available but not necessary.
 
 ```tsx
 import { Pitch } from "@pitchkit/react";
 
 <Pitch type="statsbomb" />;
 ```
-
-It's responsive by default: it fills its container and keeps the pitch's aspect ratio.
-Passing explicit `width`/`height` is available but not necessary.
 
 ## Step 3 — find the move
 
