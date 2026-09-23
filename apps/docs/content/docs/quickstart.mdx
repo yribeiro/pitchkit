@@ -21,8 +21,8 @@ filtering it, and the chart is a stack of PitchKit layers over the result.
 
 ## Install
 
-`core` is the engine and `react` the bindings; `data-providers` is optional, and is what
-turns a match id into typed events.
+`react` has the components you render, `core` has the coordinate transforms underneath
+them, and `data-providers` is a convenience library for handling data.
 
 ```bash
 npm install @pitchkit/core @pitchkit/react @pitchkit/data-providers
@@ -30,8 +30,8 @@ npm install @pitchkit/core @pitchkit/react @pitchkit/data-providers
 
 ## Step 1 — load a match
 
-One call, one match id. The Euro 2024 final is `3943043`; every fixture is discoverable
-through `fetchCompetitions` and `fetchMatches` (see [Events](/docs/data/statsbomb/events)).
+The Euro 2024 final is `3943043`; every fixture is discoverable through
+`fetchCompetitions` and `fetchMatches` (see [Events](/docs/data/statsbomb/events)).
 
 ```ts
 import { fetchMatchEvents } from "@pitchkit/data-providers/statsbomb";
@@ -60,7 +60,7 @@ import { Pitch } from "@pitchkit/react";
 ```
 
 It's responsive by default: it fills its container and keeps the pitch's aspect ratio.
-Passing explicit `width`/`height` is the opt-out, not the norm.
+Passing explicit `width`/`height` is available but not necessary.
 
 ## Step 3 — find the move
 
@@ -79,7 +79,7 @@ if (!goal) return;
 ```
 
 Now work backwards. StatsBomb stamps every event with a `possession` number and the team
-that owned it, so "the move that led to this goal" is a filter, not a reconstruction:
+that owned it, so "the move that led to this goal" is a filter:
 
 ```ts
 const possession = events.filter((event) => event.possession === goal.possession);
@@ -90,7 +90,7 @@ const passes = attacking.filter(isPass);
 const carries = attacking.filter(isCarry);
 ```
 
-Two details there are easy to get wrong, and both fail quietly:
+Two details there are easy to get wrong:
 
 - **A possession doesn't end at the shot.** It runs on until the ball genuinely changes
   hands. A goal is the tidy case — this possession ends on Palmer's finish, so the `slice`
@@ -100,15 +100,10 @@ Two details there are easy to get wrong, and both fail quietly:
   didn't stick are all stamped with the same `possession` number. Comparing `team` against
   `possession_team` keeps the chain to the side building it.
 
-`isPass` and `isCarry` are type guards, so `passes` is `StatsBombPass[]` from here on —
-`pass.endX` and `goal.shot.statsbomb_xg` typecheck. (Testing `event.type.name === "Shot"`
-yourself won't narrow, because StatsBomb's discriminant is nested inside `type`; see
-[Events](/docs/data/statsbomb/events).)
-
 ## Step 4 — plot the move
 
 Layers stack inside the `<Pitch>`, in paint order. Each one takes plain data plus **accessor
-functions** — which is why the StatsBomb objects go in untranslated:
+functions**:
 
 ```tsx
 import { Arrows, Comet, Pitch, Scatter } from "@pitchkit/react";
@@ -139,14 +134,9 @@ import { Arrows, Comet, Pitch, Scatter } from "@pitchkit/react";
 </Pitch>;
 ```
 
-Passes get arrows because direction is the whole point; carries get comet trails so a run
-with the ball reads differently from a pass; the goal gets a marker of its own. Swap in any
-other overlay the same way — the data never changes shape to suit the layer.
-
 Saka's carry up the right is the one comet on the chart, and it's why carries are worth
 drawing separately: as an arrow it would be indistinguishable from the long pass that
-started the move — one is a player running with the ball, the other is the ball leaving
-a player's foot.
+started the move.
 
 Most props accept a static value _or_ a per-datum function, so styling is data-driven
 without a separate encoding step:
@@ -159,12 +149,10 @@ without a separate encoding step:
 
 That's the example at the top of this page: five passes and one carry, goalkeeper to goal.
 Pickford throws to Bellingham, Bellingham to Palmer, Palmer wide to Saka, Saka carries to
-the byline and cuts it back, and Palmer — having set Saka away in the first place —
-finishes it from the edge of the box at 0.04 xG.
+the byline and cuts it back, and Palmer finishes it from the edge of the box at 0.04 xG.
 
 Expand **View Code** on the preview for the complete component, including the loading
-states and the carry filter (a carry of a unit or two is a touch adjustment, not
-progression, and renders as a speck rather than a trail).
+states and the carry filter.
 
 ## Where to go next
 
