@@ -1,7 +1,6 @@
 // Generates content/docs/api/ from the two packages' TSDoc via TypeDoc +
-// typedoc-plugin-markdown (issue #28 / PRD §9's "full API reference,
-// generated from TSDoc, styled to match"). Run via the predev/prebuild npm
-// hooks alongside generate-examples-registry.mjs; output is gitignored,
+// typedoc-plugin-markdown (issue #28; see docs/architecture.md#docs-site). Run by next.config.ts on
+// every start, alongside generate-examples-registry.mjs; output is gitignored,
 // like the example registry.
 //
 // The plugin emits `.mdx` files that fumadocs-mdx compiles like any

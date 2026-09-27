@@ -10,14 +10,11 @@ anything it covers. Several entries reverse earlier decisions on purpose.
 
 | Document                                       | Read it for                                                                     |
 | ---------------------------------------------- | ------------------------------------------------------------------------------- |
-| [docs/PRD.md](./docs/PRD.md)                   | Problem, goals, users, principles. Index of the old PRD section numbers.        |
+| [docs/PRD.md](./docs/PRD.md)                   | Problem, goals, users, principles.                                              |
 | [docs/architecture.md](./docs/architecture.md) | Rendering, coordinates, packages, styling, implementation notes, dataset facts. |
 | [docs/roadmap.md](./docs/roadmap.md)           | Feature status, milestones, open issues, release history.                       |
 | [docs/decisions.md](./docs/decisions.md)       | Decisions with their reasons (cited below as D1, D2, …).                        |
 | [CONTRIBUTING.md](./CONTRIBUTING.md)           | Setup, commands, changesets, testing, Windows/WSL, releasing, brand assets.     |
-
-Code comments cite "PRD §8.7" and similar. [docs/PRD.md](./docs/PRD.md) maps each old
-section number to the document it now lives in.
 
 ## Repo layout
 

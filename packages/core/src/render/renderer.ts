@@ -2,7 +2,7 @@ import type { Scene } from "../scene/types.js";
 
 /**
  * A layer declares *what* to draw; the renderer decides SVG vs Canvas
- * (PRD §8.1).
+ * (docs/architecture.md#rendering-svg-and-canvas).
  *
  * @internal `svgRenderer` (the SVG implementation of this interface) is
  * internal building-block surface, not a supported public consumption path

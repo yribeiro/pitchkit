@@ -1,5 +1,5 @@
 /**
- * CSS custom property names the renderer reads for theming (PRD §8.7).
+ * CSS custom property names the renderer reads for theming (docs/architecture.md#theming-and-styling).
  * This object exists purely for editor autocomplete and typo-safety when
  * consumers set these variables in their own CSS — the values themselves
  * always live in CSS, never here.

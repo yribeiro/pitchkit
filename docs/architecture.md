@@ -1,22 +1,28 @@
 # Architecture
 
 How PitchKit is built: rendering, coordinates, packages, styling, and the engineering
-standards around them. Section numbers (§8–§10) are kept from the original single-file PRD,
-because code comments across the repo cite them. The reasons behind these choices are in the
+standards around them. The reasons behind these choices are in the
 [decision log](./decisions.md).
 
-- [§8 Technical architecture](#8-technical-architecture)
-- [§9 Docs and showcase site](#9-docs-and-showcase-site)
-- [§10 Engineering standards and tooling](#10-engineering-standards-and-tooling)
+- [Rendering: SVG and Canvas](#rendering-svg-and-canvas)
+- [Coordinates and pitch types](#coordinates-and-pitch-types)
+- [Scene and layers](#scene-and-layers)
+- [Packages](#packages)
+- [React and Next.js](#react-and-nextjs)
+- [Responsive and multi-device](#responsive-and-multi-device)
+- [Theming and styling](#theming-and-styling)
+- [Accessibility](#accessibility)
+- [Performance budgets](#performance-budgets)
+- [Data loaders](#data-loaders)
+- [Docs site](#docs-site)
+- [Engineering standards](#engineering-standards)
 - [Developer mental model](#developer-mental-model)
 - [Implementation notes](#implementation-notes)
 - [Data provider facts](#data-provider-facts)
 
 ---
 
-## 8. Technical architecture
-
-### 8.1 Rendering strategy — hybrid SVG + Canvas
+## Rendering: SVG and Canvas
 
 - **SVG** for pitch geometry and discrete marks (scatter, arrows, comets, annotations, hulls,
   Voronoi). It is crisp at any DPI, server-renderable, and DOM-addressable for hover,
@@ -26,7 +32,7 @@ because code comments across the repo cite them. The reasons behind these choice
 - A layer declares what to draw, and the renderer decides how. The public API is the same
   regardless of backend. ([D1](./decisions.md#d1-hybrid-rendering-svg-for-marks-canvas-for-density))
 
-### 8.2 Coordinate system & pitch-type abstraction
+## Coordinates and pitch types
 
 A `PitchDimensions` model encodes, per provider: extent, origin (corner or centre), y-axis
 direction, orientation, and whether the grid is normalised. Users give data in provider
@@ -43,7 +49,7 @@ non-obvious cases:
 - Normalised `0..100` grids derive their shape from real metres
   ([D6](./decisions.md#d6-normalised-grids-derive-their-shape-from-real-metres)).
 
-### 8.3 Scene / layer model
+## Scene and layers
 
 ```
 Pitch (scene)
@@ -55,7 +61,7 @@ Pitch (scene)
 Layers are pure data and options; they don't own DOM. That keeps the scene serialisable,
 testable and renderer-independent.
 
-### 8.4 Package structure
+## Packages
 
 npm workspaces + Turborepo.
 
@@ -73,7 +79,7 @@ publish under the `@pitchkit` scope. Recipes and theme presets are meant to ship
 registry items instead of packages
 ([D10](./decisions.md#d10-marks-ship-on-npm-recipes-and-theme-presets-ship-as-shadcn-registry-items)).
 
-### 8.5 React & Next.js integration
+## React and Next.js
 
 - `<Pitch type="…">` provides the coordinate context; layer children draw into it.
 - `usePitch()` exposes the scene for advanced use. It deliberately does not expose
@@ -86,7 +92,7 @@ registry items instead of packages
   component. It is still fully server-rendered; `"use client"` only sets the
   prop-serialisation boundary.
 
-### 8.6 Responsive & multi-device
+## Responsive and multi-device
 
 - **Responsive by default.** With no size props, `<Pitch>` fills its container via
   `ResizeObserver`. Passing both `width` and `height` fixes the size, which is the opt-out for
@@ -103,7 +109,7 @@ Designed but not built yet:
 - **Adaptive density** at small widths: a `hideBelow` prop for labels, thinner strokes.
 - **`touch-action: pan-y`** on the pitch root, so a vertical swipe scrolls the page.
 
-### 8.7 Theming & styling
+## Theming and styling
 
 Colours are CSS variables only
 ([D8](./decisions.md#d8-theming-is-css-variables-only)). The user-facing guide, with the full
@@ -127,7 +133,7 @@ variable list, is on the [Styling pages](https://www.pitchkitjs.com/docs/styling
   shadcn registry items, e.g. `npx shadcn add @pitchkit/theme-broadcast`. They depend on the
   registry infrastructure, which doesn't exist yet.
 
-### 8.8 Accessibility
+## Accessibility
 
 Targets. Apart from the tooltip's `role="tooltip"`, none of these is implemented yet:
 
@@ -141,7 +147,7 @@ Targets. Apart from the tooltip's `role="tooltip"`, none of these is implemented
 - Density layers get an optional pattern for pairing the chart with a visually hidden data
   table of the same binned values.
 
-### 8.9 Performance budgets
+## Performance budgets
 
 - 60 fps interaction on a mid-range phone for a typical event layer (1–3k marks) via SVG;
   switch to Canvas above a threshold.
@@ -149,7 +155,7 @@ Targets. Apart from the tooltip's `role="tooltip"`, none of these is implemented
 - Heavy layers (KDE, Voronoi) are code-split so a simple shot map ships minimal JS.
 - A benchmark harness in CI tracking render time and bundle size per package (not built yet).
 
-### 8.10 Data adapters & coordinate safety
+## Data loaders
 
 - Loaders keep each provider's own vocabulary; only coordinates are lifted, and
   interpretation lives in predicates
@@ -167,7 +173,7 @@ Facts about the datasets that the loaders depend on are in
 
 ---
 
-## 9. Docs and showcase site
+## Docs site
 
 `apps/docs` is a Next.js App Router site on Fumadocs and Tailwind v4, in the shadcn/ui design
 language. It is live at [pitchkitjs.com](https://www.pitchkitjs.com).
@@ -189,7 +195,7 @@ See [docs site conventions](#docs-site-conventions) for how to work in it.
 
 ---
 
-## 10. Engineering standards and tooling
+## Engineering standards
 
 | Area       | Standard                                                      | As built                                                                                                                                                           |
 | ---------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

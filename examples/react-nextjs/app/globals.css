@@ -38,7 +38,7 @@
 :root {
   color-scheme: dark;
 
-  /* Theming demo (PRD §8.7): consumers set these once — via a shadcn-style
+  /* Theming demo (docs/architecture.md#theming-and-styling): consumers set these once — via a shadcn-style
      "add to globals.css" install, or by hand as here — and every <Pitch>
      picks them up through CSS variable cascade, no per-instance props. */
   --pitch-surface: #1a472a;

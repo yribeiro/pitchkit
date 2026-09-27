@@ -9,7 +9,7 @@ export interface Size {
 /**
  * Measures a ref'd element's content box, updating on resize via
  * ResizeObserver. This is the mechanism behind <Pitch>'s "responsive by
- * default" behaviour (PRD §8.6) — no `responsive` prop, just no
+ * default" behaviour (docs/architecture.md#responsive-and-multi-device) — no `responsive` prop, just no
  * width/height.
  *
  * Returns `null` until the first measurement (SSR, or before mount) —

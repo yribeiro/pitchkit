@@ -11,8 +11,8 @@ const ZERO_PADDING = { top: 0, right: 0, bottom: 0, left: 0 };
 
 /**
  * Builds the provider-coordinates -> pixel-space transform for a single
- * render. This is PitchKit's "internal scale + transform pipeline" (PRD
- * §8.2): every layer calls toPixel() and inherits this single source of
+ * render. This is PitchKit's "internal scale + transform pipeline"
+ * (docs/architecture.md#coordinates-and-pitch-types): every layer calls toPixel() and inherits this single source of
  * truth, so pitch geometry and data marks always stay aligned.
  */
 export function createPixelTransform(

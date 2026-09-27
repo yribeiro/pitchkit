@@ -5,7 +5,7 @@ import type { Point } from "./types.js";
 /**
  * Pure provider-to-provider coordinate conversion, based on each pitch's
  * relative position along its length/width axes. This is the math
- * underlying the public `Standardizer` API (PRD §7.1, tagged Phase 1) —
+ * underlying the public `Standardizer` API (docs/roadmap.md#pitch-drawing-and-geometry) —
  * M0 ships only this pure function, not a stateful public class.
  *
  * This is a simplified uniform-extent standardizer. mplsoccer's own

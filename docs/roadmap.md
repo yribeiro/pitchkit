@@ -1,23 +1,22 @@
 # Roadmap
 
-What PitchKit covers, what's left, and what has shipped. Section numbers (§7, §11) are kept
-from the original single-file PRD, because code comments cite them.
+What PitchKit covers, what's left, and what has shipped.
 
-- [§7 Feature inventory](#7-feature-inventory)
-- [§11 Milestones](#11-milestones)
+- [Feature inventory](#feature-inventory)
+- [Milestones](#milestones)
 - [Release history](#release-history)
-- [Appendix A — mplsoccer reference](#appendix-a--mplsoccer-reference)
+- [mplsoccer reference](#mplsoccer-reference)
 
 Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1** = v1.0,
 **L** = later.
 
 ---
 
-## 7. Feature inventory
+## Feature inventory
 
 Mapped from mplsoccer's modules so parity can be audited.
 
-### 7.1 Pitch drawing & geometry
+### Pitch drawing and geometry
 
 | Feature                                         | mplsoccer ref                        | Phase | Status                                                                                              |
 | ----------------------------------------------- | ------------------------------------ | ----- | --------------------------------------------------------------------------------------------------- |
@@ -28,7 +27,7 @@ Mapped from mplsoccer's modules so parity can be audited.
 | Styling: stripes, line colour/width, goal types | `pitch_color`, `stripe`, `goal_type` | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                     |
 | Coordinate standardiser (provider → provider)   | `Standardizer`                       | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.       |
 
-### 7.2 Plotting primitives
+### Plotting primitives
 
 | Feature                         | mplsoccer ref                  | Phase | Status                                              |
 | ------------------------------- | ------------------------------ | ----- | --------------------------------------------------- |
@@ -42,7 +41,7 @@ Mapped from mplsoccer's modules so parity can be audited.
 | Goal angle                      | `goal_angle`                   | 1     | ✅                                                  |
 | Angle and distance helpers      | `calculate_angle_and_distance` | 1     | ⬜                                                  |
 
-### 7.3 Statistical and aggregate layers
+### Statistical and aggregate layers
 
 | Feature                                      | mplsoccer ref                                     | Phase | Status |
 | -------------------------------------------- | ------------------------------------------------- | ----- | ------ |
@@ -54,7 +53,7 @@ Mapped from mplsoccer's modules so parity can be audited.
 | Flow (binned direction and magnitude)        | `flow`                                            | 1     | ✅     |
 | Sonars                                       | `sonar`, `sonar_grid`                             | L     | ⬜     |
 
-### 7.4 Composite recipes
+### Composite recipes
 
 Pass network, shot map, pass map, pressure heatmap, progressive-pass map, expected-threat
 grid. Phase **1**, ⬜. They ship as shadcn registry items
@@ -68,7 +67,7 @@ complete file from a match id to a finished chart. 🟡 The Quickstart and every
 [Data](https://www.pitchkitjs.com/docs/data) page do this; the `/gallery` cards still use
 hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 
-### 7.5 Non-pitch charts
+### Non-pitch charts
 
 | Feature                                                 | mplsoccer ref | Phase | Status                                                   |
 | ------------------------------------------------------- | ------------- | ----- | -------------------------------------------------------- |
@@ -76,7 +75,7 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 | Pizza / percentile (Nightingale), incl. comparison mode | `PyPizza`     | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
 | Bumpy chart (rank over time)                            | `Bumpy`       | L     | ⬜                                                       |
 
-### 7.6 Supporting utilities
+### Supporting utilities
 
 | Feature                                    | mplsoccer ref               | Phase | Status                                                                                                                      |
 | ------------------------------------------ | --------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -94,7 +93,7 @@ a component prop, because export is a one-off action rather than part of the ren
 
 ---
 
-## 11. Milestones
+## Milestones
 
 ### Milestone 0 — Foundations ✅
 
@@ -200,7 +199,7 @@ All three packages are published under the `pitchkit` npm org. Each package's ow
 
 ---
 
-## Appendix A — mplsoccer reference
+## mplsoccer reference
 
 The parity target.
 

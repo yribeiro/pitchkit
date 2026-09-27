@@ -1,7 +1,7 @@
 /**
  * Maps a `data-pitchkit-part` to its default presentation as an inline
  * `style` string referencing themeable CSS variables with built-in
- * fallbacks (PRD §8.7). Consumers retheme by setting the `--pitch-*`
+ * fallbacks (docs/architecture.md#theming-and-styling). Consumers retheme by setting the `--pitch-*`
  * variables — never by overriding these shapes' fill/stroke directly.
  *
  * Shared verbatim between the SVG DOM renderer and @pitchkit/react's JSX

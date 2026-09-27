@@ -30,7 +30,7 @@ Canvas.
 
 **Consequences:** Canvas layers render nothing on the server and paint after hydration.
 Canvas reads the same `--pitch-*` variables as SVG, so theming stays in one place.
-See [architecture §8.1](./architecture.md#81-rendering-strategy--hybrid-svg--canvas).
+See [architecture: rendering](./architecture.md#rendering-svg-and-canvas).
 
 ### D2. `@pitchkit/core` has no React dependency
 
@@ -206,8 +206,7 @@ intentional.
 ### D13. One `@pitchkit/data-providers` package, one entry point per provider
 
 **Decision:** Loaders live in `@pitchkit/data-providers`, exported per provider
-(`/statsbomb`, `/skillcorner`, `/wyscout`). This supersedes the original
-`@pitchkit/data-statsbomb` name.
+(`/statsbomb`, `/skillcorner`, `/wyscout`).
 
 **Why:** More providers were planned ([#30](https://github.com/yribeiro/pitchkit/issues/30)),
 and one package per provider would multiply release overhead.

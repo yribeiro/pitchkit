@@ -17,7 +17,7 @@ detail lives in three companion documents:
 
 ---
 
-## 1. Summary
+## Summary
 
 Football analytics on the web has no equivalent to Python's **mplsoccer**. Analysts who want
 interactive pitch visualisations in a web app stitch together D3 wrappers, half-maintained
@@ -32,7 +32,7 @@ It has three parts:
 2. **Documentation:** API reference, guides, and live examples.
 3. **A showcase site** in the shadcn/ui design language, which is also the docs home.
 
-## 2. Background and problem
+## Background and problem
 
 mplsoccer (by Andrew Rowlinson and Anmol Durgapal) is the standard for football pitch
 visualisation in Python. It draws pitches across nine provider coordinate systems and layers
@@ -48,7 +48,7 @@ products. There, the gaps are:
 - **A fragmented ecosystem.** Pitch drawing, statistical layers and player charts live in
   separate, incompatible libraries.
 
-## 3. Competitive landscape
+## Competitive landscape
 
 | Library                   | Language | Scope                                 | Rendering           | Gap                                  |
 | ------------------------- | -------- | ------------------------------------- | ------------------- | ------------------------------------ |
@@ -60,7 +60,7 @@ products. There, the gaps are:
 
 Nobody has built a comprehensive, React-first, typed "mplsoccer for the web".
 
-## 4. Goals and non-goals
+## Goals and non-goals
 
 ### Goals
 
@@ -86,7 +86,7 @@ Nobody has built a comprehensive, React-first, typed "mplsoccer for the web".
 - **No proprietary data fetching**, only open-data loaders that are safe to redistribute.
 - **No byte-for-byte matplotlib reproduction.** Web-native looks are fine.
 
-## 5. Target users
+## Target users
 
 1. **The analyst-developer** who knows mplsoccer and wants the same power in a React
    dashboard. The primary persona.
@@ -97,9 +97,9 @@ Nobody has built a comprehensive, React-first, typed "mplsoccer for the web".
    copy-paste examples.
 
 Any of these may be working through an AI coding agent. That doesn't add a persona, but it
-shapes how the API and docs are written (§4).
+shapes how the API and docs are written (see Goals).
 
-## 6. Product principles
+## Product principles
 
 - **Coordinates in, pixels out.** Users think in provider coordinates; the library owns all
   scaling, orientation and flipping.
@@ -111,17 +111,17 @@ shapes how the API and docs are written (§4).
 - **Responsive by construction.**
 - **Accessible:** keyboard- and screen-reader-aware, with colour-blind-safe defaults.
 
-## 12. Success metrics
+## Success metrics
 
 - **Adoption:** npm weekly downloads, GitHub stars, dependent repos.
 - **Developer experience:** first pitch on screen within five minutes of the Quickstart.
 - **Coverage:** at least 90% of the phase-1 mplsoccer inventory shipped at v1.0
-  ([roadmap §7](./roadmap.md#7-feature-inventory)).
+  ([roadmap](./roadmap.md#feature-inventory)).
 - **Performance:** layers meet their render and bundle budgets
-  ([architecture §8.9](./architecture.md#89-performance-budgets)).
+  ([architecture](./architecture.md#performance-budgets)).
 - **Docs engagement:** example interactions, migration-page traffic.
 
-## 13. Risks and open questions
+## Risks and open questions
 
 - **Scope creep:** mplsoccer is large. Mitigation: phase gates, and recipes over rigid
   components.
@@ -135,29 +135,11 @@ shapes how the API and docs are written (§4).
 
 Resolved questions are in the [decision log](./decisions.md).
 
-## 14. Naming
+## Naming
 
 **PitchKit**: the `@pitchkit` npm scope, the `yribeiro/pitchkit` repo, and
 [pitchkitjs.com](https://www.pitchkitjs.com). See
 [D23](./decisions.md#d23-the-name-is-pitchkit).
-
----
-
-## Where the old section numbers went
-
-This document used to hold everything. Code comments across the repo cite its section
-numbers, and those numbers are kept in the documents the sections moved to.
-
-| Section                                | Now in                                                                                                                                |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| §1–§6, §12–§14                         | This document                                                                                                                         |
-| §7 Feature inventory                   | [Roadmap §7](./roadmap.md#7-feature-inventory)                                                                                        |
-| §8 Technical architecture (§8.1–§8.10) | [Architecture §8](./architecture.md#8-technical-architecture)                                                                         |
-| §9 Docs and showcase site              | [Architecture §9](./architecture.md#9-docs-and-showcase-site)                                                                         |
-| §10 Engineering standards              | [Architecture §10](./architecture.md#10-engineering-standards-and-tooling)                                                            |
-| §11 Roadmap and milestones             | [Roadmap §11](./roadmap.md#11-milestones)                                                                                             |
-| Appendix A — mplsoccer reference       | [Roadmap, Appendix A](./roadmap.md#appendix-a--mplsoccer-reference)                                                                   |
-| Appendix C — developer examples        | The [docs site](https://www.pitchkitjs.com/docs) and [architecture: developer mental model](./architecture.md#developer-mental-model) |
 
 ## References
 
