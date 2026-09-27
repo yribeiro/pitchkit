@@ -1,7 +1,11 @@
 # Contributing to PitchKit
 
-Thanks for taking an interest. PitchKit is early — `0.1.x` — so there's plenty of surface
-area, and bug reports are as valuable as code.
+Thanks for taking an interest. PitchKit is pre-`1.0`, so there's plenty of surface area, and
+bug reports are as valuable as code.
+
+For how the library is designed, read [docs/architecture.md](./docs/architecture.md). For why
+it is the way it is, read the [decision log](./docs/decisions.md) before changing an area it
+covers.
 
 ## Getting set up
 
@@ -17,13 +21,14 @@ npm test
 
 The repo is an npm-workspaces + Turborepo monorepo:
 
-| Path                     | What it is                                               |
-| ------------------------ | -------------------------------------------------------- |
-| `packages/core`          | Zero-dependency engine — maths, geometry, scene model     |
-| `packages/react`         | React bindings — the supported rendering surface          |
-| `apps/docs`              | Docs + showcase site (Next.js, Fumadocs)                  |
-| `examples/react-vite`    | Vite app for eyeballing components in a browser           |
-| `examples/react-nextjs`  | Next.js App Router app, used to verify SSR behaviour      |
+| Path                      | What it is                                            |
+| ------------------------- | ----------------------------------------------------- |
+| `packages/core`           | Zero-dependency engine — maths, geometry, scene model |
+| `packages/react`          | React bindings — the supported rendering surface      |
+| `packages/data-providers` | Open-data loaders (StatsBomb, SkillCorner, Wyscout)   |
+| `apps/docs`               | Docs + showcase site (Next.js, Fumadocs)              |
+| `examples/react-vite`     | Vite app for eyeballing components in a browser       |
+| `examples/react-nextjs`   | Next.js App Router app, used to verify SSR behaviour  |
 
 Useful commands, all from the repo root:
 
@@ -93,6 +98,49 @@ A couple of things that bite people:
 - **Use `fireEvent` for hover tooltips.** `fireEvent.mouseEnter`/`mouseLeave` from
   `@testing-library/react` trigger React's synthetic handlers correctly; a raw
   `dispatchEvent(new MouseEvent("mouseenter"))` does not.
+
+More gotchas, with the reasons behind them, are in
+[docs/architecture.md: implementation notes](./docs/architecture.md#implementation-notes).
+
+## Working on Windows
+
+The tooling assumes a Linux-native checkout. On Windows, use WSL for everything, including
+`git`:
+
+- **Run `npm` and `node` inside WSL.** `node_modules` installed under WSL carries Linux-only
+  optional dependencies (for example `@rollup/rollup-linux-x64-gnu`), so Windows `node.exe`
+  fails on `vitest` and `tsup`.
+- **Run `git pull` and `checkout` inside WSL too.** With `core.autocrlf=true`, a
+  Windows-native git can check files out as CRLF. `git status` then shows a large diff with
+  equal insertions and deletions. Confirm with `git diff --ignore-space-at-eol --stat`: if
+  that's empty, it's only line endings, so discard it with `git checkout -- .` and never
+  commit it. It has caused real test failures: `install-skill.test.mjs` splits frontmatter
+  on a literal `"---\n"`.
+
+## Releasing
+
+Maintainers only. Publishing is manual until npm Trusted Publishing is set up
+([issue #36](https://github.com/yribeiro/pitchkit/issues/36)):
+
+```bash
+npm run version-packages   # apply pending changesets: bump versions, write changelogs
+git commit -am "chore: version packages"
+npm run release            # build and publish; needs an npm one-time password
+git push origin main --follow-tags
+```
+
+Then record the release in [docs/roadmap.md](./docs/roadmap.md#release-history), and check
+that the root and package READMEs still match the new versions and dependencies. Nothing
+checks that automatically.
+
+Two npm auth failures look alike:
+
+- **`E403 … Two-factor authentication or granular access token … is required`**: the account
+  has no two-factor authentication. Enable it for "Authorization and Writes".
+- **`E401 … authentication token seems to be invalid`**: the login expired. Run
+  `npm login` again. The `E404 … not in this registry` errors that follow an E401 are noise.
+
+From WSL, `npm login` can't open a browser; copy the printed URL into a Windows browser.
 
 ## Reporting bugs
 
