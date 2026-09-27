@@ -300,6 +300,12 @@ namespace and get the library installable:
     [PR #72](https://github.com/yribeiro/pitchkit/pull/72) (provider + fix) and
     [PR #73](https://github.com/yribeiro/pitchkit/pull/73) (docs, and the bundled Agent
     Skill's Wyscout section).
+  - **`@pitchkit/react@0.5.1`** (patch; `core`/`data-providers` untouched) — 2026-09-27.
+    Lists `--pitch-marker-goal` (the `<GoalAngle>` wedge fill) in the bundled Agent Skill's
+    theming variable table — an audit finding from
+    [PR #74](https://github.com/yribeiro/pitchkit/pull/74) (see the docs-polish entry
+    below), which also caught two tooltip variables missing from the *docs site's* own
+    theming table (a docs-only fix, no changeset).
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
@@ -348,6 +354,17 @@ namespace and get the library installable:
   fetched live in-browser like the `/docs/data` examples, with the source clip embedded
   (`youtube-nocookie.com`, lazy-loaded — the site's first third-party iframe). Also renamed
   the homepage CTA "Get started" → "Quickstart".
+- **Styling consolidated into one nav section** — via
+  [PR #74](https://github.com/yribeiro/pitchkit/pull/74) (2026-09-27): Theming (moved from
+  Guides) and Tailwind (moved from Configuration, now removed) join a new **Pitch Palettes**
+  page under a single **Styling** section, directly above Data. Palettes shows every shot
+  from the Euro 2024 final, loaded live from StatsBomb, across four themes (Newsprint,
+  Analyst navy, Dracula, Gruvbox), each just Tailwind classes against an `@theme` block in
+  `globals.css` — no new theming mechanism. Guides → Recipes is removed (examples live on
+  `/gallery` already); old URLs (including `.md` variants) redirect. An audit pass here
+  found the docs site's own theming table missing `--pitch-marker-goal` and two tooltip
+  variables, and the Tailwind page not listing all eight `className`-aware layers — both
+  fixed alongside the same gap in the bundled Agent Skill (`react@0.5.1` above).
 - **SEO / AI-search pass.** Target queries: "react library for football", "football web
   application library", "typescript football visualisations", "charting library for
   football", "visualisation library football". The load-bearing decisions:

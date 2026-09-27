@@ -798,6 +798,11 @@ a real domain. Remaining work is release _automation_, not release itself.
       (all minor) published 2026-09-27 — Wyscout open-data provider, `"wyscout"` pitch
       type, and the normalized-grid rendering fix (see Milestone 2 above) via
       [PR #72](https://github.com/yribeiro/pitchkit/pull/72)/[PR #73](https://github.com/yribeiro/pitchkit/pull/73).
+      `@pitchkit/react@0.5.1` (patch; `core`/`data-providers` untouched) published
+      2026-09-27 — lists `--pitch-marker-goal` in the bundled Agent Skill's theming table,
+      an audit finding from [PR #74](https://github.com/yribeiro/pitchkit/pull/74)'s docs
+      restructure (Theming + Tailwind + a new Pitch Palettes page consolidated into one
+      Styling nav section).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
