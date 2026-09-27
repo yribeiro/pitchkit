@@ -117,9 +117,11 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
     That is intentional.
 
 - **`@pitchkit/data-providers/wyscout` + a `wyscout` pitch type, and [#2](https://github.com/yribeiro/pitchkit/issues/2)
-  (Opta renders square) is now closed** — via
-  [PR #72](https://github.com/yribeiro/pitchkit/pull/72). Merged to `main`; not yet published
-  to npm (a changeset is pending).
+  (Opta renders square) is now genuinely fixed, not just closed** — via
+  [PR #72](https://github.com/yribeiro/pitchkit/pull/72). Published in `core@0.4.0`/
+  `react@0.5.0`/`data-providers@0.4.0` (see Milestone 3 below) — #2 had already been
+  bulk-closed on GitHub weeks earlier with no code behind it (see the CRLF/security-posture
+  era of this file's history); this is the release where the closure became true.
   - **The root cause of #2, fixed for both percentage grids at once.** Opta and Wyscout are
     both `0..100` on _both_ axes, but `createPixelTransform` derived a pitch's on-screen shape
     from `length`/`width` directly, so a 100×100 grid always rendered as a square. `x` spans
@@ -288,6 +290,16 @@ namespace and get the library installable:
     #69 fixed the docs site's own links but explicitly left the published packages for a
     follow-up release, since a redirect-following client was never actually broken, only an
     agent fetching a `SKILL.md` link verbatim.
+  - **`@pitchkit/core@0.4.0` + `@pitchkit/react@0.5.0` + `@pitchkit/data-providers@0.4.0`**
+    (all minor) — 2026-09-27. The Wyscout open-data provider and the `"wyscout"` pitch type
+    (see the Milestone 2 entry above for the full writeup), which also fixed the long-standing
+    normalized-grid bug behind [#2](https://github.com/yribeiro/pitchkit/issues/2) — Opta and
+    Wyscout now render as real 105:68 rectangles instead of squares, via
+    `displayUnitScale` deriving shape from `realLengthMeters`/`realWidthMeters`.
+    StatsBomb/UEFA/SkillCorner render byte-identically (`unitScale` is `1` for them). Via
+    [PR #72](https://github.com/yribeiro/pitchkit/pull/72) (provider + fix) and
+    [PR #73](https://github.com/yribeiro/pitchkit/pull/73) (docs, and the bundled Agent
+    Skill's Wyscout section).
 - **`llms.txt`, `llms-full.txt`, `llms-api.txt`, per-page Markdown** — via
   [PR #48](https://github.com/yribeiro/pitchkit/pull/48) (2026-09-10), `apps/docs/app/llms*`
   routes. Another #40 slice. **#40 is still open — only `AGENTS.md` remains.**
@@ -316,6 +328,13 @@ namespace and get the library installable:
   reads `data-pitchkit-mark` off the bubbled DOM event instead. If interactive recipes
   become a pattern, an `onHover` accessor (or exposing `setTooltip`) would remove the need
   for that lookup. Worth a GitHub issue if interactive recipes become a real theme.
+- **Quickstart rebuilt as a guided real-match chart** — via
+  [PR #71](https://github.com/yribeiro/pitchkit/pull/71) (2026-09-24): a hardcoded
+  two-shot array replaced with a four-step build of Palmer's Euro 2024 final equaliser
+  (load the match → draw the pitch → isolate the possession → plot arrows/comets/marker),
+  fetched live in-browser like the `/docs/data` examples, with the source clip embedded
+  (`youtube-nocookie.com`, lazy-loaded — the site's first third-party iframe). Also renamed
+  the homepage CTA "Get started" → "Quickstart".
 - **SEO / AI-search pass.** Target queries: "react library for football", "football web
   application library", "typescript football visualisations", "charting library for
   football", "visualisation library football". The load-bearing decisions:
@@ -423,7 +442,7 @@ invoked it, so this can't be bypassed by a differently-configured build command 
 this ENOENT resurfaces, check `next.config.ts` hasn't been split apart from those calls —
 don't just re-chain npm scripts.
 
-## Security posture (2026-09-10)
+## Security posture (re-verified 2026-09-27, unchanged since 2026-09-10)
 
 38 open Dependabot alerts (2 critical, 22 high, 13 medium, 1 low) and 7 open Dependabot PRs —
 but scope matters before reacting: **the published packages are clean.** `@pitchkit/core` has

@@ -211,15 +211,18 @@ Layers are pure data + options; they don't own DOM. The renderer walks the scene
 - `@pitchkit/core` — zero-dependency TS core: dimensions, transforms, scene/layer model, geometry, SVG/Canvas renderers. **No React.**
 - `@pitchkit/react` — thin declarative React components wrapping core (`<Pitch>`, `<Scatter>`, `<Heatmap>` …) with hooks for responsive sizing and interaction.
 - `@pitchkit/data-providers` — optional open football data loaders, exported per-provider:
-  `@pitchkit/data-providers/statsbomb` (events + 360 tracking) and
+  `@pitchkit/data-providers/statsbomb` (events + 360 tracking),
   `@pitchkit/data-providers/skillcorner` (broadcast tracking + dynamic events + phases of
   play, added via [PR #58](https://github.com/yribeiro/pitchkit/pull/58), partially
   addressing [issue #30](https://github.com/yribeiro/pitchkit/issues/30) — Metrica loaders
-  are still open). Named for the provider family rather than one provider — supersedes this
-  section's earlier `@pitchkit/data-statsbomb` naming. Each provider keeps that provider's
-  own field names/values untouched, adding only lifted pitch-space coordinates
-  (`x`/`y`/`pitchX`/`pitchY`) for direct use as a PitchKit accessor. Brought in
-  `csv-parse` for SkillCorner's CSV files — the project's only third-party runtime
+  are still open), and `@pitchkit/data-providers/wyscout` (the Pappalardo et al. open
+  dataset — 1,941 matches, CC BY 4.0 — added via
+  [PR #72](https://github.com/yribeiro/pitchkit/pull/72)). Named for the provider family
+  rather than one provider — supersedes this section's earlier `@pitchkit/data-statsbomb`
+  naming. Each provider keeps that provider's own field names/values untouched, adding only
+  lifted pitch-space coordinates (`x`/`y`/`pitchX`/`pitchY`) for direct use as a PitchKit
+  accessor. Brought in `csv-parse` for SkillCorner's CSV files — the project's only
+  third-party runtime
   dependency anywhere; `@pitchkit/core` and `@pitchkit/react` remain dependency-free
   (react on core aside).
 - `apps/docs` — the showcase + docs site; also hosts the shadcn `registry.json` that serves recipe items (see §7.4).
@@ -705,7 +708,15 @@ npx shadcn add @pitchkit/theme-broadcast
       (`toExtentFrame`/`fromExtentFrame`), which is the prerequisite the remaining
       centre-origin providers (Tracab, SecondSpectrum) were blocked on. `getPitchDimensions`
       also takes a per-match `{ length, width }` override, since SkillCorner pitches are real
-      stadium pitches (104-106 m).
+      stadium pitches (104-106 m). `wyscout` landed via
+      [PR #72](https://github.com/yribeiro/pitchkit/pull/72) and — as a side effect of doing
+      it properly — **fixed a long-standing rendering bug**: normalized `0..100` grids (Opta,
+      Wyscout) previously derived their on-screen shape from `length`/`width` directly and
+      rendered square; `displayUnitScale` now converts to metres via
+      `realLengthMeters`/`realWidthMeters` first, closing
+      [issue #2](https://github.com/yribeiro/pitchkit/issues/2) for real (it had been
+      bulk-closed on GitHub weeks earlier with no code behind it). Remaining:
+      Tracab, MetricaSports, SecondSpectrum, custom; the Standardizer itself.
 - [x] Positional heatmap, hexbin, KDE ([issue #19](https://github.com/yribeiro/pitchkit/issues/19)).
 - [x] Flow, polygon, convex hull, Voronoi, goal angle
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
@@ -783,6 +794,10 @@ a real domain. Remaining work is release _automation_, not release itself.
       every `pitchkitjs.com` link in the READMEs/`SKILL.md` now points at `www`
       (follow-up to [PR #69](https://github.com/yribeiro/pitchkit/pull/69), which fixed
       the docs site's own links but left the published packages for a later release).
+      `@pitchkit/core@0.4.0` + `@pitchkit/react@0.5.0` + `@pitchkit/data-providers@0.4.0`
+      (all minor) published 2026-09-27 — Wyscout open-data provider, `"wyscout"` pitch
+      type, and the normalized-grid rendering fix (see Milestone 2 above) via
+      [PR #72](https://github.com/yribeiro/pitchkit/pull/72)/[PR #73](https://github.com/yribeiro/pitchkit/pull/73).
 - [x] Repo hygiene: MIT `LICENSE` (root + both packages), root README with badges,
       per-package READMEs for the npm pages, `CONTRIBUTING.md`, issue/PR templates, and
       `repository`/`homepage`/`bugs`/`keywords` metadata. Still open: labelling
