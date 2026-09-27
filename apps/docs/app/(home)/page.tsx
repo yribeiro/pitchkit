@@ -51,7 +51,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   {
     title: "CSS-variable theming",
     body: "Colours are --pitch-* variables, shadcn-style — set them once in your stylesheet, get dark mode for free, override per-chart with a wrapper div.",
-    href: "/docs/styling",
+    href: "/docs/styling/theming",
     icon: "M12 2.7 6.7 8a7.5 7.5 0 1 0 10.6 0L12 2.7Z",
   },
   {

@@ -9,13 +9,13 @@ variable once in your global stylesheet and every `<Pitch>` picks it up through 
 
 ## The variables
 
-| Variable | Controls | Default |
-| --- | --- | --- |
-| `--pitch-surface` | Grass fill | `#1a472a` |
-| `--pitch-stripe` | Mow-stripe overlay | `rgba(255, 255, 255, 0.04)` |
-| `--pitch-lines` | Pitch markings (lines, circles, boxes) | `rgba(255, 255, 255, 0.8)` |
-| `--pitch-line-width` | Marking stroke width | `1.5` |
-| `--pitch-marker-primary` | Default mark colour (`<Scatter>`, `<Arrows>`, `<Comet>`…) | `#3b82f6` |
+| Variable                 | Controls                                                  | Default                     |
+| ------------------------ | --------------------------------------------------------- | --------------------------- |
+| `--pitch-surface`        | Grass fill                                                | `#1a472a`                   |
+| `--pitch-stripe`         | Mow-stripe overlay                                        | `rgba(255, 255, 255, 0.04)` |
+| `--pitch-lines`          | Pitch markings (lines, circles, boxes)                    | `rgba(255, 255, 255, 0.8)`  |
+| `--pitch-line-width`     | Marking stroke width                                      | `1.5`                       |
+| `--pitch-marker-primary` | Default mark colour (`<Scatter>`, `<Arrows>`, `<Comet>`…) | `#3b82f6`                   |
 
 ```css
 /* globals.css */
@@ -55,7 +55,7 @@ Variables cascade, so scoping an override to one chart is just a wrapper element
 
 ## Structure vs colour
 
-The `appearance` prop is deliberately separate from theming: it toggles which *shapes* get
+The `appearance` prop is deliberately separate from theming: it toggles which _shapes_ get
 painted (grass stripes, goal style), never colours.
 
 ```tsx
@@ -67,6 +67,6 @@ painted (grass stripes, goal style), never colours.
 Colour accessors (`fill`, `stroke`, `color`) always win over the themed default for the
 marks you pass them to — theming sets the baseline, accessors express data. For styling
 marks with utility classes instead, see
-[Configuration → Tailwind](/docs/configuration/tailwind), which covers `className`, the
+[Tailwind](/docs/styling/tailwind), which covers `className`, the
 `data-pitchkit-*` attribute escape hatch, and the `@utility` recipe for the pitch
 background.

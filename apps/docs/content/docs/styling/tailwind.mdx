@@ -1,36 +1,11 @@
 ---
 title: Tailwind
-description: Theming with CSS variables, and four ways to reach PitchKit with Tailwind utilities.
+description: Setting PitchKit's CSS variables and styling marks with Tailwind utilities.
 ---
 
-PitchKit's theming is **CSS variables only** — no JS theme objects, no per-instance color
-props to thread through. Set a variable once in your global stylesheet and every `<Pitch>`
-picks it up through the CSS cascade.
-
-## The variables
-
-| Variable | Controls | Default |
-| --- | --- | --- |
-| `--pitch-surface` | Grass fill | `#1a472a` |
-| `--pitch-stripe` | Mow-stripe overlay | `rgba(255, 255, 255, 0.04)` |
-| `--pitch-lines` | Pitch markings (lines, circles, boxes) | `rgba(255, 255, 255, 0.8)` |
-| `--pitch-line-width` | Pitch marking stroke width | `1.5` |
-| `--pitch-marker-primary` | Default mark color (`<Scatter>`, `<Arrows>`, `<Comet>`) | `#3b82f6` |
-
-```css
-/* globals.css */
-:root {
-  --pitch-surface: #1a472a;
-  --pitch-stripe: rgba(255, 255, 255, 0.05);
-  --pitch-lines: rgba(255, 255, 255, 0.8);
-  --pitch-marker-primary: #3b82f6;
-}
-```
-
-This alone works with or without Tailwind in the picture — dark mode is a second `:root`
-override behind a class or media query, and a one-off chart can override any variable on a
-wrapper `<div>`. What follows is specifically about reaching those variables (and individual
-marks) *with* Tailwind utilities, once it's in the project.
+The pitch's colours come from the `--pitch-*` variables described in
+[Theming](/docs/styling/theming). This page covers reaching those variables, and individual
+marks, with Tailwind utilities.
 
 ## Marks you render yourself: `className`
 

@@ -41,7 +41,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/docs.md", destination: "/llms-md" },
       { source: "/docs/:slug*.md", destination: "/llms-md/:slug*" },
-      { source: "/ingest/static/:path*", destination: "https://eu-assets.i.posthog.com/static/:path*" },
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*",
+      },
       { source: "/ingest/:path*", destination: "https://eu.i.posthog.com/:path*" },
       { source: "/ingest/decide", destination: "https://eu.i.posthog.com/decide" },
     ];
@@ -60,6 +63,25 @@ const nextConfig: NextConfig = {
         destination: "/docs/agents/skills",
         permanent: true,
       },
+      // Styling was consolidated into one section; the old URLs are linked from outside the site.
+      { source: "/docs/guides/theming", destination: "/docs/styling/theming", permanent: true },
+      {
+        source: "/docs/guides/theming.md",
+        destination: "/docs/styling/theming.md",
+        permanent: true,
+      },
+      {
+        source: "/docs/configuration/tailwind",
+        destination: "/docs/styling/tailwind",
+        permanent: true,
+      },
+      {
+        source: "/docs/configuration/tailwind.md",
+        destination: "/docs/styling/tailwind.md",
+        permanent: true,
+      },
+      { source: "/docs/guides/recipes", destination: "/gallery", permanent: true },
+      { source: "/docs/styling", destination: "/docs/styling/theming", permanent: false },
     ];
   },
 };

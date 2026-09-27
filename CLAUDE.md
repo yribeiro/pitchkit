@@ -319,15 +319,19 @@ namespace and get the library installable:
   ([PR #57](https://github.com/yribeiro/pitchkit/pull/57)), a shortened hero tagline
   ("Football visualised for the web.", [PR #60](https://github.com/yribeiro/pitchkit/pull/60)),
   and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
-- **Styling docs page** — `/docs/styling`, a single page placed directly above Data in the
-  nav. One live example (`styling-shot-map-basic.tsx`): every shot from the Euro 2024 final,
-  fetched from StatsBomb open data, with a switcher across four palettes (Newsprint, Analyst
-  navy, Dracula, Gruvbox). The palette colours live in an `@theme` block in
-  `apps/docs/app/globals.css`, which is what makes `pitch-surface-dracula-background`,
-  `fill-gruvbox-red/30` etc. exist — the page shows that block as the setup step. Every
-  class string is a full literal; Tailwind only generates classes it finds verbatim in
-  source. Replaced an earlier per-provider version (one page each for StatsBomb, Wyscout,
-  SkillCorner), which was dropped in favour of palettes.
+- **Styling docs section** — `/docs/styling`, directly above Data in the nav, consolidating
+  what used to be spread across Guides → Theming, Configuration → Tailwind and a standalone
+  Styling page. Three pages: **Theming** (the `--pitch-*` variables, moved from
+  `guides/theming`), **Tailwind** (moved from `configuration/tailwind`; the Configuration
+  section no longer exists) and **Pitch Palettes** (`styling/palettes.mdx`). The Guides →
+  Recipes page was deleted — its examples still live on `/gallery`. Old URLs, including
+  their `.md` variants, are redirected in `apps/docs/next.config.ts`.
+  - Pitch Palettes has one live example (`styling-shot-map-basic.tsx`): every shot from the
+    Euro 2024 final, fetched from StatsBomb open data, with a switcher across four palettes
+    (Newsprint, Analyst navy, Dracula, Gruvbox). The palette colours live in an `@theme`
+    block in `apps/docs/app/globals.css`, which is what makes
+    `pitch-surface-dracula-background`, `fill-gruvbox-red/30` etc. exist. Every class string
+    is a full literal; Tailwind only generates classes it finds verbatim in source.
 - **Hero rebuilt as a gallery carousel** — via [PR #70](https://github.com/yribeiro/pitchkit/pull/70)
   (2026-09-20), replacing the old click-to-plot toy pitch with three real gallery
   visualisations (shot map, pass network, Voronoi) auto-cycling on a countdown, pause

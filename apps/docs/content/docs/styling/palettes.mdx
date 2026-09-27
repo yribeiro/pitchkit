@@ -1,5 +1,5 @@
 ---
-title: Styling
+title: Pitch Palettes
 description: Colour a pitch and its marks with Tailwind classes, using your own palette.
 ---
 
@@ -13,29 +13,8 @@ passes a colour prop.
 
 ## Setup
 
-The pitch reads its colours from `--pitch-*` CSS variables (the full list is in
-[Theming](/docs/guides/theming)). Add these utilities to your stylesheet to set them with
-classes:
-
-```css
-/* globals.css */
-@utility pitch-surface-* {
-  --pitch-surface: --value(--color-*);
-}
-@utility pitch-stripe-* {
-  --pitch-stripe: --value(--color-*);
-}
-@utility pitch-lines-* {
-  --pitch-lines: --value(--color-*);
-}
-@utility pitch-line-width-* {
-  --pitch-line-width: --value(number, [number]);
-}
-```
-
-`pitch-surface-*`, `pitch-stripe-*` and `pitch-lines-*` accept any colour in your Tailwind
-theme. `pitch-line-width-*` takes a number: `pitch-line-width-1`, or `pitch-line-width-[1.5]`
-for a fraction.
+The examples use the `pitch-*` utilities from [Tailwind](/docs/styling/tailwind#the-pitch-background-a-utility-recipe).
+Add those to your stylesheet first.
 
 ## Adding a palette
 
@@ -90,8 +69,8 @@ with a function instead.
 
 ## Related
 
-- [Theming](/docs/guides/theming): the `--pitch-*` variables, dark mode, and per-chart
+- [Theming](/docs/styling/theming): the `--pitch-*` variables, dark mode, and per-chart
   overrides without Tailwind.
-- [Configuration → Tailwind](/docs/configuration/tailwind): setting variables with
-  arbitrary properties, and styling marks you didn't render yourself.
+- [Tailwind](/docs/styling/tailwind): setting variables with arbitrary properties, and
+  styling marks you didn't render yourself.
 - [StatsBomb events](/docs/data/statsbomb/events): loading the match data this example uses.
