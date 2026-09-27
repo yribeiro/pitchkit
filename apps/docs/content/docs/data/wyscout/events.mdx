@@ -1,0 +1,149 @@
+---
+title: Events
+description: Match events from the Wyscout open dataset — typed, filtered, plotted.
+---
+
+Everything below is live: the example fetches a real match from the Wyscout open-data
+mirror in your browser, and the match picker switches between five recognisable fixtures.
+
+<PitchPreview name="wyscout-events-basic" />
+
+## Getting a match
+
+```ts
+import { fetchMatch } from "@pitchkit/data-providers/wyscout";
+
+const match = await fetchMatch(2499943); // Liverpool 4–3 Manchester City, 2018
+const events = match.events; // both squads travel with it, ready to label a tooltip
+```
+
+`fetchMatch` returns the events **and** both teams' squads in one call — there's no second
+request to turn a `playerId` into a name.
+
+<Callout type="warn">
+  There's no `fetchMatches` here. The dataset's 1,941 matches have no published JSON index — only a
+  generated Markdown table — so this page's picker is a curated shortlist rather than a live search.
+  Any of the dataset's match ids works the same way with `fetchMatch`; a match file is roughly 480
+  KB.
+</Callout>
+
+If you already have the JSON, skip the network entirely with `parseMatch(json)`, or point
+`loadMatch(url)` at wherever you keep it.
+
+## Narrowing the feed
+
+Wyscout's discriminant is **top level** — unlike StatsBomb's, which is nested inside `type`
+— so a plain comparison narrows without a guard:
+
+```ts
+import { duels, passes, shots } from "@pitchkit/data-providers/wyscout";
+
+shots(events); // every Shot
+passes(events); // every Pass
+duels(events); // every Duel
+```
+
+`ofType(events, "Free Kick")` reaches anything without its own named selector.
+
+## Predicates
+
+Wyscout puts almost everything in numeric **tags**, not fields — whether a pass found its
+target, whether a shot was a goal, which foot took it. `hasTag` is the primitive; the named
+predicates are built on it:
+
+```ts
+import {
+  hasTag,
+  isAccurate,
+  isGoal,
+  isKeyPass,
+  wonDuel,
+  WYSCOUT_TAGS,
+} from "@pitchkit/data-providers/wyscout";
+
+const goals = shots(events).filter(isGoal);
+const completed = passes(events).filter(isAccurate);
+const chances = passes(events).filter(isKeyPass);
+
+// isAccurate is really just:
+hasTag(somePass, WYSCOUT_TAGS.ACCURATE);
+```
+
+<Callout>
+  **Accuracy is explicit on both sides.** Every pass carries either `ACCURATE` (1801) or
+  `NOT_ACCURATE` (1802) — unlike StatsBomb, where a completed pass is the *absence* of an outcome.
+  `isAccurate(pass)` is a real equality check, not a workaround.
+</Callout>
+
+## A goal is tagged twice
+
+The `GOAL` tag sits on the shot that scored **and** on the conceding keeper's `Save attempt`
+— Wyscout tags the outcome from both sides of the same event. Measured across six full
+matches: tag 101 appeared on 15 shots, 19 save attempts, and 3 free kicks.
+
+<Callout type="warn">
+  Filter the whole feed for `isGoal` and every goal is counted twice. Narrow to `shots(events)`
+  **first**, then filter — that's what keeps `shots(events).filter(isGoal).length` honest, and it's
+  the order the example above uses.
+</Callout>
+
+## A shot has no end coordinate
+
+Every event carries a `positions` array, and most have two entries — a start and an end. A
+`Shot`'s second entry is a placeholder, not a location: across 9,765 events checked, it was
+always exactly `(100, 100)` or `(0, 0)`, never a real point. `Interruption` and `Offside`
+behave the same way. So `endX`/`endY` are simply **absent** on those three event types rather
+than present and wrong.
+
+Where a shot went is recorded instead as one of 23 goal-mouth tags — `shotGoalZone` reads
+them:
+
+```ts
+import { shotGoalZone } from "@pitchkit/data-providers/wyscout";
+
+shotGoalZone(goal); // "goal low left", "out high right", …
+```
+
+<Callout type="warn">
+  This can't be caught by checking the coordinate's *value* — `(100, 100)` is also a genuine
+  corner-flag position for a corner kick. The exclusion has to be keyed on the event type, not on
+  what the number happens to be.
+</Callout>
+
+## Coordinates point at the goal being attacked
+
+Like SkillCorner's dynamic events, and unlike its tracking file: `x` is **normalised to the
+attacking direction**, not absolute. `x: 100` is always the goal that event's team is
+attacking, in both halves, so both teams appear to attack left-to-right and nothing flips at
+half time. `<Pitch type="wyscout">` plots `x`/`y` raw — no lifting, no conversion.
+
+## Reading the fields
+
+```tsx
+<Scatter
+  data={shots(events)}
+  x={(shot) => shot.x}
+  y={(shot) => shot.y}
+  fill={(shot) => (isGoal(shot) ? "orange" : "steelblue")}
+  tooltip={(shot) => (isGoal(shot) ? "Goal" : (shotGoalZone(shot) ?? "Blocked"))}
+/>
+```
+
+`x`/`y` are lifted from `positions[0]` for every event that has one. `endX`/`endY` are lifted
+the same way from `positions[1]` — except on `Shot`, `Interruption` and `Offside`, per above.
+
+## Official documentation
+
+This page covers loading the data; Wyscout's own tag and event vocabularies are the authority
+on what each id means:
+
+- **[A public data set of spatio-temporal match events in soccer competitions](https://www.nature.com/articles/s41597-019-0247-7)**
+  — Pappalardo et al., _Scientific Data_ (2019), the paper the dataset accompanies.
+- **[figshare collection](https://figshare.com/collections/Soccer_match_event_dataset/4415000)**
+  — the official release: competitions, teams, players, and the tag/event-id vocabularies this
+  package's predicates are built from.
+- **[koenvo/wyscout-soccer-match-event-dataset](https://github.com/koenvo/wyscout-soccer-match-event-dataset)**
+  — the mirror this package's `fetchMatch` reads from, which splits the official archive into
+  one file per match with no field renamed.
+
+CC BY 4.0 — cite Pappalardo et al. (2019) in anything you publish from it.

@@ -4,8 +4,8 @@ description: Load real open football data in one call — and when not to bother
 ---
 
 `@pitchkit/data-providers` takes you from a match id to chart-ready data without a pipeline in
-between. It's a separate, optional package: zero runtime dependencies, and no dependency on
-`@pitchkit/core` or `@pitchkit/react` either.
+between. It's a separate, optional package with no dependency on `@pitchkit/core` or
+`@pitchkit/react` — its only runtime dependency is `csv-parse`, for SkillCorner's CSV files.
 
 ```bash
 npm install @pitchkit/data-providers
@@ -80,6 +80,11 @@ predicate.
   - Source: [SkillCorner/opendata](https://github.com/SkillCorner/opendata) ·
     [documentation](https://skillcorner.github.io/opendata/) ·
     [skillcorner.com](https://skillcorner.com/)
+- **[Wyscout](/docs/data/wyscout/events)** — the Pappalardo et al. dataset: 1,941 matches of
+  event data across the 2017/18 big-five leagues, plus World Cup 2018 and Euro 2016.
+  - Source: [figshare collection](https://figshare.com/collections/Soccer_match_event_dataset/4415000) ·
+    [data paper](https://www.nature.com/articles/s41597-019-0247-7) ·
+    [event mirror](https://github.com/koenvo/wyscout-soccer-match-event-dataset)
 
 SkillCorner also has its own pitch type. Its coordinates are metres from the centre spot, so
 `<Pitch type="skillcorner">` plots them raw — no lifting, no conversion:
@@ -90,11 +95,21 @@ SkillCorner also has its own pitch type. Its coordinates are metres from the cen
 </Pitch>
 ```
 
+Wyscout has its own pitch type too — a 0–100 percentage grid like Opta's, but with a
+different origin: top-left with y increasing downward, where Opta's is bottom-left with y
+increasing upward. `<Pitch type="wyscout">` plots its coordinates raw:
+
+```tsx
+<Pitch type="wyscout">
+  <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} />
+</Pitch>
+```
+
 ## Licensing
 
 This package ships **no data** — it fetches from whatever URL you give it. The default URLs
-point at each provider's own open-data repository, and **both providers ask to be credited** in
-anything you publish from their data:
+point at each provider's own open-data repository, and **every provider asks to be credited**
+in anything you publish from their data:
 
 - **StatsBomb** —
   [open-data](https://github.com/statsbomb/open-data) is released under StatsBomb's own user
@@ -103,3 +118,8 @@ anything you publish from their data:
   you rely on it.
 - **SkillCorner** — [opendata](https://github.com/SkillCorner/opendata) is MIT-licensed, and
   SkillCorner ask for credit and a mention when you publish work built on it.
+- **Wyscout** — the [Pappalardo et al. dataset](https://www.nature.com/articles/s41597-019-0247-7)
+  is CC BY 4.0, the most permissive of the three; cite the paper in anything you publish. Its
+  official release (figshare) has no per-match JSON file, so events are fetched from a
+  community mirror that splits the same archive per match with no field renamed — the
+  reference files (competitions, teams, players) come from figshare directly.
