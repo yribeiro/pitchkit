@@ -1,0 +1,41 @@
+---
+title: StatsBomb
+description: A StatsBomb shot map in a light print-report look, styled with Tailwind classes.
+---
+
+A shot map on a light, print-friendly pitch, the kind that goes into a match report or a PDF.
+The data is StatsBomb event rows cut down to the fields a shot map reads, with StatsBomb's own
+field names (`shot.statsbomb_xg`, `shot.outcome.name`) and outcome spellings (`"Off T"`).
+
+<PitchPreview name="styling-statsbomb-basic" />
+
+## The classes
+
+| Element   | Classes                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------- |
+| Pitch     | `pitch-surface-stone-50 pitch-stripe-stone-100 pitch-lines-stone-400 pitch-line-width-1` |
+| Non-goals | `fill-stone-400/30 stroke-stone-500`                                                     |
+| Goals     | `fill-red-600 stroke-white`                                                              |
+
+Goals and non-goals are two `<Scatter>` layers filtered from one array, because a class
+colours a whole layer. Marker size stays an accessor (`r={radius}`), because size is data.
+Styling only takes over the colours.
+
+## Coordinates
+
+`type="statsbomb"` is 120 × 80 yards with the origin top-left and y pointing down, which is
+StatsBomb's own grid, so `x`/`y` go straight in. `cropForHalf` frames the attacking half, and
+`<VerticalPitch>` turns it upright.
+
+## With real data
+
+[`@pitchkit/data-providers/statsbomb`](/docs/data/statsbomb/events) returns these rows from a
+real match in one call, and its `Shot` type is the one the sample above is cut from:
+
+```tsx
+import { fetchMatchEvents, isGoal, shots } from "@pitchkit/data-providers/statsbomb";
+
+const all = shots(await fetchMatchEvents(3943043));
+const goals = all.filter(isGoal);
+const others = all.filter((s) => !isGoal(s));
+```

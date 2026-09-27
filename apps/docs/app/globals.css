@@ -3,14 +3,6 @@
 @import "fumadocs-ui/css/preset.css";
 
 /*
- * Tailwind's `dark:` variant defaults to `prefers-color-scheme`, but the site's
- * theme toggle (fumadocs / next-themes) sets a `.dark` class on <html>. Without
- * this, a `dark:` utility would follow the OS instead of the toggle — the
- * homepage Styling section's "Adaptive" theme relies on it tracking the toggle.
- */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/*
  * PitchKit brand theme (shadcn-style CSS-variable theming, per CLAUDE.md /
  * PRD §8.7): overrides fumadocs-ui's neutral preset with pitch-green
  * accents so the docs chrome reads as PitchKit's own site, not generic

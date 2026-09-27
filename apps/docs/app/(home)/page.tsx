@@ -3,7 +3,6 @@ import Link from "next/link";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
-import { StylingShowcase } from "@/components/styling-showcase";
 import { SEARCH_DESCRIPTION, SITE_URL, SUBHEAD, TAGLINE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -52,7 +51,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   {
     title: "CSS-variable theming",
     body: "Colours are --pitch-* variables, shadcn-style — set them once in your stylesheet, get dark mode for free, override per-chart with a wrapper div.",
-    href: "/docs/guides/theming",
+    href: "/docs/styling",
     icon: "M12 2.7 6.7 8a7.5 7.5 0 1 0 10.6 0L12 2.7Z",
   },
   {
@@ -290,14 +289,6 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Styling — the "CSS-variable theming" feature card, shown rather than
-          told: one chart re-themed live by Tailwind classes alone. */}
-      <section className="border-t border-fd-border">
-        <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:py-20">
-          <StylingShowcase />
         </div>
       </section>
 

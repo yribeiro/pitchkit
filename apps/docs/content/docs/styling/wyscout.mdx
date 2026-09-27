@@ -1,0 +1,43 @@
+---
+title: Wyscout
+description: A Wyscout build-up on a classic broadcast-green pitch, styled with Tailwind classes.
+---
+
+A move of five passes and a shot, drawn on a bright, TV-style green pitch with heavy white
+markings. The data is Wyscout event rows with Wyscout's own `eventName` values and its numeric
+`tags` vocabulary (`WYSCOUT_TAGS.ACCURATE` is tag 1801).
+
+<PitchPreview name="styling-wyscout-basic" />
+
+## The classes
+
+| Element | Classes                                                                               |
+| ------- | ------------------------------------------------------------------------------------- |
+| Pitch   | `pitch-surface-green-700 pitch-stripe-green-600 pitch-lines-white pitch-line-width-2` |
+| Passes  | `fill-white stroke-white`                                                             |
+| Shot    | `fill-yellow-300 stroke-green-900`                                                    |
+
+`pitch-line-width-2` is what gives this look its weight: `pitch-line-width-*` takes a bare
+number, since Tailwind has no stroke-width scale to borrow.
+
+## Coordinates
+
+Wyscout's grid is 0–100 on both axes with the origin **top-left and y pointing down**, the
+vertical mirror of [Opta](/docs/styling/opta). `type="wyscout"` matches it, and draws a real
+105:68 pitch rather than a square.
+
+A Wyscout shot has **no end coordinate**. Where it went is recorded in goal-mouth tags
+instead. That's why the shot here is a `<Scatter>` marker, not an arrow, and why the pass and
+shot layers split cleanly on `eventName`.
+
+## With real data
+
+[`@pitchkit/data-providers/wyscout`](/docs/data/wyscout/events) loads any of the open
+dataset's 1,941 matches, and its predicates read the same tags:
+
+```tsx
+import { fetchMatch, isAccurate, passes } from "@pitchkit/data-providers/wyscout";
+
+const { events } = await fetchMatch(2499943);
+const accurate = passes(events).filter(isAccurate);
+```
