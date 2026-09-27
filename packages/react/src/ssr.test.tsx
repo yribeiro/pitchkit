@@ -1,5 +1,7 @@
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { PITCH_DIMENSIONS } from "@pitchkit/core";
+import type { PitchTypeId } from "@pitchkit/core";
 import { Annotate } from "./Annotate.js";
 import { Arrows } from "./Arrows.js";
 import { Heatmap } from "./Heatmap.js";
@@ -66,8 +68,8 @@ describe("SSR (renderToString)", () => {
     expect(html).toContain("<foreignObject");
   });
 
-  it("all 3 pitch types render without throwing", () => {
-    for (const type of ["statsbomb", "opta", "uefa"] as const) {
+  it("every registered pitch type renders without throwing", () => {
+    for (const type of Object.keys(PITCH_DIMENSIONS) as PitchTypeId[]) {
       expect(() => renderToString(<Pitch type={type} width={400} height={300} />)).not.toThrow();
     }
   });

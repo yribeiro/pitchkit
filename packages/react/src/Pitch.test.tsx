@@ -1,8 +1,14 @@
 import { act, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { PITCH_DIMENSIONS } from "@pitchkit/core";
+import type { PitchTypeId } from "@pitchkit/core";
 import { Pitch } from "./Pitch.js";
 import { Scatter } from "./Scatter.js";
 import { VerticalPitch } from "./VerticalPitch.js";
+
+// From the registry, so a provider added later is rendered here without
+// anyone remembering to extend a hardcoded list.
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 
 const PARTS_WITH_EXPECTED_COUNT: Record<string, number> = {
   surface: 1,
@@ -36,7 +42,7 @@ describe("Pitch", () => {
     }
   });
 
-  it.each(["statsbomb", "opta", "uefa"] as const)(
+  it.each(PITCH_TYPES)(
     "renders a structurally correct pitch for %s",
     (type) => {
       const { container } = render(<Pitch type={type} width={600} height={400} />);

@@ -3,7 +3,7 @@ import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
 import type { PitchTypeId } from "../dimensions/types.js";
 import { cropForHalf } from "./half.js";
 
-const PITCH_TYPES: PitchTypeId[] = ["statsbomb", "opta", "uefa"];
+const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
 
 describe("cropForHalf", () => {
   it.each(PITCH_TYPES)(
@@ -12,10 +12,15 @@ describe("cropForHalf", () => {
       const dims = PITCH_DIMENSIONS[pitchType];
       const crop = cropForHalf(dims);
 
-      expect(crop.x0).toBe(dims.length / 2);
-      expect(crop.x1).toBe(dims.length);
-      expect(crop.y0).toBe(0);
-      expect(crop.y1).toBe(dims.width);
+      // Expressed against the pitch's own minimum corner rather than zero,
+      // so this holds for a center-origin grid too.
+      const minX = dims.origin === "center" ? -dims.length / 2 : 0;
+      const minY = dims.origin === "center" ? -dims.width / 2 : 0;
+
+      expect(crop.x0).toBe(minX + dims.length / 2);
+      expect(crop.x1).toBe(minX + dims.length);
+      expect(crop.y0).toBe(minY);
+      expect(crop.y1).toBe(minY + dims.width);
     },
   );
 
