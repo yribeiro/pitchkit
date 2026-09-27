@@ -381,7 +381,7 @@ export default function HomePage() {
               <PitchKitMark size={16} className="text-fd-primary" />
               PitchKit
             </span>
-            <p className="text-sm text-fd-muted-foreground">MIT licensed, open source.</p>
+            <p className="text-sm text-fd-muted-foreground">MIT licensed.</p>
           </div>
 
           <div id="contact" className="flex flex-col gap-3">
