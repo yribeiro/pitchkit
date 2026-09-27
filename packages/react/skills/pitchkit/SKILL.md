@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb or SkillCorner open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -33,7 +33,7 @@ hands back pitch coordinates.
 | -------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `@pitchkit/react`          | The rendering surface: `<Pitch>` + layer components + `usePitch()`     | Almost always                                                                           |
 | `@pitchkit/core`           | Zero-dependency maths: pitch dimensions, transforms, geometry, binning | Only for helpers like `cropForHalf`, `getPitchDimensions`, `createStandardizeTransform` |
-| `@pitchkit/data-providers` | Optional loaders for StatsBomb and SkillCorner **open data**           | Only when the user wants real match data rather than their own (recipe 5)               |
+| `@pitchkit/data-providers` | Optional loaders for StatsBomb, SkillCorner and Wyscout **open data**  | Only when the user wants real match data rather than their own (recipe 5)               |
 
 `@pitchkit/react` is the **only supported rendering surface**. `@pitchkit/core` exports
 `svgRenderer` / `renderSceneToSVGElement`; those are internal building blocks for the
@@ -403,7 +403,7 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 Only when the user wants **real matches** rather than their own data. Requires the separate
 `npm install @pitchkit/data-providers`; it is not a dependency of `@pitchkit/react`.
 
-Two providers, each on its own import subpath, each keeping that provider's own field
+Three providers, each on its own import subpath, each keeping that provider's own field
 names and values — a StatsBomb outcome is `"Off T"`, not a re-spelled `"off-target"`.
 
 ```tsx
@@ -438,8 +438,11 @@ _top-level_ literal discriminants — so `if (event.type.name === "Shot") event.
 correctly but fails to typecheck. Use `shots(events)` or `isShot(event)`.
 
 Coordinates: StatsBomb's `location` arrays are surfaced as lifted `x`/`y` (and
-`endX`/`endY`/`endZ`) for accessors. SkillCorner's are already metres from the centre
-spot, so `<Pitch type="skillcorner">` plots them raw.
+`endX`/`endY`/`endZ`) for accessors, and Wyscout's `positions` the same way. SkillCorner's are
+already metres from the centre spot, so `<Pitch type="skillcorner">` plots them raw.
+`<Pitch type="wyscout">` also plots raw, but its `x` is normalised to the attacking direction
+(positive always points at the goal being attacked) — the same convention as SkillCorner's
+dynamic events, and the opposite of its tracking file.
 
 ```ts
 import { fetchMatch, offBallRuns, streamTracking } from "@pitchkit/data-providers/skillcorner";
@@ -462,8 +465,26 @@ attacking direction** and never flip — mixing them mirrors half a match silent
 `is_detected: false` means the position was extrapolated, not seen, because broadcast
 tracking only covers what the camera framed.
 
-Neither provider's data ships with the package — it is fetched from their open-data
-repositories, and **both ask to be credited** in anything published from it.
+```ts
+import { fetchMatch, isGoal, shotGoalZone, shots } from "@pitchkit/data-providers/wyscout";
+
+const match = await fetchMatch(2499943); // Liverpool 4–3 Manchester City, 2018
+const goals = shots(match.events).filter(isGoal);
+```
+
+`fetchMatch` returns events and both squads in one call; there's no `fetchMatches` since
+Wyscout's mirror publishes no match index, only a Markdown table.
+
+Two Wyscout traps: **a goal is tagged on the conceding keeper's save as well as the shot that
+scored it** (measured: 15 shots, 19 save attempts, 3 free kicks all carry it), so filter
+`shots(events)` before `isGoal`, not the whole feed. And **a shot has no end coordinate** —
+`positions[1]` is a placeholder on every `Shot`/`Interruption`/`Offside`; `shotGoalZone(shot)`
+reads where it went instead, from a goal-mouth tag. Almost everything else is a tag too:
+`hasTag`, `WYSCOUT_TAGS`, and predicates like `isAccurate`/`wonDuel` built on it.
+
+None of the three providers' data ships with the package — it is fetched from their open-data
+repositories (Wyscout's from a mirror), and **all three ask to be credited** in anything
+published from it.
 
 ## Where to look next
 
