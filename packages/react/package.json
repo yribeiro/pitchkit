@@ -1,6 +1,6 @@
 {
   "name": "@pitchkit/react",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "React football (soccer) visualisation library — declarative <Pitch> + layer components for shot maps, pass networks and heatmaps. TypeScript, responsive by default, Next.js ready.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",

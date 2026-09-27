@@ -1,5 +1,42 @@
 # @pitchkit/react
 
+## 0.5.0
+
+### Minor Changes
+
+- f5002f2: Wyscout open data, and a `wyscout` pitch type.
+
+  `@pitchkit/data-providers/wyscout` loads the Pappalardo et al. dataset — 1,941
+  matches across the 2017/18 big-five leagues plus World Cup 2018 and Euro 2016,
+  CC BY 4.0. `fetchMatch(id)` returns the events with both squads attached;
+  `shots`/`passes`/`duels` narrow the feed, and Wyscout's numeric tags are read
+  through `hasTag` and named predicates (`isGoal`, `isAccurate`, `wonDuel`, …).
+
+  `core` gains the `"wyscout"` pitch type, widening the public `PitchTypeId`
+  union — additive for callers, but an exhaustive `switch` over it gains a case.
+
+  It also fixes a long-standing rendering bug: a normalized 0-100 grid now
+  derives its shape from `realLengthMeters`/`realWidthMeters` rather than from
+  `length`/`width`, so Opta and Wyscout render as 105:68 rectangles instead of
+  squares. StatsBomb, UEFA and SkillCorner are unaffected — their unit scale is
+  1 on both axes and their output is byte-identical.
+
+### Patch Changes
+
+- 6c710fe: Document the Wyscout data provider in the bundled Agent Skill.
+
+  The `wyscout` pitch type landed in a prior release, but the skill's data-loading
+  sections — the package-split table, the frontmatter description, and Recipe 5 —
+  still only described StatsBomb and SkillCorner. Recipe 5 now includes a Wyscout
+  example and its two load-bearing traps (a goal tagged twice; a shot with no end
+  coordinate). `skill-doc.test.ts`'s import guard is extended to the
+  `data-providers/wyscout` subpath, so a recipe importing something that
+  subpath doesn't export fails the build the same way it already does for the
+  other two providers.
+
+- Updated dependencies [f5002f2]
+  - @pitchkit/core@0.4.0
+
 ## 0.4.2
 
 ### Patch Changes
