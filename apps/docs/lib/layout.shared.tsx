@@ -1,5 +1,6 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { PitchKitLockup } from "@/components/pitchkit-logo";
+import { CONTACT_EMAIL, GITHUB_URL } from "@/lib/site";
 
 /**
  * Options shared between the home layout and the docs layout (nav title,
@@ -22,7 +23,12 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: "GitHub",
-        url: "https://github.com/yribeiro/pitchkit",
+        url: GITHUB_URL,
+        external: true,
+      },
+      {
+        text: "Contact",
+        url: `mailto:${CONTACT_EMAIL}`,
         external: true,
       },
     ],

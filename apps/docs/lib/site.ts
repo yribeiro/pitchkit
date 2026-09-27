@@ -18,6 +18,14 @@
 export const SITE_URL = "https://www.pitchkitjs.com";
 
 /**
+ * Where to reach the maintainer, and where bugs go instead. Shared because the
+ * homepage footer and the nav on every page both link to them.
+ */
+export const CONTACT_EMAIL = "yohahnribeiro29@gmail.com";
+export const GITHUB_URL = "https://github.com/yribeiro/pitchkit";
+export const ISSUES_URL = `${GITHUB_URL}/issues`;
+
+/**
  * The landing page's own headline and subhead.
  *
  * They live here rather than inline in the hero because three surfaces have to

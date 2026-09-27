@@ -3,7 +3,15 @@ import Link from "next/link";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
-import { SEARCH_DESCRIPTION, SITE_URL, SUBHEAD, TAGLINE } from "@/lib/site";
+import {
+  CONTACT_EMAIL,
+  GITHUB_URL,
+  ISSUES_URL,
+  SEARCH_DESCRIPTION,
+  SITE_URL,
+  SUBHEAD,
+  TAGLINE,
+} from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -366,23 +374,62 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-fd-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-6 text-xs text-fd-muted-foreground">
-          <span className="inline-flex items-center gap-2">
-            <PitchKitMark size={15} className="text-fd-primary" />
-            PitchKit — MIT licensed, open source.
-          </span>
-          <div className="flex gap-4">
+      <footer className="border-t border-fd-border bg-fd-card/40">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-12 sm:grid-cols-[1fr_1.2fr]">
+          <div className="flex flex-col gap-2">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-fd-foreground">
+              <PitchKitMark size={16} className="text-fd-primary" />
+              PitchKit
+            </span>
+            <p className="text-sm text-fd-muted-foreground">MIT licensed, open source.</p>
+          </div>
+
+          <div id="contact" className="flex flex-col gap-3">
+            <h2 className="text-sm font-semibold text-fd-foreground">Get in touch</h2>
+            <p className="max-w-md text-sm leading-relaxed text-fd-muted-foreground">
+              Questions, feedback, or using PitchKit in a project? Email me. Bugs and feature
+              requests are easiest to track as GitHub issues.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-flex items-center gap-2 rounded-lg border border-fd-border bg-fd-background px-3 py-2 text-sm font-medium text-fd-foreground transition-colors hover:border-fd-primary/40"
+              >
+                <svg
+                  aria-hidden
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="shrink-0 text-fd-primary"
+                >
+                  <path d="M3 6h18v12H3zM3 7l9 6 9-6" />
+                </svg>
+                {CONTACT_EMAIL}
+              </a>
+              <a
+                href={ISSUES_URL}
+                className="inline-flex items-center rounded-lg border border-fd-border px-3 py-2 text-sm font-medium text-fd-muted-foreground transition-colors hover:border-fd-primary/40 hover:text-fd-foreground"
+              >
+                Open an issue
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-fd-border">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap gap-4 px-6 py-5 text-xs text-fd-muted-foreground">
             <Link href="/docs" className="transition-colors hover:text-fd-foreground">
               Docs
             </Link>
             <Link href="/gallery" className="transition-colors hover:text-fd-foreground">
               Gallery
             </Link>
-            <a
-              href="https://github.com/yribeiro/pitchkit"
-              className="transition-colors hover:text-fd-foreground"
-            >
+            <a href={GITHUB_URL} className="transition-colors hover:text-fd-foreground">
               GitHub
             </a>
           </div>
