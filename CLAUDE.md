@@ -319,6 +319,12 @@ namespace and get the library installable:
   ([PR #57](https://github.com/yribeiro/pitchkit/pull/57)), a shortened hero tagline
   ("Football visualised for the web.", [PR #60](https://github.com/yribeiro/pitchkit/pull/60)),
   and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
+- **Homepage "Styling" section** — `apps/docs/components/styling-showcase.tsx`, between the
+  feature grid and the FAQ: one chart re-themed live by five Tailwind-only presets, with the
+  exact JSX (and the `@utility` recipe) printed beside it. Every class string is a full literal
+  in that file — never interpolate one, Tailwind only generates classes it finds verbatim.
+  Its "Adaptive" preset needed `@custom-variant dark` in `globals.css` so `dark:` follows the
+  site's `.dark` toggle instead of the OS `prefers-color-scheme`.
 - **Hero rebuilt as a gallery carousel** — via [PR #70](https://github.com/yribeiro/pitchkit/pull/70)
   (2026-09-20), replacing the old click-to-plot toy pitch with three real gallery
   visualisations (shot map, pass network, Voronoi) auto-cycling on a countdown, pause
