@@ -16,12 +16,24 @@ aligned.
 | `opta`        | 100 × 100 | bottom-left     | up          | Normalized percentage grid    |
 | `uefa`        | 105 × 68  | bottom-left     | up          | Real metres                   |
 | `skillcorner` | 105 × 68  | **centre spot** | up          | Real metres, per-match extent |
+| `wyscout`     | 100 × 100 | top-left        | down        | Normalized percentage grid    |
 
 ```tsx
 <Pitch type="statsbomb">{/* data in 120x80, y-down */}</Pitch>
 <Pitch type="opta">{/* data in 0-100, y-up */}</Pitch>
 <Pitch type="skillcorner">{/* metres from the centre spot */}</Pitch>
+<Pitch type="wyscout">{/* data in 0-100, y-down */}</Pitch>
 ```
+
+`opta` and `wyscout` are both 0–100 on both axes, but not interchangeable: Opta's origin is
+bottom-left with y increasing upward, Wyscout's is top-left with y increasing downward.
+Plotting one provider's data on the other's type mirrors the pitch vertically, and nothing
+errors — every coordinate is still in range.
+
+A percentage grid renders at the **real pitch's proportions**, not as a square, because the
+transform converts each axis to metres before deriving the pitch's on-screen shape — x spans
+105 m of grass and y only 68 m, even though both run 0–100. The markings still don't scale
+with an axis override; see below.
 
 `skillcorner` is the one grid whose origin is not a corner: its coordinates are metres
 measured from the centre spot, so x runs `-52.5..52.5` and y `-34..34`. Layers take that
@@ -83,4 +95,4 @@ const [x, y] = optaToStatsBomb([50, 50]); // -> [60, 40]
 Inside a `<Pitch>`, [`usePitch()`](/docs/api/react/functions/usePitch) exposes the active
 pixel transform: `transform.toPixel` for provider → screen, and `transform.toProvider` for
 screen → provider — the inverse you need to ingest clicks or pointer positions as pitch
-coordinates. The landing page's hero pitch is built on exactly this.
+coordinates.

@@ -39,7 +39,7 @@ const apiReference = readFileSync(join(skillFile, "..", "references", "api.md"),
  * dependency edge, and no alias, and it is the same trick this file already
  * plays on SKILL.md.
  */
-function providerExports(provider: "statsbomb" | "skillcorner"): Set<string> {
+function providerExports(provider: "statsbomb" | "skillcorner" | "wyscout"): Set<string> {
   // skillPath is <pkg>/skills/pitchkit/SKILL.md, so three levels up is the
   // react package and its sibling is data-providers.
   const barrel = join(
@@ -73,7 +73,7 @@ function providerExports(provider: "statsbomb" | "skillcorner"): Set<string> {
 }
 
 const IMPORT_PATTERN =
-  /import\s+\{([^}]+)\}\s+from\s+"(@pitchkit\/(?:react|core|data-providers\/statsbomb|data-providers\/skillcorner))"/g;
+  /import\s+\{([^}]+)\}\s+from\s+"(@pitchkit\/(?:react|core|data-providers\/statsbomb|data-providers\/skillcorner|data-providers\/wyscout))"/g;
 
 function importedNames(packageName: string): string[] {
   const names = new Set<string>();
@@ -107,12 +107,14 @@ describe("the bundled skill's recipes", () => {
   });
 
   it("only import values @pitchkit/data-providers actually exports", () => {
-    // Recipe 5 imports from the two provider subpaths. Without this the
+    // Recipe 5 imports from all three provider subpaths. Without this the
     // newest recipe would be the only unchecked one.
     const statsbomb = providerExports("statsbomb");
     const skillcorner = providerExports("skillcorner");
+    const wyscout = providerExports("wyscout");
     expect(statsbomb.size).toBeGreaterThan(10);
     expect(skillcorner.size).toBeGreaterThan(10);
+    expect(wyscout.size).toBeGreaterThan(10);
 
     expect({
       statsbomb: importedNames("@pitchkit/data-providers/statsbomb").filter(
@@ -121,7 +123,10 @@ describe("the bundled skill's recipes", () => {
       skillcorner: importedNames("@pitchkit/data-providers/skillcorner").filter(
         (name) => !skillcorner.has(name),
       ),
-    }).toEqual({ statsbomb: [], skillcorner: [] });
+      wyscout: importedNames("@pitchkit/data-providers/wyscout").filter(
+        (name) => !wyscout.has(name),
+      ),
+    }).toEqual({ statsbomb: [], skillcorner: [], wyscout: [] });
   });
 
   it("names every pitch type the dimensions registry knows about, and no others", () => {

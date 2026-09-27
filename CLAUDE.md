@@ -116,15 +116,58 @@ website via [PR #32](https://github.com/yribeiro/pitchkit/pull/32) (2026-09-06).
     matches the registry exactly, so adding a pitch type fails CI until `SKILL.md` catches up.
     That is intentional.
 
-- **Hero shows SkillCorner, not Opta.** `apps/docs/components/hero-pitch.tsx`'s switcher is
-  StatsBomb / SkillCorner / UEFA. Opta is **still a supported pitch type** and
-  [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta renders square) is **still open** —
-  the swap was a shop-window decision, explicitly not a fix, so don't record #2 as resolved.
+- **`@pitchkit/data-providers/wyscout` + a `wyscout` pitch type, and [#2](https://github.com/yribeiro/pitchkit/issues/2)
+  (Opta renders square) is now closed** — via
+  [PR #72](https://github.com/yribeiro/pitchkit/pull/72). Merged to `main`; not yet published
+  to npm (a changeset is pending).
+  - **The root cause of #2, fixed for both percentage grids at once.** Opta and Wyscout are
+    both `0..100` on _both_ axes, but `createPixelTransform` derived a pitch's on-screen shape
+    from `length`/`width` directly, so a 100×100 grid always rendered as a square. `x` spans
+    105 m of grass and `y` only 68 m — `PitchDimensions` has carried `realLengthMeters`/
+    `realWidthMeters` since the start and **nothing read them**. `displayUnitScale`
+    (`transform/canonical.ts`) now converts a normalized grid's units to metres before
+    anything derives shape, gated on `normalized` so StatsBomb/UEFA/SkillCorner render
+    byte-identically (`unitScale` is `1` on both axes for them). Measured at 600×400: opta
+    1.0000 → 1.5441, wyscout 1.5441 from the start.
+  - **Nine test files hardcoded their pitch-type list** (`["statsbomb", "opta", "uefa"]` or
+    similar), so `skillcorner` had gone silently uncovered in six of them since it shipped.
+    Now all derive from `Object.keys(PITCH_DIMENSIONS)`, which immediately surfaced four real
+    gaps: `scene/geometry.test.ts`'s outline/goal/corner-arc/penalty-arc assertions and
+    `transform/standardize.test.ts`'s geographic corners all assumed the pitch's minimum
+    corner is `(0, 0)` — wrong for a center-origin grid. Fixed by deriving the minimum corner
+    from `dimensions.origin` instead of assuming it.
+  - **Wyscout is not Opta under another name**, even though both are `0..100` on both axes:
+    Wyscout's origin is top-left with y increasing downward, Opta's is bottom-left with y
+    increasing upward (confirmed against mplsoccer's `wyscout_dims()`/`opta_dims()`). Plotting
+    one on the other's type mirrors the pitch vertically, and nothing errors.
+  - **Wyscout events are only browser-fetchable from a third-party mirror.** The official
+    release (the Pappalardo et al. dataset, figshare, CC BY 4.0) ships events as a single
+    77 MB `events.zip` covering all 1,941 matches. `koenvo/wyscout-soccer-match-event-dataset`
+    splits that archive per match (~480 KB each) with no field renamed, which is what makes it
+    an acceptable source under "the provider's data stays the provider's." The small reference
+    files (competitions, teams, players, tag vocabulary) are fetched from figshare directly —
+    two base URLs, the same shape as SkillCorner's raw/LFS split. There is **no `fetchMatches`**
+    — the mirror publishes no JSON index, only a generated Markdown table — so the docs example
+    ships a curated shortlist instead, scoped to `apps/docs`.
+  - **A goal is tagged twice.** Wyscout's `GOAL` tag (101) sits on the scoring action _and_ on
+    the conceding keeper's `Save attempt` — measured across six full matches (9,765 events):
+    15 shots, 19 save attempts, 3 free kicks. `shots(events).filter(isGoal)` counts each goal
+    once; filtering the whole feed does not. Both `select.ts` and the docs page say so.
+  - **A shot has no end coordinate.** `positions[1]` was a placeholder in 148 of 148 shots —
+    likewise `Interruption` (348/348) and `Offside` (32/32) — while a pass carried a real one
+    in 5,077 of 5,127. Wyscout records where a shot went in its goal-mouth tags (1201–1223)
+    instead; `shotGoalZone` reads them. The exclusion is keyed on **event type, not value**:
+    `(100, 100)` is a placeholder for a goal kick and a genuine corner-flag position for a
+    corner, so no value-based test could separate them — verify this against a fresh sample
+    before "simplifying" it to a coordinate check.
+  - Predicates read Wyscout's tags (`hasTag` + `WYSCOUT_TAGS`) rather than inventing fields —
+    the same "interpretation lives in functions" principle as StatsBomb's predicates.
 
 - **Data docs** — a top-level **Data** nav section (`/docs/data` → Overview, then StatsBomb
-  split into Events and 360, and SkillCorner into Tracking / Dynamic Events / Phases of Play),
-  plus a homepage feature card, README section, and the package finally wired into the
-  generated API reference. **This reverses
+  split into Events and 360, SkillCorner into Tracking / Dynamic Events / Phases of Play, and
+  Wyscout into a single Events page — one file is right for one file type), plus a homepage
+  feature card, README section, and the package finally wired into the generated API
+  reference. **This reverses
   [#29](https://github.com/yribeiro/pitchkit/issues/29)'s recorded decision** to park the
   loader docs under _Configuration_ until 2–3 providers existed: that reasoning was about
   volume, whereas the section exists for positioning (Configuration is Tailwind setup and
@@ -150,11 +193,9 @@ recipes ([#23](https://github.com/yribeiro/pitchkit/issues/23),
 **gallery specifically** ([#27](https://github.com/yribeiro/pitchkit/issues/27) —
 `apps/docs/components/examples/shot-map-gallery.tsx` still uses hardcoded data; the new
 `/docs/data` pages and `examples/react-nextjs` fetch live StatsBomb data, but the gallery
-itself doesn't yet), and tracking-data loaders beyond StatsBomb+SkillCorner
+itself doesn't yet), and tracking-data loaders beyond StatsBomb+SkillCorner+Wyscout
 ([#30](https://github.com/yribeiro/pitchkit/issues/30) — Metrica is still open). Also open:
-a longstanding bug, [#2](https://github.com/yribeiro/pitchkit/issues/2) (Opta pitch renders
-square instead of 105×68), not milestone-scoped — root cause is in PRD §11's Milestone 3
-notes; and [#59](https://github.com/yribeiro/pitchkit/issues/59) (follow-up to #58's
+[#59](https://github.com/yribeiro/pitchkit/issues/59) (follow-up to #58's
 SkillCorner loader) — **half done, still open for its second half.** Its "real
 `skillcorner` pitch type in `core`" half shipped via [PR #62](https://github.com/yribeiro/pitchkit/pull/62)
 (see the Milestone 2 entry above), including deleting the `toUefaX`/`toUefaY` squash-fudge
