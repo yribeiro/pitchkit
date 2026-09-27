@@ -1,0 +1,97 @@
+---
+title: Styling
+description: Colour a pitch and its marks with Tailwind classes, using your own palette.
+---
+
+Every shot from the Euro 2024 final, loaded from StatsBomb open data. Switch palettes to
+see the same chart in each one.
+
+<PitchPreview name="styling-shot-map-basic" />
+
+The pitch and the marks are coloured entirely by Tailwind classes. Nothing on the chart
+passes a colour prop.
+
+## Setup
+
+The pitch reads its colours from `--pitch-*` CSS variables (the full list is in
+[Theming](/docs/guides/theming)). Add these utilities to your stylesheet to set them with
+classes:
+
+```css
+/* globals.css */
+@utility pitch-surface-* {
+  --pitch-surface: --value(--color-*);
+}
+@utility pitch-stripe-* {
+  --pitch-stripe: --value(--color-*);
+}
+@utility pitch-lines-* {
+  --pitch-lines: --value(--color-*);
+}
+@utility pitch-line-width-* {
+  --pitch-line-width: --value(number, [number]);
+}
+```
+
+`pitch-surface-*`, `pitch-stripe-*` and `pitch-lines-*` accept any colour in your Tailwind
+theme. `pitch-line-width-*` takes a number: `pitch-line-width-1`, or `pitch-line-width-[1.5]`
+for a fraction.
+
+## Adding a palette
+
+Add the palette's colours to your theme. This is the Dracula block the example uses:
+
+```css
+/* globals.css */
+@theme {
+  --color-dracula-darker: #21222c;
+  --color-dracula-background: #282a36;
+  --color-dracula-stripe: #2f3242;
+  --color-dracula-comment: #6272a4;
+  --color-dracula-foreground: #f8f8f2;
+  --color-dracula-pink: #ff79c6;
+  --color-dracula-cyan: #8be9fd;
+}
+```
+
+Each colour is now available to every colour utility, including the pitch ones:
+
+```tsx
+<Pitch
+  type="statsbomb"
+  className="pitch-surface-dracula-background pitch-stripe-dracula-stripe pitch-lines-dracula-comment"
+/>
+```
+
+The same names work for the card around the chart (`bg-dracula-darker`,
+`text-dracula-pink`), so the header and the pitch share one palette.
+
+## Colouring marks
+
+Pass `fill-*` and `stroke-*` classes through a mark's `className`. Leave out its `fill` and
+`stroke` props: if either is set, it takes precedence over the class.
+
+```tsx
+<Scatter
+  data={spainShots}
+  x={(s) => s.x}
+  y={(s) => s.y}
+  r={radius}
+  className="fill-dracula-pink/30 stroke-dracula-pink"
+/>
+```
+
+A class applies to every marker in a layer, so each colour needs its own layer. The example
+draws four: goals and other shots for each team, filtered from the same array. Opacity
+modifiers such as `/30` work as they do anywhere else in Tailwind.
+
+To colour by a continuous value (xG on a colour scale, for instance), use the `fill` prop
+with a function instead.
+
+## Related
+
+- [Theming](/docs/guides/theming): the `--pitch-*` variables, dark mode, and per-chart
+  overrides without Tailwind.
+- [Configuration → Tailwind](/docs/configuration/tailwind): setting variables with
+  arbitrary properties, and styling marks you didn't render yourself.
+- [StatsBomb events](/docs/data/statsbomb/events): loading the match data this example uses.
