@@ -1,5 +1,11 @@
 # @pitchkit/react
 
+## 0.5.1
+
+### Patch Changes
+
+- 6ce00d5: Agent Skill: list `--pitch-marker-goal` (the `<GoalAngle>` wedge fill) in the theming variable table.
+
 ## 0.5.0
 
 ### Minor Changes
