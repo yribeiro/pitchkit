@@ -321,13 +321,12 @@ namespace and get the library installable:
   and a colour logo strip above the prompts ([PR #61](https://github.com/yribeiro/pitchkit/pull/61)).
 - **Styling docs section** — `/docs/styling`, placed directly above Data in the nav: an
   Overview (the `@utility` recipe + mark `className`s) and one page per provider —
-  StatsBomb, Opta, Wyscout, SkillCorner — each a `styling-<provider>-basic.tsx` example
+  StatsBomb, Wyscout, SkillCorner — each a `styling-<provider>-basic.tsx` example
   plotting a hand-written sample in that provider's **own field names and coordinate
   system**, coloured with Tailwind classes only. The StatsBomb/Wyscout/SkillCorner samples
   are typed as `Pick<>`s of the real `@pitchkit/data-providers` types, so a renamed field
-  breaks the docs typecheck rather than drifting silently. Opta has no loader, so its row
-  shape is local. Every class string is a full literal — Tailwind only generates classes it
-  finds verbatim in source.
+  breaks the docs typecheck rather than drifting silently. Every class string is a full
+  literal — Tailwind only generates classes it finds verbatim in source.
 - **Hero rebuilt as a gallery carousel** — via [PR #70](https://github.com/yribeiro/pitchkit/pull/70)
   (2026-09-20), replacing the old click-to-plot toy pitch with three real gallery
   visualisations (shot map, pass network, Voronoi) auto-cycling on a countdown, pause
