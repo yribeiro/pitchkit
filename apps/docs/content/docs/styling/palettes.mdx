@@ -45,6 +45,48 @@ Each colour is now available to every colour utility, including the pitch ones:
 The same names work for the card around the chart (`bg-dracula-darker`,
 `text-dracula-pink`), so the header and the pitch share one palette.
 
+## The four palettes
+
+The colours for every palette in the example:
+
+```css
+/* globals.css */
+@theme {
+  --color-newsprint-paper: #f4efe6;
+  --color-newsprint-stripe: #ede6da;
+  --color-newsprint-rule: #8a8074;
+  --color-newsprint-ink: #1f1f1f;
+  --color-newsprint-muted: #6b645b;
+  --color-newsprint-red: #c1121f;
+  --color-newsprint-navy: #1d3557;
+
+  --color-analyst-card: #0d1f2b;
+  --color-analyst-pitch: #122c3d;
+  --color-analyst-stripe: #163447;
+  --color-analyst-line: #cfcfcf;
+  --color-analyst-text: #e2e8f0;
+  --color-analyst-muted: #94a3b8;
+  --color-analyst-orange: #f97316;
+  --color-analyst-sky: #7dd3fc;
+
+  --color-dracula-darker: #21222c;
+  --color-dracula-background: #282a36;
+  --color-dracula-stripe: #2f3242;
+  --color-dracula-comment: #6272a4;
+  --color-dracula-foreground: #f8f8f2;
+  --color-dracula-pink: #ff79c6;
+  --color-dracula-cyan: #8be9fd;
+
+  --color-gruvbox-bg0-hard: #1d2021;
+  --color-gruvbox-bg: #282828;
+  --color-gruvbox-bg0-soft: #32302f;
+  --color-gruvbox-fg4: #a89984;
+  --color-gruvbox-fg: #ebdbb2;
+  --color-gruvbox-red: #fb4934;
+  --color-gruvbox-yellow: #fabd2f;
+}
+```
+
 ## Colouring marks
 
 Pass `fill-*` and `stroke-*` classes through a mark's `className`. Leave out its `fill` and

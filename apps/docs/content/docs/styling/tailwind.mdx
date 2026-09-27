@@ -9,7 +9,8 @@ marks, with Tailwind utilities.
 
 ## Marks you render yourself: `className`
 
-`<Scatter>`, `<Arrows>`, and `<Comet>` fall back to a themed default `fill`/`stroke` — but
+`<Scatter>`, `<Arrows>`, `<Comet>`, `<Annotate>`, `<Polygon>`, `<ConvexHull>`, `<Voronoi>` and
+`<GoalAngle>` fall back to a themed default `fill`/`stroke` — but
 that default is applied as inline `style`, and inline style always beats a class at the same
 CSS property. So a `className` utility only takes effect once the corresponding accessor prop
 is **omitted entirely** — passing both `fill="red"` and a `fill-*` class silently drops the
@@ -33,7 +34,7 @@ out-rank the inline style they still carry.
 ## The pitch background: a `@utility` recipe
 
 The pitch background (outline, stripes, lines) isn't a mark at all — it's restyled only
-through the `--pitch-*` variables above, never via `className` on the shapes directly. Two
+through the [`--pitch-*` variables](/docs/styling/theming), never via `className` on the shapes directly. Two
 ways to set them with Tailwind:
 
 **Zero setup**, using Tailwind's arbitrary-property syntax:

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Pitch, Scatter } from "@pitchkit/react";
 import { fetchMatchEvents, isGoal, shots } from "@pitchkit/data-providers/statsbomb";
 import type { StatsBombShot } from "@pitchkit/data-providers/statsbomb";
-import { controlClass } from "./statsbomb-live";
 
 /** Euro 2024 final — Spain 2–1 England, Berlin, 14 July 2024. */
 const EURO_2024_FINAL = 3943043;
@@ -177,7 +176,7 @@ export function StylingShotMapBasic() {
             type="button"
             aria-pressed={p === palette}
             onClick={() => setPalette(p)}
-            className={`${controlClass} px-3 ${p === palette ? "border-fd-primary text-fd-foreground" : "text-fd-muted-foreground"}`}
+            className={`rounded-md border bg-fd-card px-3 py-1.5 text-sm ${p === palette ? "border-fd-primary text-fd-foreground" : "border-fd-border text-fd-muted-foreground"}`}
           >
             {p.name}
           </button>

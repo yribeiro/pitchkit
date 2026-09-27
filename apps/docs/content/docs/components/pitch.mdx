@@ -19,20 +19,20 @@ mplsoccer's `VerticalPitch`) — useful for shot maps and attacking-third views.
 
 ## Appearance
 
-Colours are CSS variables (`--pitch-surface`, `--pitch-stripe`, `--pitch-lines`,
-`--pitch-marker-primary`) — set them once per theme, no per-instance props needed. See
-[Styling → Tailwind](/docs/styling/tailwind) for the full variable reference and
-how to reach them with Tailwind utilities. `stripes`, `goalType` and `linesOnTop` are the
+Colours are CSS variables (`--pitch-surface`, `--pitch-stripe`, `--pitch-lines` and others) —
+set them once per theme, no per-instance props needed. See
+[Styling → Theming](/docs/styling/theming) for the full list and
+[Styling → Tailwind](/docs/styling/tailwind) for setting them with Tailwind utilities. `stripes`, `goalType` and `linesOnTop` are the
 structural knobs, passed via the `appearance` prop:
 
 ```tsx
 <Pitch type="statsbomb" appearance={{ stripes: true, goalType: "box" }} />
 ```
 
-| Key | Does |
-| --- | --- |
-| `stripes` | `true` for a sensible default count, or a number for exactly that many mown bands |
-| `goalType` | `"line"` (default) or `"box"` |
+| Key          | Does                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| `stripes`    | `true` for a sensible default count, or a number for exactly that many mown bands      |
+| `goalType`   | `"line"` (default) or `"box"`                                                          |
 | `linesOnTop` | Paints the markings above the layers instead of below them — mplsoccer's `line_zorder` |
 
 `linesOnTop` is off by default so discrete marks sit on top of the lines. Turn it on for the

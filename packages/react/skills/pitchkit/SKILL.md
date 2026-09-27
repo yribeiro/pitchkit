@@ -169,6 +169,7 @@ around a single chart. Every variable has a built-in fallback, so none is requir
 | `--pitch-lines`          | Markings, and `<Annotate>` text | `rgba(255, 255, 255, 0.8)`  |
 | `--pitch-line-width`     | Marking stroke width            | `1.5`                       |
 | `--pitch-marker-primary` | Default mark colour             | `#3b82f6`                   |
+| `--pitch-marker-goal`    | `<GoalAngle>` wedge fill        | `#f97316`                   |
 | `--pitch-tooltip-bg`     | Tooltip background              | `rgba(17, 17, 17, 0.92)`    |
 | `--pitch-tooltip-color`  | Tooltip text                    | `#fff`                      |
 
