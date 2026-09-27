@@ -50,7 +50,7 @@ finding the move that produced England's goal, and plotting it — start with th
 - **[Quickstart](/docs/quickstart)** — the guided build: a real match in, a real passage of
   play out, in four steps.
 - **[Guides](/docs/guides/coordinates)** — the concepts: coordinates & pitch types,
-  layers, theming, responsive behaviour, Next.js/SSR, and recipes.
+  layers, responsive behaviour, and Next.js/SSR.
 - **[Components](/docs/components/pitch)** — the pitch container that owns the coordinate
   system: `<Pitch>` and `<VerticalPitch>`.
 - **Overlays** — layers stacked inside a `<Pitch>`, one page per visual, each with a live
@@ -59,14 +59,16 @@ finding the move that produced England's goal, and plotting it — start with th
   [Heatmap](/docs/overlays/heatmap), [Flow](/docs/overlays/flow),
   [Polygon](/docs/overlays/polygon), [Convex Hull](/docs/overlays/convex-hull),
   [Voronoi](/docs/overlays/voronoi), and [Goal Angle](/docs/overlays/goal-angle).
+- **[Agents](/docs/agents)** — building with AI: `llms.txt`, and the
+  [Agent Skill](/docs/agents/skills) that ships inside `@pitchkit/react`.
+- **[Styling](/docs/styling/theming)** — [theming](/docs/styling/theming) with CSS variables,
+  [Tailwind](/docs/styling/tailwind) utilities, and [pitch palettes](/docs/styling/palettes).
 - **[Data](/docs/data)** — loading real open football data in one call with the optional
   `@pitchkit/data-providers` package: StatsBomb
   [events](/docs/data/statsbomb/events) and [360 tracking](/docs/data/statsbomb/360),
   SkillCorner [tracking](/docs/data/skillcorner/tracking), and
   [Wyscout events](/docs/data/wyscout/events) — every provider page with a live example
   fetching a real match.
-- **[Configuration](/docs/configuration/tailwind)** — Tailwind integration, and the
-  [Agent Skill](/docs/agents/skills) that ships inside `@pitchkit/react`.
 - **[mplsoccer → PitchKit](/docs/migration)** — the migration cheatsheet.
 - **[API Reference](/docs/api)** — every public export, generated from TSDoc.
 - **[Gallery](/gallery)** — finished visualisations with full source and sandbox exports.
@@ -86,4 +88,4 @@ is invented. Three ways to give it the real thing, cheapest first:
   installing the package, because it's versioned with the code rather than scraped from here.
 
 Any page on this site is also available as raw Markdown: append `.md` to its URL
-(for example [`/docs/guides/theming.md`](/docs/guides/theming.md)).
+(for example [`/docs/styling/theming.md`](/docs/styling/theming.md)).

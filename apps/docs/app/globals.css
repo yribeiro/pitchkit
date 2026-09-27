@@ -51,6 +51,47 @@
 }
 
 /*
+ * The four palettes on /docs/styling (components/examples/styling-shot-map-basic.tsx).
+ * Adding them to the theme is what makes `pitch-surface-dracula-background`,
+ * `fill-gruvbox-red/30` and so on exist — the page shows this block as the setup
+ * step. Dracula and Gruvbox values are from those palettes' published specs.
+ */
+@theme {
+  --color-newsprint-paper: #f4efe6;
+  --color-newsprint-stripe: #ede6da;
+  --color-newsprint-rule: #8a8074;
+  --color-newsprint-ink: #1f1f1f;
+  --color-newsprint-muted: #6b645b;
+  --color-newsprint-red: #c1121f;
+  --color-newsprint-navy: #1d3557;
+
+  --color-analyst-card: #0d1f2b;
+  --color-analyst-pitch: #122c3d;
+  --color-analyst-stripe: #163447;
+  --color-analyst-line: #cfcfcf;
+  --color-analyst-text: #e2e8f0;
+  --color-analyst-muted: #94a3b8;
+  --color-analyst-orange: #f97316;
+  --color-analyst-sky: #7dd3fc;
+
+  --color-dracula-darker: #21222c;
+  --color-dracula-background: #282a36;
+  --color-dracula-stripe: #2f3242;
+  --color-dracula-comment: #6272a4;
+  --color-dracula-foreground: #f8f8f2;
+  --color-dracula-pink: #ff79c6;
+  --color-dracula-cyan: #8be9fd;
+
+  --color-gruvbox-bg0-hard: #1d2021;
+  --color-gruvbox-bg: #282828;
+  --color-gruvbox-bg0-soft: #32302f;
+  --color-gruvbox-fg4: #a89984;
+  --color-gruvbox-fg: #ebdbb2;
+  --color-gruvbox-red: #fb4934;
+  --color-gruvbox-yellow: #fabd2f;
+}
+
+/*
  * The landing hero's showcase pitch: a deliberately darker, broadcast-graphics look
  * (near-black surface, low-contrast markings, one bright accent) that reads
  * as a product screenshot in both site themes — themed through the same
