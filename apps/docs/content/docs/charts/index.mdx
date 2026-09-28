@@ -1,0 +1,34 @@
+---
+title: Overview
+description: Non-pitch charts — components that draw football data without a pitch underneath it.
+---
+
+Everything under [Overlays](/docs/overlays) is a layer **inside** a `<Pitch>`, positioned in a
+provider's own coordinates. The components here are not. They draw football data that has no
+location on a pitch — a quantity accumulating over match minutes, a player's percentile profile —
+so they are roots in their own right.
+
+## What that changes
+
+Three things, and they are the same three every time:
+
+- **They are siblings of `<Pitch>`, not children.** Rendering one inside a `<Pitch>` is a mistake,
+  not a composition. They have their own coordinate systems and own them entirely.
+- **There is no `type` prop.** `type` names a provider's pitch grid. A chart with no pitch has no
+  grid to name, so its scales come from the data instead.
+- **Their escape hatch is their own hook.** `usePitch()` gives you the pitch transform; each chart
+  exposes the equivalent for its own space — `useRaceChart()` for
+  [`<RaceChart>`](/docs/charts/race-chart).
+
+Everything else carries over unchanged. Accessors work the same way, responsive-by-default works the
+same way, and theming is still CSS variables only — the chart tokens sit in the same `--pitch-*`
+namespace as the rest, because that namespace is PitchKit's, not the grass's.
+
+## Available
+
+| Component                                | What it draws                                      |
+| ---------------------------------------- | -------------------------------------------------- |
+| [`<RaceChart>`](/docs/charts/race-chart) | A running total over match minutes, as a step line |
+
+Radar and pizza (percentile) charts and a goal-mouth view are planned; they will land here rather
+than under Overlays.
