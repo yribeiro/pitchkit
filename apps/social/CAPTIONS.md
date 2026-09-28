@@ -5,6 +5,10 @@ Each entry has an Instagram caption, an X post (≤ 280 chars, the image/video
 attached), and alt text. Every number below comes from the committed data in
 `src/data/`, so it matches the graphic.
 
+Never write the npm package name (`@pitchkit/react`) in a caption or post:
+both Instagram and X turn `@pitchkit` into a mention of whoever owns that
+handle. The graphics show the install command; the copy points at the link.
+
 Links: Instagram doesn't make caption URLs clickable — say "link in bio" there
 and put `https://www.pitchkitjs.com` in the bio. X links are clickable.
 
@@ -64,7 +68,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 > That's Spain's pass network from the Euro 2024 final, straight from
 > StatsBomb open data.
 >
-> npm i @pitchkit/react — docs & gallery: link in bio.
+> Docs, gallery & install: link in bio.
 >
 > #football #footballanalytics #dataviz #reactjs #typescript #opensource
 
@@ -74,10 +78,9 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 >
 > PitchKit is an open-source React + TypeScript library for pitch charts — mplsoccer's feature set, built for the browser.
 >
-> npm i @pitchkit/react
 > https://www.pitchkitjs.com
 
-**Alt text:** Dark green graphic with the PitchKit logo and the headline "Football visualised for the web." Below it, Spain's first-half pass network from the Euro 2024 final on a football pitch, and the install command npm i @pitchkit/react.
+**Alt text:** Dark green graphic with the headline "Football visualised for the web." Below it, Spain's first-half pass network from the Euro 2024 final on a football pitch, and the install command npm i @pitchkit/react.
 
 ## Post 02 — code → chart (`post-02-code.png`)
 
@@ -276,7 +279,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 > → Voronoi → ConvexHull → GoalAngle, then Newsprint, Analyst navy, Dracula and
 > Gruvbox.
 >
-> Everything is a React component. npm i @pitchkit/react
+> Everything is a React component. Install it from the link in bio.
 >
 > #dataviz #reactjs #footballanalytics #opensource #webdev #football
 
@@ -284,5 +287,4 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 > 11 chart layers and 4 themes in 21 seconds — all on one match, all from one React library.
 >
-> npm i @pitchkit/react
 > https://www.pitchkitjs.com
