@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import {
   computeChartFrame,
@@ -143,7 +143,8 @@ export function RaceChart<T>({
   // Measured width drives the ratio, so the box gets taller on a phone.
   // Width never depends on height here (the container is a block filling
   // its parent), so this cannot oscillate with the ResizeObserver.
-  const isNarrow = (measuredSize?.width ?? explicitWidth ?? NOMINAL_WIDTH) < NARROW_WIDTH;
+  const isNarrow =
+    (isExplicitSize ? explicitWidth : (measuredSize?.width ?? NOMINAL_WIDTH)) < NARROW_WIDTH;
   const aspectRatio =
     explicitAspectRatio ?? (isNarrow ? NARROW_ASPECT_RATIO : DEFAULT_ASPECT_RATIO);
   const fallbackSize = {
@@ -253,6 +254,27 @@ export function RaceChart<T>({
    * the next tap or until a scroll cancels the gesture, which is how a
    * phone chart is read. A mouse leaving the plot still clears.
    */
+  /**
+   * A touch readout has no pointerleave to end it — the pointer stops
+   * existing the moment the finger lifts — so without this it would stay
+   * up forever, which is exactly how it looks in a browser's device
+   * emulation. Pressing anywhere outside the chart dismisses it, the way
+   * any transient overlay behaves. A mouse has usually cleared it via
+   * pointerleave long before this fires.
+   */
+  useEffect(() => {
+    if (hoverTime === null) return;
+
+    function dismissOnOutsidePress(event: PointerEvent) {
+      const root = containerRef.current;
+      if (root && !root.contains(event.target as Node)) setHoverTime(null);
+    }
+
+    // Capture phase, so a handler that stops propagation can't strand it.
+    document.addEventListener("pointerdown", dismissOnOutsidePress, true);
+    return () => document.removeEventListener("pointerdown", dismissOnOutsidePress, true);
+  }, [hoverTime, containerRef]);
+
   function handlePointerLeave(event: ReactPointerEvent<SVGRectElement>) {
     if (event.pointerType === "mouse") setHoverTime(null);
   }
@@ -267,7 +289,7 @@ export function RaceChart<T>({
 
   return (
     <div
-      ref={isExplicitSize ? undefined : containerRef}
+      ref={containerRef}
       className={className}
       data-pitchkit-layer="race"
       style={{

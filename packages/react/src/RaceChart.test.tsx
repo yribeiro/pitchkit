@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { RaceChart } from "./RaceChart.js";
 import { useRaceChart } from "./use-race-chart.js";
 
@@ -36,6 +36,28 @@ function renderChart(props: Partial<Parameters<typeof RaceChart<Shot>>[0]> = {})
       {...props}
     />,
   );
+}
+
+/**
+ * happy-dom reports every element as zero-sized, and the crosshair needs a
+ * real width to map a clientX onto a minute — so it bails out and nothing
+ * is ever shown. Same shape of problem as the canvas mock in core: stub
+ * the one measurement the handler depends on.
+ */
+function hoverable(container: HTMLElement): Element {
+  const hitArea = container.querySelector('rect[fill="transparent"]') as Element;
+  vi.spyOn(hitArea, "getBoundingClientRect").mockReturnValue({
+    x: 0,
+    y: 0,
+    top: 0,
+    left: 0,
+    right: 720,
+    bottom: 380,
+    width: 720,
+    height: 380,
+    toJSON: () => ({}),
+  } as DOMRect);
+  return hitArea;
 }
 
 describe("<RaceChart>", () => {
@@ -268,6 +290,54 @@ describe("<RaceChart>", () => {
     );
 
     expect(Math.min(...radii)).toBeGreaterThanOrEqual(4);
+  });
+
+  it("dismisses the readout on a press outside the chart", () => {
+    // A touch readout has no pointerleave to end it — the pointer stops
+    // existing when the finger lifts — so without an outside-press
+    // dismissal it stays up forever. That is what a browser's device
+    // emulation shows, because it reports every pointer as touch.
+    const { container } = renderChart();
+    const hitArea = hoverable(container);
+
+    fireEvent.pointerDown(hitArea, { pointerType: "touch", clientX: 400 });
+    expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
+
+    fireEvent.pointerDown(document.body, { pointerType: "touch" });
+    expect(container.querySelector('[role="tooltip"]')).toBeNull();
+  });
+
+  it("keeps the readout up for a press inside the chart", () => {
+    const { container } = renderChart();
+    const hitArea = hoverable(container);
+
+    fireEvent.pointerDown(hitArea, { pointerType: "touch", clientX: 400 });
+    fireEvent.pointerDown(hitArea, { pointerType: "touch", clientX: 300 });
+
+    expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
+  });
+
+  it("clears the readout when a mouse leaves the plot", () => {
+    const { container } = renderChart();
+    const hitArea = hoverable(container);
+
+    fireEvent.pointerMove(hitArea, { pointerType: "mouse", clientX: 400 });
+    expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
+
+    fireEvent.pointerLeave(hitArea, { pointerType: "mouse" });
+    expect(container.querySelector('[role="tooltip"]')).toBeNull();
+  });
+
+  it("does not clear a touch readout on pointerleave", () => {
+    // pointerleave fires the instant a finger lifts, so clearing on it
+    // would set the readout and wipe it in the same gesture.
+    const { container } = renderChart();
+    const hitArea = hoverable(container);
+
+    fireEvent.pointerDown(hitArea, { pointerType: "touch", clientX: 400 });
+    fireEvent.pointerLeave(hitArea, { pointerType: "touch" });
+
+    expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
   });
 
   it("renders an empty series without throwing", () => {
