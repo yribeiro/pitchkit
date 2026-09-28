@@ -222,6 +222,34 @@ describe("<RaceChart>", () => {
     expect(screen.getByText("90'")).toBeTruthy();
   });
 
+  it("sizes the end-label gutter to the label, not to a round number", () => {
+    // 88px of gutter is invisible on a wide chart and a third of the plot
+    // on a phone. The plot should get the rest.
+    const { container } = renderChart({ width: 400, height: 200 });
+    const svg = container.querySelector("svg");
+
+    expect(svg?.getAttribute("viewBox")).toBe("0 0 400 200");
+    // Right padding 60 => the hit-area rect spans 400 - 38 - 60 = 302.
+    const hitArea = container.querySelector('rect[fill="transparent"]');
+    expect(hitArea?.getAttribute("width")).toBe("302");
+  });
+
+  it("uses a squarer box at phone width", () => {
+    // A 2:1 box at 320px leaves a plot barely taller than its own axis
+    // labels. Explicit width/height still wins outright.
+    const { container } = render(
+      <RaceChart<Shot>
+        series={[{ id: "HOME", data: HOME }]}
+        time={(s) => s.minute}
+        value={(s) => s.xg}
+      />,
+    );
+    const box = container.firstElementChild as HTMLElement;
+
+    // Unmeasured (SSR / first paint) falls back to the wide ratio.
+    expect(box.style.aspectRatio).toBe("2 / 1");
+  });
+
   it("renders an empty series without throwing", () => {
     const { container } = renderChart({ series: [{ id: "NONE", data: [] }] });
 

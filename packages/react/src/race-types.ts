@@ -66,7 +66,7 @@ export interface RaceChartProps<T> {
   /** Fixed pixel size — the opt-out from the responsive default. Provide both, or neither. */
   readonly width?: number;
   readonly height?: number;
-  /** Shape of the responsive box before measurement. @default 2 */
+  /** Shape of the responsive box. @default 2, or 1.4 below 420px wide */
   readonly aspectRatio?: number;
   readonly padding?: ChartPadding;
 

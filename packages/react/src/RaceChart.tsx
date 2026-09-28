@@ -63,17 +63,30 @@ function resolveAppearance(
 /**
  * Padding is derived from what is actually drawn, so turning the axes off
  * reclaims their gutters instead of leaving the plot floating in space.
+ *
+ * The end-label gutter is sized to what the label actually occupies — a
+ * 12px swatch, a gap, and four digits at 12px — rather than to a round
+ * number. The difference is invisible on a wide chart and a tenth of the
+ * plot on a phone.
  */
 function defaultPadding(appearance: Required<RaceAppearance>): ChartPadding {
   const showX = appearance.axis === "both" || appearance.axis === "x";
   const showY = appearance.axis === "both" || appearance.axis === "y";
   return {
     top: appearance.legend || appearance.periods ? 32 : 10,
-    right: appearance.endLabels ? 88 : 10,
+    right: appearance.endLabels ? 60 : 10,
     bottom: showX ? 30 : 10,
     left: showY ? 38 : 10,
   };
 }
+
+/**
+ * Below this width a 2:1 box leaves a plot barely taller than its own
+ * axis labels, so the chart gets a squarer one. Phone-width only — it
+ * never fires on the sizes a chart is usually read at.
+ */
+const NARROW_WIDTH = 420;
+const NARROW_ASPECT_RATIO = 1.4;
 
 /**
  * The next round tick at or above the highest total.
@@ -113,7 +126,7 @@ export function RaceChart<T>({
   maxValue: explicitMaxValue,
   width: explicitWidth,
   height: explicitHeight,
-  aspectRatio = DEFAULT_ASPECT_RATIO,
+  aspectRatio: explicitAspectRatio,
   padding: explicitPadding,
   appearance,
   tooltip,
@@ -127,6 +140,12 @@ export function RaceChart<T>({
   const padding = explicitPadding ?? defaultPadding(resolved);
 
   const isExplicitSize = explicitWidth !== undefined && explicitHeight !== undefined;
+  // Measured width drives the ratio, so the box gets taller on a phone.
+  // Width never depends on height here (the container is a block filling
+  // its parent), so this cannot oscillate with the ResizeObserver.
+  const isNarrow = (measuredSize?.width ?? explicitWidth ?? NOMINAL_WIDTH) < NARROW_WIDTH;
+  const aspectRatio =
+    explicitAspectRatio ?? (isNarrow ? NARROW_ASPECT_RATIO : DEFAULT_ASPECT_RATIO);
   const fallbackSize = {
     width: NOMINAL_WIDTH,
     height: Math.round(NOMINAL_WIDTH / aspectRatio),
