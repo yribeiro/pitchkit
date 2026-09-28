@@ -26,7 +26,6 @@ import { appearance, C, FONT, PAD_V } from "./theme";
 export function PostIntro() {
   return (
     <PostFrame
-      index={1}
       eyebrow="Open source · MIT · React + TypeScript"
       headline={
         <>
@@ -101,16 +100,15 @@ export function PostCode() {
   );
   return (
     <PostFrame
-      index={2}
       eyebrow="Match ID → chart"
       headline="A real shot map in 14 lines."
       credit="Spain's shots · Euro 2024 final · StatsBomb open data"
-      headlineSize={68}
+      headlineSize={74}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 30, width: "100%" }}>
-        <Code code={SHOT_MAP_CODE} size={18.5} title="ShotMap.tsx" />
+        <Code code={SHOT_MAP_CODE} size={19.5} title="ShotMap.tsx" />
         <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
-          <SnippetShotMap width={540} height={435} />
+          <SnippetShotMap width={600} height={480} />
           <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
             {stat(String(spain.length), "shots")}
             {stat(xg.toFixed(2), "xG")}
@@ -128,7 +126,6 @@ export function PostWinner() {
   const g = oyarzabalGoal;
   return (
     <PostFrame
-      index={3}
       eyebrow={`${g.minute + 1}' · Spain 2–1 England`}
       headline={
         <>
@@ -165,7 +162,6 @@ export function PostNetwork() {
   const nodes = spainNetwork.nodes.slice().sort((a, b) => a.jersey - b.jersey);
   return (
     <PostFrame
-      index={4}
       eyebrow="Pass network · Spain"
       headline="How Spain moved the ball."
       sub={`Euro 2024 final, first ${spainNetwork.minutes} minutes. Circle = involvement, line = completed passes between the pair.`}
@@ -203,14 +199,13 @@ export function PostNetwork() {
 export function PostPalettes() {
   return (
     <PostFrame
-      index={5}
       eyebrow="Theming"
       headline="One chart. Four looks."
       sub="Every shot from the final. Theming is CSS variables — or Tailwind classes. No JS theme objects."
       credit="StatsBomb open data · Euro 2024 final"
-      headlineSize={72}
+      headlineSize={80}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22, width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 30, width: "100%" }}>
         {PALETTES.map((p) => (
           <div
             key={p.name}
@@ -265,7 +260,6 @@ export function PostLayers() {
   const thin = { "--pitch-line-width": "1.25" } as CSSProperties;
   return (
     <PostFrame
-      index={6}
       eyebrow="What's in the box"
       headline={
         <>
@@ -278,9 +272,9 @@ export function PostLayers() {
       }
       sub="Every chart below is one component on one match — Spain v England, Euro 2024 final."
       credit="StatsBomb open data"
-      headlineSize={72}
+      headlineSize={80}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px 18px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "34px 18px" }}>
         {demos.map((d) => (
           <div key={d.name} style={{ display: "flex", flexDirection: "column", gap: 10, ...thin }}>
             <LayerDemoChart demo={d} width={306} />

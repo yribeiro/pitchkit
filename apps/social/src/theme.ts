@@ -13,9 +13,9 @@ export const REEL = { width: 1080, height: 1920, fps: 30 } as const;
  */
 export const REEL_SAFE = { top: 250, bottom: 1500, left: 60, right: 960 } as const;
 
-/** Brand palette — the emerald of the PitchKit mark, on near-black grass. */
+/** Brand palette — the emerald of the PitchKit mark, on a flat deep-emerald ground. */
 export const C = {
-  bg: "#06100b",
+  bg: "#062219",
   bgRaised: "#0b1a13",
   panel: "#0e1f17",
   border: "rgba(52, 211, 153, 0.18)",

@@ -1,28 +1,20 @@
 import type { CSSProperties, ReactNode } from "react";
 import { AbsoluteFill } from "remotion";
 import { C, FONT, pitchVars } from "../theme";
-import { Lockup } from "./Logo";
 
 /**
- * Near-black grass with a soft emerald glow at the top — the one background
- * every post and reel shares, so the grid reads as a set.
+ * One solid deep-emerald background every post and reel shares, so the grid
+ * reads as a set. Deliberately flat: the pitches carry the texture.
  */
 export function Backdrop({ children }: { children?: ReactNode }) {
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(120% 60% at 50% -10%, rgba(16,185,129,0.20), transparent 60%), ${C.bg}`,
+        background: C.bg,
         fontFamily: FONT.sans,
         color: C.text,
       }}
     >
-      {/* Faint pitch-stripe texture. */}
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 90px, transparent 90px 180px)",
-        }}
-      />
       {children}
     </AbsoluteFill>
   );
@@ -154,11 +146,9 @@ export function InstallPill({ size = 34 }: { size?: number }) {
 }
 
 /**
- * The frame every wall post sits in: lockup + series counter on top,
- * headline block, the chart, and a data-credit footer.
+ * The frame every wall post sits in: the headline block, the chart, and a data-credit footer.
  */
 export function PostFrame({
-  index,
   eyebrow,
   headline,
   sub,
@@ -166,7 +156,6 @@ export function PostFrame({
   children,
   headlineSize,
 }: {
-  index: number;
   eyebrow: ReactNode;
   headline: ReactNode;
   sub?: ReactNode;
@@ -180,19 +169,12 @@ export function PostFrame({
         style={{
           position: "absolute",
           inset: 0,
-          padding: "56px 60px 48px",
+          padding: "72px 60px 48px",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Lockup size={40} />
-          <span style={{ fontFamily: FONT.mono, fontSize: 22, color: C.faint }}>
-            {String(index).padStart(2, "0")} / 06
-          </span>
-        </div>
-
-        <div style={{ marginTop: 52, display: "flex", flexDirection: "column", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <Eyebrow>{eyebrow}</Eyebrow>
           <Headline size={headlineSize}>{headline}</Headline>
           {sub && <Sub>{sub}</Sub>}
