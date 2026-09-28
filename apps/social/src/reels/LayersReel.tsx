@@ -24,6 +24,7 @@ export const LAYERS_DURATION = PALETTES_END + 90;
 const PITCH_WIDTH = 680;
 const PITCH_TOP = 440;
 const PITCH_LEFT = (1080 - PITCH_WIDTH) / 2;
+const CARD_PAD = 26;
 
 /** Fades a beat in over FADE frames and holds; the next beat covers it. */
 function Beat({ children }: { children: ReactNode }) {
@@ -121,50 +122,52 @@ export function LayersReel() {
           durationInFrames={PALETTE_BEAT + FADE}
         >
           <Beat>
-            <AbsoluteFill style={{ background: palette.card }} />
+            <Backdrop />
             <div
               style={{
                 position: "absolute",
-                top: 110,
+                top: 250,
                 left: 60,
-                fontSize: 30,
-                fontWeight: 700,
-                color: palette.muted,
-                fontFamily: FONT.mono,
+                right: 100,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
               }}
             >
-              theme {String(i + 1).padStart(2, "0")} / 04
-            </div>
-            <div style={{ position: "absolute", top: 250, left: 60, right: 100 }}>
-              <div
-                style={{
-                  fontSize: 88,
-                  fontWeight: 800,
-                  letterSpacing: "-0.04em",
-                  color: palette.text,
-                }}
-              >
+              <Eyebrow>Theme {String(i + 1).padStart(2, "0")} / 04</Eyebrow>
+              <div style={{ fontSize: 80, fontWeight: 800, letterSpacing: "-0.04em" }}>
                 {palette.name}
               </div>
-              <div style={{ marginTop: 8, fontSize: 38, fontWeight: 600, color: palette.muted }}>
+              <div style={{ fontSize: 38, fontWeight: 600, color: C.muted }}>
                 Just CSS variables.
               </div>
             </div>
-            <div style={{ position: "absolute", top: PITCH_TOP, left: PITCH_LEFT }}>
+            {/* The palette as a card on the shared dark background, like post 05. */}
+            <div
+              style={{
+                position: "absolute",
+                top: PITCH_TOP + 20,
+                left: PITCH_LEFT,
+                width: PITCH_WIDTH,
+                boxSizing: "border-box",
+                padding: CARD_PAD,
+                borderRadius: 28,
+                background: palette.card,
+              }}
+            >
               <PaletteShotMap
                 palette={palette}
-                width={PITCH_WIDTH}
+                width={PITCH_WIDTH - CARD_PAD * 2}
                 orientation="vertical"
-                scale={1.1}
+                scale={1}
               />
             </div>
           </Beat>
         </Sequence>
       ))}
 
-      {/* Above the beats (each paints its own backdrop), until the palettes
-          take over with their own light/dark cards. */}
-      <Sequence durationInFrames={LAYERS_END + FADE}>
+      {/* Above the beats, each of which paints its own backdrop. */}
+      <Sequence durationInFrames={PALETTES_END + FADE}>
         <div style={{ position: "absolute", top: 110, left: 60 }}>
           <Lockup size={46} />
         </div>
