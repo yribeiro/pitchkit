@@ -29,5 +29,10 @@ export type { GoalAngleProps } from "./GoalAngle.js";
 export { Flow } from "./Flow.js";
 export type { FlowProps } from "./Flow.js";
 
+export { RaceChart } from "./RaceChart.js";
+export type { RaceChartProps, RaceSeries, RaceAppearance, RaceHoverRow } from "./race-types.js";
+
 export { usePitch } from "./use-pitch.js";
+export { useRaceChart } from "./use-race-chart.js";
+export type { RaceChartContextValue, ResolvedRaceSeries } from "./race-context.js";
 export type { TooltipState } from "./context.js";
