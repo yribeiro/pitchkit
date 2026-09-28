@@ -2,8 +2,8 @@ import type { TooltipState } from "./context.js";
 
 /**
  * Positioned absolutely within `<Pitch>`'s wrapper, offset above the
- * hovered mark. Desktop hover only for this first pass — the PRD's full
- * touch-vs-hover interaction model (§8.6) is deferred scope.
+ * hovered mark. Desktop hover only for this first pass — the touch-vs-hover
+ * interaction model (docs/architecture.md#responsive-and-multi-device) is deferred scope.
  */
 export function TooltipOverlay({ tooltip }: { tooltip: TooltipState }) {
   return (

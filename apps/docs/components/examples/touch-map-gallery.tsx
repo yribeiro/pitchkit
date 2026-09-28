@@ -53,7 +53,7 @@ const FALLBACK_WIDTH = 480;
  * `colorMin`.
  *
  * Deliberately no scatter layer on top: 700+ SVG circles is exactly the
- * per-element DOM cost the canvas path exists to avoid (PRD §8.1), so
+ * per-element DOM cost the canvas path exists to avoid (docs/architecture.md#rendering-svg-and-canvas), so
  * drawing them here would undercut the point the card is making.
  */
 export function TouchMapGallery() {

@@ -21,7 +21,7 @@ export interface DensityCanvasProps {
  *
  * Unlike the SVG layer components, none of these can be re-emitted as JSX
  * — Canvas has no declarative JSX equivalent, and dense raster data is
- * exactly the case core's hybrid SVG+Canvas architecture (PRD §8.1)
+ * exactly the case core's hybrid SVG+Canvas architecture (docs/architecture.md#rendering-svg-and-canvas)
  * reserves Canvas for. The `<canvas>` itself renders server-side (empty),
  * but its pixels only appear after the client effect runs — a documented
  * client-only boundary.

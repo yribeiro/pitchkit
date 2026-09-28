@@ -6,7 +6,7 @@ coverage
 *.tsbuildinfo
 .DS_Store
 *.log
-.claude/settings.local.json
+.claude/
 .env
 .env.local
 .env.*.local

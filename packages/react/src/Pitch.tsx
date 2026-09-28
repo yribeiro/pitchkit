@@ -54,8 +54,8 @@ export interface PitchProps {
 // container — SSR included, since there's no DOM to measure server-side.
 // Picking a fallback with the *correct aspect ratio* means the SVG content
 // is never distorted, even though its absolute pixel scale may be off
-// until the first client measurement (PRD §8.6's "explicit aspect ratio on
-// first paint, ResizeObserver refine after hydration").
+// until the first client measurement ("explicit aspect ratio on first
+// paint, ResizeObserver refine after hydration": docs/architecture.md#responsive-and-multi-device).
 const NOMINAL_WIDTH = 600;
 
 /**

@@ -4,7 +4,7 @@ import type { Viewport } from "../transform/types.js";
 /**
  * A visual property of a layer: either a static value applied to every
  * datum, or a function of the datum (and its index) computing it per-mark.
- * Mirrors the PRD's `x={d => d.location[0]}` ergonomics (§8.7) — every
+ * The `x={d => d.location[0]}` accessor ergonomics (docs/architecture.md#theming-and-styling) — every
  * visual prop accepts either form via the same prop name.
  */
 export type Accessor<T, V> = V | ((d: T, i: number) => V);
@@ -24,7 +24,7 @@ export interface ScatterLayer<T = unknown> {
   readonly fillOpacity?: Accessor<T, number>;
   readonly stroke?: Accessor<T, string>;
   readonly strokeWidth?: Accessor<T, number>;
-  /** Applied as every `<circle>`'s `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every `<circle>`'s `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -37,7 +37,7 @@ export interface AnnotateLayer<T = unknown> {
   readonly label: Accessor<T, string>;
   readonly offsetX?: Accessor<T, number>;
   readonly offsetY?: Accessor<T, number>;
-  /** Applied as the `<text>` element's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as the `<text>` element's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -57,7 +57,7 @@ export interface ArrowsLayer<T = unknown> {
   readonly strokeOpacity?: Accessor<T, number>;
   /** Arrowhead size in pixels. */
   readonly headSize?: Accessor<T, number>;
-  /** Applied as both the shaft's and arrowhead's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as both the shaft's and arrowhead's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -79,7 +79,7 @@ export interface CometLayer<T = unknown> {
   readonly endWidth?: Accessor<T, number>;
   /** Fades opacity from 0 at the start to 1 at the end via a linear gradient. */
   readonly gradient?: boolean;
-  /** Applied as every `<polygon>`'s `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every `<polygon>`'s `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -87,7 +87,7 @@ export interface CometLayer<T = unknown> {
  * Binned aggregate marks: divides the pitch into a `binsX` x `binsY` grid
  * and colors each cell by point count (default) or, if `weight` is given,
  * the sum of that weight per cell (e.g. total xG per zone). Rendered via
- * the Canvas path (PRD §8.1) — SVG's per-element DOM cost doesn't scale to
+ * the Canvas path (docs/architecture.md#rendering-svg-and-canvas) — SVG's per-element DOM cost doesn't scale to
  * dense raster data the way a handful of `fillRect` calls does.
  */
 export interface HeatmapLayer<T = unknown> {
@@ -226,7 +226,7 @@ export interface PolygonLayer<T = unknown> {
   readonly fillOpacity?: Accessor<T, number>;
   readonly stroke?: Accessor<T, string>;
   readonly strokeWidth?: Accessor<T, number>;
-  /** Applied as every polygon's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every polygon's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -240,7 +240,7 @@ export interface ConvexHullLayer<T = unknown> {
   readonly fillOpacity?: number;
   readonly stroke?: string;
   readonly strokeWidth?: number;
-  /** Applied as the resulting polygon's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as the resulting polygon's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -254,7 +254,7 @@ export interface VoronoiLayer<T = unknown> {
   readonly fillOpacity?: Accessor<T, number>;
   readonly stroke?: Accessor<T, string>;
   readonly strokeWidth?: Accessor<T, number>;
-  /** Applied as every cell's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every cell's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -270,7 +270,7 @@ export interface GoalAngleLayer<T = unknown> {
   readonly fillOpacity?: Accessor<T, number>;
   readonly stroke?: Accessor<T, string>;
   readonly strokeWidth?: Accessor<T, number>;
-  /** Applied as every wedge's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every wedge's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -296,7 +296,7 @@ export interface FlowLayer<T = unknown> {
   readonly strokeWidthMin?: number;
   /** Arrow stroke width at the highest bin count. */
   readonly strokeWidthMax?: number;
-  /** Applied as every arrow's `class` attribute; styling escape hatch (PRD §8.7). */
+  /** Applied as every arrow's `class` attribute; styling escape hatch (docs/architecture.md#theming-and-styling). */
   readonly className?: string;
 }
 
@@ -307,8 +307,8 @@ export type PitchStripes = boolean | number;
 export type GoalType = "line" | "box";
 
 /**
- * Non-coordinate visual treatment of the pitch surface (PRD §8.7's
- * "grass/stripes, line colour/width/alpha, goal types" styling knobs).
+ * Non-coordinate visual treatment of the pitch surface (the stripes and goal-type
+ * styling knobs; see docs/architecture.md#theming-and-styling).
  * Deliberately separate from `PitchDimensions` (a fact about the provider's
  * coordinate system) and from CSS variables (the colours themselves) — this
  * only toggles which shapes get painted.
@@ -337,7 +337,7 @@ export interface PitchAppearance {
 /**
  * A Scene is the renderer-independent description of one pitch render:
  * which provider coordinate system, how it's displayed, and what's drawn
- * on it (PRD §8.3). Pure data — layers don't own DOM.
+ * on it (docs/architecture.md#scene-and-layers). Pure data — layers don't own DOM.
  */
 export interface Scene {
   readonly dimensions: PitchDimensions;

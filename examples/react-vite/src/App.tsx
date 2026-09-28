@@ -256,7 +256,7 @@ export function App() {
           fontFamily: "system-ui, sans-serif",
           padding: "2rem",
           // Theming demo: CSS variables cascade into the Pitch's SVG
-          // presentation attributes at paint time (PRD §8.7) — no re-render
+          // presentation attributes at paint time (docs/architecture.md#theming-and-styling) — no re-render
           // needed for these, unlike stripes/goalType above.
           "--pitch-surface": surface,
           "--pitch-stripe": hexToRgba(stripeColor, stripeOpacity),

@@ -26,7 +26,7 @@ export interface PitchMarkings {
 
 /**
  * Encodes a provider's coordinate system: extent, origin corner, y-axis direction,
- * and whether coordinates are normalized (e.g. Opta's 0-100 scale), per PRD §8.2.
+ * and whether coordinates are normalized (e.g. Opta's 0-100 scale), per docs/architecture.md#coordinates-and-pitch-types.
  *
  * Display orientation (horizontal/vertical) is deliberately NOT part of this model —
  * it's a Viewport/display concern, not a fact about the provider's coordinate system.
