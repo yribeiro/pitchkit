@@ -54,7 +54,7 @@ export interface RaceChartProps<T> {
   /** The quantity that accumulates. For an xG race, the shot's xG. */
   readonly value: Accessor<T, number>;
   /** Drawn with the larger ringed marker. For an xG race, pass `isGoal`. */
-  readonly emphasize?: Accessor<T, boolean>;
+  readonly emphasise?: Accessor<T, boolean>;
   /** Given, period-boundary rules are derived from the data rather than assumed. */
   readonly period?: Accessor<T, number>;
 

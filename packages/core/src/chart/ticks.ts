@@ -22,10 +22,10 @@ export function niceTicks(min: number, max: number, count = 5): number[] {
 
   const rawStep = (max - min) / Math.max(count, 1);
   const magnitude = 10 ** Math.floor(Math.log10(rawStep));
-  const normalized = rawStep / magnitude;
-  // `magnitude` is 10^floor(log10(rawStep)), so `normalized` is always in
+  const normalised = rawStep / magnitude;
+  // `magnitude` is 10^floor(log10(rawStep)), so `normalised` is always in
   // [1, 10) and the list's trailing 10 always matches — no fallback needed.
-  const multiple = STEP_MULTIPLES.find((m) => normalized <= m) as number;
+  const multiple = STEP_MULTIPLES.find((m) => normalised <= m) as number;
   const step = multiple * magnitude;
 
   const ticks: number[] = [];

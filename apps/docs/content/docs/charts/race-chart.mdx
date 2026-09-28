@@ -23,7 +23,7 @@ It is a root, not a layer. There is no `<Pitch>` involved and no `type` prop —
   ]}
   time={(s) => s.minute}
   value={(s) => s.xg}
-  emphasize={(s) => s.goal}
+  emphasise={(s) => s.goal}
   period={(s) => s.period}
 />
 ```
@@ -43,13 +43,27 @@ stopping at the last — a chart that begins at 11' and ends at 86' misreads as 
 
 ## Goals, and anything else worth marking
 
-`emphasize` draws the larger ringed marker. For an xG race that is `isGoal`:
+`emphasise` is an accessor like any other, so it can pick out whatever matters in your data. It
+draws the larger ringed marker on the events it returns `true` for:
 
 ```tsx
-<RaceChart ... emphasize={isGoal} appearance={{ markers: "all" }} />
+<RaceChart ... emphasise={isGoal} />
 ```
 
-`appearance.markers` is `"emphasis"` (default), `"all"` to dot every event, or `"none"`.
+It is not a goal flag — it is "mark this one". Some things it is good for:
+
+| Series            | `emphasise`                                   |
+| ----------------- | --------------------------------------------- |
+| Cumulative xG     | `isGoal` — the canonical case                 |
+| Cumulative xG     | `(s) => s.xg > 0.3` to call out big chances   |
+| Cumulative shots  | `isOnTarget`                                  |
+| Cumulative passes | `isKeyPass` or `isAssist`                     |
+| Cumulative xT     | the action that started the move that scored  |
+| Any series        | one player's contributions inside a team line |
+
+Leave it off and no event is emphasised. `appearance.markers` decides how much else is drawn:
+`"emphasis"` (default) dots only the emphasised events, `"all"` dots every one, `"none"` dots
+nothing.
 
 Goals take their **team's** colour rather than `--pitch-marker-goal`. On a pitch, "goal" is a
 property of a shot and a distinct colour reads well; here a goal already belongs to a team, so shape

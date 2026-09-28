@@ -29,7 +29,7 @@ function renderChart(props: Partial<Parameters<typeof RaceChart<Shot>>[0]> = {})
       ]}
       time={(s) => s.minute}
       value={(s) => s.xg}
-      emphasize={(s) => s.goal === true}
+      emphasise={(s) => s.goal === true}
       period={(s) => s.period as number}
       width={720}
       height={380}
@@ -338,6 +338,48 @@ describe("<RaceChart>", () => {
     fireEvent.pointerLeave(hitArea, { pointerType: "touch" });
 
     expect(container.querySelector('[role="tooltip"]')).not.toBeNull();
+  });
+
+  it("paints every marker above every line", () => {
+    // Drawn per-series, the second team's line runs straight over the
+    // first team's goal markers — a mark that says "a goal happened here"
+    // is never something a line should cover.
+    const { container } = renderChart({ appearance: { markers: "all" } });
+    const painted = Array.from(container.querySelectorAll("[data-pitchkit-part]")).map((el) =>
+      el.getAttribute("data-pitchkit-part"),
+    );
+
+    const lastLine = painted.lastIndexOf("race-line");
+    const firstMarker = painted.findIndex(
+      (part) => part === "race-marker" || part === "race-emphasis",
+    );
+
+    expect(lastLine).toBeGreaterThan(-1);
+    expect(firstMarker).toBeGreaterThan(lastLine);
+  });
+
+  it("paints annotation children above every line and marker", () => {
+    const { container } = render(
+      <RaceChart<Shot>
+        series={[
+          { id: "HOME", data: HOME },
+          { id: "AWAY", data: AWAY },
+        ]}
+        time={(s) => s.minute}
+        value={(s) => s.xg}
+        emphasise={(s) => s.goal === true}
+        width={720}
+        height={380}
+      >
+        <rect data-pitchkit-part="annotation" x={10} y={10} width={4} height={4} />
+      </RaceChart>,
+    );
+    const painted = Array.from(container.querySelectorAll("[data-pitchkit-part]")).map((el) =>
+      el.getAttribute("data-pitchkit-part"),
+    );
+
+    expect(painted.indexOf("annotation")).toBeGreaterThan(painted.lastIndexOf("race-line"));
+    expect(painted.indexOf("annotation")).toBeGreaterThan(painted.lastIndexOf("race-emphasis"));
   });
 
   it("renders an empty series without throwing", () => {

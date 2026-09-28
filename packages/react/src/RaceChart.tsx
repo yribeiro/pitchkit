@@ -120,7 +120,7 @@ export function RaceChart<T>({
   series,
   time,
   value,
-  emphasize,
+  emphasise,
   period,
   endTime: explicitEndTime,
   maxValue: explicitMaxValue,
@@ -163,7 +163,7 @@ export function RaceChart<T>({
       const events: RaceEvent[] = s.data.map((d, i) => ({
         time: resolve(time, d, i),
         value: resolve(value, d, i),
-        emphasis: emphasize === undefined ? false : resolve(emphasize, d, i),
+        emphasis: emphasise === undefined ? false : resolve(emphasise, d, i),
       }));
       return { series: s, ...computeCumulativeSeries(events) };
     });
@@ -196,7 +196,7 @@ export function RaceChart<T>({
     }
 
     return { accumulated, latest, highestTotal, breaks };
-  }, [series, time, value, emphasize, period]);
+  }, [series, time, value, emphasise, period]);
 
   const endTime = explicitEndTime ?? resolveEndTime(computed.latest);
   const maxValue = explicitMaxValue ?? resolveMaxValue(computed.highestTotal);
@@ -217,6 +217,17 @@ export function RaceChart<T>({
     className: entry.series.className,
     points: entry.points,
     total: entry.total,
+  }));
+
+  // Computed once and consumed by both render passes below, so the line
+  // and the markers can never be drawn from different numbers.
+  const renderedSeries = resolvedSeries.map((s) => ({
+    ...s,
+    pixels: [
+      [scaleX(0), scaleY(0)],
+      ...s.points.map((p): Point => [scaleX(p.time), scaleY(p.cumulative)]),
+      [scaleX(endTime), scaleY(s.total)],
+    ] as Point[],
   }));
 
   const contextValue = {
@@ -319,44 +330,48 @@ export function RaceChart<T>({
           )}
           {resolved.legend && <RaceLegend colors={SERIES_COLORS} />}
 
-          {resolvedSeries.map((s) => {
-            const pixels: Point[] = [
-              [scaleX(0), scaleY(0)],
-              ...s.points.map((p): Point => [scaleX(p.time), scaleY(p.cumulative)]),
-              [scaleX(endTime), scaleY(s.total)],
-            ];
-            // `color` is undefined exactly when the series carries a
-            // className and no explicit colour, which is the D9 contract:
-            // the themed default is an inline style and would beat the
-            // class at the same property, so it stands down entirely.
-            // The className goes on the series group rather than each
-            // element, so one `stroke-emerald-400` reaches the line, the
-            // area and the markers through SVG's own inheritance instead
-            // of needing a class per part.
-            const color = s.color;
-
+          {/*
+            Drawn in two passes, because a chart with two series would
+            otherwise let the second team's line run straight over the
+            first team's goal markers. Lines and fills first, then every
+            marker and label on top of all of them, then the annotation
+            slot above everything. A mark that says "a goal happened here"
+            is never something a line should cover.
+          */}
+          {series.map((s, i) => {
+            const rendered = renderedSeries[i];
+            if (rendered === undefined) return null;
             return (
-              <g key={s.id} data-pitchkit-series={s.id} className={s.className}>
+              <g key={`line-${s.id}`} data-pitchkit-series={s.id} className={rendered.className}>
                 {resolved.area && (
                   <path
-                    d={stepAreaPath(pixels, scaleY(0))}
+                    d={stepAreaPath(rendered.pixels, scaleY(0))}
                     data-pitchkit-part="race-area"
-                    style={{ fill: color, fillOpacity: 0.1, stroke: "none" }}
+                    style={{ fill: rendered.color, fillOpacity: 0.1, stroke: "none" }}
                   />
                 )}
                 <path
-                  d={stepPath(pixels)}
+                  d={stepPath(rendered.pixels)}
                   data-pitchkit-part="race-line"
                   style={{
                     fill: "none",
-                    stroke: color,
+                    stroke: rendered.color,
                     strokeWidth: 2,
                     strokeLinejoin: "round",
                     strokeLinecap: "round",
                   }}
                 />
+              </g>
+            );
+          })}
+
+          {series.map((s, i) => {
+            const rendered = renderedSeries[i];
+            if (rendered === undefined) return null;
+            return (
+              <g key={`marks-${s.id}`} data-pitchkit-series={s.id} className={rendered.className}>
                 {resolved.markers !== "none" &&
-                  s.points
+                  rendered.points
                     .filter((p) => resolved.markers === "all" || p.emphasis)
                     .map((p) => (
                       <circle
@@ -366,7 +381,7 @@ export function RaceChart<T>({
                         r={p.emphasis ? 5 : 4}
                         data-pitchkit-part={p.emphasis ? "race-emphasis" : "race-marker"}
                         style={{
-                          fill: color,
+                          fill: rendered.color,
                           stroke: CHART_SURFACE,
                           strokeWidth: p.emphasis ? 2 : 1.5,
                         }}
@@ -376,18 +391,18 @@ export function RaceChart<T>({
                   <g data-pitchkit-part="race-label">
                     <rect
                       x={frame.x1 + 8}
-                      y={scaleY(s.total) - 1.25}
+                      y={scaleY(rendered.total) - 1.25}
                       width={12}
                       height={2.5}
                       rx={1.25}
-                      style={{ fill: color }}
+                      style={{ fill: rendered.color }}
                     />
                     <text
                       x={frame.x1 + 26}
-                      y={scaleY(s.total) + 4}
+                      y={scaleY(rendered.total) + 4}
                       style={{ fill: CHART_TEXT, fontSize: 12, fontWeight: 500 }}
                     >
-                      {s.total.toFixed(2)}
+                      {rendered.total.toFixed(2)}
                     </text>
                   </g>
                 )}

@@ -88,7 +88,7 @@ describe("SSR (renderToString)", () => {
         ]}
         time={(s) => s.minute}
         value={(s) => s.xg}
-        emphasize={(s) => s.goal === true}
+        emphasise={(s) => s.goal === true}
         width={720}
         height={380}
       />,

@@ -67,7 +67,7 @@ in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 | `series`           | `RaceSeries<T>[]`           | `{ id, label?, data, color?, className? }`. `id` is what `valueAt` takes.                   |
 | `time`             | `Accessor<T, number>`       | Match minute; fractional is fine.                                                           |
 | `value`            | `Accessor<T, number>`       | The quantity that accumulates.                                                              |
-| `emphasize`        | `Accessor<T, boolean>`      | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
+| `emphasise`        | `Accessor<T, boolean>`      | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
 | `period`           | `Accessor<T, number>`       | Given, period breaks are derived from the data.                                             |
 | `endTime`          | `number`                    | Default `max(90, ceil(latest event))`.                                                      |
 | `maxValue`         | `number`                    | Default: the next round tick at or above the highest total.                                 |

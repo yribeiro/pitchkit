@@ -103,7 +103,7 @@ export function XgRaceGallery() {
         ]}
         time={(s) => s.minute}
         value={(s) => s.xg}
-        emphasize={(s) => s.goal}
+        emphasise={(s) => s.goal}
         period={(s) => s.period}
       >
         <Bookings />

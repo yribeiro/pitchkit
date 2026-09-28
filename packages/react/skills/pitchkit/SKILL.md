@@ -375,7 +375,7 @@ export function XgRace() {
       ]}
       time={(s) => s.minute}
       value={(s) => s.xg}
-      emphasize={(s) => s.goal}
+      emphasise={(s) => s.goal}
       period={(s) => s.period}
       appearance={{ area: false, markers: "emphasis" }}
     />
@@ -385,8 +385,8 @@ export function XgRace() {
 
 Four things that are easy to get wrong:
 
-1. **`emphasize`, not `isGoal`.** The prop is generic because the accumulating value need
-   not be xG — pass `emphasize={isGoal}` for an xG race, or anything else for a
+1. **`emphasise`, not `isGoal`.** The prop is generic because the accumulating value need
+   not be xG — pass `emphasise={isGoal}` for an xG race, or anything else for a
    cumulative-shots or cumulative-xT race.
 2. **Filter out penalty shootouts.** StatsBomb period 5 is the shootout and its penalties
    carry xG like any other shot. On a knockout match `shots(events)` without a

@@ -75,7 +75,7 @@ export function RaceChartStatsbombBasic() {
         }))}
         time={(s) => s.minute + s.second / 60}
         value={(s) => s.shot.statsbomb_xg}
-        emphasize={isGoal}
+        emphasise={isGoal}
         period={(s) => s.period}
         tooltip={(rows, minute) => (
           <>

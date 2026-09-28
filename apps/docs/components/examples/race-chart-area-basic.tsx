@@ -27,7 +27,7 @@ export function RaceChartAreaBasic() {
       series={[{ id: "Spain", label: "Spain", data: shots }]}
       time={(s) => s.minute}
       value={(s) => s.xg}
-      emphasize={(s) => s.goal}
+      emphasise={(s) => s.goal}
       appearance={{ area: true, markers: "all" }}
     />
   );

@@ -100,7 +100,7 @@ export function RacePanel() {
           series={series}
           time={(s) => s.minute + s.second / 60}
           value={(s) => s.xg}
-          emphasize={(s) => s.goal}
+          emphasise={(s) => s.goal}
           period={(s) => s.period}
           appearance={{ area, markers }}
         >

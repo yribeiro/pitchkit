@@ -39,8 +39,8 @@ describe("niceTicks", () => {
     expect(niceTicks(0, Infinity)).toEqual([]);
   });
 
-  it("falls back to the decade step when the normalized step exceeds 5", () => {
-    // rawStep normalizes above 5, so the 1-2-5 search misses and the
+  it("falls back to the decade step when the normalised step exceeds 5", () => {
+    // rawStep normalises above 5, so the 1-2-5 search misses and the
     // multiple falls through to 10.
     expect(niceTicks(0, 35, 5)).toEqual([0, 10, 20, 30]);
   });
