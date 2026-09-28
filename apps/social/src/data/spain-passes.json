@@ -1,0 +1,2225 @@
+[
+  { "x": 6.9, "y": 39.6, "endX": 9.1, "endY": 57.2, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 8.9,
+    "y": 57.2,
+    "endX": 20.6,
+    "endY": 75.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 28.6,
+    "y": 76.4,
+    "endX": 50.2,
+    "endY": 68.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 61.9,
+    "y": 67.1,
+    "endX": 65.1,
+    "endY": 66.9,
+    "complete": false,
+    "player": "Álvaro Morata"
+  },
+  { "x": 72.5, "y": 80, "endX": 70.4, "endY": 73.3, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 70.4, "y": 73.3, "endX": 71, "endY": 78.3, "complete": true, "player": "Daniel Olmo" },
+  { "x": 64.5, "y": 77.5, "endX": 56.8, "endY": 75.5, "complete": true, "player": "Daniel Olmo" },
+  { "x": 47.1, "y": 76.6, "endX": 26.1, "endY": 60.7, "complete": true, "player": "Rodri" },
+  {
+    "x": 23.3,
+    "y": 60.1,
+    "endX": 27.4,
+    "endY": 33.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 42.2,
+    "y": 24.9,
+    "endX": 35.6,
+    "endY": 55.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 42.9,
+    "y": 54.1,
+    "endX": 43.5,
+    "endY": 25.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 61.7,
+    "y": 20.2,
+    "endX": 97.1,
+    "endY": 71.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 35.8,
+    "y": 75.1,
+    "endX": 29.4,
+    "endY": 67.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 29, "y": 67.8, "endX": 34.9, "endY": 76, "complete": true, "player": "Robin Le Normand" },
+  { "x": 41.1, "y": 80, "endX": 58.6, "endY": 74.2, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 58.4, "y": 74.2, "endX": 72, "endY": 71.1, "complete": false, "player": "Álvaro Morata" },
+  {
+    "x": 29.2,
+    "y": 64.7,
+    "endX": 3.8,
+    "endY": 45.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 3.2, "y": 46.9, "endX": 10, "endY": 68.1, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 10,
+    "y": 68.1,
+    "endX": 22.6,
+    "endY": 76.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 22.6,
+    "y": 76.6,
+    "endX": 11.9,
+    "endY": 67.3,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 12, "y": 63.8, "endX": 3, "endY": 41.6, "complete": true, "player": "Robin Le Normand" },
+  { "x": 13.5, "y": 37.3, "endX": 16.6, "endY": 56.1, "complete": true, "player": "Unai Simón" },
+  { "x": 36.7, "y": 66, "endX": 8.7, "endY": 56.5, "complete": true, "player": "Robin Le Normand" },
+  { "x": 10.2, "y": 50.2, "endX": 22.1, "endY": 27.1, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 32.5,
+    "y": 23.7,
+    "endX": 30.5,
+    "endY": 51.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 33.7,
+    "y": 54.4,
+    "endX": 51.1,
+    "endY": 77.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 54.5,
+    "y": 76.4,
+    "endX": 72.4,
+    "endY": 58.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 69.2,
+    "y": 69.5,
+    "endX": 72.7,
+    "endY": 69.8,
+    "complete": false,
+    "player": "Álvaro Morata"
+  },
+  {
+    "x": 42.3,
+    "y": 37.7,
+    "endX": 47.1,
+    "endY": 25.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 52.6,
+    "y": 21.8,
+    "endX": 51.5,
+    "endY": 34.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 49, "y": 34, "endX": 50.4, "endY": 55.6, "complete": true, "player": "Rodri" },
+  {
+    "x": 52.1,
+    "y": 65.6,
+    "endX": 71.2,
+    "endY": 76.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 72, "y": 76.4, "endX": 71.2, "endY": 68.1, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 70, "y": 64.4, "endX": 52.8, "endY": 58.5, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 50,
+    "y": 57.5,
+    "endX": 49.3,
+    "endY": 46.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 54.6,
+    "y": 29.2,
+    "endX": 55.5,
+    "endY": 19.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 55.5, "y": 19.6, "endX": 44, "endY": 25.7, "complete": true, "player": "Marc Cucurella" },
+  {
+    "x": 42.9,
+    "y": 25.3,
+    "endX": 48.6,
+    "endY": 55.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 63.2,
+    "y": 58.5,
+    "endX": 79.1,
+    "endY": 53.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 79.1, "y": 53.8, "endX": 80.4, "endY": 66.3, "complete": true, "player": "Álvaro Morata" },
+  { "x": 91.4, "y": 68.5, "endX": 111.6, "endY": 39.3, "complete": false, "player": "Daniel Olmo" },
+  {
+    "x": 100.7,
+    "y": 10.4,
+    "endX": 111.5,
+    "endY": 35.3,
+    "complete": false,
+    "player": "Nico Williams"
+  },
+  { "x": 120, "y": 0.1, "endX": 116.3, "endY": 34.4, "complete": false, "player": "Nico Williams" },
+  {
+    "x": 77.5,
+    "y": 35.1,
+    "endX": 97.3,
+    "endY": 34.7,
+    "complete": false,
+    "player": "Marc Cucurella"
+  },
+  { "x": 63.7, "y": 10.8, "endX": 78.2, "endY": 26.5, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 77.1, "y": 24.1, "endX": 63.4, "endY": 22.8, "complete": true, "player": "Álvaro Morata" },
+  { "x": 63.4, "y": 22.8, "endX": 55.3, "endY": 47.1, "complete": true, "player": "Rodri" },
+  { "x": 55.9, "y": 53, "endX": 69, "endY": 66.9, "complete": true, "player": "Robin Le Normand" },
+  { "x": 69, "y": 66.9, "endX": 57, "endY": 36.5, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 77.3,
+    "y": 27.2,
+    "endX": 91.6,
+    "endY": 23.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 92.4, "y": 23.2, "endX": 112.6, "endY": 10, "complete": true, "player": "Nico Williams" },
+  { "x": 110.4, "y": 8.4, "endX": 85.7, "endY": 6.5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 86.3, "y": 6.5, "endX": 101, "endY": 7.5, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 99.8, "y": 7.3, "endX": 84.1, "endY": 7.5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 84.6, "y": 7.8, "endX": 70.4, "endY": 14.1, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 76, "y": 15.5, "endX": 79.5, "endY": 5.8, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 83.7, "y": 15.7, "endX": 85.7, "endY": 5.5, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 84.9, "y": 6, "endX": 62.3, "endY": 13.3, "complete": true, "player": "Marc Cucurella" },
+  {
+    "x": 61.2,
+    "y": 15.1,
+    "endX": 62.3,
+    "endY": 48.3,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 76,
+    "y": 63.6,
+    "endX": 87.3,
+    "endY": 77.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 87.3, "y": 77.9, "endX": 70.4, "endY": 66, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 63.2,
+    "y": 63.6,
+    "endX": 63.4,
+    "endY": 53.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 63.4, "y": 53.4, "endX": 63.4, "endY": 64, "complete": true, "player": "Rodri" },
+  {
+    "x": 75.9,
+    "y": 66.5,
+    "endX": 77.5,
+    "endY": 77.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 77.5,
+    "y": 77.3,
+    "endX": 63.2,
+    "endY": 67.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 63, "y": 60.1, "endX": 57, "endY": 35.3, "complete": true, "player": "Rodri" },
+  { "x": 74, "y": 24.3, "endX": 71.6, "endY": 12.4, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 71.6, "y": 12.4, "endX": 82.4, "endY": 5.1, "complete": true, "player": "Marc Cucurella" },
+  { "x": 92.2, "y": 5.7, "endX": 77.3, "endY": 7.5, "complete": true, "player": "Nico Williams" },
+  { "x": 77.3, "y": 7.5, "endX": 63.2, "endY": 17.9, "complete": true, "player": "Marc Cucurella" },
+  {
+    "x": 63.5,
+    "y": 23.4,
+    "endX": 64.7,
+    "endY": 48.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 77.1,
+    "y": 57.7,
+    "endX": 85.5,
+    "endY": 59.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 85.9, "y": 59.4, "endX": 76.9, "endY": 62, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 75.3,
+    "y": 64,
+    "endX": 89.4,
+    "endY": 76.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 89.9, "y": 77.5, "endX": 82, "endY": 72.2, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 81.2, "y": 71.6, "endX": 63.4, "endY": 63.8, "complete": true, "player": "Lamine Yamal" },
+  { "x": 63, "y": 59.2, "endX": 62.7, "endY": 38, "complete": true, "player": "Robin Le Normand" },
+  {
+    "x": 62.7,
+    "y": 36.7,
+    "endX": 63.9,
+    "endY": 57.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 70,
+    "y": 64.9,
+    "endX": 81.2,
+    "endY": 76.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 83.1,
+    "y": 75.1,
+    "endX": 63.9,
+    "endY": 69.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 63.4,
+    "y": 64.7,
+    "endX": 65.3,
+    "endY": 33.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 71.8,
+    "y": 28.3,
+    "endX": 93.4,
+    "endY": 6.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 97.7,
+    "y": 10.6,
+    "endX": 106.5,
+    "endY": 21.2,
+    "complete": true,
+    "player": "Nico Williams"
+  },
+  {
+    "x": 106.5,
+    "y": 21.4,
+    "endX": 100.5,
+    "endY": 22.6,
+    "complete": false,
+    "player": "Fabián Ruiz"
+  },
+  { "x": 91.8, "y": 26.1, "endX": 99.2, "endY": 23.9, "complete": true, "player": "Rodri" },
+  {
+    "x": 99.2,
+    "y": 23.9,
+    "endX": 100.7,
+    "endY": 30.5,
+    "complete": true,
+    "player": "Nico Williams"
+  },
+  { "x": 99.3, "y": 31.8, "endX": 110.4, "endY": 26.4, "complete": false, "player": "Daniel Olmo" },
+  {
+    "x": 63.4,
+    "y": 14.9,
+    "endX": 77.7,
+    "endY": 12.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 77.7, "y": 12.6, "endX": 70.6, "endY": 20, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 69.8, "y": 21.6, "endX": 76.3, "endY": 6.5, "complete": true, "player": "Rodri" },
+  { "x": 75.9, "y": 6.2, "endX": 77.1, "endY": 15.7, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 70.7, "y": 19.6, "endX": 61.9, "endY": 36.3, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 63.5,
+    "y": 41.1,
+    "endX": 63.9,
+    "endY": 24.3,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 63.4, "y": 24.3, "endX": 84.4, "endY": 25.2, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 84.4,
+    "y": 25.2,
+    "endX": 99.6,
+    "endY": 25.5,
+    "complete": false,
+    "player": "Álvaro Morata"
+  },
+  { "x": 67.8, "y": 0.1, "endX": 49.8, "endY": 33.6, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 44.3,
+    "y": 47.5,
+    "endX": 49.8,
+    "endY": 65.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 52.6,
+    "y": 68.7,
+    "endX": 47.6,
+    "endY": 53.4,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 47.5,
+    "y": 51.9,
+    "endX": 52.1,
+    "endY": 24.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 53.7, "y": 22.4, "endX": 61, "endY": 16.6, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 63, "y": 17.1, "endX": 74, "endY": 29.8, "complete": false, "player": "Fabián Ruiz" },
+  {
+    "x": 33.1,
+    "y": 73,
+    "endX": 50.8,
+    "endY": 62.2,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 13.5,
+    "y": 33.6,
+    "endX": 11.5,
+    "endY": 55.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 14.2,
+    "y": 51.9,
+    "endX": 19.7,
+    "endY": 27.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 27.8,
+    "y": 28.1,
+    "endX": 26.6,
+    "endY": 49.5,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 26.8,
+    "y": 47.3,
+    "endX": 9.1,
+    "endY": 38.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 9.8, "y": 40, "endX": 18, "endY": 25.2, "complete": true, "player": "Unai Simón" },
+  { "x": 18, "y": 25.2, "endX": 12.9, "endY": 39.8, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 13.5, "y": 40.2, "endX": 13.7, "endY": 61, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 12.9,
+    "y": 61.4,
+    "endX": 20.9,
+    "endY": 73.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 21.1,
+    "y": 74.8,
+    "endX": 63.2,
+    "endY": 40.8,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 50.4, "y": 28.1, "endX": 64.5, "endY": 6.2, "complete": true, "player": "Marc Cucurella" },
+  { "x": 65.1, "y": 4.5, "endX": 99.4, "endY": 9.1, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 120, "y": 0.1, "endX": 114.2, "endY": 48.3, "complete": true, "player": "Nico Williams" },
+  { "x": 114.2, "y": 48.3, "endX": 112.9, "endY": 36.2, "complete": true, "player": "Rodri" },
+  { "x": 14.4, "y": 44.9, "endX": 20.4, "endY": 57.9, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 31,
+    "y": 59.2,
+    "endX": 10.7,
+    "endY": 45.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 12, "y": 45.5, "endX": 21.1, "endY": 29.2, "complete": true, "player": "Unai Simón" },
+  { "x": 42.3, "y": 31.6, "endX": 43.1, "endY": 53, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 55.1,
+    "y": 64.4,
+    "endX": 57,
+    "endY": 77.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 53.9,
+    "y": 75.5,
+    "endX": 43.1,
+    "endY": 69.3,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 50.2, "y": 59.2, "endX": 47.5, "endY": 27.1, "complete": true, "player": "Rodri" },
+  {
+    "x": 60.4,
+    "y": 24.1,
+    "endX": 88.6,
+    "endY": 5.3,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 106.7,
+    "y": 11.3,
+    "endX": 107.7,
+    "endY": 37.7,
+    "complete": false,
+    "player": "Nico Williams"
+  },
+  {
+    "x": 27.6,
+    "y": 55.2,
+    "endX": 30.3,
+    "endY": 53.4,
+    "complete": false,
+    "player": "Álvaro Morata"
+  },
+  { "x": 28.2, "y": 55.2, "endX": 31.7, "endY": 52.6, "complete": true, "player": "Álvaro Morata" },
+  { "x": 31.7, "y": 52.6, "endX": 58.8, "endY": 47.7, "complete": false, "player": "Rodri" },
+  { "x": 16.2, "y": 36.5, "endX": 25, "endY": 41.8, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 39, "y": 59.2, "endX": 39.8, "endY": 75, "complete": true, "player": "Daniel Olmo" },
+  { "x": 39.8, "y": 75, "endX": 45.3, "endY": 74.6, "complete": false, "player": "Lamine Yamal" },
+  { "x": 38.2, "y": 80, "endX": 35.1, "endY": 56.3, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 35.4, "y": 56.3, "endX": 8.5, "endY": 43.3, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 8.4, "y": 43.8, "endX": 19.3, "endY": 34.7, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 21.5,
+    "y": 31.4,
+    "endX": 34.5,
+    "endY": 12.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 34.5,
+    "y": 12.9,
+    "endX": 27.2,
+    "endY": 25.7,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  {
+    "x": 30.1,
+    "y": 26.1,
+    "endX": 35.8,
+    "endY": 56.3,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 49.6,
+    "y": 60.9,
+    "endX": 58.8,
+    "endY": 76.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 48.4,
+    "y": 73.8,
+    "endX": 13.5,
+    "endY": 46.6,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 20.8, "y": 33.8, "endX": 32.3, "endY": 25.5, "complete": true, "player": "Unai Simón" },
+  { "x": 45.7, "y": 23, "endX": 42.9, "endY": 41.1, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 42.9,
+    "y": 40.8,
+    "endX": 51.7,
+    "endY": 20.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 63.2,
+    "y": 20.2,
+    "endX": 78.2,
+    "endY": 20.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 92.8, "y": 22.4, "endX": 101.8, "endY": 40.6, "complete": false, "player": "Daniel Olmo" },
+  { "x": 71, "y": 0.1, "endX": 65.9, "endY": 10.6, "complete": true, "player": "Marc Cucurella" },
+  { "x": 63.2, "y": 7.6, "endX": 41.1, "endY": 5.3, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 39.8,
+    "y": 5.3,
+    "endX": 35.1,
+    "endY": 50.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 49.8,
+    "y": 56.7,
+    "endX": 57.4,
+    "endY": 23.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 70.7, "y": 20.8, "endX": 82.8, "endY": 20.4, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 82.8, "y": 20.4, "endX": 74.9, "endY": 20, "complete": true, "player": "Marc Cucurella" },
+  { "x": 74.9, "y": 20, "endX": 79.1, "endY": 26.1, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 77.1, "y": 32, "endX": 84.8, "endY": 71.5, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 88.3,
+    "y": 69.5,
+    "endX": 116.1,
+    "endY": 40.6,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 45.1, "y": 80, "endX": 44.9, "endY": 73.3, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 54.9, "y": 55.2, "endX": 63.5, "endY": 44.9, "complete": false, "player": "Fabián Ruiz" },
+  { "x": 64.1, "y": 40.6, "endX": 64.7, "endY": 32, "complete": true, "player": "Daniel Olmo" },
+  { "x": 70.2, "y": 27.9, "endX": 86.5, "endY": 8.8, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 105.8, "y": 10, "endX": 91.6, "endY": 12.6, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 91.6,
+    "y": 12.6,
+    "endX": 82.6,
+    "endY": 20.4,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  { "x": 81, "y": 21, "endX": 87.3, "endY": 45.1, "complete": true, "player": "Rodri" },
+  { "x": 87.5, "y": 45.5, "endX": 91, "endY": 33.6, "complete": true, "player": "Lamine Yamal" },
+  { "x": 90.1, "y": 32, "endX": 97.4, "endY": 6.7, "complete": true, "player": "Daniel Olmo" },
+  { "x": 97.4, "y": 6.7, "endX": 84.1, "endY": 7.8, "complete": true, "player": "Nico Williams" },
+  { "x": 80.4, "y": 7.3, "endX": 42.2, "endY": 12.6, "complete": true, "player": "Marc Cucurella" },
+  { "x": 42.2, "y": 13.5, "endX": 56.6, "endY": 20, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 56.8, "y": 20, "endX": 43.9, "endY": 33.4, "complete": true, "player": "Rodri" },
+  {
+    "x": 56.3,
+    "y": 41.8,
+    "endX": 58.1,
+    "endY": 59.4,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 62.3,
+    "y": 58.3,
+    "endX": 56.6,
+    "endY": 41.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 64.1, "y": 36.1, "endX": 68, "endY": 53.6, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 68, "y": 53.9, "endX": 76, "endY": 46.6, "complete": true, "player": "Robin Le Normand" },
+  { "x": 76.5, "y": 46.1, "endX": 63.7, "endY": 40, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 75.1,
+    "y": 32.7,
+    "endX": 89.7,
+    "endY": 27.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 86.9,
+    "y": 27.6,
+    "endX": 75.3,
+    "endY": 26.7,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  {
+    "x": 75.9,
+    "y": 26.5,
+    "endX": 81.2,
+    "endY": 11.1,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 82, "y": 11.1, "endX": 94.1, "endY": 5.1, "complete": true, "player": "Rodri" },
+  { "x": 110.6, "y": 7.1, "endX": 91.4, "endY": 42.2, "complete": true, "player": "Nico Williams" },
+  { "x": 91.8, "y": 40.4, "endX": 97.9, "endY": 30.5, "complete": false, "player": "Fabián Ruiz" },
+  {
+    "x": 32.1,
+    "y": 29.8,
+    "endX": 43.7,
+    "endY": 30.2,
+    "complete": false,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 36.7, "y": 32.5, "endX": 50.8, "endY": 26.7, "complete": false, "player": "Rodri" },
+  {
+    "x": 33.5,
+    "y": 34.3,
+    "endX": 45.1,
+    "endY": 24.7,
+    "complete": false,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 29.7,
+    "y": 27.4,
+    "endX": 48.6,
+    "endY": 15.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 47.6, "y": 15.1, "endX": 51.3, "endY": 23.6, "complete": true, "player": "Nico Williams" },
+  { "x": 54.5, "y": 0.1, "endX": 59, "endY": 8.8, "complete": true, "player": "Marc Cucurella" },
+  { "x": 59, "y": 8.8, "endX": 55.9, "endY": 2.3, "complete": true, "player": "Daniel Olmo" },
+  { "x": 55.7, "y": 2.3, "endX": 73.8, "endY": 13.1, "complete": true, "player": "Marc Cucurella" },
+  { "x": 74.7, "y": 15.1, "endX": 80.8, "endY": 21, "complete": true, "player": "Álvaro Morata" },
+  { "x": 81.6, "y": 23.2, "endX": 65.9, "endY": 73.3, "complete": true, "player": "Nico Williams" },
+  { "x": 66.1, "y": 73.4, "endX": 70, "endY": 72.2, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 83.9,
+    "y": 63.2,
+    "endX": 111.8,
+    "endY": 37.3,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  { "x": 93.4, "y": 51.7, "endX": 97.6, "endY": 58.2, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 110.7,
+    "y": 58.5,
+    "endX": 111.6,
+    "endY": 56.3,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  { "x": 120, "y": 80, "endX": 104.5, "endY": 64.5, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 104.5,
+    "y": 61,
+    "endX": 111.6,
+    "endY": 39.3,
+    "complete": false,
+    "player": "Nico Williams"
+  },
+  { "x": 25.2, "y": 7.3, "endX": 36.8, "endY": 19.2, "complete": true, "player": "Marc Cucurella" },
+  { "x": 46.2, "y": 34.9, "endX": 33.5, "endY": 30.8, "complete": true, "player": "Álvaro Morata" },
+  { "x": 35.4, "y": 25.5, "endX": 49.6, "endY": 14.1, "complete": true, "player": "Nico Williams" },
+  { "x": 21.9, "y": 35.7, "endX": 28.7, "endY": 30.8, "complete": true, "player": "Unai Simón" },
+  { "x": 30.6, "y": 31, "endX": 38.8, "endY": 62, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 43.7,
+    "y": 55.4,
+    "endX": 44.3,
+    "endY": 28.1,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 69.4,
+    "y": 23.9,
+    "endX": 69.2,
+    "endY": 10.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 69.2, "y": 10.2, "endX": 77.8, "endY": 3.1, "complete": true, "player": "Marc Cucurella" },
+  { "x": 77.5, "y": 2.7, "endX": 78.6, "endY": 4.9, "complete": false, "player": "Nico Williams" },
+  { "x": 77.3, "y": 2.5, "endX": 80, "endY": 11.3, "complete": true, "player": "Nico Williams" },
+  { "x": 77.5, "y": 13.1, "endX": 61.9, "endY": 64, "complete": true, "player": "Álvaro Morata" },
+  {
+    "x": 61.4,
+    "y": 65.2,
+    "endX": 76.3,
+    "endY": 74.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 76.9, "y": 80, "endX": 61.7, "endY": 76.6, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 55.1,
+    "y": 75.5,
+    "endX": 19.3,
+    "endY": 42.6,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 19.7, "y": 42.6, "endX": 36.5, "endY": 28.1, "complete": true, "player": "Unai Simón" },
+  { "x": 45.1, "y": 21, "endX": 43.3, "endY": 32.9, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 43.3, "y": 31.2, "endX": 51.7, "endY": 12.4, "complete": true, "player": "Rodri" },
+  {
+    "x": 62.3,
+    "y": 11.3,
+    "endX": 85.3,
+    "endY": 5.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 99.6, "y": 3.8, "endX": 90.4, "endY": 16.3, "complete": true, "player": "Marc Cucurella" },
+  { "x": 90.4, "y": 16.3, "endX": 93, "endY": 27.6, "complete": true, "player": "Nico Williams" },
+  { "x": 93, "y": 27.6, "endX": 84.4, "endY": 34.7, "complete": true, "player": "Álvaro Morata" },
+  { "x": 84.8, "y": 36.3, "endX": 93, "endY": 53.8, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 95.4, "y": 52.2, "endX": 91.4, "endY": 42, "complete": true, "player": "Lamine Yamal" },
+  { "x": 91.4, "y": 42, "endX": 96.3, "endY": 45.1, "complete": false, "player": "Fabián Ruiz" },
+  { "x": 83.1, "y": 61, "endX": 82, "endY": 73, "complete": true, "player": "Rodri" },
+  {
+    "x": 83.1,
+    "y": 71.6,
+    "endX": 87.1,
+    "endY": 55.4,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 14.6, "y": 80, "endX": 15.5, "endY": 72.6, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 27.2,
+    "y": 80,
+    "endX": 37.6,
+    "endY": 73.3,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 21.5, "y": 72.4, "endX": 3, "endY": 48.3, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 2.9, "y": 48.6, "endX": 56.6, "endY": 52.2, "complete": false, "player": "Unai Simón" },
+  { "x": 8.9, "y": 34.9, "endX": 16.4, "endY": 45.9, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 20.2,
+    "y": 50.1,
+    "endX": 26.2,
+    "endY": 38.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 29.9, "y": 37.3, "endX": 37.8, "endY": 21.6, "complete": true, "player": "Rodri" },
+  { "x": 54.5, "y": 20.8, "endX": 71.6, "endY": 23, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 71.6, "y": 24.5, "endX": 76.9, "endY": 36.3, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 77.8,
+    "y": 37.1,
+    "endX": 89.2,
+    "endY": 38.9,
+    "complete": false,
+    "player": "Álvaro Morata"
+  },
+  { "x": 71.8, "y": 20.2, "endX": 84.6, "endY": 35.8, "complete": true, "player": "Rodri" },
+  { "x": 27.4, "y": 72, "endX": 23.3, "endY": 62.7, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 22.3, "y": 60.7, "endX": 29.6, "endY": 52.2, "complete": true, "player": "Rodri" },
+  { "x": 13.7, "y": 43.1, "endX": 22.3, "endY": 55.9, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 35.2,
+    "y": 63.4,
+    "endX": 40.9,
+    "endY": 76.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 33.1,
+    "y": 76.4,
+    "endX": 5.6,
+    "endY": 53.2,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 6.6, "y": 46.9, "endX": 21.7, "endY": 24.9, "complete": true, "player": "Unai Simón" },
+  { "x": 47.8, "y": 18.8, "endX": 60.2, "endY": 23, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 61, "y": 23, "endX": 51.7, "endY": 26.5, "complete": true, "player": "Nico Williams" },
+  { "x": 51.5, "y": 25.3, "endX": 44, "endY": 13.1, "complete": true, "player": "Rodri" },
+  { "x": 44, "y": 13.1, "endX": 44.9, "endY": 39.5, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 56.6,
+    "y": 45.3,
+    "endX": 54.6,
+    "endY": 24.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 83.3,
+    "y": 23.3,
+    "endX": 96.1,
+    "endY": 8.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 96.7, "y": 9.1, "endX": 85.3, "endY": 15.3, "complete": true, "player": "Marc Cucurella" },
+  { "x": 83.7, "y": 24.9, "endX": 82.8, "endY": 39.1, "complete": true, "player": "Rodri" },
+  { "x": 84.4, "y": 40.2, "endX": 83.1, "endY": 68, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 83.1,
+    "y": 67.8,
+    "endX": 93.4,
+    "endY": 74.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 120, "y": 80, "endX": 111.8, "endY": 34.3, "complete": false, "player": "Lamine Yamal" },
+  { "x": 120, "y": 0.1, "endX": 115.5, "endY": 7.1, "complete": true, "player": "Nico Williams" },
+  { "x": 115, "y": 11.3, "endX": 93.9, "endY": 28.7, "complete": true, "player": "Lamine Yamal" },
+  { "x": 69.2, "y": 12.2, "endX": 72.7, "endY": 24.3, "complete": true, "player": "Daniel Olmo" },
+  { "x": 72.7, "y": 24.3, "endX": 68.7, "endY": 23.7, "complete": true, "player": "Álvaro Morata" },
+  { "x": 70, "y": 24.1, "endX": 56.4, "endY": 45.1, "complete": true, "player": "Rodri" },
+  {
+    "x": 56.4,
+    "y": 45.1,
+    "endX": 63.2,
+    "endY": 56.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 63.9, "y": 56.7, "endX": 66.1, "endY": 40.8, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 64.3, "y": 39.8, "endX": 64.9, "endY": 23, "complete": true, "player": "Rodri" },
+  { "x": 78.4, "y": 11.1, "endX": 68, "endY": 26.5, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 68, "y": 26.5, "endX": 73.6, "endY": 40.6, "complete": true, "player": "Rodri" },
+  { "x": 71.8, "y": 42.8, "endX": 61.9, "endY": 46.7, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 61.4,
+    "y": 47.7,
+    "endX": 63.7,
+    "endY": 36.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 60.6, "y": 38.7, "endX": 67.4, "endY": 53.4, "complete": true, "player": "Rodri" },
+  {
+    "x": 83.7,
+    "y": 64.7,
+    "endX": 89.7,
+    "endY": 77.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 89.7,
+    "y": 77.7,
+    "endX": 84.9,
+    "endY": 68.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 86.9, "y": 62.7, "endX": 90.4, "endY": 48.1, "complete": true, "player": "Lamine Yamal" },
+  { "x": 88.8, "y": 44.2, "endX": 84.9, "endY": 28.3, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 84.8, "y": 26.9, "endX": 93.4, "endY": 5.3, "complete": true, "player": "Marc Cucurella" },
+  { "x": 100.3, "y": 8, "endX": 120, "endY": 51.6, "complete": false, "player": "Nico Williams" },
+  {
+    "x": 37.8,
+    "y": 15.5,
+    "endX": 56.6,
+    "endY": 24.7,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  { "x": 57, "y": 43.5, "endX": 48.4, "endY": 66, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 51.3,
+    "y": 69.1,
+    "endX": 55.1,
+    "endY": 58.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 76, "y": 62.7, "endX": 82.8, "endY": 76.8, "complete": true, "player": "Rodri" },
+  { "x": 82.8, "y": 76.8, "endX": 100.9, "endY": 77.3, "complete": true, "player": "Lamine Yamal" },
+  { "x": 98.3, "y": 76.2, "endX": 76.7, "endY": 76, "complete": true, "player": "Nico Williams" },
+  { "x": 79.3, "y": 70, "endX": 69.6, "endY": 28.1, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 85.3,
+    "y": 18.2,
+    "endX": 77.5,
+    "endY": 31.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 77.5, "y": 31.6, "endX": 98.5, "endY": 76.6, "complete": true, "player": "Rodri" },
+  {
+    "x": 105.8,
+    "y": 66.7,
+    "endX": 103.8,
+    "endY": 57.7,
+    "complete": true,
+    "player": "Nico Williams"
+  },
+  {
+    "x": 104.9,
+    "y": 57.9,
+    "endX": 105.3,
+    "endY": 56.7,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  { "x": 91, "y": 73.8, "endX": 104, "endY": 58.1, "complete": false, "player": "Daniel Carvajal" },
+  {
+    "x": 89.7,
+    "y": 68.1,
+    "endX": 97.1,
+    "endY": 76.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 104.5,
+    "y": 72.8,
+    "endX": 106.9,
+    "endY": 57.9,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  {
+    "x": 75.3,
+    "y": 44.9,
+    "endX": 64.7,
+    "endY": 40.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 84.4, "y": 29.6, "endX": 92, "endY": 24.3, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 96.7, "y": 21.8, "endX": 120, "endY": 50.2, "complete": false, "player": "Fabián Ruiz" },
+  {
+    "x": 44.9,
+    "y": 34.7,
+    "endX": 56.8,
+    "endY": 34.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 50.6, "y": 30.2, "endX": 39.4, "endY": 26.7, "complete": true, "player": "Rodri" },
+  {
+    "x": 42.5,
+    "y": 16.1,
+    "endX": 46.6,
+    "endY": 5.5,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 47.8, "y": 4.9, "endX": 69.2, "endY": 7.1, "complete": true, "player": "Marc Cucurella" },
+  { "x": 24.8, "y": 38.9, "endX": 45.3, "endY": 28.3, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 61.9, "y": 36.9, "endX": 69.4, "endY": 70.7, "complete": true, "player": "Nico Williams" },
+  { "x": 69.6, "y": 71.6, "endX": 76, "endY": 61.2, "complete": true, "player": "Lamine Yamal" },
+  { "x": 76, "y": 61.2, "endX": 70.4, "endY": 71.5, "complete": true, "player": "Nico Williams" },
+  { "x": 70.4, "y": 71.5, "endX": 63.2, "endY": 70.5, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 63.5,
+    "y": 65.8,
+    "endX": 63.2,
+    "endY": 52.2,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 63.2, "y": 52.2, "endX": 66.1, "endY": 26.3, "complete": true, "player": "Rodri" },
+  { "x": 70, "y": 25.2, "endX": 83.5, "endY": 6, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 83.5, "y": 6, "endX": 67.8, "endY": 15.5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 73.8, "y": 7.6, "endX": 61, "endY": 37.8, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 70.7,
+    "y": 51.2,
+    "endX": 84.4,
+    "endY": 43.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 84.4, "y": 44.9, "endX": 98.1, "endY": 74.8, "complete": true, "player": "Daniel Olmo" },
+  { "x": 98.1, "y": 74.8, "endX": 84.6, "endY": 75, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 84.4,
+    "y": 75,
+    "endX": 89.2,
+    "endY": 74.4,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 84.9, "y": 80, "endX": 82, "endY": 69.5, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 85.5, "y": 66.2, "endX": 92.2, "endY": 57.4, "complete": false, "player": "Lamine Yamal" },
+  {
+    "x": 76.9,
+    "y": 59.6,
+    "endX": 83.9,
+    "endY": 48.3,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 83.9, "y": 48.3, "endX": 82.6, "endY": 54.1, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 83, "y": 53.2, "endX": 85.3, "endY": 53.9, "complete": false, "player": "Rodri" },
+  {
+    "x": 35.2,
+    "y": 40.2,
+    "endX": 49.8,
+    "endY": 16.1,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 58.4, "y": 13.9, "endX": 51.3, "endY": 15.9, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 51.3,
+    "y": 15.9,
+    "endX": 50.2,
+    "endY": 25.5,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  { "x": 50.4, "y": 25.3, "endX": 52.1, "endY": 32.9, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 53.5, "y": 36.9, "endX": 51.3, "endY": 57.2, "complete": true, "player": "Rodri" },
+  {
+    "x": 55.3,
+    "y": 61.6,
+    "endX": 70.7,
+    "endY": 76.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 72.2, "y": 76.6, "endX": 79.6, "endY": 65.6, "complete": true, "player": "Lamine Yamal" },
+  { "x": 77.5, "y": 66.7, "endX": 71, "endY": 76.6, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 70.7, "y": 76.6, "endX": 99.1, "endY": 80, "complete": false, "player": "Lamine Yamal" },
+  {
+    "x": 44.9,
+    "y": 63.2,
+    "endX": 12.9,
+    "endY": 44.4,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 12.9, "y": 44.4, "endX": 28.6, "endY": 58.1, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 26.8,
+    "y": 58.1,
+    "endX": 34.1,
+    "endY": 26.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 73.3,
+    "y": 17.5,
+    "endX": 106,
+    "endY": 24.5,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 120, "y": 0.1, "endX": 114.9, "endY": 38.7, "complete": false, "player": "Nico Williams" },
+  { "x": 28.8, "y": 24.9, "endX": 26.6, "endY": 38.7, "complete": true, "player": "Rodri" },
+  {
+    "x": 26.2,
+    "y": 40.6,
+    "endX": 30.5,
+    "endY": 62,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 3.6, "y": 43.5, "endX": 31.7, "endY": 26.9, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 35.4,
+    "y": 24.9,
+    "endX": 120,
+    "endY": 10.2,
+    "complete": false,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 32.7, "y": 5.1, "endX": 42.9, "endY": 4, "complete": true, "player": "Marc Cucurella" },
+  { "x": 42.2, "y": 4.5, "endX": 48, "endY": 62.7, "complete": true, "player": "Nico Williams" },
+  { "x": 41.6, "y": 64.4, "endX": 57.2, "endY": 75.1, "complete": true, "player": "Lamine Yamal" },
+  { "x": 55.1, "y": 76.2, "endX": 29.2, "endY": 63, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 60, "y": 40, "endX": 46.9, "endY": 41, "complete": true, "player": "Álvaro Morata" },
+  {
+    "x": 46.5,
+    "y": 48.6,
+    "endX": 46.4,
+    "endY": 70.5,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  {
+    "x": 46.1,
+    "y": 70.3,
+    "endX": 27.5,
+    "endY": 58.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 28.4,
+    "y": 52,
+    "endX": 31.5,
+    "endY": 21.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 35.3,
+    "y": 20.5,
+    "endX": 35.4,
+    "endY": 52.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 27.6,
+    "y": 52.2,
+    "endX": 9.3,
+    "endY": 35.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 10.7, "y": 33.8, "endX": 56.8, "endY": 24.7, "complete": false, "player": "Unai Simón" },
+  { "x": 53.1, "y": 23.1, "endX": 47.8, "endY": 12.2, "complete": true, "player": "Daniel Olmo" },
+  { "x": 46.4, "y": 8.1, "endX": 61.1, "endY": 3.8, "complete": true, "player": "Marc Cucurella" },
+  { "x": 55.6, "y": 1.1, "endX": 53.2, "endY": 1.3, "complete": false, "player": "Nico Williams" },
+  { "x": 40.7, "y": 0.1, "endX": 30.4, "endY": 6.1, "complete": true, "player": "Marc Cucurella" },
+  {
+    "x": 30.4,
+    "y": 6.1,
+    "endX": 27.5,
+    "endY": 46.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 27.5,
+    "y": 52.2,
+    "endX": 40.6,
+    "endY": 51.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 48.6,
+    "y": 27.8,
+    "endX": 49.2,
+    "endY": 6.6,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 49.2, "y": 6.6, "endX": 64.2, "endY": 2.5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 62.8, "y": 2.5, "endX": 38.7, "endY": 14.9, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 47.1,
+    "y": 38.5,
+    "endX": 47.6,
+    "endY": 67.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 49.7, "y": 68.1, "endX": 69.2, "endY": 74.7, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 69.7,
+    "y": 74.3,
+    "endX": 93.9,
+    "endY": 60.6,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 100.6, "y": 47, "endX": 109.9, "endY": 28, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 25.4,
+    "y": 20.6,
+    "endX": 32.2,
+    "endY": 10.2,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 36.8, "y": 2.4, "endX": 54.3, "endY": 3.3, "complete": true, "player": "Nico Williams" },
+  { "x": 55, "y": 7.8, "endX": 30.1, "endY": 12, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 30.4, "y": 11, "endX": 30.1, "endY": 33.8, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 26.2,
+    "y": 47.5,
+    "endX": 7.3,
+    "endY": 39.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 6.8, "y": 37.5, "endX": 23.6, "endY": 11.6, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 23.2,
+    "y": 13.8,
+    "endX": 10.4,
+    "endY": 28.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 10.6, "y": 31, "endX": 14, "endY": 53.3, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 22.9,
+    "y": 57.8,
+    "endX": 80.6,
+    "endY": 56.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 80.6, "y": 56.6, "endX": 89.7, "endY": 62.7, "complete": true, "player": "Álvaro Morata" },
+  { "x": 89.7, "y": 62.7, "endX": 94, "endY": 38.9, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 93.9, "y": 37.3, "endX": 92.7, "endY": 20.5, "complete": true, "player": "Daniel Olmo" },
+  { "x": 96.3, "y": 25, "endX": 105.9, "endY": 30.6, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 55.6,
+    "y": 52,
+    "endX": 61.7,
+    "endY": 46.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 62,
+    "y": 46.9,
+    "endX": 61.5,
+    "endY": 67.8,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 61.7, "y": 67, "endX": 53.6, "endY": 71.6, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 54.5, "y": 64.2, "endX": 57.5, "endY": 62, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 5.4, "y": 39.5, "endX": 5.9, "endY": 58.5, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 21.7,
+    "y": 61.7,
+    "endX": 78.1,
+    "endY": 60.5,
+    "complete": false,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 11.2,
+    "y": 80,
+    "endX": 36.5,
+    "endY": 72.5,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 27.6, "y": 66.9, "endX": 36.7, "endY": 63.3, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 36.7,
+    "y": 63.3,
+    "endX": 27,
+    "endY": 60.6,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  {
+    "x": 27.5,
+    "y": 60.3,
+    "endX": 34.2,
+    "endY": 48.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 35, "y": 48.9, "endX": 45.7, "endY": 17.4, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 70.3, "y": 2.8, "endX": 56.2, "endY": 10.2, "complete": true, "player": "Nico Williams" },
+  { "x": 56.4, "y": 11.6, "endX": 49, "endY": 22.8, "complete": true, "player": "Marc Cucurella" },
+  {
+    "x": 49.2,
+    "y": 24.9,
+    "endX": 42.2,
+    "endY": 54.1,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 38.9,
+    "y": 56.1,
+    "endX": 45.9,
+    "endY": 72.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 34.3,
+    "y": 67.2,
+    "endX": 5.6,
+    "endY": 53.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 8.2, "y": 58, "endX": 55.9, "endY": 60.3, "complete": true, "player": "Unai Simón" },
+  { "x": 55.6, "y": 56.6, "endX": 54.5, "endY": 49.4, "complete": true, "player": "Álvaro Morata" },
+  { "x": 74.2, "y": 34.8, "endX": 74.7, "endY": 41.4, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 74.7,
+    "y": 41.8,
+    "endX": 55.7,
+    "endY": 44.2,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  {
+    "x": 55.7,
+    "y": 44.2,
+    "endX": 55.4,
+    "endY": 32.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 57.2,
+    "y": 28.3,
+    "endX": 64.2,
+    "endY": 8.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 64.2, "y": 6.6, "endX": 70.7, "endY": 1.1, "complete": true, "player": "Marc Cucurella" },
+  { "x": 69.3, "y": 1.3, "endX": 42.8, "endY": 3.6, "complete": true, "player": "Nico Williams" },
+  { "x": 40.4, "y": 4.5, "endX": 42, "endY": 20.2, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 35.6, "y": 31.9, "endX": 44.7, "endY": 34.5, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 44.7,
+    "y": 34.5,
+    "endX": 36.2,
+    "endY": 33.8,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 48.7, "y": 25.8, "endX": 52.9, "endY": 7.2, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 52.9, "y": 7.2, "endX": 64, "endY": 3, "complete": true, "player": "Marc Cucurella" },
+  { "x": 69.2, "y": 3, "endX": 70.6, "endY": 16.6, "complete": true, "player": "Nico Williams" },
+  { "x": 70.7, "y": 15.5, "endX": 49.3, "endY": 26.4, "complete": true, "player": "Álvaro Morata" },
+  {
+    "x": 51.5,
+    "y": 39.2,
+    "endX": 54.8,
+    "endY": 25.3,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 53.9, "y": 25.3, "endX": 48.7, "endY": 29.9, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 48.7,
+    "y": 29.9,
+    "endX": 54.5,
+    "endY": 21.9,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 54.5, "y": 21.9, "endX": 42, "endY": 27, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 49.3,
+    "y": 24.7,
+    "endX": 55.6,
+    "endY": 20.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 55.4, "y": 20.6, "endX": 44.3, "endY": 22.2, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 42.5,
+    "y": 22.5,
+    "endX": 34.8,
+    "endY": 40.5,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 31.4,
+    "y": 43,
+    "endX": 43.4,
+    "endY": 67.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 43.7,
+    "y": 74.4,
+    "endX": 56.2,
+    "endY": 74.2,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 54.3, "y": 74.2, "endX": 70.1, "endY": 74.9, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 75.1,
+    "y": 76.3,
+    "endX": 85.9,
+    "endY": 66.4,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 79.8,
+    "y": 74.9,
+    "endX": 91.4,
+    "endY": 67.2,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 94, "y": 0.1, "endX": 78.1, "endY": 4.9, "complete": true, "player": "Marc Cucurella" },
+  { "x": 64.3, "y": 10.8, "endX": 49.8, "endY": 25.8, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 52.3,
+    "y": 25.2,
+    "endX": 62.6,
+    "endY": 32.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 67.6,
+    "y": 24.4,
+    "endX": 63.1,
+    "endY": 12.2,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 68.9, "y": 11.6, "endX": 75.1, "endY": 21.6, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 72.2, "y": 21.3, "endX": 66.1, "endY": 12.8, "complete": true, "player": "Daniel Olmo" },
+  { "x": 64, "y": 13.3, "endX": 51.8, "endY": 49.4, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 68.6,
+    "y": 53.9,
+    "endX": 79,
+    "endY": 49.2,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 83.9, "y": 50.6, "endX": 110.9, "endY": 51, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 113.9,
+    "y": 69.9,
+    "endX": 105.3,
+    "endY": 64.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 83.1, "y": 46.6, "endX": 92.2, "endY": 39.9, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 22.9,
+    "y": 71.7,
+    "endX": 46.7,
+    "endY": 46.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 38.2, "y": 80, "endX": 74, "endY": 73.6, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 69.8, "y": 0.1, "endX": 38.1, "endY": 5.5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 34, "y": 5.5, "endX": 16.4, "endY": 25.2, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 15.4, "y": 29.1, "endX": 24.5, "endY": 48.9, "complete": true, "player": "Unai Simón" },
+  { "x": 28.4, "y": 54.5, "endX": 9.2, "endY": 43, "complete": true, "player": "Robin Le Normand" },
+  { "x": 13.1, "y": 42.7, "endX": 22.3, "endY": 53.5, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 28.9,
+    "y": 54.9,
+    "endX": 8.2,
+    "endY": 49.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 8.7, "y": 51.4, "endX": 50.9, "endY": 53.8, "complete": true, "player": "Unai Simón" },
+  { "x": 74.8, "y": 65.6, "endX": 82.6, "endY": 71.7, "complete": true, "player": "Álvaro Morata" },
+  { "x": 82.9, "y": 71.6, "endX": 70, "endY": 75.5, "complete": true, "player": "Lamine Yamal" },
+  { "x": 70.7, "y": 74.7, "endX": 67.9, "endY": 45, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 75.3, "y": 13, "endX": 90.3, "endY": 2.2, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 89.2, "y": 3, "endX": 77.3, "endY": 8.9, "complete": true, "player": "Nico Williams" },
+  { "x": 77.3, "y": 8.9, "endX": 80.3, "endY": 3.8, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 80.3, "y": 3.8, "endX": 71.2, "endY": 8.3, "complete": true, "player": "Nico Williams" },
+  { "x": 71.2, "y": 8.3, "endX": 63.7, "endY": 42.2, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 66.1,
+    "y": 50.2,
+    "endX": 84.3,
+    "endY": 38.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 83.1, "y": 37.8, "endX": 76.1, "endY": 38.5, "complete": true, "player": "Álvaro Morata" },
+  {
+    "x": 76.5,
+    "y": 38.5,
+    "endX": 85.1,
+    "endY": 48.3,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 89.7, "y": 50.2, "endX": 102.9, "endY": 51, "complete": false, "player": "Daniel Olmo" },
+  { "x": 5.4, "y": 30.5, "endX": 5, "endY": 40.3, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 5, "y": 40.3, "endX": 10.4, "endY": 59.7, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 12.8,
+    "y": 65.6,
+    "endX": 61.4,
+    "endY": 55.2,
+    "complete": false,
+    "player": "Robin Le Normand"
+  },
+  { "x": 6, "y": 31.1, "endX": 2.8, "endY": 38.9, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 4.5, "y": 39.5, "endX": 65, "endY": 28.5, "complete": false, "player": "Unai Simón" },
+  { "x": 42, "y": 16.7, "endX": 49.8, "endY": 17.4, "complete": true, "player": "Marc Cucurella" },
+  { "x": 57.6, "y": 21.9, "endX": 72.2, "endY": 32.4, "complete": true, "player": "Nico Williams" },
+  { "x": 72.2, "y": 32.4, "endX": 73.1, "endY": 39.5, "complete": true, "player": "Álvaro Morata" },
+  { "x": 77, "y": 40.2, "endX": 94, "endY": 51, "complete": true, "player": "Daniel Olmo" },
+  { "x": 120, "y": 0.1, "endX": 111.9, "endY": 43.8, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 92.8,
+    "y": 80,
+    "endX": 105.3,
+    "endY": 67.5,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 105.9,
+    "y": 64.9,
+    "endX": 119.8,
+    "endY": 70.5,
+    "complete": false,
+    "player": "Daniel Olmo"
+  },
+  { "x": 83.1, "y": 16.9, "endX": 90.4, "endY": 27.2, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 90.4, "y": 31, "endX": 91.4, "endY": 43.8, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 91.4,
+    "y": 43.8,
+    "endX": 108.4,
+    "endY": 35.6,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  { "x": 120, "y": 80, "endX": 117.3, "endY": 39.9, "complete": false, "player": "Lamine Yamal" },
+  {
+    "x": 110.1,
+    "y": 14.7,
+    "endX": 115.9,
+    "endY": 44.4,
+    "complete": false,
+    "player": "Daniel Olmo"
+  },
+  {
+    "x": 98.7,
+    "y": 76.4,
+    "endX": 113.1,
+    "endY": 69.7,
+    "complete": true,
+    "player": "Nico Williams"
+  },
+  {
+    "x": 116.2,
+    "y": 69.7,
+    "endX": 112.9,
+    "endY": 33,
+    "complete": false,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 89.5, "y": 25.3, "endX": 89.5, "endY": 33.1, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 34.3,
+    "y": 50.8,
+    "endX": 32.3,
+    "endY": 39.9,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 26.8,
+    "y": 44.2,
+    "endX": 52.3,
+    "endY": 0.1,
+    "complete": false,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 40.6,
+    "y": 21.3,
+    "endX": 35.3,
+    "endY": 22.7,
+    "complete": true,
+    "player": "Mikel Oyarzabal"
+  },
+  {
+    "x": 35,
+    "y": 22.5,
+    "endX": 50.6,
+    "endY": 24.1,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 63.7, "y": 30, "endX": 52, "endY": 55.5, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 65.3,
+    "y": 56.7,
+    "endX": 76.4,
+    "endY": 59.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 76.1, "y": 61.7, "endX": 69.2, "endY": 71.7, "complete": true, "player": "Daniel Olmo" },
+  { "x": 65.3, "y": 71.7, "endX": 48.7, "endY": 52.7, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 48.6,
+    "y": 52.5,
+    "endX": 50.3,
+    "endY": 23.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 55.1, "y": 14.7, "endX": 57, "endY": 3.9, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 56.2, "y": 4.9, "endX": 42.2, "endY": 12.4, "complete": true, "player": "Marc Cucurella" },
+  { "x": 30.1, "y": 15.6, "endX": 9.3, "endY": 33, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 10, "y": 33.8, "endX": 49.7, "endY": 47.4, "complete": true, "player": "Unai Simón" },
+  { "x": 49.7, "y": 47.4, "endX": 63.6, "endY": 54.5, "complete": false, "player": "Daniel Olmo" },
+  {
+    "x": 88.9,
+    "y": 36.4,
+    "endX": 112,
+    "endY": 24.9,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 60, "y": 40, "endX": 36.1, "endY": 52.2, "complete": true, "player": "Mikel Oyarzabal" },
+  {
+    "x": 34.3,
+    "y": 48.6,
+    "endX": 37.6,
+    "endY": 23.9,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 40.6,
+    "y": 14.9,
+    "endX": 38.1,
+    "endY": 5.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 34.8, "y": 5.2, "endX": 12.6, "endY": 30, "complete": true, "player": "Marc Cucurella" },
+  { "x": 15.4, "y": 36.4, "endX": 16.7, "endY": 65.6, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 29.3,
+    "y": 71.6,
+    "endX": 54.8,
+    "endY": 56.1,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 47.2, "y": 65, "endX": 55.6, "endY": 65, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 49.2,
+    "y": 76.3,
+    "endX": 51.2,
+    "endY": 76.3,
+    "complete": false,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 5, "y": 35, "endX": 15.3, "endY": 26.6, "complete": true, "player": "Unai Simón" },
+  { "x": 14.3, "y": 28.5, "endX": 15.9, "endY": 52, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 21.7,
+    "y": 51.9,
+    "endX": 21.8,
+    "endY": 25.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 28.9, "y": 17.4, "endX": 15, "endY": 38.1, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 15.7, "y": 40.3, "endX": 25.4, "endY": 53.1, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 28.1,
+    "y": 52.7,
+    "endX": 14.7,
+    "endY": 39.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 17.3, "y": 39.1, "endX": 28.7, "endY": 23.3, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 28.7,
+    "y": 23.3,
+    "endX": 27.6,
+    "endY": 54.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 32.9,
+    "y": 60.5,
+    "endX": 13.9,
+    "endY": 43.5,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 13.7, "y": 43, "endX": 15.9, "endY": 22, "complete": true, "player": "Unai Simón" },
+  { "x": 17.8, "y": 9.4, "endX": 45.4, "endY": 1.6, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 45.4, "y": 1.6, "endX": 42.5, "endY": 16, "complete": true, "player": "Marc Cucurella" },
+  { "x": 57, "y": 24.5, "endX": 82.6, "endY": 73.5, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 82.6, "y": 73.5, "endX": 72.6, "endY": 63.3, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 72.6,
+    "y": 63.3,
+    "endX": 70.3,
+    "endY": 53.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 70.3, "y": 48.3, "endX": 63.7, "endY": 38.9, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 73.1,
+    "y": 27.7,
+    "endX": 70,
+    "endY": 48.8,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 70, "y": 48.9, "endX": 85.1, "endY": 72, "complete": true, "player": "Robin Le Normand" },
+  { "x": 84.3, "y": 73, "endX": 85.9, "endY": 60.3, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 101.4,
+    "y": 73.8,
+    "endX": 90.4,
+    "endY": 70.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 90.4, "y": 70.8, "endX": 70.6, "endY": 56.7, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 71.4,
+    "y": 53.9,
+    "endX": 68.2,
+    "endY": 37,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 74.2,
+    "y": 30.3,
+    "endX": 82.6,
+    "endY": 6.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 74.5,
+    "y": 12.7,
+    "endX": 77.2,
+    "endY": 18.8,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  {
+    "x": 83.7,
+    "y": 12.2,
+    "endX": 85.3,
+    "endY": 1.9,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 85.1, "y": 1.7, "endX": 71.2, "endY": 8.9, "complete": true, "player": "Nico Williams" },
+  { "x": 70.9, "y": 9.4, "endX": 73.4, "endY": 14.9, "complete": true, "player": "Marc Cucurella" },
+  { "x": 70.9, "y": 18.9, "endX": 63.7, "endY": 44.9, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 68.9,
+    "y": 58.6,
+    "endX": 70.1,
+    "endY": 40.3,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 72.6, "y": 39.1, "endX": 71.5, "endY": 56.7, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 78.6,
+    "y": 59.7,
+    "endX": 86.4,
+    "endY": 71.4,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 91.7, "y": 70.5, "endX": 111.7, "endY": 7, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 116.2,
+    "y": 12.2,
+    "endX": 113.9,
+    "endY": 33.6,
+    "complete": false,
+    "player": "Nico Williams"
+  },
+  { "x": 120, "y": 0.1, "endX": 112.1, "endY": 35.3, "complete": false, "player": "Nico Williams" },
+  {
+    "x": 103.4,
+    "y": 55.8,
+    "endX": 104.8,
+    "endY": 45.6,
+    "complete": false,
+    "player": "Fabián Ruiz"
+  },
+  { "x": 65.3, "y": 80, "endX": 49.3, "endY": 68.9, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 41.8, "y": 67, "endX": 25.7, "endY": 64.4, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 21.1,
+    "y": 59.7,
+    "endX": 28.9,
+    "endY": 20.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 28.2,
+    "y": 17.5,
+    "endX": 27.8,
+    "endY": 53.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 30.4,
+    "y": 54.1,
+    "endX": 42.6,
+    "endY": 54.1,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 41.4, "y": 50, "endX": 49.2, "endY": 28.3, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 82.9,
+    "y": 7.8,
+    "endX": 91.8,
+    "endY": 2.5,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 91.8, "y": 2.5, "endX": 81.4, "endY": 5, "complete": true, "player": "Marc Cucurella" },
+  { "x": 81.4, "y": 5, "endX": 65.9, "endY": 9.1, "complete": true, "player": "Martín Zubimendi" },
+  {
+    "x": 65.6,
+    "y": 11.4,
+    "endX": 62.8,
+    "endY": 43.8,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 64.7,
+    "y": 45.5,
+    "endX": 67.5,
+    "endY": 54.7,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 69.8, "y": 56, "endX": 90.7, "endY": 75.5, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 87.6,
+    "y": 67.7,
+    "endX": 119,
+    "endY": 58.8,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 50.3,
+    "y": 38.3,
+    "endX": 52.9,
+    "endY": 29.9,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 50.3,
+    "y": 27.4,
+    "endX": 15,
+    "endY": 40.2,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 16.5, "y": 38.3, "endX": 26.2, "endY": 24.4, "complete": true, "player": "Unai Simón" },
+  {
+    "x": 42.5,
+    "y": 21.4,
+    "endX": 35.6,
+    "endY": 48.6,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 48.2,
+    "y": 50.2,
+    "endX": 48.6,
+    "endY": 23.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  { "x": 56.5, "y": 18.1, "endX": 47, "endY": 33.6, "complete": true, "player": "Aymeric Laporte" },
+  {
+    "x": 62.2,
+    "y": 37.7,
+    "endX": 56.4,
+    "endY": 16.6,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 66.7,
+    "y": 12.4,
+    "endX": 56.5,
+    "endY": 21.3,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 53.1,
+    "y": 25.8,
+    "endX": 53.1,
+    "endY": 59.2,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 68.7, "y": 61.9, "endX": 70.3, "endY": 63.1, "complete": false, "player": "Fabián Ruiz" },
+  { "x": 96.2, "y": 33.9, "endX": 90.9, "endY": 36.6, "complete": true, "player": "Nico Williams" },
+  { "x": 91.7, "y": 38.9, "endX": 99.5, "endY": 38.5, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 99.2,
+    "y": 38.9,
+    "endX": 104.8,
+    "endY": 46.7,
+    "complete": true,
+    "player": "Nico Williams"
+  },
+  { "x": 104.8, "y": 46.9, "endX": 107.2, "endY": 50.2, "complete": true, "player": "Daniel Olmo" },
+  { "x": 78.7, "y": 80, "endX": 63.7, "endY": 57.2, "complete": true, "player": "Daniel Carvajal" },
+  {
+    "x": 68.9,
+    "y": 48.3,
+    "endX": 77.5,
+    "endY": 48.8,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 85.9, "y": 53.8, "endX": 99.2, "endY": 70.5, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 100,
+    "y": 70.5,
+    "endX": 96.1,
+    "endY": 61.9,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 91.5, "y": 59.7, "endX": 82.9, "endY": 28.3, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 85.1,
+    "y": 26.4,
+    "endX": 92.5,
+    "endY": 23.9,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 91.1, "y": 22.5, "endX": 83.9, "endY": 16.7, "complete": true, "player": "Nico Williams" },
+  {
+    "x": 83.9,
+    "y": 16.7,
+    "endX": 74.2,
+    "endY": 24.5,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  {
+    "x": 77.5,
+    "y": 23.9,
+    "endX": 74.7,
+    "endY": 46.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  {
+    "x": 76.1,
+    "y": 53.3,
+    "endX": 91.8,
+    "endY": 74.1,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 90.9,
+    "y": 74.1,
+    "endX": 84.3,
+    "endY": 54.9,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 86.5, "y": 53.8, "endX": 94.2, "endY": 67.8, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 98.6,
+    "y": 67.2,
+    "endX": 78.4,
+    "endY": 53.1,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 77.5,
+    "y": 48.3,
+    "endX": 81.4,
+    "endY": 28.8,
+    "complete": true,
+    "player": "Robin Le Normand"
+  },
+  {
+    "x": 83.1,
+    "y": 24.7,
+    "endX": 92.3,
+    "endY": 6.4,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 21.2, "y": 31.3, "endX": 28.7, "endY": 40.3, "complete": true, "player": "Unai Simón" },
+  { "x": 34.7, "y": 45.6, "endX": 49.2, "endY": 45.6, "complete": true, "player": "Nacho" },
+  { "x": 43.7, "y": 51.9, "endX": 36.5, "endY": 50.6, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 34.8, "y": 52.2, "endX": 42.6, "endY": 68.6, "complete": true, "player": "Nacho" },
+  { "x": 40.1, "y": 63.6, "endX": 34.2, "endY": 21.4, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 47.8,
+    "y": 8.5,
+    "endX": 61.1,
+    "endY": 11.7,
+    "complete": true,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 60.9, "y": 11.7, "endX": 50.4, "endY": 17.2, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 46.1,
+    "y": 16.9,
+    "endX": 49.7,
+    "endY": 37.5,
+    "complete": true,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 64.8, "y": 33, "endX": 72.5, "endY": 12.8, "complete": true, "player": "Nacho" },
+  { "x": 89, "y": 11.6, "endX": 90.1, "endY": 22.5, "complete": true, "player": "Daniel Olmo" },
+  { "x": 88.4, "y": 23.8, "endX": 89.5, "endY": 45.3, "complete": true, "player": "Nico Williams" },
+  { "x": 89.5, "y": 45.3, "endX": 106.5, "endY": 63.1, "complete": true, "player": "Lamine Yamal" },
+  {
+    "x": 109,
+    "y": 58.1,
+    "endX": 102.9,
+    "endY": 51.3,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 106.1, "y": 52.8, "endX": 111.4, "endY": 61, "complete": true, "player": "Fabián Ruiz" },
+  {
+    "x": 114.3,
+    "y": 60.3,
+    "endX": 113.2,
+    "endY": 58.6,
+    "complete": false,
+    "player": "Daniel Carvajal"
+  },
+  {
+    "x": 100,
+    "y": 64.9,
+    "endX": 90.9,
+    "endY": 64.4,
+    "complete": true,
+    "player": "Daniel Carvajal"
+  },
+  { "x": 90.3, "y": 58.1, "endX": 96.2, "endY": 46.1, "complete": true, "player": "Lamine Yamal" },
+  { "x": 95, "y": 51.6, "endX": 100.7, "endY": 51, "complete": true, "player": "Nico Williams" },
+  { "x": 120, "y": 80, "endX": 116.1, "endY": 39.9, "complete": false, "player": "Lamine Yamal" },
+  { "x": 70.3, "y": 55.5, "endX": 30.1, "endY": 42.4, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 28.1, "y": 39.7, "endX": 40.1, "endY": 31.1, "complete": true, "player": "Unai Simón" },
+  { "x": 43.4, "y": 28, "endX": 62.3, "endY": 38.8, "complete": true, "player": "Marc Cucurella" },
+  { "x": 63.4, "y": 44.2, "endX": 106.8, "endY": 56, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 117.9,
+    "y": 57.4,
+    "endX": 114.5,
+    "endY": 41.1,
+    "complete": false,
+    "player": "Lamine Yamal"
+  },
+  { "x": 34.3, "y": 80, "endX": 25.1, "endY": 50.6, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 27, "y": 43.8, "endX": 49.3, "endY": 47, "complete": true, "player": "Aymeric Laporte" },
+  { "x": 52.6, "y": 46.6, "endX": 63.4, "endY": 34.9, "complete": true, "player": "Fabián Ruiz" },
+  { "x": 70.7, "y": 33.6, "endX": 88.2, "endY": 39.9, "complete": true, "player": "Daniel Olmo" },
+  {
+    "x": 88.9,
+    "y": 37.8,
+    "endX": 99.7,
+    "endY": 12.7,
+    "complete": true,
+    "player": "Mikel Oyarzabal"
+  },
+  {
+    "x": 100,
+    "y": 12.7,
+    "endX": 111.2,
+    "endY": 36.3,
+    "complete": true,
+    "player": "Marc Cucurella"
+  },
+  {
+    "x": 34.3,
+    "y": 24.5,
+    "endX": 38.7,
+    "endY": 26.7,
+    "complete": false,
+    "player": "Martín Zubimendi"
+  },
+  { "x": 5.4, "y": 43.8, "endX": 70.9, "endY": 79.4, "complete": false, "player": "Unai Simón" },
+  { "x": 38.6, "y": 80, "endX": 79.8, "endY": 74.7, "complete": true, "player": "Daniel Carvajal" },
+  { "x": 82.5, "y": 75.3, "endX": 120, "endY": 67, "complete": false, "player": "Mikel Oyarzabal" },
+  { "x": 26.1, "y": 21.1, "endX": 81.1, "endY": 32, "complete": false, "player": "Unai Simón" },
+  {
+    "x": 47.9,
+    "y": 27.7,
+    "endX": 70.9,
+    "endY": 24.1,
+    "complete": false,
+    "player": "Aymeric Laporte"
+  },
+  { "x": 22.9, "y": 5.5, "endX": 98.1, "endY": 23.4, "complete": false, "player": "Unai Simón" }
+]

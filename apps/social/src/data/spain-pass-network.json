@@ -1,0 +1,148 @@
+{
+  "minutes": 45,
+  "nodes": [
+    {
+      "id": 11748,
+      "name": "Unai Simón Mendibil",
+      "label": "Unai Simón",
+      "jersey": 23,
+      "position": "Goalkeeper",
+      "x": 10.5,
+      "y": 43.6,
+      "touches": 30
+    },
+    {
+      "id": 5721,
+      "name": "Daniel Carvajal Ramos",
+      "label": "Daniel Carvajal",
+      "jersey": 2,
+      "position": "Right Back",
+      "x": 60.8,
+      "y": 72.6,
+      "touches": 74
+    },
+    {
+      "id": 22128,
+      "name": "Robin Aime Robert Le Normand",
+      "label": "Robin Le Normand",
+      "jersey": 3,
+      "position": "Right Center Back",
+      "x": 45.5,
+      "y": 54.8,
+      "touches": 94
+    },
+    {
+      "id": 4353,
+      "name": "Aymeric Laporte",
+      "label": "Aymeric Laporte",
+      "jersey": 14,
+      "position": "Left Center Back",
+      "x": 49.9,
+      "y": 25.7,
+      "touches": 94
+    },
+    {
+      "id": 17620,
+      "name": "Marc Cucurella Saseta",
+      "label": "Marc Cucurella",
+      "jersey": 24,
+      "position": "Left Back",
+      "x": 72.7,
+      "y": 12,
+      "touches": 45
+    },
+    {
+      "id": 6765,
+      "name": "Rodrigo Hernández Cascante",
+      "label": "Rodri",
+      "jersey": 16,
+      "position": "Right Defensive Midfield",
+      "x": 61.7,
+      "y": 38.7,
+      "touches": 59
+    },
+    {
+      "id": 6655,
+      "name": "Fabián Ruiz Peña",
+      "label": "Fabián Ruiz",
+      "jersey": 8,
+      "position": "Left Defensive Midfield",
+      "x": 71.9,
+      "y": 30.2,
+      "touches": 58
+    },
+    {
+      "id": 316046,
+      "name": "Lamine Yamal Nasraoui Ebana",
+      "label": "Lamine Yamal",
+      "jersey": 19,
+      "position": "Right Wing",
+      "x": 83.6,
+      "y": 65.4,
+      "touches": 43
+    },
+    {
+      "id": 16532,
+      "name": "Daniel Olmo Carvajal",
+      "label": "Daniel Olmo",
+      "jersey": 10,
+      "position": "Center Attacking Midfield",
+      "x": 75.5,
+      "y": 39.5,
+      "touches": 27
+    },
+    {
+      "id": 68574,
+      "name": "Nicholas Williams Arthuer",
+      "label": "Nico Williams",
+      "jersey": 17,
+      "position": "Left Wing",
+      "x": 83,
+      "y": 23.3,
+      "touches": 59
+    },
+    {
+      "id": 3477,
+      "name": "Álvaro Borja Morata Martín",
+      "label": "Álvaro Morata",
+      "jersey": 7,
+      "position": "Center Forward",
+      "x": 70.5,
+      "y": 36.6,
+      "touches": 27
+    }
+  ],
+  "edges": [
+    { "from": 11748, "to": 22128, "count": 13 },
+    { "from": 5721, "to": 22128, "count": 24 },
+    { "from": 5721, "to": 16532, "count": 5 },
+    { "from": 6765, "to": 22128, "count": 12 },
+    { "from": 4353, "to": 22128, "count": 31 },
+    { "from": 3477, "to": 5721, "count": 3 },
+    { "from": 4353, "to": 11748, "count": 11 },
+    { "from": 4353, "to": 6765, "count": 16 },
+    { "from": 5721, "to": 316046, "count": 13 },
+    { "from": 4353, "to": 17620, "count": 16 },
+    { "from": 3477, "to": 6655, "count": 3 },
+    { "from": 3477, "to": 6765, "count": 3 },
+    { "from": 4353, "to": 68574, "count": 6 },
+    { "from": 17620, "to": 68574, "count": 13 },
+    { "from": 6655, "to": 17620, "count": 10 },
+    { "from": 4353, "to": 6655, "count": 6 },
+    { "from": 5721, "to": 6765, "count": 6 },
+    { "from": 22128, "to": 316046, "count": 4 },
+    { "from": 6655, "to": 68574, "count": 5 },
+    { "from": 6765, "to": 68574, "count": 5 },
+    { "from": 16532, "to": 68574, "count": 3 },
+    { "from": 6655, "to": 22128, "count": 6 },
+    { "from": 6655, "to": 6765, "count": 8 },
+    { "from": 6655, "to": 16532, "count": 3 },
+    { "from": 5721, "to": 6655, "count": 7 },
+    { "from": 16532, "to": 316046, "count": 4 },
+    { "from": 5721, "to": 11748, "count": 4 },
+    { "from": 3477, "to": 68574, "count": 7 },
+    { "from": 5721, "to": 68574, "count": 4 },
+    { "from": 68574, "to": 316046, "count": 8 },
+    { "from": 6655, "to": 316046, "count": 3 }
+  ]
+}

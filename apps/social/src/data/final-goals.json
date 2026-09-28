@@ -1,0 +1,495 @@
+[
+  {
+    "team": "Spain",
+    "scorer": "Nico Williams",
+    "minute": 46,
+    "xg": 0.112,
+    "goal": { "x": 109.9, "y": 28, "endX": 120, "endY": 42.4, "second": 2769 },
+    "moves": [
+      {
+        "kind": "pass",
+        "player": "Marc Cucurella",
+        "x": 40.7,
+        "y": 0.1,
+        "endX": 30.4,
+        "endY": 6.1,
+        "second": 2735
+      },
+      {
+        "kind": "pass",
+        "player": "Aymeric Laporte",
+        "x": 30.4,
+        "y": 6.1,
+        "endX": 27.5,
+        "endY": 46.6,
+        "second": 2738
+      },
+      {
+        "kind": "carry",
+        "player": "Robin Le Normand",
+        "x": 27.5,
+        "y": 46.6,
+        "endX": 27.5,
+        "endY": 52.2,
+        "second": 2739
+      },
+      {
+        "kind": "pass",
+        "player": "Robin Le Normand",
+        "x": 27.5,
+        "y": 52.2,
+        "endX": 40.6,
+        "endY": 51.4,
+        "second": 2741
+      },
+      {
+        "kind": "carry",
+        "player": "Martín Zubimendi",
+        "x": 40.6,
+        "y": 51.4,
+        "endX": 48.6,
+        "endY": 27.8,
+        "second": 2742
+      },
+      {
+        "kind": "pass",
+        "player": "Martín Zubimendi",
+        "x": 48.6,
+        "y": 27.8,
+        "endX": 49.2,
+        "endY": 6.6,
+        "second": 2749
+      },
+      {
+        "kind": "pass",
+        "player": "Marc Cucurella",
+        "x": 49.2,
+        "y": 6.6,
+        "endX": 64.2,
+        "endY": 2.5,
+        "second": 2751
+      },
+      {
+        "kind": "pass",
+        "player": "Nico Williams",
+        "x": 62.8,
+        "y": 2.5,
+        "endX": 38.7,
+        "endY": 14.9,
+        "second": 2753
+      },
+      {
+        "kind": "carry",
+        "player": "Aymeric Laporte",
+        "x": 38.7,
+        "y": 14.9,
+        "endX": 47.1,
+        "endY": 38.5,
+        "second": 2755
+      },
+      {
+        "kind": "pass",
+        "player": "Aymeric Laporte",
+        "x": 47.1,
+        "y": 38.5,
+        "endX": 47.6,
+        "endY": 67.7,
+        "second": 2759
+      },
+      {
+        "kind": "carry",
+        "player": "Fabián Ruiz",
+        "x": 47.6,
+        "y": 67.7,
+        "endX": 49.7,
+        "endY": 68.1,
+        "second": 2761
+      },
+      {
+        "kind": "pass",
+        "player": "Fabián Ruiz",
+        "x": 49.7,
+        "y": 68.1,
+        "endX": 69.2,
+        "endY": 74.7,
+        "second": 2762
+      },
+      {
+        "kind": "pass",
+        "player": "Daniel Carvajal",
+        "x": 69.7,
+        "y": 74.3,
+        "endX": 93.9,
+        "endY": 60.6,
+        "second": 2763
+      },
+      {
+        "kind": "carry",
+        "player": "Lamine Yamal",
+        "x": 93.9,
+        "y": 60.6,
+        "endX": 100.6,
+        "endY": 47,
+        "second": 2766
+      },
+      {
+        "kind": "pass",
+        "player": "Lamine Yamal",
+        "x": 100.6,
+        "y": 47,
+        "endX": 109.9,
+        "endY": 28,
+        "second": 2768
+      }
+    ],
+    "freezeFrame": [
+      {
+        "x": 107.8,
+        "y": 43.3,
+        "teammate": false,
+        "player": "Marc Guehi",
+        "position": "Left Center Back"
+      },
+      {
+        "x": 108.2,
+        "y": 41.9,
+        "teammate": true,
+        "player": "Daniel Olmo",
+        "position": "Center Attacking Midfield"
+      },
+      { "x": 107, "y": 44.3, "teammate": true, "player": "Lamine Yamal", "position": "Right Wing" },
+      {
+        "x": 111,
+        "y": 40.7,
+        "teammate": false,
+        "player": "John Stones",
+        "position": "Right Center Back"
+      },
+      {
+        "x": 112.6,
+        "y": 32.8,
+        "teammate": false,
+        "player": "Kyle Walker",
+        "position": "Right Back"
+      },
+      {
+        "x": 105.5,
+        "y": 44.5,
+        "teammate": false,
+        "player": "Declan Rice",
+        "position": "Left Defensive Midfield"
+      },
+      { "x": 102.6, "y": 44.2, "teammate": false, "player": "Luke Shaw", "position": "Left Back" },
+      {
+        "x": 100.4,
+        "y": 42.2,
+        "teammate": false,
+        "player": "Kobbie Mainoo",
+        "position": "Right Defensive Midfield"
+      },
+      {
+        "x": 117.4,
+        "y": 37.1,
+        "teammate": false,
+        "player": "Jordan Pickford",
+        "position": "Goalkeeper"
+      },
+      {
+        "x": 112.6,
+        "y": 47.6,
+        "teammate": true,
+        "player": "Álvaro Morata",
+        "position": "Center Forward"
+      }
+    ]
+  },
+  {
+    "team": "England",
+    "scorer": "Cole Palmer",
+    "minute": 72,
+    "xg": 0.038,
+    "goal": { "x": 98.4, "y": 49, "endX": 120, "endY": 37.1, "second": 4328 },
+    "moves": [
+      {
+        "kind": "pass",
+        "player": "Jordan Pickford",
+        "x": 14.8,
+        "y": 48.8,
+        "endX": 43.7,
+        "endY": 56.6,
+        "second": 4313
+      },
+      {
+        "kind": "pass",
+        "player": "Jude Bellingham",
+        "x": 44.2,
+        "y": 58.8,
+        "endX": 45.6,
+        "endY": 67.4,
+        "second": 4315
+      },
+      {
+        "kind": "pass",
+        "player": "Cole Palmer",
+        "x": 46.2,
+        "y": 67.7,
+        "endX": 70.3,
+        "endY": 76.5,
+        "second": 4318
+      },
+      {
+        "kind": "carry",
+        "player": "Bukayo Saka",
+        "x": 70.3,
+        "y": 76.5,
+        "endX": 109.5,
+        "endY": 60.5,
+        "second": 4320
+      },
+      {
+        "kind": "pass",
+        "player": "Bukayo Saka",
+        "x": 109.5,
+        "y": 60.5,
+        "endX": 107.4,
+        "endY": 47,
+        "second": 4326
+      },
+      {
+        "kind": "pass",
+        "player": "Jude Bellingham",
+        "x": 107.6,
+        "y": 47,
+        "endX": 98.4,
+        "endY": 51.8,
+        "second": 4327
+      }
+    ],
+    "freezeFrame": [
+      {
+        "x": 110.4,
+        "y": 39.5,
+        "teammate": false,
+        "player": "Daniel Carvajal",
+        "position": "Right Back"
+      },
+      {
+        "x": 118.2,
+        "y": 40.7,
+        "teammate": false,
+        "player": "Unai Simón",
+        "position": "Goalkeeper"
+      },
+      {
+        "x": 108,
+        "y": 58.3,
+        "teammate": false,
+        "player": "Fabián Ruiz",
+        "position": "Left Defensive Midfield"
+      },
+      {
+        "x": 107.5,
+        "y": 53.1,
+        "teammate": false,
+        "player": "Aymeric Laporte",
+        "position": "Left Center Back"
+      },
+      {
+        "x": 109.1,
+        "y": 45.5,
+        "teammate": false,
+        "player": "Marc Cucurella",
+        "position": "Left Back"
+      },
+      {
+        "x": 106.4,
+        "y": 46,
+        "teammate": false,
+        "player": "Martín Zubimendi",
+        "position": "Right Defensive Midfield"
+      },
+      {
+        "x": 102.1,
+        "y": 37.1,
+        "teammate": false,
+        "player": "Lamine Yamal",
+        "position": "Right Wing"
+      },
+      {
+        "x": 106.8,
+        "y": 44.4,
+        "teammate": false,
+        "player": "Robin Le Normand",
+        "position": "Right Center Back"
+      },
+      {
+        "x": 108.5,
+        "y": 47,
+        "teammate": true,
+        "player": "Jude Bellingham",
+        "position": "Right Defensive Midfield"
+      },
+      { "x": 107, "y": 54.1, "teammate": true, "player": "Bukayo Saka", "position": "Right Wing" },
+      {
+        "x": 108.7,
+        "y": 38.6,
+        "teammate": true,
+        "player": "Ollie Watkins",
+        "position": "Center Forward"
+      },
+      { "x": 108.5, "y": 33.7, "teammate": true, "player": "Phil Foden", "position": "Left Wing" },
+      { "x": 99.2, "y": 27.2, "teammate": true, "player": "Luke Shaw", "position": "Left Back" }
+    ]
+  },
+  {
+    "team": "Spain",
+    "scorer": "Mikel Oyarzabal",
+    "minute": 85,
+    "xg": 0.283,
+    "goal": { "x": 111.2, "y": 36.3, "endX": 120, "endY": 38.4, "second": 5156 },
+    "moves": [
+      {
+        "kind": "pass",
+        "player": "Daniel Carvajal",
+        "x": 34.3,
+        "y": 80,
+        "endX": 25.1,
+        "endY": 50.6,
+        "second": 5143
+      },
+      {
+        "kind": "carry",
+        "player": "Aymeric Laporte",
+        "x": 25.1,
+        "y": 50.6,
+        "endX": 27,
+        "endY": 43.8,
+        "second": 5146
+      },
+      {
+        "kind": "pass",
+        "player": "Aymeric Laporte",
+        "x": 27,
+        "y": 43.8,
+        "endX": 49.3,
+        "endY": 47,
+        "second": 5147
+      },
+      {
+        "kind": "carry",
+        "player": "Fabián Ruiz",
+        "x": 49.3,
+        "y": 47,
+        "endX": 52.6,
+        "endY": 46.6,
+        "second": 5148
+      },
+      {
+        "kind": "pass",
+        "player": "Fabián Ruiz",
+        "x": 52.6,
+        "y": 46.6,
+        "endX": 63.4,
+        "endY": 34.9,
+        "second": 5149
+      },
+      {
+        "kind": "carry",
+        "player": "Daniel Olmo",
+        "x": 63.4,
+        "y": 34.9,
+        "endX": 70.7,
+        "endY": 33.6,
+        "second": 5150
+      },
+      {
+        "kind": "pass",
+        "player": "Daniel Olmo",
+        "x": 70.7,
+        "y": 33.6,
+        "endX": 88.2,
+        "endY": 39.9,
+        "second": 5152
+      },
+      {
+        "kind": "pass",
+        "player": "Mikel Oyarzabal",
+        "x": 88.9,
+        "y": 37.8,
+        "endX": 99.7,
+        "endY": 12.7,
+        "second": 5153
+      },
+      {
+        "kind": "pass",
+        "player": "Marc Cucurella",
+        "x": 100,
+        "y": 12.7,
+        "endX": 111.2,
+        "endY": 36.3,
+        "second": 5155
+      }
+    ],
+    "freezeFrame": [
+      {
+        "x": 93.2,
+        "y": 38.4,
+        "teammate": false,
+        "player": "Jude Bellingham",
+        "position": "Right Defensive Midfield"
+      },
+      {
+        "x": 98.5,
+        "y": 48.6,
+        "teammate": true,
+        "player": "Nico Williams",
+        "position": "Left Wing"
+      },
+      {
+        "x": 104.3,
+        "y": 17.5,
+        "teammate": true,
+        "player": "Marc Cucurella",
+        "position": "Left Back"
+      },
+      {
+        "x": 111,
+        "y": 37.6,
+        "teammate": false,
+        "player": "Marc Guehi",
+        "position": "Left Center Back"
+      },
+      { "x": 104.2, "y": 48.3, "teammate": false, "player": "Luke Shaw", "position": "Left Back" },
+      {
+        "x": 107.3,
+        "y": 33.3,
+        "teammate": false,
+        "player": "John Stones",
+        "position": "Right Center Back"
+      },
+      {
+        "x": 100.5,
+        "y": 31,
+        "teammate": false,
+        "player": "Declan Rice",
+        "position": "Left Defensive Midfield"
+      },
+      {
+        "x": 105.1,
+        "y": 16.5,
+        "teammate": false,
+        "player": "Kyle Walker",
+        "position": "Right Back"
+      },
+      { "x": 89.8, "y": 54.9, "teammate": false, "player": "Phil Foden", "position": "Left Wing" },
+      {
+        "x": 115.4,
+        "y": 37.9,
+        "teammate": false,
+        "player": "Jordan Pickford",
+        "position": "Goalkeeper"
+      },
+      { "x": 96.6, "y": 60.9, "teammate": true, "player": "Lamine Yamal", "position": "Right Wing" }
+    ]
+  }
+]
