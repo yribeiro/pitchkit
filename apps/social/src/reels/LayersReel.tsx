@@ -35,7 +35,7 @@ function Beat({ children }: { children: ReactNode }) {
   );
 }
 
-function Title({ name, what, color = C.emerald }: { name: string; what: string; color?: string }) {
+function Title({ name, what, color = C.accent }: { name: string; what: string; color?: string }) {
   const frame = useCurrentFrame();
   const pop = interpolate(frame, [0, 8], [0.92, 1], clamp);
   return (
@@ -80,7 +80,7 @@ function Hook() {
           13 layers.
           <br />
           One{" "}
-          <span style={{ fontFamily: FONT.mono, color: C.emerald, letterSpacing: "-0.06em" }}>
+          <span style={{ fontFamily: FONT.mono, color: C.accent, letterSpacing: "-0.06em" }}>
             &lt;Pitch&gt;
           </span>
           .

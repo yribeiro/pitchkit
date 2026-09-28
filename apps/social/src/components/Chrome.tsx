@@ -50,7 +50,7 @@ export function PitchStage({
   );
 }
 
-export function Eyebrow({ children, color = C.emerald }: { children: ReactNode; color?: string }) {
+export function Eyebrow({ children, color = C.accent }: { children: ReactNode; color?: string }) {
   return (
     <div
       style={{
@@ -94,7 +94,7 @@ export function Sub({ children, size = 30 }: { children: ReactNode; size?: numbe
 /** Inline `code`-styled token, e.g. a component name. */
 export function Tag({
   children,
-  color = C.emerald,
+  color = C.accent,
   size = 26,
 }: {
   children: ReactNode;
@@ -108,7 +108,7 @@ export function Tag({
         fontSize: size,
         fontWeight: 600,
         color,
-        background: "rgba(52, 211, 153, 0.09)",
+        background: "rgba(0, 0, 0, 0.22)",
         border: `1px solid ${C.border}`,
         borderRadius: 10,
         padding: "6px 14px",

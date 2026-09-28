@@ -48,7 +48,7 @@ export function EndCard() {
           >
             Football visualised
             <br />
-            for the <span style={{ color: C.emerald }}>web.</span>
+            for the <span style={{ color: C.accent }}>web.</span>
           </div>
           <div style={rise(18)}>
             <InstallPill size={38} />

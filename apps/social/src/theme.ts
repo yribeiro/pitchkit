@@ -15,15 +15,17 @@ export const REEL_SAFE = { top: 250, bottom: 1500, left: 60, right: 960 } as con
 
 /** Brand palette — the emerald of the PitchKit mark, on a flat deep-emerald ground. */
 export const C = {
-  bg: "#062219",
+  bg: "#0a6f4d", // 60% emerald-500 (#10b981), 40% black
   bgRaised: "#0b1a13",
   panel: "#0e1f17",
   border: "rgba(52, 211, 153, 0.18)",
   emerald: "#34d399",
+  /** Emerald for text sitting directly on `bg` — `emerald` itself is too close to it. */
+  accent: "#a7f3d0",
   emeraldDeep: "#10b981",
   text: "#eef5f1",
-  muted: "#8fa89b",
-  faint: "#56695f",
+  muted: "rgba(255, 255, 255, 0.78)",
+  faint: "rgba(255, 255, 255, 0.58)",
   /** The docs site's marker colours (docs-pitch-theme.css). */
   sky: "#38bdf8",
   orange: "#fb923c",

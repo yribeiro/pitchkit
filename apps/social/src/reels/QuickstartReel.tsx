@@ -148,7 +148,7 @@ function EventCounter() {
         fontFamily: FONT.mono,
         fontSize: 56,
         fontWeight: 600,
-        color: C.emerald,
+        color: C.accent,
         opacity: interpolate(frame, [38, 44], [0, 1], clamp),
       }}
     >

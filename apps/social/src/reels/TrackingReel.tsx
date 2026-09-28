@@ -140,7 +140,7 @@ export function TrackingReel() {
         <div style={{ fontSize: 58, fontWeight: 800, letterSpacing: "-0.035em", lineHeight: 1.05 }}>
           22 players. Every frame.
           <br />
-          <span style={{ color: C.emerald }}>In the browser.</span>
+          <span style={{ color: C.accent }}>In the browser.</span>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import { C, FONT } from "../theme";
  * The PitchKit mark — geometry copied verbatim from
  * assets/brand/pitchkit-mark.svg (see that folder's README before changing it).
  */
-export function Mark({ size = 48, color = C.emerald }: { size?: number; color?: string }) {
+export function Mark({ size = 48, color = C.accent }: { size?: number; color?: string }) {
   return (
     <svg
       width={size}

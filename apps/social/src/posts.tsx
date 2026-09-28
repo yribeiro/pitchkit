@@ -31,7 +31,7 @@ export function PostIntro() {
         <>
           Football visualised
           <br />
-          for the <span style={{ color: C.emerald }}>web.</span>
+          for the <span style={{ color: C.accent }}>web.</span>
         </>
       }
       sub="mplsoccer's pitch charts, rebuilt as React components. Shot maps, pass networks, heatmaps, tracking data — in the browser."
@@ -182,7 +182,7 @@ export function PostNetwork() {
         >
           {nodes.map((n) => (
             <span key={n.id} style={{ whiteSpace: "nowrap" }}>
-              <span style={{ fontFamily: FONT.mono, color: C.emerald, fontWeight: 600 }}>
+              <span style={{ fontFamily: FONT.mono, color: C.accent, fontWeight: 600 }}>
                 {String(n.jersey).padStart(2, " ")}
               </span>{" "}
               {n.label}
@@ -264,7 +264,7 @@ export function PostLayers() {
       headline={
         <>
           13 layers. One{" "}
-          <span style={{ fontFamily: FONT.mono, color: C.emerald, letterSpacing: "-0.04em" }}>
+          <span style={{ fontFamily: FONT.mono, color: C.accent, letterSpacing: "-0.04em" }}>
             &lt;Pitch&gt;
           </span>
           .
@@ -280,7 +280,7 @@ export function PostLayers() {
             <LayerDemoChart demo={d} width={306} />
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <span
-                style={{ fontFamily: FONT.mono, fontSize: 21, fontWeight: 600, color: C.emerald }}
+                style={{ fontFamily: FONT.mono, fontSize: 21, fontWeight: 600, color: C.accent }}
               >
                 &lt;{d.name}&gt;
               </span>
