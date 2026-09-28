@@ -95,5 +95,6 @@ npm run format
 - On Windows, run `npm`, `node` and `git` inside WSL. A Windows-native `git pull` can leave
   CRLF noise that shows up as a huge diff; see
   [CONTRIBUTING.md: working on Windows](./CONTRIBUTING.md#working-on-windows).
-- Dependabot alerts are all in the private `apps/` and `examples/` workspaces; none reach the
-  published packages. Keep the docs site's own dependencies current, since it is deployed.
+- Dependabot alerts are in build and dev tooling (`tsup`, `vite`, `vitest`, `fumadocs`) or the
+  private `apps/` and `examples/` workspaces. None is a runtime dependency of a published
+  package. Keep the docs site's own dependencies current, since it is deployed.
