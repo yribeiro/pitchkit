@@ -14,7 +14,7 @@
     "@pitchkit/core": "*",
     "@pitchkit/data-providers": "*",
     "@pitchkit/react": "*",
-    "next": "^16",
+    "next": "^16.3.6",
     "react": "^19",
     "react-dom": "^19"
   },
