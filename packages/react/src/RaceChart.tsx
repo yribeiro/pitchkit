@@ -64,17 +64,17 @@ function resolveAppearance(
  * Padding is derived from what is actually drawn, so turning the axes off
  * reclaims their gutters instead of leaving the plot floating in space.
  *
- * The end-label gutter is sized to what the label actually occupies — a
- * 12px swatch, a gap, and four digits at 12px — rather than to a round
- * number. The difference is invisible on a wide chart and a tenth of the
- * plot on a phone.
+ * There is no gutter for the end labels: they sit above their own line
+ * ends, inside the plot, so the lines run the full width of the chart.
+ * The only thing reserved on the right is half of the last minute tick,
+ * which is centred on the axis end and would otherwise be clipped.
  */
 function defaultPadding(appearance: Required<RaceAppearance>): ChartPadding {
   const showX = appearance.axis === "both" || appearance.axis === "x";
   const showY = appearance.axis === "both" || appearance.axis === "y";
   return {
     top: appearance.legend || appearance.periods ? 32 : 10,
-    right: appearance.endLabels ? 60 : 10,
+    right: showX ? 14 : 10,
     bottom: showX ? 30 : 10,
     left: showY ? 38 : 10,
   };
@@ -87,6 +87,24 @@ function defaultPadding(appearance: Required<RaceAppearance>): ChartPadding {
  */
 const NARROW_WIDTH = 420;
 const NARROW_ASPECT_RATIO = 1.4;
+
+/** Clearance between a line end and its label. */
+const END_LABEL_GAP = 10;
+
+/**
+ * Where an end label sits relative to its line.
+ *
+ * Above it, which keeps the label clear of the line's own last segment
+ * and reads as belonging to it. A total landing exactly on the axis
+ * ceiling leaves no room up there, though — `resolveMaxValue` rounds up
+ * to a tick, and a total already on one gets no headroom — so in that
+ * case the label drops below the line instead of being clipped by the
+ * top of the plot.
+ */
+function endLabelY(lineY: number, plotTop: number): number {
+  const above = lineY - END_LABEL_GAP;
+  return above - END_LABEL_GAP >= plotTop ? above : lineY + END_LABEL_GAP + 8;
+}
 
 /**
  * The next round tick at or above the highest total.
@@ -388,23 +406,15 @@ export function RaceChart<T>({
                       />
                     ))}
                 {resolved.endLabels && (
-                  <g data-pitchkit-part="race-label">
-                    <rect
-                      x={frame.x1 + 8}
-                      y={scaleY(rendered.total) - 1.25}
-                      width={12}
-                      height={2.5}
-                      rx={1.25}
-                      style={{ fill: rendered.color }}
-                    />
-                    <text
-                      x={frame.x1 + 26}
-                      y={scaleY(rendered.total) + 4}
-                      style={{ fill: CHART_TEXT, fontSize: 12, fontWeight: 500 }}
-                    >
-                      {rendered.total.toFixed(2)}
-                    </text>
-                  </g>
+                  <text
+                    data-pitchkit-part="race-end-label"
+                    x={frame.x1}
+                    y={endLabelY(scaleY(rendered.total), frame.y0)}
+                    textAnchor="end"
+                    style={{ fill: CHART_TEXT, fontSize: 12, fontWeight: 600 }}
+                  >
+                    {`${rendered.label} ${rendered.total.toFixed(2)}`}
+                  </text>
                 )}
               </g>
             );

@@ -125,8 +125,8 @@ describe("<RaceChart>", () => {
   it("prints each series total at its line end", () => {
     renderChart();
 
-    expect(screen.getByText("0.83")).toBeTruthy();
-    expect(screen.getByText("0.39")).toBeTruthy();
+    expect(screen.getByText("HOME 0.83")).toBeTruthy();
+    expect(screen.getByText("AWAY 0.39")).toBeTruthy();
   });
 
   it("assigns series colours by slot, so removing one never repaints the others", () => {
@@ -244,16 +244,48 @@ describe("<RaceChart>", () => {
     expect(screen.getByText("90'")).toBeTruthy();
   });
 
-  it("sizes the end-label gutter to the label, not to a round number", () => {
-    // 88px of gutter is invisible on a wide chart and a third of the plot
-    // on a phone. The plot should get the rest.
+  it("reserves no right gutter for the end labels", () => {
+    // They sit above their own line ends, inside the plot, so the lines
+    // run the full width. Only half the last minute tick is reserved.
     const { container } = renderChart({ width: 400, height: 200 });
     const svg = container.querySelector("svg");
 
     expect(svg?.getAttribute("viewBox")).toBe("0 0 400 200");
-    // Right padding 60 => the hit-area rect spans 400 - 38 - 60 = 302.
+    // Right padding 14 => the hit-area rect spans 400 - 38 - 14 = 348.
     const hitArea = container.querySelector('rect[fill="transparent"]');
-    expect(hitArea?.getAttribute("width")).toBe("302");
+    expect(hitArea?.getAttribute("width")).toBe("348");
+  });
+
+  it("puts each end label above its line end, inside the plot", () => {
+    const { container } = renderChart({ width: 720, height: 380 });
+    const labels = Array.from(
+      container.querySelectorAll('text[data-pitchkit-part="race-end-label"]'),
+    );
+    const hitArea = container.querySelector('rect[fill="transparent"]') as Element;
+    const plotRight = Number(hitArea.getAttribute("x")) + Number(hitArea.getAttribute("width"));
+
+    expect(labels).toHaveLength(2);
+    for (const label of labels) {
+      expect(label.getAttribute("text-anchor")).toBe("end");
+      expect(Number(label.getAttribute("x"))).toBeLessThanOrEqual(plotRight);
+    }
+    // The label names its series, since there is no swatch beside it now.
+    expect(labels.map((l) => l.textContent)).toEqual(["HOME 0.83", "AWAY 0.39"]);
+  });
+
+  it("drops a label below its line when the total leaves no headroom", () => {
+    // A total landing exactly on the axis ceiling has nothing above it,
+    // so the label would otherwise be clipped by the top of the plot.
+    const { container } = renderChart({
+      series: [{ id: "HOME", data: [{ minute: 20, xg: 1.5 }] }],
+      width: 720,
+      height: 380,
+    });
+    const label = container.querySelector('text[data-pitchkit-part="race-end-label"]') as Element;
+    const line = container.querySelector('[data-pitchkit-part="race-line"]') as Element;
+    const lineTop = Number((line.getAttribute("d") ?? "").match(/V([\d.]+)/)?.[1]);
+
+    expect(Number(label.getAttribute("y"))).toBeGreaterThan(lineTop);
   });
 
   it("uses a squarer box at phone width", () => {
@@ -386,7 +418,7 @@ describe("<RaceChart>", () => {
     const { container } = renderChart({ series: [{ id: "NONE", data: [] }] });
 
     expect(container.querySelectorAll('[data-pitchkit-part="race-line"]')).toHaveLength(1);
-    expect(screen.getByText("0.00")).toBeTruthy();
+    expect(screen.getByText("NONE 0.00")).toBeTruthy();
   });
 
   it("leaves headroom above the leading line", () => {

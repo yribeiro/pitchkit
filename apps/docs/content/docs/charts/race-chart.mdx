@@ -149,6 +149,16 @@ CSS variables only, as everywhere else.
 | `--pitch-chart-text`      | Values and labels                          |
 | `--pitch-chart-muted`     | Tick labels                                |
 
+Each series' total is printed **above its own line end, inside the plot**, rather than in a
+right-hand gutter, so the lines use the full width of the chart. A total sitting on the axis ceiling
+has no room above it, so that label drops below its line instead of being clipped.
+
+For anything the variables don't reach, every element carries a `data-pitchkit-part`, so a Tailwind
+arbitrary variant can select it without owning the JSX: `race-line`, `race-area`, `race-marker`,
+`race-emphasis`, `race-end-label`, `race-axis`, `race-grid`, `race-label`, `race-period`,
+`race-legend`, `race-crosshair`. The root carries `data-pitchkit-layer="race"` and each series group
+a `data-pitchkit-series` with its id.
+
 Colour follows the entity, not its rank: a series takes its slot from its position in the `series`
 array, so removing one never repaints the others. A series given a `className` and no `color` drops
 its themed default, the same rule as every mark layer — the class goes on the series group, so one
