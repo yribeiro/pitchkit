@@ -50,15 +50,16 @@ products. There, the gaps are:
 
 ## Competitive landscape
 
-| Library                   | Language | Scope                                 | Rendering           | Gap                                  |
-| ------------------------- | -------- | ------------------------------------- | ------------------- | ------------------------------------ |
-| mplsoccer                 | Python   | Full: pitch, stats, radar/pizza, data | matplotlib (static) | Not web; static; Python-only         |
-| RabonaJS                  | JS       | Pitch and event layers                | D3/SVG              | Narrow; no types; little stats depth |
-| d3-soccer                 | JS       | Pitch, heatmap, SPADL actions         | D3/SVG              | Stale; D3-coupled; no types          |
-| football-lineup-generator | TS       | Lineups only                          | Canvas              | No event data or stats layers        |
-| Pitch.js                  | JS       | Pitch rendering                       | DOM/SVG             | Pitch only                           |
+| Library                   | Language   | Scope                                 | Rendering  | Latest release (as of Sep 2026) |
+| ------------------------- | ---------- | ------------------------------------- | ---------- | ------------------------------- |
+| mplsoccer                 | Python     | Full: pitch, stats, radar/pizza, data | matplotlib | 1.8.1, Sep 2026 (PyPI)          |
+| RabonaJS                  | JavaScript | Pitch and event layers                | D3, SVG    | 1.0.0, Jan 2023 (npm)           |
+| d3-soccer                 | JavaScript | Pitch, heatmap, SPADL actions         | D3, SVG    | 0.3.0, Dec 2024 (npm)           |
+| football-lineup-generator | TypeScript | Lineup diagrams                       | Canvas     | 1.0.1, Jun 2025 (npm)           |
 
-Nobody has built a comprehensive, React-first, typed "mplsoccer for the web".
+mplsoccer is the reference, but it produces static images from Python. The JavaScript
+libraries each cover part of the ground. None offers React components with mplsoccer's range
+of pitch types, event layers, density layers and charts, which is the gap PitchKit fills.
 
 ## Goals and non-goals
 

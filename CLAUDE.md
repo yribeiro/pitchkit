@@ -94,5 +94,4 @@ npm run format
   CRLF noise that shows up as a huge diff; see
   [CONTRIBUTING.md: working on Windows](./CONTRIBUTING.md#working-on-windows).
 - Dependabot alerts are all in the private `apps/` and `examples/` workspaces; none reach the
-  published packages. The ones that matter are those affecting the live docs site (`next`,
-  `sharp`).
+  published packages. Keep the docs site's own dependencies current, since it is deployed.
