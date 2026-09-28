@@ -12,7 +12,7 @@ detail lives in three companion documents:
 | Document                          | Contents                                                                                |
 | --------------------------------- | --------------------------------------------------------------------------------------- |
 | [Architecture](./architecture.md) | Rendering, coordinates, packages, styling, engineering standards, implementation notes. |
-| [Roadmap](./roadmap.md)           | Feature inventory with status, milestones, release history, mplsoccer parity reference. |
+| [Roadmap](./roadmap.md)           | Feature inventory with status, milestones, release history.                             |
 | [Decision log](./decisions.md)    | What was decided, why, and what follows from it. Read before changing a covered area.   |
 
 ---
@@ -22,7 +22,7 @@ detail lives in three companion documents:
 Football analytics on the web has no equivalent to Python's **mplsoccer**. Analysts who want
 interactive pitch visualisations in a web app stitch together D3 wrappers, half-maintained
 plugins, or their own SVG. PitchKit is one well-typed, well-documented library that covers
-mplsoccer's feature set, renders well on phones and desktops, and fits modern React and
+pitch drawing, event and density layers, and player charts, renders well on phones and desktops, and fits modern React and
 Next.js apps.
 
 It has three parts:
@@ -65,8 +65,8 @@ of pitch types, event layers, density layers and charts, which is the gap PitchK
 
 ### Goals
 
-- **Functional parity with mplsoccer's core** (not pixel-perfect): pitches for the major
-  providers, the plotting primitives, statistical layers, and radar/pizza/bumpy charts.
+- **Broad feature coverage:** pitches for the major providers, plotting primitives,
+  statistical layers, and radar, pizza and bumpy charts.
 - **TypeScript-first:** exported types, good autocomplete, type-safe accessors.
 - **Framework-agnostic core with a thin React binding**, and documented Next.js (App Router,
   SSR) use.
@@ -116,7 +116,7 @@ shapes how the API and docs are written (see Goals).
 
 - **Adoption:** npm weekly downloads, GitHub stars, dependent repos.
 - **Developer experience:** first pitch on screen within five minutes of the Quickstart.
-- **Coverage:** at least 90% of the phase-1 mplsoccer inventory shipped at v1.0
+- **Coverage:** at least 90% of the v1.0 feature inventory shipped
   ([roadmap](./roadmap.md#feature-inventory)).
 - **Performance:** layers meet their render and bundle budgets
   ([architecture](./architecture.md#performance-budgets)).

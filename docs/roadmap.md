@@ -5,7 +5,6 @@ What PitchKit covers, what's left, and what has shipped.
 - [Feature inventory](#feature-inventory)
 - [Milestones](#milestones)
 - [Release history](#release-history)
-- [mplsoccer reference](#mplsoccer-reference)
 
 Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1** = v1.0,
 **L** = later.
@@ -14,44 +13,42 @@ Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1*
 
 ## Feature inventory
 
-Mapped from mplsoccer's modules so parity can be audited.
-
 ### Pitch drawing and geometry
 
-| Feature                                         | mplsoccer ref                        | Phase | Status                                                                                              |
-| ----------------------------------------------- | ------------------------------------ | ----- | --------------------------------------------------------------------------------------------------- |
-| Horizontal pitch                                | `Pitch`                              | M     | ✅ `<Pitch>`                                                                                        |
-| Vertical pitch                                  | `VerticalPitch`                      | M     | ✅ `<VerticalPitch>`                                                                                |
-| Half-pitch, padding, crop                       | `half`, `pad_*`                      | M     | ✅ `crop`, `padding`, `cropForHalf()`                                                               |
-| Pitch types                                     | `pitch_type` (9 types)               | M → 1 | 🟡 StatsBomb, Opta, Wyscout, UEFA, SkillCorner. Remaining: Tracab, SecondSpectrum, Metrica, custom. |
-| Styling: stripes, line colour/width, goal types | `pitch_color`, `stripe`, `goal_type` | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                     |
-| Coordinate standardiser (provider → provider)   | `Standardizer`                       | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.       |
+| Feature                                         | Phase | Status                                                                                              |
+| ----------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------- |
+| Horizontal pitch                                | M     | ✅ `<Pitch>`                                                                                        |
+| Vertical pitch                                  | M     | ✅ `<VerticalPitch>`                                                                                |
+| Half-pitch, padding, crop                       | M     | ✅ `crop`, `padding`, `cropForHalf()`                                                               |
+| Pitch types                                     | M → 1 | 🟡 StatsBomb, Opta, Wyscout, UEFA, SkillCorner. Remaining: Tracab, SecondSpectrum, Metrica, custom. |
+| Styling: stripes, line colour/width, goal types | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                     |
+| Coordinate standardiser (provider → provider)   | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.       |
 
 ### Plotting primitives
 
-| Feature                         | mplsoccer ref                  | Phase | Status                                              |
-| ------------------------------- | ------------------------------ | ----- | --------------------------------------------------- |
-| Scatter                         | `scatter`                      | M     | ✅ (no football marker or custom marker shapes yet) |
-| Arrows                          | `arrows`                       | M     | ✅                                                  |
-| Comet lines (tapered, gradient) | `lines`                        | M     | ✅                                                  |
-| Annotate                        | `annotate`                     | M     | ✅                                                  |
-| Polygon                         | `polygon`                      | 1     | ✅                                                  |
-| Convex hull                     | `convexhull`                   | 1     | ✅                                                  |
-| Voronoi                         | `voronoi`                      | 1     | ✅                                                  |
-| Goal angle                      | `goal_angle`                   | 1     | ✅                                                  |
-| Angle and distance helpers      | `calculate_angle_and_distance` | 1     | ⬜                                                  |
+| Feature                         | Phase | Status                                              |
+| ------------------------------- | ----- | --------------------------------------------------- |
+| Scatter                         | M     | ✅ (no football marker or custom marker shapes yet) |
+| Arrows                          | M     | ✅                                                  |
+| Comet lines (tapered, gradient) | M     | ✅                                                  |
+| Annotate                        | M     | ✅                                                  |
+| Polygon                         | 1     | ✅                                                  |
+| Convex hull                     | 1     | ✅                                                  |
+| Voronoi                         | 1     | ✅                                                  |
+| Goal angle                      | 1     | ✅                                                  |
+| Angle and distance helpers      | 1     | ⬜                                                  |
 
 ### Statistical and aggregate layers
 
-| Feature                                      | mplsoccer ref                                     | Phase | Status |
-| -------------------------------------------- | ------------------------------------------------- | ----- | ------ |
-| Heatmap (binned)                             | `bin_statistic` • `heatmap`                       | M     | ✅     |
-| Positional heatmap (Juego de Posición zones) | `bin_statistic_positional` • `heatmap_positional` | 1     | ✅     |
-| Heatmap labels                               | `label_heatmap`                                   | 1     | ⬜     |
-| Hexbin                                       | `hexbin`                                          | 1     | ✅     |
-| KDE                                          | `kdeplot`                                         | 1     | ✅     |
-| Flow (binned direction and magnitude)        | `flow`                                            | 1     | ✅     |
-| Sonars                                       | `sonar`, `sonar_grid`                             | L     | ⬜     |
+| Feature                                      | Phase | Status |
+| -------------------------------------------- | ----- | ------ |
+| Heatmap (binned)                             | M     | ✅     |
+| Positional heatmap (Juego de Posición zones) | 1     | ✅     |
+| Heatmap labels                               | 1     | ⬜     |
+| Hexbin                                       | 1     | ✅     |
+| KDE                                          | 1     | ✅     |
+| Flow (binned direction and magnitude)        | 1     | ✅     |
+| Sonars                                       | L     | ⬜     |
 
 ### Composite recipes
 
@@ -69,22 +66,22 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 
 ### Non-pitch charts
 
-| Feature                                                 | mplsoccer ref | Phase | Status                                                   |
-| ------------------------------------------------------- | ------------- | ----- | -------------------------------------------------------- |
-| Radar (range bands, lower-is-better flip)               | `Radar`       | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
-| Pizza / percentile (Nightingale), incl. comparison mode | `PyPizza`     | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
-| Bumpy chart (rank over time)                            | `Bumpy`       | L     | ⬜                                                       |
+| Feature                                                 | Phase | Status                                                   |
+| ------------------------------------------------------- | ----- | -------------------------------------------------------- |
+| Radar (range bands, lower-is-better flip)               | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
+| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
+| Bumpy chart (rank over time)                            | L     | ⬜                                                       |
 
 ### Supporting utilities
 
-| Feature                                    | mplsoccer ref               | Phase | Status                                                                                                                      |
-| ------------------------------------------ | --------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------- |
-| Grid / jointgrid layout                    | `grid`, `jointgrid`         | 1     | ⬜                                                                                                                          |
-| Inset axes and images                      | `inset_axes`, `inset_image` | L     | ⬜                                                                                                                          |
-| Fonts                                      | `FontManager`               | M     | Not needed: web fonts are CSS.                                                                                              |
-| Open-data loaders                          | `Sbopen`                    | 1     | ✅ StatsBomb (events + 360), SkillCorner, Wyscout. Metrica is open ([#30](https://github.com/yribeiro/pitchkit/issues/30)). |
-| Authenticated StatsBomb API / local files  | `Sbapi`, `Sblocal`          | —     | Out of scope                                                                                                                |
-| Image export (PNG/SVG) with logo/watermark | `add_image`                 | 1     | ⬜                                                                                                                          |
+| Feature                                    | Phase | Status                                                                                                                      |
+| ------------------------------------------ | ----- | --------------------------------------------------------------------------------------------------------------------------- |
+| Grid / jointgrid layout                    | 1     | ⬜                                                                                                                          |
+| Inset axes and images                      | L     | ⬜                                                                                                                          |
+| Fonts                                      | M     | Not needed: web fonts are CSS.                                                                                              |
+| Open-data loaders                          | 1     | ✅ StatsBomb (events + 360), SkillCorner, Wyscout. Metrica is open ([#30](https://github.com/yribeiro/pitchkit/issues/30)). |
+| Authenticated StatsBomb API / local files  | —     | Out of scope                                                                                                                |
+| Image export (PNG/SVG) with logo/watermark | 1     | ⬜                                                                                                                          |
 
 Image export is the path from a finished chart out of the browser tab. SVG layers export as
 they are. Canvas layers need their `devicePixelRatio`-scaled buffer flattened into the same
@@ -117,7 +114,7 @@ Complete as of 2026-09-06.
 - Docs site skeleton ([PR #18](https://github.com/yribeiro/pitchkit/pull/18)) and the
   shadcn-style showcase site ([PR #32](https://github.com/yribeiro/pitchkit/pull/32)).
 
-### Milestone 2 — v1.0 parity push 🚧
+### Milestone 2 — v1.0 🚧
 
 - [x] Geometric overlays: Flow, Polygon, Convex Hull, Voronoi, Goal Angle
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
@@ -196,22 +193,3 @@ All three packages are published under the `pitchkit` npm org. Each package's ow
 | 2026-09-22 | 0.3.1  | 0.4.2   | 0.3.1            | npm metadata; package links point at the `www` host.                                                                                |
 | 2026-09-27 | 0.4.0  | 0.5.0   | 0.4.0            | Wyscout provider and pitch type; normalised grids render at real proportions ([#2](https://github.com/yribeiro/pitchkit/issues/2)). |
 | 2026-09-27 | —      | 0.5.1   | —                | Skill lists `--pitch-marker-goal`.                                                                                                  |
-
----
-
-## mplsoccer reference
-
-The parity target.
-
-- **Modules:** `pitch` (`Pitch`, `VerticalPitch`), `radar_chart` (`Radar`), `py_pizza`
-  (`PyPizza`), `bumpy_chart` (`Bumpy`), `statsbomb` (`Sbopen`/`Sbapi`/`Sblocal`), `quiver`
-  (`arrows`), `linecollection` (`lines`), `utils` (`FontManager`, `add_image`, `inset_axes`,
-  `inset_image`, `set_labels`, `get_aspect`, `grid`).
-- **Pitch methods:** `draw`, `grid`, `jointgrid`, `scatter`, `arrows`, `lines`, `annotate`,
-  `polygon`, `convexhull`, `voronoi`, `goal_angle`, `bin_statistic` + `heatmap`,
-  `bin_statistic_positional` + `heatmap_positional`, `label_heatmap`, `hexbin`, `kdeplot`,
-  `flow`, `sonar` / `sonar_grid`, `inset_axes`, `inset_image`,
-  `calculate_angle_and_distance`, `Standardizer`.
-- **Pitch types (9):** statsbomb, opta, tracab, wyscout, metricasports, uefa (105×68 m),
-  skillcorner, secondspectrum, custom.
-- **Non-pitch charts:** Radar, PyPizza, Bumpy.

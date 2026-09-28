@@ -16,7 +16,7 @@ body:
     id: mplsoccer
     attributes:
       label: mplsoccer equivalent
-      description: If this exists in mplsoccer, which function or class? Helps with parity tracking.
+      description: If another library already does this (for example mplsoccer), which function or class?
       placeholder: e.g. Pitch.hexbin, PyPizza
     validations:
       required: false
