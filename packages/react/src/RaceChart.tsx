@@ -91,19 +91,34 @@ const NARROW_ASPECT_RATIO = 1.4;
 /** Clearance between a line end and its label. */
 const END_LABEL_GAP = 10;
 
+/** Text height below its baseline-anchored y, near enough for 12px type. */
+const END_LABEL_DESCENT = 8;
+
 /**
  * Where an end label sits relative to its line.
  *
- * Above it, which keeps the label clear of the line's own last segment
- * and reads as belonging to it. A total landing exactly on the axis
- * ceiling leaves no room up there, though — `resolveMaxValue` rounds up
- * to a tick, and a total already on one gets no headroom — so in that
- * case the label drops below the line instead of being clipped by the
- * top of the plot.
+ * The leading series labels above its line and every other series below
+ * its own. The two labels then move apart rather than towards each
+ * other, so two teams finishing on close totals don't print one name on
+ * top of the other — the leader's label heads up, the rest head down.
+ *
+ * Either way it flips when there's no room: a leader sitting on the axis
+ * ceiling drops below, and a trailing total at zero goes above rather
+ * than into the minute ticks.
  */
-function endLabelY(lineY: number, plotTop: number): number {
+function endLabelY(
+  lineY: number,
+  placeAbove: boolean,
+  plotTop: number,
+  plotBottom: number,
+): number {
   const above = lineY - END_LABEL_GAP;
-  return above - END_LABEL_GAP >= plotTop ? above : lineY + END_LABEL_GAP + 8;
+  const below = lineY + END_LABEL_GAP + END_LABEL_DESCENT;
+  const fitsAbove = above - END_LABEL_GAP >= plotTop;
+  const fitsBelow = below <= plotBottom;
+
+  if (placeAbove) return fitsAbove ? above : below;
+  return fitsBelow ? below : above;
 }
 
 /**
@@ -247,6 +262,13 @@ export function RaceChart<T>({
       [scaleX(endTime), scaleY(s.total)],
     ] as Point[],
   }));
+
+  // The series whose end label goes above its line. Ties go to the first
+  // series, so which label flips never depends on float noise.
+  const leaderIndex = renderedSeries.reduce(
+    (best, s, i, all) => (s.total > (all[best]?.total ?? -Infinity) ? i : best),
+    0,
+  );
 
   const contextValue = {
     frame,
@@ -409,7 +431,7 @@ export function RaceChart<T>({
                   <text
                     data-pitchkit-part="race-end-label"
                     x={frame.x1}
-                    y={endLabelY(scaleY(rendered.total), frame.y0)}
+                    y={endLabelY(scaleY(rendered.total), i === leaderIndex, frame.y0, frame.y1)}
                     textAnchor="end"
                     style={{ fill: CHART_TEXT, fontSize: 12, fontWeight: 600 }}
                   >

@@ -78,9 +78,9 @@ in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 | `tooltip`          | `(rows, time) => ReactNode` | Replaces the crosshair tooltip body.                                                        |
 | `children`         | `ReactNode`                 | Annotation slot; positions itself via `useRaceChart()`.                                     |
 
-Each series' total is printed above its own line end, inside the plot, rather than in a right-hand
-gutter — so the lines use the full width. A total sitting on the axis ceiling has no room above it,
-so its label drops below the line instead.
+Each series' total is printed at its own line end, inside the plot, rather than in a right-hand
+gutter — so the lines use the full width. The leader's label goes above its line and every other
+label below its own, so close totals never overlap; either flips when it would be clipped.
 
 `appearance.area` is the shading under each line (off by default — two overlapping washes
 muddy the crossover). `appearance.markers` is `"emphasis"` (default), `"all"` or `"none"`.

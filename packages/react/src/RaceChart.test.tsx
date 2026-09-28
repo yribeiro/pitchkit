@@ -414,6 +414,56 @@ describe("<RaceChart>", () => {
     expect(painted.indexOf("annotation")).toBeGreaterThan(painted.lastIndexOf("race-emphasis"));
   });
 
+  it("puts the leader's label above its line and the others below theirs", () => {
+    // Two teams finishing on close totals would otherwise print one name
+    // on top of the other. Heading in opposite directions, they can't.
+    const { container } = renderChart({
+      series: [
+        { id: "ESP", data: [{ minute: 80, xg: 1.53 }] },
+        { id: "GER", data: [{ minute: 85, xg: 1.63 }] },
+      ],
+      width: 720,
+      height: 380,
+    });
+    const labelY = (text: string) =>
+      Number(
+        Array.from(container.querySelectorAll('[data-pitchkit-part="race-end-label"]'))
+          .find((l) => l.textContent?.startsWith(text))
+          ?.getAttribute("y"),
+      );
+    const lineEndY = (id: string) => {
+      const d =
+        container
+          .querySelector(`[data-pitchkit-series="${id}"] [data-pitchkit-part="race-line"]`)
+          ?.getAttribute("d") ?? "";
+      return Number(Array.from(d.matchAll(/V([\d.]+)/g)).pop()?.[1]);
+    };
+
+    // SVG y grows downward: above the line is a smaller y.
+    expect(labelY("GER")).toBeLessThan(lineEndY("GER"));
+    expect(labelY("ESP")).toBeGreaterThan(lineEndY("ESP"));
+    // And the two labels have moved apart, not together.
+    expect(labelY("ESP") - labelY("GER")).toBeGreaterThan(20);
+  });
+
+  it("lifts a trailing label above its line when it would hit the axis", () => {
+    const { container } = renderChart({
+      series: [
+        { id: "HOME", data: [{ minute: 20, xg: 1.2 }] },
+        { id: "AWAY", data: [] },
+      ],
+      width: 720,
+      height: 380,
+    });
+    const away = Array.from(
+      container.querySelectorAll('[data-pitchkit-part="race-end-label"]'),
+    ).find((l) => l.textContent?.startsWith("AWAY")) as Element;
+    const hitArea = container.querySelector('rect[fill="transparent"]') as Element;
+    const plotBottom = Number(hitArea.getAttribute("y")) + Number(hitArea.getAttribute("height"));
+
+    expect(Number(away.getAttribute("y"))).toBeLessThan(plotBottom);
+  });
+
   it("renders an empty series without throwing", () => {
     const { container } = renderChart({ series: [{ id: "NONE", data: [] }] });
 
