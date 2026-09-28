@@ -246,6 +246,17 @@ export function RaceChart<T>({
           value: valueAtTime(s.points, hoverTime),
         }));
 
+  /**
+   * On touch, `pointerleave` fires the instant the finger lifts — the
+   * pointer stops existing — so clearing on it would set the crosshair and
+   * wipe it in the same gesture. A touch readout therefore persists until
+   * the next tap or until a scroll cancels the gesture, which is how a
+   * phone chart is read. A mouse leaving the plot still clears.
+   */
+  function handlePointerLeave(event: ReactPointerEvent<SVGRectElement>) {
+    if (event.pointerType === "mouse") setHoverTime(null);
+  }
+
   function handlePointer(event: ReactPointerEvent<SVGRectElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
     if (bounds.width === 0) return;
@@ -264,6 +275,11 @@ export function RaceChart<T>({
         width: isExplicitSize ? explicitWidth : "100%",
         height: isExplicitSize ? explicitHeight : undefined,
         aspectRatio: isExplicitSize ? undefined : aspectRatio,
+        // A horizontal drag scrubs the crosshair; a vertical one still
+        // scrolls the page. Without this the browser claims both axes and
+        // the chart is unreadable on a phone, where the crosshair is the
+        // only way to get a value between two labelled points.
+        touchAction: "pan-y",
       }}
     >
       <svg
@@ -325,7 +341,7 @@ export function RaceChart<T>({
                         key={p.index}
                         cx={scaleX(p.time)}
                         cy={scaleY(p.cumulative)}
-                        r={p.emphasis ? 5 : 3}
+                        r={p.emphasis ? 5 : 4}
                         data-pitchkit-part={p.emphasis ? "race-emphasis" : "race-marker"}
                         style={{
                           fill: color,
@@ -379,8 +395,10 @@ export function RaceChart<T>({
             width={frame.plotWidth}
             height={frame.plotHeight}
             fill="transparent"
+            onPointerDown={handlePointer}
             onPointerMove={handlePointer}
-            onPointerLeave={() => setHoverTime(null)}
+            onPointerLeave={handlePointerLeave}
+            onPointerCancel={() => setHoverTime(null)}
           />
         </RaceChartContext.Provider>
       </svg>
@@ -428,8 +446,11 @@ function RaceTooltip({
         // to the plot's top keeps it clear of the legend and period labels
         // that live in the padding above it.
         top: `${top}%`,
-        transform: left > 60 ? "translateX(-100%)" : "none",
-        marginLeft: left > 60 ? -12 : 12,
+        // Flips at the midpoint rather than at 60%: on a phone the readout
+        // is a large fraction of the chart's width, and anchoring it right
+        // of a crosshair past halfway runs it over the end labels.
+        transform: left > 50 ? "translateX(-100%)" : "none",
+        marginLeft: left > 50 ? -12 : 12,
         pointerEvents: "none",
         background: "var(--pitch-tooltip-bg, rgba(17, 17, 17, 0.92))",
         color: "var(--pitch-tooltip-color, #fff)",
@@ -457,8 +478,14 @@ function RaceTooltip({
                   flexShrink: 0,
                 }}
               />
-              <span>{row.label}</span>
-              <span style={{ marginLeft: "auto", fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ opacity: 0.75 }}>{row.label}</span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontVariantNumeric: "tabular-nums",
+                  fontWeight: 600,
+                }}
+              >
                 {row.value.toFixed(2)}
               </span>
             </div>

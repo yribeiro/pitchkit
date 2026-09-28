@@ -250,6 +250,26 @@ describe("<RaceChart>", () => {
     expect(box.style.aspectRatio).toBe("2 / 1");
   });
 
+  it("leaves vertical scrolling to the page while claiming horizontal drags", () => {
+    // Without pan-y the browser claims both axes and the crosshair — the
+    // only way to read a value between two labelled points — is
+    // unreachable on a phone.
+    const { container } = renderChart();
+    const box = container.firstElementChild as HTMLElement;
+
+    expect(box.style.touchAction).toBe("pan-y");
+  });
+
+  it("gives every marker a hit-friendly radius", () => {
+    // A 6px dot is a pinpoint; markers clear 8px.
+    const { container } = renderChart({ appearance: { markers: "all" } });
+    const radii = Array.from(container.querySelectorAll("circle")).map((c) =>
+      Number(c.getAttribute("r")),
+    );
+
+    expect(Math.min(...radii)).toBeGreaterThanOrEqual(4);
+  });
+
   it("renders an empty series without throwing", () => {
     const { container } = renderChart({ series: [{ id: "NONE", data: [] }] });
 

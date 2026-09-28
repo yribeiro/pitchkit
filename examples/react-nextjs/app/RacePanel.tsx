@@ -109,8 +109,9 @@ export function RacePanel() {
       </div>
 
       <p className="panel-note">
-        Hover anywhere on the plot: the crosshair reports both teams at that minute, which is what a
-        race chart is for and what a per-mark tooltip cannot do.
+        Hover or tap anywhere on the plot: the crosshair reports both teams at that minute, which is
+        what a race chart is for and what a per-mark tooltip cannot do. On a touch screen a
+        horizontal drag scrubs it and a vertical one still scrolls the page.
       </p>
     </section>
   );
