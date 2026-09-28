@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { C, FONT, pitchVars } from "../theme";
 
 /**
- * One solid deep-emerald background every post and reel shares, so the grid
+ * One solid near-black green background every post and reel shares, so the grid
  * reads as a set. Deliberately flat: the pitches carry the texture.
  */
 export function Backdrop({ children }: { children?: ReactNode }) {
@@ -108,7 +108,7 @@ export function Tag({
         fontSize: size,
         fontWeight: 600,
         color,
-        background: "rgba(0, 0, 0, 0.22)",
+        background: "rgba(52, 211, 153, 0.09)",
         border: `1px solid ${C.border}`,
         borderRadius: 10,
         padding: "6px 14px",
