@@ -139,8 +139,7 @@ Resolved questions are in the [decision log](./decisions.md).
 ## Naming
 
 **PitchKit**: the `@pitchkit` npm scope, the `yribeiro/pitchkit` repo, and
-[pitchkitjs.com](https://www.pitchkitjs.com). See
-[D23](./decisions.md#d23-the-name-is-pitchkit).
+[pitchkitjs.com](https://www.pitchkitjs.com).
 
 ## References
 

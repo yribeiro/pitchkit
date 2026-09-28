@@ -12,7 +12,6 @@ and what follows from it. Superseded entries stay in the log, marked as such.
 - [Distribution and releases](#distribution-and-releases)
 - [Data providers](#data-providers)
 - [Docs site](#docs-site)
-- [Naming and positioning](#naming-and-positioning)
 
 ---
 
@@ -318,23 +317,3 @@ commit.
 **Decision:** Vercel Web Analytics and PostHog (`components/posthog-provider.tsx`) are both
 wired into `apps/docs/app/layout.tsx`. PostHog was added alongside Vercel, not as a
 replacement ([PR #64](https://github.com/yribeiro/pitchkit/pull/64)).
-
----
-
-## Naming and positioning
-
-### D23. The name is PitchKit
-
-**Decision:** The `@pitchkit` npm scope (via the `pitchkit` org), the repo
-`yribeiro/pitchkit`, and the site [pitchkitjs.com](https://www.pitchkitjs.com).
-
-**Why:** It is short, scope-friendly, not trademark-conflicting, and evokes football plus
-toolkit. Rejected alternatives: Pitchwright, Touchline, Chalkboard, Footwork, Tifo.
-
-### D24. "React-first", never "React-native"
-
-**Decision:** User-facing copy says "React-first".
-([PR #49](https://github.com/yribeiro/pitchkit/pull/49).)
-
-**Why:** "React-native" (from PR #45) reads at a glance as React Native, the mobile
-framework, which is the wrong association for a web-only library.
