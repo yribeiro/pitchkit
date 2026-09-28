@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { C, FONT, pitchVars } from "../theme";
 
 /**
- * One solid near-black green background every post and reel shares, so the grid
+ * One solid black background every post and reel shares, so the grid
  * reads as a set. Deliberately flat: the pitches carry the texture.
  */
 export function Backdrop({ children }: { children?: ReactNode }) {
