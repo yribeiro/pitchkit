@@ -103,6 +103,8 @@ function Card({ minute, team }: { minute: number; team: string }) {
 52' booking sits at whatever that team's cumulative xG was at 52'. It uses the same step-after
 semantics as the line, so an event landing exactly on `time` is included.
 
+<PitchPreview name="race-chart-annotations-basic" />
+
 ## Shading under the line
 
 ```tsx
@@ -110,7 +112,9 @@ semantics as the line, so an event landing exactly on `time` is included.
 ```
 
 Off by default. With two series the washes overlap exactly where the lines cross, which is the part
-of the chart worth reading. It works well for a single series.
+of the chart worth reading. It works well for a single series:
+
+<PitchPreview name="race-chart-area-basic" />
 
 ## Sizing
 

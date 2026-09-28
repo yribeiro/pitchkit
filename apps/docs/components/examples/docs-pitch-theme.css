@@ -20,7 +20,14 @@
    */
   --pitch-series-1: var(--pitch-marker-primary);
   --pitch-series-2: var(--pitch-marker-goal);
-  --pitch-chart-surface: var(--pitch-surface);
+  /*
+   * The ring a marker knocks out to, so it stays legible where it crosses
+   * a line. <RaceChart> paints no background of its own, so this must be
+   * whatever is actually behind it: on a docs preview that is the stage,
+   * not the grass. An example that sets up its own stage — the gallery
+   * card, which draws a grass block — overrides this alongside it.
+   */
+  --pitch-chart-surface: var(--color-fd-background);
   --pitch-chart-text: rgba(255, 255, 255, 0.95);
   --pitch-chart-muted: rgba(255, 255, 255, 0.55);
   --pitch-grid: rgba(255, 255, 255, 0.1);

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { RaceChart, useRaceChart } from "@pitchkit/react";
 
 /**
@@ -83,7 +84,17 @@ export function XgRaceGallery() {
     // background of its own — it is transparent, so a consumer's own
     // surface shows through — which is why the stage is set here rather
     // than in the component.
-    <div className="rounded-md p-2" style={{ background: "var(--pitch-surface)" }}>
+    <div
+      className="rounded-md p-2"
+      style={
+        {
+          background: "var(--pitch-surface)",
+          // This card draws its own stage, so the marker rings knock out
+          // to the grass rather than to the page behind it.
+          "--pitch-chart-surface": "var(--pitch-surface)",
+        } as CSSProperties
+      }
+    >
       <RaceChart
         aspectRatio={1.5}
         series={[
