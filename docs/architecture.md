@@ -270,6 +270,10 @@ first. Tests that assumed the minimum corner is `(0, 0)` now derive it from
   `@pitchkit/core`'s types through its built `dist/`, so on a fresh checkout the typecheck
   would fail without it. Verify task dependencies from a clean
   `rm -rf packages/*/dist .turbo`, not from a session that already has builds lying around.
+- **The docs build is never Turbo-cached** (`apps/docs/turbo.json`). When Turbo replays a
+  cached `next build`, it restores `.next/` but Next.js never runs, so Vercel's build output
+  (written outside `.next/`) is missing and the deploy fails after "Build Completed". Any
+  commit that doesn't touch `apps/docs` would hit this, in production as well as previews.
 - **`"use client"` in tsup output:** tsup's `banner` option is silently dropped by esbuild
   when it looks like a directive. `packages/react/scripts/add-use-client.mjs` prepends it
   after bundling; copy that pattern for any package that needs it.
