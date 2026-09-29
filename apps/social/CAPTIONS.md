@@ -332,5 +332,5 @@ Tile captions (short — the picture is the point). Alt text under each.
    — _Alt:_ The left half of a football pitch with Cole Palmer's 73rd-minute goal marked in orange and England's shots in white.
 5. **Bottom-middle** — `Oyarzabal's 86' winner: nine actions from Spain's half to the net, drawn as arrows and comet trails. #euro2024 #footballanalytics #dataviz`
    — _Alt:_ The middle of the pitch with white arrows tracing Spain's build-up to their winning goal, and the halfway line and centre circle.
-6. **Bottom-right** — `Spain took 16 shots to England's 9, and it took a 86th-minute winner to settle it. Built with PitchKit — link in bio. #football #dataviz #reactjs`
+6. **Bottom-right** — `Spain took 16 shots to England's 9, and it took an 86th-minute winner to settle it. Built with PitchKit — link in bio. #football #dataviz #reactjs`
    — _Alt:_ The right end of the pitch: Spain's shots in blue, Williams' and Oyarzabal's goals in orange, and the URL pitchkitjs.com.
