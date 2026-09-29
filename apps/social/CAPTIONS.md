@@ -300,3 +300,37 @@ slow-mo and time its drop on the GOAL card.
 > 11 chart layers and 4 themes in 21 seconds — all on one match, all from one React library.
 >
 > https://www.pitchkitjs.com
+
+---
+
+## Wall mosaic — six tiles (`mosaic-tile-1.png` … `mosaic-tile-6.png`)
+
+One 3240×2880 picture (`wall-mosaic.png`) cut into six 1080×1440 (3:4) tiles.
+Tile 1 is top-left, tile 6 bottom-right, in reading order.
+
+**Posting order is reversed: 6 first, 1 last.** The grid puts the newest post
+top-left, so tile 1 must be the last one up.
+
+- **Unpin first.** A pinned post takes the top-left slot and shifts everything
+  by one, which breaks the picture.
+- **Post all six in one sitting**, a couple of minutes apart. A grid that's
+  part-way through the sequence looks broken.
+- **3:4 upload.** In the crop screen choose 3:4 (not 4:5), or the grid crops
+  the sides off and the seams no longer meet.
+- **After it's up, add posts in threes** — each new post shifts the picture by
+  one slot, and it only reads as a whole again on a full row.
+
+Tile captions (short — the picture is the point). Alt text under each.
+
+1. **Top-left** — `Football visualised for the web. ⚽️ Open-source React + TypeScript charts for football data — shot maps, pass networks, heatmaps, tracking. Every mark on this pitch is a PitchKit component, drawn from StatsBomb open data on the Euro 2024 final. Link in bio. #football #footballanalytics #dataviz #reactjs #typescript #opensource`
+   — _Alt:_ Left third of a black graphic: the headline "Football visualised" above the left half of a football pitch covered in green hexagons, with England's players and a shot marked at the far end.
+2. **Top-middle** — `Spain 2–1 England, Euro 2024 final: every Spain pass, binned into hexagons. Darker = fewer, brighter = more. One <Hexbin> layer. #footballanalytics #dataviz #euro2024`
+   — _Alt:_ Middle of the graphic: the end of the word "visualised", and the centre of a football pitch of green hexagons with a white passing sequence.
+3. **Top-right** — `PitchKit. Open source, MIT, React-first. Docs and quickstart: link in bio. #opensource #reactjs #typescript`
+   — _Alt:_ The PitchKit logo, two penalty areas and a centre circle in green, above the right end of a football pitch.
+4. **Bottom-left** — `Cole Palmer, 73'. England's equaliser was a 0.04 xG chance. Orange marks are goals, sized by xG. #euro2024 #xg #footballanalytics`
+   — _Alt:_ The left half of a football pitch with Cole Palmer's 73rd-minute goal marked in orange and England's shots in white.
+5. **Bottom-middle** — `Oyarzabal's 86' winner: nine actions from Spain's half to the net, drawn as arrows and comet trails. #euro2024 #footballanalytics #dataviz`
+   — _Alt:_ The middle of the pitch with white arrows tracing Spain's build-up to their winning goal, and the halfway line and centre circle.
+6. **Bottom-right** — `Spain took 16 shots to England's 9, and it took a 86th-minute winner to settle it. Built with PitchKit — link in bio. #football #dataviz #reactjs`
+   — _Alt:_ The right end of the pitch: Spain's shots in blue, Williams' and Oyarzabal's goals in orange, and the URL pitchkitjs.com.

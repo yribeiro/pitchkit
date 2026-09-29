@@ -24,8 +24,36 @@ const STILLS = [
   "post-04-network",
   "post-05-palettes",
   "post-06-layers",
+  "wall-mosaic",
+  "wall-mosaic-preview",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
+
+/**
+ * Cut the 3240x2880 mosaic into six 1080x1440 (3:4) tiles, named in reading
+ * order — tile-1 is top-left. Post them in REVERSE (6 first, 1 last): the grid
+ * shows the newest post top-left. (The grid preview is its own still, since
+ * Remotion's bundled ffmpeg has no `tile` or `pad` filter.)
+ */
+function cutMosaic() {
+  const ffmpeg = (...args) =>
+    execFileSync("npx", ["remotion", "ffmpeg", "-loglevel", "error", "-y", ...args], {
+      cwd: root,
+      stdio: "inherit",
+    });
+  for (let i = 0; i < 6; i++) {
+    const [col, row] = [i % 3, Math.floor(i / 3)];
+    ffmpeg(
+      "-i",
+      "out/wall-mosaic.png",
+      "-vf",
+      `crop=1080:1440:${col * 1080}:${row * 1440}`,
+      "-frames:v",
+      "1",
+      `out/mosaic-tile-${i + 1}.png`,
+    );
+  }
+}
 
 const run = (args) =>
   execFileSync("npx", ["remotion", ...args, ...browser, "--log=error"], {
@@ -35,6 +63,7 @@ const run = (args) =>
 
 for (const id of STILLS.filter((id) => id.includes(filter))) {
   run(["still", "src/index.ts", id, `out/${id}.png`]);
+  if (id === "wall-mosaic") cutMosaic();
 }
 for (const id of REELS.filter((id) => id.includes(filter))) {
   // CRF 18 survives Instagram's re-encode noticeably better than the default.

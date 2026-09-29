@@ -3,7 +3,8 @@ import { PostCode, PostIntro, PostLayers, PostNetwork, PostPalettes, PostWinner 
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
 import { TRACKING_DURATION, TrackingReel } from "./reels/TrackingReel";
-import { POST, REEL } from "./theme";
+import { MOSAIC_PREVIEW, WallMosaic, WallMosaicPreview } from "./mosaic";
+import { MOSAIC, POST, REEL } from "./theme";
 
 /**
  * Every deliverable, by the id `npm run render` uses for its filename.
@@ -19,6 +20,8 @@ export function Root() {
         <Still id="post-04-network" component={PostNetwork} {...POST} />
         <Still id="post-05-palettes" component={PostPalettes} {...POST} />
         <Still id="post-06-layers" component={PostLayers} {...POST} />
+        <Still id="wall-mosaic" component={WallMosaic} {...MOSAIC} />
+        <Still id="wall-mosaic-preview" component={WallMosaicPreview} {...MOSAIC_PREVIEW} />
       </Folder>
       <Folder name="Reels">
         <Composition

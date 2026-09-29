@@ -3,6 +3,12 @@ import type { PitchAppearance } from "@pitchkit/core";
 
 /** Instagram's feed portrait (4:5) — also what X shows uncropped on mobile. */
 export const POST = { width: 1080, height: 1350 } as const;
+/**
+ * The profile-grid mosaic. Instagram's grid shows tiles at 3:4, so six 1080x1440
+ * tiles (3 across, 2 down) cut from one 3240x2880 canvas line up seamlessly.
+ */
+export const TILE = { width: 1080, height: 1440 } as const;
+export const MOSAIC = { width: TILE.width * 3, height: TILE.height * 2 } as const;
 /** Reels / Stories / Shorts (9:16). */
 export const REEL = { width: 1080, height: 1920, fps: 30 } as const;
 
