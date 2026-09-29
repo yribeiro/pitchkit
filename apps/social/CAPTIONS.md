@@ -249,7 +249,10 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 Opens on a 2.8 s hook — "Ever wanted to watch the beautiful game from above?"
 over the pitch at a broadcast-camera tilt, which swings flat to top-down as the
-text clears. The GOAL card lands at ~17 s: time the audio's drop there.
+text clears. At ~11.6 s it drops into slow-mo (a "SLOW-MO 0.4×" title, a push-in
+on the attacking end, a vignette and a ring on the ball) for the last 2.2 s
+before the shot; the GOAL card lands at ~17 s. Build the audio through the
+slow-mo and time its drop on the GOAL card.
 
 **Instagram**
 

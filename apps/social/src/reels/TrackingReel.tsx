@@ -104,6 +104,33 @@ function Hook() {
   );
 }
 
+/** "SLOW-MO 0.4×" where the headline sits, punched in on entry. */
+function SlowMoTitle({ frame, opacity }: { frame: number; opacity: number }) {
+  const { fps } = useVideoConfig();
+  const punch = spring({ frame, fps, config: { damping: 11, mass: 0.5 } });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: 222,
+        left: 60,
+        right: 100,
+        opacity,
+        transform: `scale(${1.25 - 0.25 * punch})`,
+        transformOrigin: "0 50%",
+        display: "flex",
+        alignItems: "baseline",
+        gap: 24,
+      }}
+    >
+      <span style={{ fontSize: 120, fontWeight: 900, letterSpacing: "-0.045em" }}>SLOW-MO</span>
+      <span style={{ fontFamily: FONT.mono, fontSize: 64, fontWeight: 600, color: C.accent }}>
+        {SLOW}×
+      </span>
+    </div>
+  );
+}
+
 function trackingIndex(videoFrame: number): number {
   const f = Math.max(0, videoFrame - INTRO);
   if (f < A) return START + f / 3;
@@ -196,6 +223,15 @@ export function TrackingReel() {
   // Everything but the pitch waits for the hook to finish.
   const chrome = interpolate(frame, [HOOK - 4, HOOK + 10], [0, 1], clamp);
 
+  // Slow-mo accent: in over 10 frames as it starts, out over 20 after the shot.
+  const f = frame - INTRO;
+  const slowIn = interpolate(f, [A, A + 10], [0, 1], clamp);
+  const slowOut = interpolate(f, [A + B + 6, A + B + 26], [1, 0], clamp);
+  const slowAccent = Math.min(slowIn, slowOut);
+  const slowPush = 1 + 0.12 * Math.min(slowIn, slowOut);
+  const slowFlash = interpolate(f, [A, A + 2, A + 9], [0, 0.35, 0], clamp);
+  const ringPulse = 0.5 + 0.5 * Math.sin((f - A) / 4);
+
   return (
     <AbsoluteFill style={{ fontFamily: FONT.sans, color: C.text }}>
       <Backdrop />
@@ -212,7 +248,7 @@ export function TrackingReel() {
           display: "flex",
           flexDirection: "column",
           gap: 12,
-          opacity: chrome,
+          opacity: chrome * (1 - slowAccent),
         }}
       >
         <Eyebrow>SkillCorner open data · 10 fps tracking</Eyebrow>
@@ -228,8 +264,10 @@ export function TrackingReel() {
           position: "absolute",
           top: 440,
           left: (1080 - PITCH_WIDTH) / 2,
-          transform: `perspective(1600px) rotateX(${tilt}deg) scale(${zoom})`,
-          transformOrigin: "50% 65%",
+          transform: `perspective(1600px) rotateX(${tilt}deg) scale(${zoom * slowPush})`,
+          // The hook pivots near the camera; the slow-mo push-in aims at the
+          // attacking end, which the rotation puts at the top.
+          transformOrigin: frame < HOOK ? "50% 65%" : "50% 22%",
         }}
       >
         <PitchStage>
@@ -273,6 +311,18 @@ export function TrackingReel() {
                 stroke="rgba(6,16,11,0.9)"
                 strokeWidth={2}
               />
+              {ball && slowAccent > 0 && (
+                <Scatter
+                  data={[ball]}
+                  x={(b) => b[0]}
+                  y={(b) => b[1]}
+                  r={16 + 8 * ringPulse}
+                  fill="white"
+                  fillOpacity={0}
+                  stroke={C.accent}
+                  strokeWidth={3}
+                />
+              )}
               {ball && (
                 <Scatter
                   data={[ball]}
@@ -360,7 +410,8 @@ export function TrackingReel() {
           display: "flex",
           justifyContent: "center",
           gap: 14,
-          opacity: chrome,
+          // Hidden while the slow-mo push-in scales the pitch down over them.
+          opacity: chrome * (1 - slowAccent),
         }}
       >
         {["<Voronoi>", "<Scatter>", "<Comet>"].map((tag) => (
@@ -369,6 +420,20 @@ export function TrackingReel() {
           </Tag>
         ))}
       </div>
+
+      {slowAccent > 0 && (
+        <>
+          <AbsoluteFill
+            style={{
+              opacity: slowAccent,
+              background:
+                "radial-gradient(ellipse 70% 55% at 50% 45%, transparent 55%, rgba(0,0,0,0.75) 100%)",
+            }}
+          />
+          <AbsoluteFill style={{ background: "white", opacity: slowFlash }} />
+          <SlowMoTitle frame={f - A} opacity={slowAccent} />
+        </>
+      )}
 
       <Sequence durationInFrames={HOOK}>
         <Hook />
