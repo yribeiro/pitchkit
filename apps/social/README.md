@@ -16,7 +16,7 @@ Private workspace (`"private": true`), never published.
 | `post-05-palettes`   | 1080×1350 PNG       | One shot map in four palettes                                     |
 | `post-06-layers`     | 1080×1350 PNG       | 3×3 catalogue of layer components                                 |
 | `reel-01-quickstart` | 1080×1920 MP4, 22 s | Palmer's equaliser built in 4 steps (mirrors the docs Quickstart) |
-| `reel-02-tracking`   | 1080×1920 MP4, 22 s | SkillCorner tracking of a goal with a live Voronoi                |
+| `reel-02-tracking`   | 1080×1920 MP4, 24 s | SkillCorner tracking of a goal with a live Voronoi                |
 | `reel-03-layers`     | 1080×1920 MP4, 21 s | Montage: 11 layers, then 4 palettes                               |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).

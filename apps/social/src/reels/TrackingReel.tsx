@@ -3,7 +3,15 @@
  * `<Pitch type="skillcorner">` with a live `<Voronoi>` of who controls which
  * space. SkillCorner open data (A-League 2024/25), 10 fps, interpolated to 30.
  */
-import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
+import {
+  AbsoluteFill,
+  Easing,
+  interpolate,
+  Sequence,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
 import { Comet, Pitch, Scatter, Voronoi } from "@pitchkit/react";
 import { Upright } from "../charts";
 import { Backdrop, Eyebrow, PitchStage, Tag } from "../components/Chrome";
@@ -26,15 +34,75 @@ const ballAtShot = frames[shotIndex]?.ball;
 const turn: -90 | 90 = ballAtShot && ballAtShot[0] < 0 ? 90 : -90;
 
 // Timeline, in video frames (30 fps) → tracking index (10 fps).
-const START = Math.max(0, shotIndex - 110); // 11 s of build-up
+/**
+ * The scroll-stopper: a question over the pitch seen at a broadcast-camera
+ * tilt, which then swings flat to top-down — "from above" — as it clears.
+ * Tracking already plays underneath, so the reel never sits still.
+ */
+const HOOK = 84;
+const HOOK_DATA = HOOK / 3; // tracking frames that play under the hook
+const START = Math.max(0, shotIndex - 110 - HOOK_DATA); // 11 s of build-up after the hook
 const SLOW_FROM = shotIndex - 22; // the last 2.2 s before the shot at 0.4x
 const SLOW = 0.4;
-const INTRO = 45;
+const INTRO = 0;
 const A = (SLOW_FROM - START) * 3; // real-time part
 const B = Math.round(((shotIndex - SLOW_FROM) * 3) / SLOW); // slow-motion part
 const C_ = Math.min(frames.length - 1 - shotIndex, 20) * 3; // after the shot
 const HOLD = 45;
 export const TRACKING_DURATION = INTRO + A + B + C_ + HOLD + 90;
+
+/** The hook's question, one line at a time, then out as the pitch lands flat. */
+function Hook() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const lines: { text: string; color: string; at: number }[] = [
+    { text: "Ever wanted to watch", color: C.text, at: 0 },
+    { text: "the beautiful game", color: C.text, at: 7 },
+    { text: "from above?", color: C.accent, at: 16 },
+  ];
+  const out = interpolate(frame, [HOOK - 28, HOOK - 18], [1, 0], clamp);
+  return (
+    <AbsoluteFill style={{ opacity: out }}>
+      {/* Keeps the type readable over the pitch without hiding it. */}
+      <AbsoluteFill
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0) 75%)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: 330,
+          left: 60,
+          right: 100,
+          transform: `scale(${1 + (1 - out) * 0.06})`,
+          transformOrigin: "0 50%",
+        }}
+      >
+        {lines.map((line) => {
+          const pop = spring({ frame: frame - line.at, fps, config: { damping: 13, mass: 0.6 } });
+          return (
+            <div
+              key={line.text}
+              style={{
+                fontSize: 90,
+                fontWeight: 800,
+                letterSpacing: "-0.045em",
+                lineHeight: 1.02,
+                color: line.color,
+                opacity: interpolate(frame - line.at, [0, 4], [0, 1], clamp),
+                transform: `translateY(${(1 - pop) * 40}px)`,
+              }}
+            >
+              {line.text}
+            </div>
+          );
+        })}
+      </div>
+    </AbsoluteFill>
+  );
+}
 
 function trackingIndex(videoFrame: number): number {
   const f = Math.max(0, videoFrame - INTRO);
@@ -118,6 +186,16 @@ export function TrackingReel() {
   const goalFlash = interpolate(frame - INTRO - A - B, [0, 8, 60], [0, 1, 1], clamp);
   const scorerTeam = clip.scoringTeamIsHome ? clip.home : clip.away;
 
+  // Broadcast-camera tilt → flat top-down, landing as the hook clears.
+  const flatten = interpolate(frame, [HOOK - 24, HOOK], [0, 1], {
+    ...clamp,
+    easing: Easing.inOut(Easing.cubic),
+  });
+  const tilt = 58 * (1 - flatten);
+  const zoom = 1.18 - 0.18 * flatten;
+  // Everything but the pitch waits for the hook to finish.
+  const chrome = interpolate(frame, [HOOK - 4, HOOK + 10], [0, 1], clamp);
+
   return (
     <AbsoluteFill style={{ fontFamily: FONT.sans, color: C.text }}>
       <Backdrop />
@@ -134,6 +212,7 @@ export function TrackingReel() {
           display: "flex",
           flexDirection: "column",
           gap: 12,
+          opacity: chrome,
         }}
       >
         <Eyebrow>SkillCorner open data · 10 fps tracking</Eyebrow>
@@ -144,7 +223,15 @@ export function TrackingReel() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", top: 440, left: (1080 - PITCH_WIDTH) / 2 }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 440,
+          left: (1080 - PITCH_WIDTH) / 2,
+          transform: `perspective(1600px) rotateX(${tilt}deg) scale(${zoom})`,
+          transformOrigin: "50% 65%",
+        }}
+      >
         <PitchStage>
           <Upright width={PITCH_WIDTH} height={PITCH_HEIGHT} turn={turn}>
             <Pitch
@@ -214,6 +301,7 @@ export function TrackingReel() {
             borderRadius: 10,
             padding: "10px 14px",
             lineHeight: 1.45,
+            opacity: chrome,
           }}
         >
           <div>
@@ -272,6 +360,7 @@ export function TrackingReel() {
           display: "flex",
           justifyContent: "center",
           gap: 14,
+          opacity: chrome,
         }}
       >
         {["<Voronoi>", "<Scatter>", "<Comet>"].map((tag) => (
@@ -280,6 +369,10 @@ export function TrackingReel() {
           </Tag>
         ))}
       </div>
+
+      <Sequence durationInFrames={HOOK}>
+        <Hook />
+      </Sequence>
 
       <Sequence from={TRACKING_DURATION - 90}>
         <EndCard />

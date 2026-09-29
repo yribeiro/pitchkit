@@ -245,29 +245,38 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **On-screen text is burned in; no voiceover needed.**
 
-## Reel 02 — tracking (`reel-02-tracking.mp4`, 22 s)
+## Reel 02 — tracking (`reel-02-tracking.mp4`, 24 s)
+
+Opens on a 2.8 s hook — "Ever wanted to watch the beautiful game from above?"
+over the pitch at a broadcast-camera tilt, which swings flat to top-down as the
+text clears. The GOAL card lands at ~17 s: time the audio's drop there.
 
 **Instagram**
 
-> 22 players. Every frame. In the browser. 🛰️
+> Ever wanted to watch the beautiful game from above? 🛰️
 >
-> Broadcast tracking of N. Moreno's goal for Auckland FC v Newcastle Jets
-> (A-League, 30 Nov 2024), from SkillCorner's open data — played back through
-> PitchKit with a live Voronoi of which team controls which space.
+> This is real broadcast tracking of N. Moreno's goal for Auckland FC v
+> Newcastle Jets (A-League, 30 Nov 2024) — 22 players at 10 frames a second,
+> from SkillCorner's open data. The shaded cells show which team controls
+> which space, recalculated every frame.
 >
 > Faded dots are players the camera couldn't see (SkillCorner extrapolates
 > them). A full match is ~90 MB of tracking; PitchKit streams just the window
-> you need.
+> you need, straight into a React component.
 >
-> #trackingdata #footballanalytics #aleague #dataviz #reactjs #skillcorner
+> Docs & install: link in bio.
+>
+> #trackingdata #footballanalytics #aleague #dataviz #reactjs #skillcorner #football
 
 **X**
 
-> Broadcast tracking data, rendered live in the browser.
+> Ever wanted to watch the beautiful game from above?
 >
-> A goal from @SkillCorner's open A-League data: 22 players at 10 fps, with a <Voronoi> of who owns which space.
+> Real broadcast tracking of an A-League goal from @SkillCorner's open data: 22 players at 10 fps, with a live <Voronoi> of who owns which space. Rendered in the browser with PitchKit.
 >
 > https://www.pitchkitjs.com/docs/data
+
+**Alt text:** A football pitch tilted like a TV camera view swings flat to a top-down view, then 22 players shown as blue and orange dots move in real time, with the pitch divided into shaded cells showing which team controls each area, building up to Auckland FC's goal and a "GOAL" caption.
 
 ## Reel 03 — layer montage (`reel-03-layers.mp4`, 21 s)
 
