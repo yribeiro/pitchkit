@@ -6,13 +6,17 @@
  * final: a hexbin of Spain's passes, the build-up to Oyarzabal's winner, and
  * every shot from both teams (England mirrored to attack left).
  */
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { Sequence } from "remotion";
 import { Annotate, Arrows, Comet, Hexbin, Pitch, Scatter } from "@pitchkit/react";
 import { shotRadius } from "./charts";
 import { Backdrop, PitchStage } from "./components/Chrome";
 import { Mark } from "./components/Logo";
 import { finalShots, oyarzabalGoal, spainPasses, surname } from "./data";
 import type { Shot } from "./data";
+import { PostIntro } from "./posts";
+import { QuickstartReel } from "./reels/QuickstartReel";
+import { TrackingReel } from "./reels/TrackingReel";
 import { C, densityAppearance, FONT, MOSAIC, TILE } from "./theme";
 
 const PITCH_W = 3000;
@@ -237,6 +241,107 @@ export function WallMosaicPreview() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+/**
+ * A 3-wide mockup of the profile grid as it will look once the mosaic is up:
+ * the six tiles on top, then the three pieces already posted (newest first —
+ * reel 02, reel 01, post 01). Reels and posts are centre-cropped to 3:4, as
+ * the grid does.
+ */
+export const PROFILE_PREVIEW = {
+  width: PREVIEW_CELL.width * 3 + PREVIEW_GAP * 2,
+  height: PREVIEW_CELL.height * 3 + PREVIEW_GAP * 2,
+} as const;
+
+/** A 360x480 grid cell showing `children` (drawn at `size`), centre-cropped. */
+function GridCell({
+  index,
+  size,
+  children,
+}: {
+  index: number;
+  size: { width: number; height: number };
+  children: ReactNode;
+}) {
+  const [col, row] = [index % 3, Math.floor(index / 3)];
+  // Fill the cell's height for portrait-ish art, its width otherwise, then
+  // centre — the same cover-crop the grid applies.
+  const scale = Math.max(PREVIEW_CELL.width / size.width, PREVIEW_CELL.height / size.height);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: col * (PREVIEW_CELL.width + PREVIEW_GAP),
+        top: row * (PREVIEW_CELL.height + PREVIEW_GAP),
+        width: PREVIEW_CELL.width,
+        height: PREVIEW_CELL.height,
+        overflow: "hidden",
+        background: "#000",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          left: (PREVIEW_CELL.width - size.width * scale) / 2,
+          top: (PREVIEW_CELL.height - size.height * scale) / 2,
+          width: size.width,
+          height: size.height,
+          transform: `scale(${scale})`,
+          transformOrigin: "0 0",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function WallProfilePreview() {
+  return (
+    <div
+      style={{
+        width: PROFILE_PREVIEW.width,
+        height: PROFILE_PREVIEW.height,
+        background: "#1c1f24",
+        position: "relative",
+      }}
+    >
+      {Array.from({ length: 6 }, (_, i) => {
+        const [col, row] = [i % 3, Math.floor(i / 3)];
+        return (
+          <GridCell key={i} index={i} size={TILE}>
+            <div
+              style={{
+                position: "absolute",
+                width: MOSAIC.width,
+                height: MOSAIC.height,
+                transform: `translate(${-col * TILE.width}px, ${-row * TILE.height}px)`,
+                transformOrigin: "0 0",
+              }}
+            >
+              <WallMosaic />
+            </div>
+          </GridCell>
+        );
+      })}
+      <GridCell index={6} size={{ width: 1080, height: 1920 }}>
+        {/* A negative `from` starts the reel 45 frames in. <Freeze> doesn't reach
+            the reels' own <Sequence>s, which read the timeline directly. */}
+        <Sequence from={-45}>
+          <TrackingReel />
+        </Sequence>
+      </GridCell>
+      <GridCell index={7} size={{ width: 1080, height: 1920 }}>
+        <Sequence from={-30}>
+          <QuickstartReel />
+        </Sequence>
+      </GridCell>
+      <GridCell index={8} size={{ width: 1080, height: 1350 }}>
+        <PostIntro />
+      </GridCell>
     </div>
   );
 }

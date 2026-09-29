@@ -26,6 +26,7 @@ const STILLS = [
   "post-06-layers",
   "wall-mosaic",
   "wall-mosaic-preview",
+  "wall-mosaic-profile",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
 
@@ -62,7 +63,9 @@ const run = (args) =>
   });
 
 for (const id of STILLS.filter((id) => id.includes(filter))) {
-  run(["still", "src/index.ts", id, `out/${id}.png`]);
+  // The grid mockups are drawn at cell size (360px), so render them at 2x.
+  const scale = id.endsWith("-preview") || id.endsWith("-profile") ? ["--scale=2"] : [];
+  run(["still", "src/index.ts", id, `out/${id}.png`, ...scale]);
   if (id === "wall-mosaic") cutMosaic();
 }
 for (const id of REELS.filter((id) => id.includes(filter))) {

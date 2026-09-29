@@ -3,7 +3,13 @@ import { PostCode, PostIntro, PostLayers, PostNetwork, PostPalettes, PostWinner 
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
 import { TRACKING_DURATION, TrackingReel } from "./reels/TrackingReel";
-import { MOSAIC_PREVIEW, WallMosaic, WallMosaicPreview } from "./mosaic";
+import {
+  MOSAIC_PREVIEW,
+  PROFILE_PREVIEW,
+  WallMosaic,
+  WallMosaicPreview,
+  WallProfilePreview,
+} from "./mosaic";
 import { MOSAIC, POST, REEL } from "./theme";
 
 /**
@@ -22,6 +28,7 @@ export function Root() {
         <Still id="post-06-layers" component={PostLayers} {...POST} />
         <Still id="wall-mosaic" component={WallMosaic} {...MOSAIC} />
         <Still id="wall-mosaic-preview" component={WallMosaicPreview} {...MOSAIC_PREVIEW} />
+        <Still id="wall-mosaic-profile" component={WallProfilePreview} {...PROFILE_PREVIEW} />
       </Folder>
       <Folder name="Reels">
         <Composition
