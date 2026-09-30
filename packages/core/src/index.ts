@@ -86,5 +86,14 @@ export { computeGoalAngle, selectGoal } from "./geometry/goal-angle.js";
 export type { FlowVector, FlowBin } from "./geometry/flow.js";
 export { computeFlowBins } from "./geometry/flow.js";
 
+export type { ChartPadding, ChartFrame, LinearScale } from "./chart/types.js";
+export { createLinearScale } from "./chart/linear-scale.js";
+export { niceTicks, matchMinuteTicks } from "./chart/ticks.js";
+export { computeChartFrame } from "./chart/frame.js";
+
+export type { RaceEvent, RacePoint, RaceSeriesData } from "./race/cumulative.js";
+export { computeCumulativeSeries, valueAtTime, resolveEndTime } from "./race/cumulative.js";
+export { stepPath, stepAreaPath } from "./race/step-path.js";
+
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

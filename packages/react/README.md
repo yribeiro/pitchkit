@@ -71,6 +71,12 @@ and `fill={(d) => d.teamColor}` are the same prop.
 | `<GoalAngle>`      | The angle-to-goal wedge from a shot location                |
 | `<Flow>`           | Binned direction + magnitude vectors                        |
 | `usePitch()`       | Hook exposing the pixel transform for custom SVG            |
+| `<RaceChart>`      | Cumulative step chart over match minutes — the xG race chart |
+| `useRaceChart()`   | Hook exposing a `<RaceChart>`'s scales, for annotations     |
+
+`<RaceChart>` is the exception to "children are layers drawn into a `<Pitch>`": it has no pitch,
+so it is a root in its own right and takes no `type` prop. See
+[Charts](https://www.pitchkitjs.com/docs/charts).
 
 ## Sizing
 

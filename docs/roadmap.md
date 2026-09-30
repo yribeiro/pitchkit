@@ -66,11 +66,24 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 
 ### Non-pitch charts
 
-| Feature                                                 | Phase | Status                                                   |
-| ------------------------------------------------------- | ----- | -------------------------------------------------------- |
-| Radar (range bands, lower-is-better flip)               | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
-| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21) |
-| Bumpy chart (rank over time)                            | L     | ⬜                                                       |
+| Feature                                                 | Phase | Status                                                                    |
+| ------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
+| Radar (range bands, lower-is-better flip)               | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21)                  |
+| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21)                  |
+| Bumpy chart (rank over time)                            | L     | ⬜                                                                        |
+| Race chart: cumulative step lines over match minutes    | 1     | ✅ `<RaceChart>` ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)) |
+
+`<RaceChart>` is the chart usually called an xG race chart or xG timeline, and it is **not
+mplsoccer parity**: mplsoccer's non-pitch charts are `Radar`, `PyPizza` and `Bumpy`, with nothing
+cumulative. It is the first in the Charts docs section
+([D23](./decisions.md#d23-non-pitch-charts-are-roots-with-their-own-scales),
+[D24](./decisions.md#d24-charts-get-a-top-level-docs-section-and-the-gallery-a-timeline-category)).
+Radar and pizza are polar and share none of its `chart/` scaffold; the bumpy chart would reuse it.
+
+Follow-ups, none started: keyboard focus giving the crosshair readout, a table view of the values,
+a `<RaceEvents>` child as sugar over the annotation slot once the manual version has been written
+twice, end labels for three or more series, and a test that the bundled skill lists every exported
+component.
 
 ### Supporting utilities
 
@@ -120,6 +133,9 @@ Complete as of 2026-09-06.
       ([PR #25](https://github.com/yribeiro/pitchkit/pull/25)).
 - [x] Density overlays: Positional Heatmap, Hexbin, KDE
       ([PR #39](https://github.com/yribeiro/pitchkit/pull/39)), and `appearance.linesOnTop`.
+- [x] `<RaceChart>`, the first non-pitch chart and the first with no mplsoccer equivalent
+      ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)). Unreleased, so the release history
+      below doesn't list it yet.
 - [x] Open-data loaders: StatsBomb events ([PR #50](https://github.com/yribeiro/pitchkit/pull/50))
       and 360 ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), SkillCorner
       ([PR #58](https://github.com/yribeiro/pitchkit/pull/58)), Wyscout

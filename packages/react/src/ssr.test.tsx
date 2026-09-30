@@ -6,6 +6,7 @@ import { Annotate } from "./Annotate.js";
 import { Arrows } from "./Arrows.js";
 import { Heatmap } from "./Heatmap.js";
 import { Pitch } from "./Pitch.js";
+import { RaceChart } from "./RaceChart.js";
 import { Scatter } from "./Scatter.js";
 
 /**
@@ -72,5 +73,45 @@ describe("SSR (renderToString)", () => {
     for (const type of Object.keys(PITCH_DIMENSIONS) as PitchTypeId[]) {
       expect(() => renderToString(<Pitch type={type} width={400} height={300} />)).not.toThrow();
     }
+  });
+
+  it("renders a RaceChart to a string", () => {
+    // <RaceChart> is a root in its own right, not a Pitch layer, so it
+    // has its own way to fail at SSR — it measures its container. The
+    // nominal-size fallback is what keeps the server render complete
+    // rather than empty, and nothing but a test holds that in place.
+    const html = renderToString(
+      <RaceChart
+        series={[
+          { id: "ESP", data: [{ minute: 31, xg: 0.44, goal: true }] },
+          { id: "ENG", data: [{ minute: 73, xg: 0.35 }] },
+        ]}
+        time={(s) => s.minute}
+        value={(s) => s.xg}
+        emphasise={(s) => s.goal === true}
+        width={720}
+        height={380}
+      />,
+    );
+
+    expect(html).toContain("<svg");
+    expect(html).toContain('viewBox="0 0 720 380"');
+    expect(html).toContain('data-pitchkit-layer="race"');
+    expect(html).toContain('data-pitchkit-part="race-line"');
+    // The step itself made it into the markup, not just the frame.
+    expect(html).toMatch(/d="M[\d.]+ [\d.]+ H/);
+  });
+
+  it("renders a RaceChart at its responsive fallback size without a DOM", () => {
+    const html = renderToString(
+      <RaceChart
+        series={[{ id: "ESP", data: [{ minute: 31, xg: 0.44 }] }]}
+        time={(s) => s.minute}
+        value={(s) => s.xg}
+      />,
+    );
+
+    expect(html).toContain('viewBox="0 0 720 360"');
+    expect(html).toContain('data-pitchkit-part="race-line"');
   });
 });

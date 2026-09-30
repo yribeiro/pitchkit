@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { DensityPanel } from "./DensityPanel";
 import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
+import { RacePanel } from "./RacePanel";
 import { StatsBombPanel } from "./StatsBombPanel";
 import { TailwindPanel } from "./TailwindPanel";
 import { SkillCornerTrackingDemo } from "./SkillCornerTrackingDemo";
@@ -254,6 +255,11 @@ export function Controls() {
           colorMax={heatmapColors.colorMax}
         />
       </div>
+
+      {/* Deliberately above the pitch panels: it is the one thing here
+          that isn't a pitch, and the styling controls above don't reach
+          it — chart chrome has its own tokens. */}
+      <RacePanel />
 
       <TailwindPanel appearance={appearance} />
 

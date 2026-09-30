@@ -46,6 +46,20 @@
   --pitch-lines: rgba(255, 255, 255, 0.8);
   --pitch-marker-primary: #3b82f6;
   --pitch-marker-goal: #f97316;
+
+  /* Chart tokens (<RaceChart>). Same mechanism as the pitch variables:
+     set once, every chart picks them up. The series steps are the dark
+     column of the validated categorical palette — chosen for this
+     surface, not flipped from the light values. */
+  --pitch-series-1: #3987e5;
+  --pitch-series-2: #d95926;
+  --pitch-series-3: #199e70;
+  --pitch-chart-surface: #111;
+  --pitch-chart-text: #eee;
+  --pitch-chart-muted: #8b8b8b;
+  --pitch-axis: #3a3a3a;
+  --pitch-grid: #262626;
+  --pitch-card-yellow: #eab308;
 }
 
 * {
@@ -120,4 +134,25 @@ section p {
   font-size: 0.75rem;
   color: #777;
   margin-top: 0;
+}
+
+.race-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0 0 0.85rem;
+}
+
+.race-stage {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.75rem 0.5rem 0.25rem;
+}
+
+.panel-note {
+  font-size: 0.85rem;
+  color: #999;
+  line-height: 1.6;
+  max-width: 62ch;
 }

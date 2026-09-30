@@ -14,19 +14,19 @@ without the marker are plain static values.
 
 ### `<Pitch>`
 
-| Prop          | Type                                               | Default        | Notes                                                                                                                              |
-| ------------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Prop          | Type                                                            | Default        | Notes                                                                                                                              |
+| ------------- | --------------------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | `type`        | `"statsbomb" \| "opta" \| "uefa" \| "skillcorner" \| "wyscout"` | —              | Required. The provider coordinate system.                                                                                          |
-| `dimensions`  | `{ length?, width? }`                              | —              | Real extent of this pitch, for real-unit providers (SkillCorner is 104-106 m). Markings do not scale. Throws for normalized grids. |
-| `orientation` | `"horizontal" \| "vertical"`                       | `"horizontal"` | Display concern only; never changes the data's units.                                                                              |
-| `width`       | `number`                                           | —              | Fixed pixel width. Pass with `height` or not at all.                                                                               |
-| `height`      | `number`                                           | —              | Fixed pixel height.                                                                                                                |
-| `crop`        | `{ x0, y0, x1, y1 }`                               | —              | Window in provider units. Drives the container's aspect ratio.                                                                     |
-| `padding`     | `{ top, right, bottom, left }`                     | zero           | Pixel padding inside the viewport.                                                                                                 |
-| `appearance`  | `PitchAppearance`                                  | —              | `{ stripes?, goalType?, linesOnTop? }` — see below.                                                                                |
-| `className`   | `string`                                           | —              | On the wrapper `<div>`, not the `<svg>`.                                                                                           |
-| `style`       | `CSSProperties`                                    | —              | Merged into the wrapper's own positioning styles.                                                                                  |
-| `children`    | `ReactNode`                                        | —              | Layer components.                                                                                                                  |
+| `dimensions`  | `{ length?, width? }`                                           | —              | Real extent of this pitch, for real-unit providers (SkillCorner is 104-106 m). Markings do not scale. Throws for normalized grids. |
+| `orientation` | `"horizontal" \| "vertical"`                                    | `"horizontal"` | Display concern only; never changes the data's units.                                                                              |
+| `width`       | `number`                                                        | —              | Fixed pixel width. Pass with `height` or not at all.                                                                               |
+| `height`      | `number`                                                        | —              | Fixed pixel height.                                                                                                                |
+| `crop`        | `{ x0, y0, x1, y1 }`                                            | —              | Window in provider units. Drives the container's aspect ratio.                                                                     |
+| `padding`     | `{ top, right, bottom, left }`                                  | zero           | Pixel padding inside the viewport.                                                                                                 |
+| `appearance`  | `PitchAppearance`                                               | —              | `{ stripes?, goalType?, linesOnTop? }` — see below.                                                                                |
+| `className`   | `string`                                                        | —              | On the wrapper `<div>`, not the `<svg>`.                                                                                           |
+| `style`       | `CSSProperties`                                                 | —              | Merged into the wrapper's own positioning styles.                                                                                  |
+| `children`    | `ReactNode`                                                     | —              | Layer components.                                                                                                                  |
 
 `PitchAppearance`:
 
@@ -56,6 +56,51 @@ called outside one.
 
 `toProvider` is the inverse needed to turn a pointer position back into pitch
 coordinates.
+
+### `<RaceChart>`
+
+A cumulative step chart over match minutes — the "xG race chart" / "xG timeline". A root
+in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
+
+| Prop               | Type                        | Notes                                                                                       |
+| ------------------ | --------------------------- | ------------------------------------------------------------------------------------------- |
+| `series`           | `RaceSeries<T>[]`           | `{ id, label?, data, color?, className? }`. `id` is what `valueAt` takes.                   |
+| `time`             | `Accessor<T, number>`       | Match minute; fractional is fine.                                                           |
+| `value`            | `Accessor<T, number>`       | The quantity that accumulates.                                                              |
+| `emphasise`        | `Accessor<T, boolean>`      | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
+| `period`           | `Accessor<T, number>`       | Given, period breaks are derived from the data.                                             |
+| `endTime`          | `number`                    | Default `max(90, ceil(latest event))`.                                                      |
+| `maxValue`         | `number`                    | Default: the next round tick at or above the highest total.                                 |
+| `width` / `height` | `number`                    | Both together are the fixed-size opt-out.                                                   |
+| `aspectRatio`      | `number`                    | Responsive box shape. Default `2`.                                                          |
+| `padding`          | `ChartPadding`              | Defaults derive from what is drawn.                                                         |
+| `appearance`       | `RaceAppearance`            | `{ axis, grid, area, markers, periods, endLabels, legend }` — structure only, never colour. |
+| `tooltip`          | `(rows, time) => ReactNode` | Replaces the crosshair tooltip body.                                                        |
+| `children`         | `ReactNode`                 | Annotation slot; positions itself via `useRaceChart()`.                                     |
+
+Each series' total is printed at its own line end, inside the plot, rather than in a right-hand
+gutter — so the lines use the full width. Only the value is printed; the legend names the series.
+The leader's label goes above its line and every other label below its own, clear of the line's own
+earlier step, so close totals never overlap. The ceiling leaves room above the highest total for
+the leader's label unless `maxValue` is pinned; a trailing label too near the baseline goes above.
+
+`appearance.area` is the shading under each line (off by default — two overlapping washes
+muddy the crossover). `appearance.markers` is `"emphasis"` (default), `"all"` or `"none"`.
+
+Colours come from `--pitch-series-1` … `--pitch-series-6` by the series' position in the
+array, so removing a series never repaints the others. A series given a `className` and no
+`color` drops its themed default, the same rule as every mark layer.
+
+### `useRaceChart()`
+
+Returns `{ frame, scaleX, scaleY, series, endTime, valueAt }` from the enclosing
+`<RaceChart>`. Throws if called outside one.
+
+- `scaleX(minute) -> px`, `scaleY(value) -> px` (already flipped for SVG); both have `.invert`
+- `valueAt(seriesId, time) -> number` — that series' cumulative value at `time`, using
+  step-after semantics: an event landing exactly on `time` is included. Throws for an
+  unknown `seriesId`.
+- `frame: ChartFrame` — `{ width, height, x0, y0, x1, y1, plotWidth, plotHeight }`
 
 ---
 
@@ -191,6 +236,78 @@ count points per bin; provided = sum this per bin), and `colorMin` / `colorMax`.
 `<PositionalHeatmap>` bins into Juego de Posición zones derived from the pitch markings
 rather than a uniform grid — mplsoccer's `bin_statistic_positional`. Unlike the binned
 layers, `<KDE>` fades to transparent at low density instead of filling with `colorMin`.
+
+---
+
+### The responsive-canvas pattern
+
+Every density layer needs this. Canvas layers render nothing on the server and need an
+explicit pixel size, so the enclosing `<Pitch>` is measured rather than left responsive.
+
+This is the pattern for **all four** density layers. Copy it whenever one is used.
+
+```tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Heatmap, Pitch } from "@pitchkit/react";
+
+const events = [
+  { x: 52, y: 22 },
+  { x: 55, y: 18 },
+  { x: 61, y: 20 },
+  { x: 66, y: 23 },
+  { x: 74, y: 22 },
+  { x: 59, y: 43 },
+  { x: 47, y: 52 },
+  { x: 82, y: 24 },
+];
+
+const PITCH_ASPECT = 120 / 80; // statsbomb length / width
+
+export function PressureHeatmap() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(480);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef}>
+      <Pitch
+        type="statsbomb"
+        width={width}
+        height={Math.round(width / PITCH_ASPECT)}
+        appearance={{ linesOnTop: true }}
+      >
+        <Heatmap
+          data={events}
+          x={(e) => e.x}
+          y={(e) => e.y}
+          binsX={12}
+          binsY={8}
+          colorMin="#0f3d24"
+          colorMax="#38bdf8"
+          style={{ opacity: 0.85 }}
+        />
+      </Pitch>
+    </div>
+  );
+}
+```
+
+Same shape for the variants: `<PositionalHeatmap layout="full" />` for Juego de Posición
+zones, `<Hexbin binsX={14} />` for a hex lattice, `<KDE resolution={64} maxOpacity={0.8} />`
+for a smooth surface. Every one of them takes an optional `weight` accessor — omit it to
+count points per bin, provide it to sum a value (total xG per zone, say).
 
 ---
 

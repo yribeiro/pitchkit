@@ -10,4 +10,27 @@
   --pitch-lines: rgba(255, 255, 255, 0.85);
   --pitch-marker-primary: #38bdf8;
   --pitch-marker-goal: #fb923c;
+
+  /*
+   * Non-pitch charts (<RaceChart>) render on the same stage as every pitch
+   * beside them, so they read as one set rather than as a visitor: the
+   * series take the two marker hues, and the marker ring is the grass
+   * itself. Nothing here is a new colour — it points the chart tokens at
+   * values this file already defines.
+   */
+  --pitch-series-1: var(--pitch-marker-primary);
+  --pitch-series-2: var(--pitch-marker-goal);
+  /*
+   * The ring a marker knocks out to, so it stays legible where it crosses
+   * a line. <RaceChart> paints no background of its own, so this must be
+   * whatever is actually behind it: on a docs preview that is the stage,
+   * not the grass. An example that sets up its own stage — the gallery
+   * card, which draws a grass block — overrides this alongside it.
+   */
+  --pitch-chart-surface: var(--color-fd-background);
+  --pitch-chart-text: rgba(255, 255, 255, 0.95);
+  --pitch-chart-muted: rgba(255, 255, 255, 0.55);
+  --pitch-grid: rgba(255, 255, 255, 0.1);
+  --pitch-axis: rgba(255, 255, 255, 0.28);
+  --pitch-card-yellow: #facc15;
 }

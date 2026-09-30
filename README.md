@@ -71,6 +71,10 @@ OG images, PDFs).
 `<Voronoi>` · `<GoalAngle>` · `<Flow>` ·
 `usePitch()`
 
+Not everything draws on a pitch. `<RaceChart>` is a chart in its own right, a sibling of `<Pitch>`
+and not a layer inside one: a cumulative step chart over match minutes, the chart usually called
+an xG race chart or xG timeline. `useRaceChart()` is its counterpart to `usePitch()`.
+
 Every visual prop takes either a static value or a function of the datum, so `fill="red"` and
 `fill={(d) => d.teamColor}` are the same prop.
 
