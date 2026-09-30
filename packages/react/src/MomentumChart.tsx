@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import {
   stackOffsets,
   barAtMinute,
   computeChartFrame,
   computeMomentumBars,
-  medianBarWidth,
+  clipMomentumBars,
+  minuteToX,
+  unevenBarWidths,
   createLinearScale,
   layoutMomentumPanels,
   matchMinuteTicks,
@@ -54,10 +56,9 @@ const PERIOD_GAP = 8;
 /** Icons shrink on a phone, where a 16px one is a twentieth of the chart. */
 const ICON_SIZE = 13;
 const NARROW_ICON_SIZE = 11;
-/** How many rows the event strip may grow to before markers share one. */
+/** Height of the minute-label row under the plot. */
 const AXIS_HEIGHT = 18;
-/** How much wider one period's median bar may be than another's before a warning. */
-const UNEVEN_STEP_RATIO = 1.25;
+
 declare const process: { env: { NODE_ENV?: string } };
 
 /** Whole numbers as they are, everything else to one decimal place. */
@@ -119,9 +120,9 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     ? { width: explicitWidth, height: explicitHeight }
     : (measuredSize ?? { width: NOMINAL_WIDTH, height: Math.round(NOMINAL_WIDTH / aspectRatio) });
 
-  // Accessors are resolved here and core is handed plain numbers. Each period
-  // is turned into bars twice: once unclipped, to find where its data really
-  // ends, and once clipped to the range that produces.
+  // Accessors are resolved here and core is handed plain numbers. Each
+  // period's bars are built once, unclipped, to find where its data really
+  // ends, then clipped to the range that produces.
   const computed = useMemo(() => {
     const samples = periods.map((period) =>
       period.map((datum, i) => ({
@@ -129,15 +130,17 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
         value: resolve(value, datum, i),
       })),
     );
-    const ranges: MomentumRange[] = samples.map((sample, index) => {
-      const unclipped = computeMomentumBars(sample);
+    const unclippedBars = samples.map((sample) => computeMomentumBars(sample));
+    const ranges: MomentumRange[] = unclippedBars.map((unclipped, index) => {
       const latestEnd =
         unclipped.length > 0 ? (unclipped[unclipped.length - 1] as MomentumBar).end : undefined;
       const natural = resolvePeriodRange(index, latestEnd);
       const override = periodRanges?.[index];
       return { start: override?.start ?? natural.start, end: override?.end ?? natural.end };
     });
-    const bars = samples.map((sample, index) => computeMomentumBars(sample, ranges[index]));
+    const bars = unclippedBars.map((unclipped, index) =>
+      clipMomentumBars(unclipped, ranges[index] as MomentumRange),
+    );
     const values = bars.flatMap((periodBars) => periodBars.map((bar) => bar.value));
     return { ranges, bars, values };
   }, [periods, time, value, periodRanges]);
@@ -147,13 +150,9 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
   // be at any interval — but it is nearly always a data-prep slip, so say so
   // in development.
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    const widths = computed.bars
-      .map((periodBars) => medianBarWidth(periodBars))
-      .filter((width): width is number => width !== undefined);
-    const narrowest = Math.min(...widths);
-    const widest = Math.max(...widths);
-    if (widths.length > 1 && widest > narrowest * UNEVEN_STEP_RATIO) {
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "production") return;
+    const widths = unevenBarWidths(computed.bars);
+    if (widths !== undefined) {
       console.warn(
         `@pitchkit/react: <MomentumChart> periods are sampled at different intervals ` +
           `(median bar widths ${widths.map((w) => `${+w.toFixed(2)}'`).join(", ")}), so the ` +
@@ -164,9 +163,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
 
   const extent = explicitMaxValue ?? momentumExtent(computed.values);
 
-  // Horizontal layout depends only on the width and side padding, so it can be
-  // settled before the bottom padding — which depends on how many lanes the
-  // event strip needs, and that depends on where the events land horizontally.
+  // Horizontal layout depends only on the width and side padding.
   const sidePadding = explicitPadding ?? { top: 0, right: 10, bottom: 0, left: 10 };
   const panels = layoutMomentumPanels(
     computed.ranges,
@@ -192,31 +189,13 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
               : resolve(eventProps.eventLabel, datum, i),
         }));
 
-  /** The x of a minute, in whichever period holds it or the nearest one. */
-  function xOfMinute(minute: number): number {
-    const inside = panels.find((p) => minute >= p.start && minute <= p.end);
-    if (inside !== undefined) return inside.scale(minute);
-
-    const nearest = panels.reduce(
-      (best, p) => {
-        const distance = minute < p.start ? p.start - minute : minute - p.end;
-        const bestDistance = minute < best.start ? best.start - minute : minute - best.end;
-        return distance < bestDistance ? p : best;
-      },
-      panels[0] as (typeof panels)[number],
-    );
-    return nearest === undefined
-      ? 0
-      : nearest.scale(Math.min(Math.max(minute, nearest.start), nearest.end));
-  }
-
   const iconSize = isNarrow ? NARROW_ICON_SIZE : ICON_SIZE;
   // The event strip is one row: the icon, and room for a team underline.
   const stripHeight = iconSize + 6;
 
   // Icons that would touch fan out into a shallow stack, each a little right
   // of the last and painted over it, so the row never grows taller.
-  const trueXs = placedEvents.map((event) => (panels.length > 0 ? xOfMinute(event.minute) : 0));
+  const trueXs = placedEvents.map((event) => minuteToX(panels, event.minute));
   const eventXs = stackOffsets(trueXs, iconSize, iconSize * 0.55);
   const paintOrder = eventXs
     .map((_, i) => i)
@@ -238,27 +217,30 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     frame,
     panels,
     scaleY,
-    scaleX: xOfMinute,
+    scaleX: (minute) => minuteToX(panels, minute),
     bars: computed.bars,
   };
 
   let hoverInfo: MomentumHover<T, E> | null = null;
+  let hoveredEvents: typeof placedEvents = [];
   if (hover !== null) {
     const bar = barAtMinute(computed.bars[hover.panel] ?? [], hover.minute);
     // With no bar under the pointer, events within half a minute still count.
     const window = bar ?? { start: hover.minute - 0.5, end: hover.minute + 0.5 };
+    hoveredEvents = placedEvents.filter(
+      (event) => event.minute >= window.start && event.minute < window.end,
+    );
     hoverInfo = {
       minute: hover.minute,
       period: hover.panel,
       bar,
       datum: bar === undefined ? undefined : periods[hover.panel]?.[bar.index],
-      events: placedEvents
-        .filter((event) => event.minute >= window.start && event.minute < window.end)
-        .map((event) => event.datum),
+      events: hoveredEvents.map((event) => event.datum),
     };
   }
 
-  useDismissOnOutsidePress(containerRef, hover !== null, () => setHover(null));
+  const clearHover = useCallback(() => setHover(null), []);
+  useDismissOnOutsidePress(containerRef, hover !== null, clearHover);
 
   /**
    * On touch, `pointerleave` fires the instant the finger lifts, so clearing
@@ -278,9 +260,13 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     // The gap between periods is not a minute of the match.
     if (panel === undefined) return setHover(null);
     const minute = Math.min(Math.max(panel.scale.invert(x), panel.start), panel.end);
-    setHover({ panel: panel.index, minute });
+    // Same spot as before: keep the state so React skips the re-render.
+    setHover((prev) =>
+      prev?.panel === panel.index && prev.minute === minute ? prev : { panel: panel.index, minute },
+    );
   }
 
+  const hoverX = hover === null ? undefined : panels[hover.panel]?.scale(hover.minute);
   const eventsTop = frame.y1 + (resolved.axis ? AXIS_HEIGHT : 4);
 
   return (
@@ -419,12 +405,12 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
 
           {children}
 
-          {hover !== null && panels[hover.panel] !== undefined && (
+          {hoverX !== undefined && (
             <line
               data-pitchkit-part="momentum-crosshair"
-              x1={(panels[hover.panel] as (typeof panels)[number]).scale(hover.minute)}
+              x1={hoverX}
               y1={frame.y0}
-              x2={(panels[hover.panel] as (typeof panels)[number]).scale(hover.minute)}
+              x2={hoverX}
               y2={frame.y1}
               style={{ stroke: CHART_MUTED, strokeWidth: 1, pointerEvents: "none" }}
             />
@@ -446,18 +432,12 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
         </MomentumChartContext.Provider>
       </svg>
 
-      {hoverInfo !== null && hover !== null && panels[hover.panel] !== undefined && (
-        <ChartReadout
-          left={
-            ((panels[hover.panel] as (typeof panels)[number]).scale(hover.minute) / frame.width) *
-            100
-          }
-          top={(frame.y0 / frame.height) * 100}
-        >
+      {hoverInfo !== null && hoverX !== undefined && (
+        <ChartReadout left={(hoverX / frame.width) * 100} top={(frame.y0 / frame.height) * 100}>
           {tooltip !== undefined ? (
             tooltip(hoverInfo)
           ) : (
-            <DefaultReadout hover={hoverInfo} teams={teams} placed={placedEvents} />
+            <DefaultReadout hover={hoverInfo} teams={teams} events={hoveredEvents} />
           )}
         </ChartReadout>
       )}
@@ -485,11 +465,12 @@ function Legend({ teams, x, y }: { teams: MomentumTeams; x: number; y: number })
 function DefaultReadout<T, E>({
   hover,
   teams,
-  placed,
+  events,
 }: {
   hover: MomentumHover<T, E>;
   teams: MomentumTeams | undefined;
-  placed: readonly {
+  /** The events at the hovered minute, with their resolved side, kind and label. */
+  events: readonly {
     datum: E;
     side: MomentumSide;
     kind: MomentumEventKind;
@@ -499,7 +480,6 @@ function DefaultReadout<T, E>({
   const side: MomentumSide | null =
     hover.bar === undefined || hover.bar.value === 0 ? null : hover.bar.value > 0 ? "home" : "away";
   const teamName = (s: MomentumSide) => teams?.[s] ?? (s === "home" ? "Home" : "Away");
-  const events = placed.filter((event) => hover.events.includes(event.datum));
 
   return (
     <>

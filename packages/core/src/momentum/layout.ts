@@ -115,3 +115,19 @@ export function momentumExtent(values: readonly number[]): number {
   const step = (ticks[1] as number) - (ticks[0] as number);
   return Math.ceil(largest / step) * step;
 }
+
+/**
+ * The x of a match minute: in the panel that holds it, or the nearest panel
+ * (clamped to its edge) for a minute that falls in a gap or outside every
+ * period. 0 when there are no panels.
+ */
+export function minuteToX(panels: readonly MomentumPanel[], minute: number): number {
+  const gapTo = (p: MomentumPanel) => Math.max(p.start - minute, minute - p.end, 0);
+  let nearest = panels[0];
+  for (const panel of panels) {
+    if (nearest === undefined || gapTo(panel) < gapTo(nearest)) nearest = panel;
+  }
+  return nearest === undefined
+    ? 0
+    : nearest.scale(Math.min(Math.max(minute, nearest.start), nearest.end));
+}

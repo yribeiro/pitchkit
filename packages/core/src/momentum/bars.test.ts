@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { barAtMinute, computeMomentumBars, medianBarWidth } from "./bars.js";
+import {
+  barAtMinute,
+  clipMomentumBars,
+  computeMomentumBars,
+  medianBarWidth,
+  unevenBarWidths,
+} from "./bars.js";
 
 describe("computeMomentumBars", () => {
   it("runs each bar from its minute to the next sample's minute", () => {
@@ -209,5 +215,52 @@ describe("medianBarWidth", () => {
 
   it("averages the two middle widths of an even count", () => {
     expect(medianBarWidth([bar(0, 1), bar(1, 3), bar(3, 6), bar(6, 12)])).toBe(2.5);
+  });
+});
+
+describe("clipMomentumBars", () => {
+  const bar = (start: number, end: number) => ({ start, end, value: 1, index: 0 });
+
+  it("trims bars to the range and drops ones left with no width", () => {
+    const clipped = clipMomentumBars([bar(-2, 3), bar(3, 6), bar(6, 9), bar(9, 12)], {
+      start: 0,
+      end: 9,
+    });
+    expect(clipped.map((b) => [b.start, b.end])).toEqual([
+      [0, 3],
+      [3, 6],
+      [6, 9],
+    ]);
+  });
+});
+
+describe("unevenBarWidths", () => {
+  const even = (width: number, count: number) =>
+    Array.from({ length: count }, (_, i) => ({
+      start: i * width,
+      end: (i + 1) * width,
+      value: 1,
+      index: i,
+    }));
+
+  it("is undefined when the periods share a width", () => {
+    expect(unevenBarWidths([even(3, 5), even(3, 5)])).toBeUndefined();
+  });
+
+  it("is undefined with fewer than two non-empty periods", () => {
+    expect(unevenBarWidths([even(3, 5), []])).toBeUndefined();
+    expect(unevenBarWidths([])).toBeUndefined();
+  });
+
+  it("tolerates a small difference", () => {
+    expect(unevenBarWidths([even(4, 5), even(4.5, 5)])).toBeUndefined();
+  });
+
+  it("returns each period's median width when they differ by more than the ratio", () => {
+    expect(unevenBarWidths([even(5, 4), even(2, 6)])).toEqual([5, 2]);
+  });
+
+  it("takes the ratio as a parameter", () => {
+    expect(unevenBarWidths([even(4, 5), even(4.5, 5)], 1.05)).toEqual([4, 4.5]);
   });
 });

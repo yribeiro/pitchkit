@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  minuteToX,
   layoutMomentumPanels,
   momentumExtent,
   nominalPeriodRange,
@@ -165,5 +166,47 @@ describe("momentumExtent", () => {
   it("ignores a non-finite value rather than returning NaN", () => {
     expect(momentumExtent([NaN, 3])).toBeGreaterThanOrEqual(3);
     expect(momentumExtent([Infinity])).toBe(1);
+  });
+});
+
+describe("minuteToX", () => {
+  const panels = layoutMomentumPanels(
+    [
+      { start: 0, end: 45 },
+      { start: 45, end: 90 },
+    ],
+    0,
+    200,
+    20,
+  );
+
+  it("maps a minute through the panel that holds it", () => {
+    expect(minuteToX(panels, 10)).toBeCloseTo((panels[0] as (typeof panels)[number]).scale(10));
+    expect(minuteToX(panels, 60)).toBeCloseTo((panels[1] as (typeof panels)[number]).scale(60));
+  });
+
+  it("clamps a minute outside every period to the nearest panel's edge", () => {
+    const [first, second] = panels as [(typeof panels)[number], (typeof panels)[number]];
+    expect(minuteToX(panels, -5)).toBeCloseTo(first.scale(0));
+    expect(minuteToX(panels, 120)).toBeCloseTo(second.scale(90));
+  });
+
+  it("picks the nearer panel for a minute in a gap between periods", () => {
+    const gapped = layoutMomentumPanels(
+      [
+        { start: 0, end: 45 },
+        { start: 60, end: 90 },
+      ],
+      0,
+      200,
+      20,
+    );
+    const [first, second] = gapped as [(typeof gapped)[number], (typeof gapped)[number]];
+    expect(minuteToX(gapped, 47)).toBeCloseTo(first.scale(45));
+    expect(minuteToX(gapped, 58)).toBeCloseTo(second.scale(60));
+  });
+
+  it("is 0 with no panels", () => {
+    expect(minuteToX([], 10)).toBe(0);
   });
 });

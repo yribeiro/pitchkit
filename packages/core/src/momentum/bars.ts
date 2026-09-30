@@ -62,20 +62,37 @@ export function computeMomentumBars(
 
   const fallback = medianInterval(usable.map(({ sample }) => sample.time));
 
-  const bars: MomentumBar[] = [];
-  usable.forEach(({ sample, index }, i) => {
+  const bars = usable.flatMap(({ sample, index }, i) => {
     const next = usable[i + 1];
-    let start = sample.time;
-    let end = next === undefined ? start + fallback : next.sample.time;
-
-    if (range !== undefined) {
-      start = Math.max(start, range.start);
-      end = Math.min(end, range.end);
-    }
-    if (end > start) bars.push({ start, end, value: sample.value, index });
+    const start = sample.time;
+    const end = next === undefined ? start + fallback : next.sample.time;
+    return end > start ? [{ start, end, value: sample.value, index }] : [];
   });
 
-  return bars;
+  return range === undefined ? bars : clipMomentumBars(bars, range);
+}
+
+/**
+ * Bars clipped to `range`: ones that end up with no width are dropped. Lets a
+ * caller that already has a period's bars re-clip them without sorting again.
+ */
+export function clipMomentumBars(
+  bars: readonly MomentumBar[],
+  range: MomentumRange,
+): MomentumBar[] {
+  return bars.flatMap((bar) => {
+    const start = Math.max(bar.start, range.start);
+    const end = Math.min(bar.end, range.end);
+    return end > start ? [{ ...bar, start, end }] : [];
+  });
+}
+
+/** The middle of an ascending list; the mean of the two middles when even. */
+function median(sorted: readonly number[]): number {
+  const middle = sorted.length >> 1;
+  return sorted.length % 2 === 1
+    ? (sorted[middle] as number)
+    : ((sorted[middle - 1] as number) + (sorted[middle] as number)) / 2;
 }
 
 /**
@@ -90,11 +107,7 @@ function medianInterval(times: readonly number[]): number {
   }
   if (gaps.length === 0) return 1;
 
-  gaps.sort((a, b) => a - b);
-  const middle = gaps.length >> 1;
-  return gaps.length % 2 === 1
-    ? (gaps[middle] as number)
-    : ((gaps[middle - 1] as number) + (gaps[middle] as number)) / 2;
+  return median(gaps.sort((a, b) => a - b));
 }
 
 /**
@@ -107,11 +120,23 @@ function medianInterval(times: readonly number[]): number {
  */
 export function medianBarWidth(bars: readonly MomentumBar[]): number | undefined {
   if (bars.length === 0) return undefined;
-  const widths = bars.map((bar) => bar.end - bar.start).sort((a, b) => a - b);
-  const middle = widths.length >> 1;
-  return widths.length % 2 === 1
-    ? (widths[middle] as number)
-    : ((widths[middle - 1] as number) + (widths[middle] as number)) / 2;
+  return median(bars.map((bar) => bar.end - bar.start).sort((a, b) => a - b));
+}
+
+/**
+ * The median bar width of each non-empty period, when any two differ by more
+ * than `ratio` (widest over narrowest); `undefined` when they are even or
+ * there is only one period to compare.
+ */
+export function unevenBarWidths(
+  periods: readonly (readonly MomentumBar[])[],
+  ratio = 1.25,
+): number[] | undefined {
+  const widths = periods
+    .map((bars) => medianBarWidth(bars))
+    .filter((width): width is number => width !== undefined);
+  if (widths.length < 2) return undefined;
+  return Math.max(...widths) > Math.min(...widths) * ratio ? widths : undefined;
 }
 
 /**

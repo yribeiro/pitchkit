@@ -4,39 +4,43 @@ export const SIDE_COLOR: Record<MomentumSide, string> = {
   home: "var(--pitch-series-1, #3b82f6)",
   away: "var(--pitch-series-2, #eb6834)",
 };
-export const CARD_RED = "var(--pitch-card-red, #ef4444)";
-export const CARD_YELLOW = "var(--pitch-card-yellow, #facc15)";
 
 /**
- * Whether an icon's own colour already says which team it is for. A card is
- * yellow or red whoever was booked, so it needs the team said another way.
+ * The kinds whose meaning is their colour: a card is yellow or red whoever
+ * was booked, and an own goal is drawn in the card red.
+ */
+const KIND_COLOR: Partial<Record<MomentumEventKind, string>> = {
+  "yellow-card": "var(--pitch-card-yellow, #facc15)",
+  "red-card": "var(--pitch-card-red, #ef4444)",
+  "own-goal": "var(--pitch-card-red, #ef4444)",
+};
+
+const KIND_LABEL: Record<MomentumEventKind, string> = {
+  goal: "Goal",
+  "own-goal": "Own goal",
+  "missed-penalty": "Missed penalty",
+  "yellow-card": "Yellow card",
+  "red-card": "Red card",
+  substitution: "Substitution",
+  var: "VAR",
+};
+
+/**
+ * Whether an icon's own colour already says which team it is for. The kinds
+ * above say nothing of the team, so they need it said another way.
  */
 export function colorSaysTeam(kind: MomentumEventKind): boolean {
-  return kind !== "yellow-card" && kind !== "red-card" && kind !== "own-goal";
+  return !(kind in KIND_COLOR);
 }
 
-/**
- * An icon's colour. Red for the two kinds whose meaning is their colour,
- * yellow for a yellow card, and the team's otherwise.
- */
+/** An icon's colour: its own where its meaning is colour, the team's otherwise. */
 export function iconColor(kind: MomentumEventKind, side: MomentumSide): string {
-  if (kind === "red-card" || kind === "own-goal") return CARD_RED;
-  if (kind === "yellow-card") return CARD_YELLOW;
-  return SIDE_COLOR[side];
+  return KIND_COLOR[kind] ?? SIDE_COLOR[side];
 }
 
 /** What an event is called when the caller hasn't said. */
 export function kindLabel(kind: MomentumEventKind): string {
-  const labels: Record<MomentumEventKind, string> = {
-    goal: "Goal",
-    "own-goal": "Own goal",
-    "missed-penalty": "Missed penalty",
-    "yellow-card": "Yellow card",
-    "red-card": "Red card",
-    substitution: "Substitution",
-    var: "VAR",
-  };
-  return labels[kind];
+  return KIND_LABEL[kind];
 }
 
 /**
@@ -84,7 +88,7 @@ function Ball({ cx, cy, r }: { cx: number; cy: number; r: number }) {
 }
 
 /** The shape of each icon, in its own 24-unit box. */
-export function MomentumIconShape({ kind }: { kind: MomentumEventKind }) {
+function MomentumIconShape({ kind }: { kind: MomentumEventKind }) {
   switch (kind) {
     case "goal":
       return <Ball cx={12} cy={12} r={9.5} />;

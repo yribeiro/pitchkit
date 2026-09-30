@@ -3,7 +3,7 @@
 ---
 
 Add the maths `<MomentumChart>` is built on, in a new `momentum/` module: `computeMomentumBars`,
-`barAtMinute`, `medianBarWidth`, `nominalPeriodRange`, `resolvePeriodRange`, `layoutMomentumPanels`,
+`clipMomentumBars`, `barAtMinute`, `medianBarWidth`, `unevenBarWidths`, `nominalPeriodRange`, `resolvePeriodRange`, `layoutMomentumPanels`, `minuteToX`,
 `momentumExtent` and `stackOffsets`, with the `MomentumSample`, `MomentumBar`, `MomentumRange`
 and `MomentumPanel` types.
 
