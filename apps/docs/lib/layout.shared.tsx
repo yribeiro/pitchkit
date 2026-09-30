@@ -1,6 +1,6 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { PitchKitLockup } from "@/components/pitchkit-logo";
-import { InstagramIcon, XIcon } from "@/components/social-icons";
+import { GitHubIcon, InstagramIcon, XIcon } from "@/components/social-icons";
 import { CONTACT_EMAIL, GITHUB_URL, INSTAGRAM_URL, X_URL } from "@/lib/site";
 
 /**
@@ -23,11 +23,6 @@ export function baseOptions(): BaseLayoutProps {
         url: "/gallery",
       },
       {
-        text: "GitHub",
-        url: GITHUB_URL,
-        external: true,
-      },
-      {
         text: "Contact",
         url: `mailto:${CONTACT_EMAIL}`,
         external: true,
@@ -36,6 +31,14 @@ export function baseOptions(): BaseLayoutProps {
        * Icon-only, so `label` is the accessible name (and the tooltip); the
        * glyph itself is aria-hidden.
        */
+      {
+        type: "icon",
+        label: "PitchKit on GitHub",
+        text: "GitHub",
+        icon: <GitHubIcon />,
+        url: GITHUB_URL,
+        external: true,
+      },
       {
         type: "icon",
         label: "PitchKit on X",

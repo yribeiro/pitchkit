@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
-import { InstagramIcon, XIcon } from "@/components/social-icons";
+import { SocialLinks } from "@/components/social-icons";
 import {
   CONTACT_EMAIL,
   GITHUB_URL,
@@ -386,26 +386,7 @@ export default function HomePage() {
               PitchKit
             </span>
             <p className="text-sm text-fd-muted-foreground">MIT licensed.</p>
-            <div className="flex items-center gap-1 pt-1">
-              <a
-                href={X_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="PitchKit on X"
-                className="rounded-md p-2 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-              >
-                <XIcon size={16} />
-              </a>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="PitchKit on Instagram"
-                className="rounded-md p-2 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-              >
-                <InstagramIcon size={16} />
-              </a>
-            </div>
+            <SocialLinks className="-ms-2.5 gap-0.5" />
           </div>
 
           <div id="contact" className="flex flex-col gap-3">
@@ -453,9 +434,6 @@ export default function HomePage() {
             <Link href="/gallery" className="transition-colors hover:text-fd-foreground">
               Gallery
             </Link>
-            <a href={GITHUB_URL} className="transition-colors hover:text-fd-foreground">
-              GitHub
-            </a>
           </div>
         </div>
       </footer>
