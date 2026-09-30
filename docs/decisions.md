@@ -411,11 +411,13 @@ a pitch.
 would have moved 13 pages and needed 26 permanent redirects. The section also has known tenants
 beyond this chart: radar, pizza and the goal view.
 
-**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on a near-black
-stage (`.pitchkit-chart-stage`, not the pitch's grass: a chart has no pitch, and the black
-gives bars and lines more contrast) in a 3:2 box so it takes a pitch card's footprint.
-`docs-pitch-theme.css` aliases the chart tokens to the marker hues, and the stage steps the two
-series hues down to `#1492d6` and `#e8590c` so they sit in the dark-mode lightness band on that
-surface (validated: 3:1 contrast, CVD separation above 25). `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
+**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on its own
+stage (`.pitchkit-chart-stage`), not the pitch's grass: a chart has no pitch. The stage and the chart
+tokens follow the site theme, white in light and near-black in dark, in a 3:2 box so the card takes
+a pitch card's footprint. The series hues are not the pitch marker hues, which are tuned for grass:
+each mode has its own pair, run through the dataviz validator against its own surface (lightness
+band, 3:1 contrast, CVD separation above 22), and the yellow card is darkened on white. The same
+tokens apply to live previews on the docs pages, which were previously dark-only and unreadable in
+light mode. `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
 whatever is actually behind it: the docs theme defaults it to the page stage, and a card that draws
 its own stage overrides it alongside the background.
