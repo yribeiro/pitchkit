@@ -107,6 +107,44 @@ and goal lines move; box and circle markings keep their regulation sizes.
 
 **Why:** A penalty area is 16.5 m on any pitch.
 
+### D23. Non-pitch charts are roots with their own scales
+
+**Decision:** A chart with no pitch under it (`<RaceChart>` first, radar and pizza next) is a
+root component, a sibling of `<Pitch>` and not a `Layer`. It takes no `type` prop and does not go
+through `createPixelTransform`. Its maths lives in `@pitchkit/core` under `chart/` (linear scales,
+ticks, plot frame) and `race/` (cumulative series, step path), which import nothing from
+`dimensions/`, `transform/` or `scene/`. **Every data value reaches a pixel through a scale.** The
+y-axis flip lives in the scale's range, never in a component.
+
+**Why:** Pushing a chart through `Scene`/`Layer`/`PitchDimensions` is the wrong abstraction, as
+[issue #21](https://github.com/yribeiro/pitchkit/issues/21) argued before any chart existed. The
+scale rule is [D5](#d5-centre-origin-coordinates-are-handled-in-core-never-in-callers) for charts:
+a coordinate workaround in a caller fails silently, and this is the same class of bug. Data goes on
+the root rather than on children because the y-domain is the highest total across every series, so
+a root can't compute its scales without all of it. Anything the chart doesn't draw itself is a
+child, positioned through `useRaceChart()` (`scaleX`, `scaleY`, `valueAt`), the counterpart of
+`usePitch()`.
+
+**Consequences:**
+
+- [D3](#d3-pitchkitreact-is-the-only-supported-rendering-surface) applies unchanged: React-only,
+  no core SVG painter. `core` takes plain numbers, not `Accessor`s, so `race/` never depends on
+  `scene/`.
+- `chart/` and `race/` are held at 100% coverage, enforced in `packages/core/vitest.config.ts`.
+- Chart tokens stay in the `--pitch-*` namespace
+  ([D8](#d8-theming-is-css-variables-only)): `--pitch-series-1` to `-6`, `--pitch-axis`,
+  `--pitch-grid`, `--pitch-chart-surface`, `--pitch-chart-text`, `--pitch-chart-muted`. A second
+  prefix would split the theme and cost D8 its main benefit, one declaration themes everything.
+  Series colour is assigned by slot, so removing a series never repaints the others.
+- The component is `<RaceChart>`, not `<XgRace>`, because the accumulating value need not be xG.
+  A generic name is invisible to anyone searching "xG race chart", so the bundled skill's
+  `description` and the docs page carry "xG race chart", "xG timeline" and "xG flow chart".
+  `<XgFlow>` was never an option: `<Flow>` is the pass-direction layer.
+- This is the first chart with no mplsoccer equivalent. mplsoccer's non-pitch charts are `Radar`,
+  `PyPizza` and `Bumpy`; nothing in it is cumulative.
+- Radar and pizza are polar and share none of `chart/`. They get their own module beside it, not
+  under it.
+
 ---
 
 ## Styling and theming
@@ -317,3 +355,20 @@ commit.
 **Decision:** Vercel Web Analytics and PostHog (`components/posthog-provider.tsx`) are both
 wired into `apps/docs/app/layout.tsx`. PostHog was added alongside Vercel, not as a
 replacement ([PR #64](https://github.com/yribeiro/pitchkit/pull/64)).
+
+### D24. Charts get a top-level docs section, and the gallery a Timeline category
+
+**Decision:** Non-pitch charts live under a top-level **Charts** section (`/docs/charts`), not
+under Overlays. The gallery gains a **Timeline** category, the first whose cards are not drawn on
+a pitch.
+
+**Why:** "Overlays" means layered on a pitch, which a race chart is not. Renaming it to cover both
+would have moved 13 pages and needed 26 permanent redirects. The section also has known tenants
+beyond this chart: radar, pizza and the goal view.
+
+**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on the same
+grass stage as the pitch cards so it sits in the grid as one of the set, and
+`docs-pitch-theme.css` aliases the chart tokens to the existing marker hues rather than adding
+colours. `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
+whatever is actually behind it: the docs theme defaults it to the page stage, and a card that draws
+its own grass overrides it alongside the background.

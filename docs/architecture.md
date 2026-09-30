@@ -7,6 +7,7 @@ standards around them. The reasons behind these choices are in the
 - [Rendering: SVG and Canvas](#rendering-svg-and-canvas)
 - [Coordinates and pitch types](#coordinates-and-pitch-types)
 - [Scene and layers](#scene-and-layers)
+- [Non-pitch charts](#non-pitch-charts)
 - [Packages](#packages)
 - [React and Next.js](#react-and-nextjs)
 - [Responsive and multi-device](#responsive-and-multi-device)
@@ -61,6 +62,52 @@ Pitch (scene)
 Layers are pure data and options; they don't own DOM. That keeps the scene serialisable,
 testable and renderer-independent.
 
+## Non-pitch charts
+
+Some football data has no location on a pitch: a quantity accumulating over match minutes, a
+player's percentile profile. Those charts are roots in their own right, siblings of `<Pitch>` and
+not layers inside it ([D23](./decisions.md#d23-non-pitch-charts-are-roots-with-their-own-scales)).
+`<RaceChart>` is the first.
+
+```
+RaceChart (root)
+ ├─ series    (one per team or player; data stays on the root)
+ ├─ scales    (createLinearScale: minute -> x, accumulated value -> y, y-flip in the range)
+ ├─ chrome    (axes, grid, period breaks, legend)
+ ├─ lines, then marks and end labels, then children
+ └─ crosshair (one hit area over the plot)
+```
+
+- **`core` owns the maths, with no pitch in it.** `chart/` (`createLinearScale`, `niceTicks`,
+  `matchMinuteTicks`, `computeChartFrame`) and `race/` (`computeCumulativeSeries`, `valueAtTime`,
+  `resolveEndTime`, `stepPath`, `stepAreaPath`) take plain numbers. The React binding resolves
+  accessors before calling in, so `race/` never imports `scene/`.
+- **Every value reaches a pixel through a scale.** No component multiplies a minute or an xG by
+  anything.
+- **The step is step-after** (d3's `curveStepAfter`), the only correct interpolation for a running
+  total: a slope would draw xG accruing in minutes when no shot was taken. There is no `curve`
+  option. The line is anchored at kick-off and runs to full time.
+- **Things the chart doesn't draw are children.** Bookings and substitutions accumulate nothing, so
+  they are not series. `useRaceChart()` gives a child `scaleX`, `scaleY` and
+  `valueAt(seriesId, time)`, which puts a mark on a team's line rather than beside it.
+- **Paint order is lines, then marks and labels, then children.** Drawn per series, the second
+  team's line runs over the first team's goal markers.
+- **The end label sits above the leader's line and below every other.** Labels move apart, not
+  towards each other, so close totals don't overprint. Either flips when it would be clipped.
+  Three or more series are not handled: the non-leaders all go below their lines.
+- **Responsive by default, as for `<Pitch>`.** `width` and `height` together are the opt-out. Below
+  420 px the default box is 1.4:1 instead of 2:1, because a 2:1 plot on a phone is barely taller
+  than its own axis labels.
+- **Touch is handled for this chart.** `touch-action: pan-y` so a horizontal drag scrubs the
+  crosshair and a vertical one scrolls. On touch, `pointerleave` fires the moment the finger lifts,
+  so clearing on it wipes the readout in the same gesture; a touch readout persists until a press
+  outside the chart. A browser's device emulation reports every pointer as touch, which is how a
+  readout that never clears shows up on a desktop.
+- **It server-renders.** SVG only, with a nominal-size fallback before the first measurement.
+
+Not built yet: keyboard focus giving the same readout as hover, and a table view of the values.
+Neither exists anywhere in the library.
+
 ## Packages
 
 npm workspaces + Turborepo.
@@ -104,10 +151,12 @@ registry items instead of packages
 Designed but not built yet:
 
 - **Touch interaction:** tap to select, with a callout above the finger, detected via
-  `matchMedia('(pointer: coarse)')`. Tooltips are desktop-hover only today.
+  `matchMedia('(pointer: coarse)')`. Pitch tooltips are desktop-hover only today;
+  [`<RaceChart>` handles touch itself](#non-pitch-charts).
 - **44×44 px hit areas** around small marks.
 - **Adaptive density** at small widths: a `hideBelow` prop for labels, thinner strokes.
 - **`touch-action: pan-y`** on the pitch root, so a vertical swipe scrolls the page.
+  `<RaceChart>` already sets it.
 
 ## Theming and styling
 
@@ -129,6 +178,10 @@ variable list, is on the [Styling pages](https://www.pitchkitjs.com/docs/styling
   through variables, never through `className` on its shapes (see `core/theme/part-style.ts`).
 - **`pitchTokens`** maps names to variable names for editor autocomplete; values live in CSS.
   Its `markerMiss` token is exported, but no component reads it yet.
+- **Chart variables** share the `--pitch-*` namespace: `--pitch-series-1` to `-6` (by slot, so
+  colour follows the entity), `--pitch-axis`, `--pitch-grid`, `--pitch-chart-surface` (the ring
+  around a marker, which has to match whatever is behind the chart, since `<RaceChart>` paints no
+  background), `--pitch-chart-text` and `--pitch-chart-muted`. Chart chrome has no prop equivalent.
 - **Theme presets** (classic grass, dark broadcast, print, colour-blind-safe) are planned as
   shadcn registry items, e.g. `npx shadcn add @pitchkit/theme-broadcast`. They depend on the
   registry infrastructure, which doesn't exist yet.
@@ -185,9 +238,10 @@ language. It is live at [pitchkitjs.com](https://www.pitchkitjs.com).
   shown beside it and "Open in StackBlitz/CodeSandbox" buttons. Each example is a complete,
   copy-pasteable file, not a fragment.
 - **API reference:** generated from TSDoc with TypeDoc into `content/docs/api/`.
-- **Guides:** Quickstart, Guides, Components, Overlays, Agents, Styling, Data, and the
+- **Guides:** Quickstart, Guides, Components, Overlays, Charts, Agents, Styling, Data, and the
   mplsoccer → PitchKit migration page.
-- **Gallery:** `/gallery`, finished visualisations with full source.
+- **Gallery:** `/gallery`, finished visualisations with full source, in Shooting, Passing,
+  Structure, Density and Timeline categories.
 - **For agents:** `/llms.txt`, `/llms-full.txt`, `/llms-api.txt`, and per-page Markdown
   (append `.md` to any docs URL) ([D19](./decisions.md#d19-llmstxt-covers-the-narrative-docs-the-api-reference-is-separate)).
 
@@ -318,6 +372,16 @@ Re-verify against a fresh sample before "correcting" any of them.
 - Open data is fetched from `raw.githubusercontent.com/statsbomb/open-data`. The docs
   examples use Euro 2024 (competition 55, season 282), where all 51 matches have 360 data.
 - 360 frames join onto events by `event_uuid`; `indexThreeSixtyByEvent` does the join.
+- **Period 5 is the penalty shootout, and its penalties carry xG.** England 1-1 Switzerland
+  (`3942227`) has 9 shots in period 5, all `shot.type = "Penalty"`, worth 7.05 xG against 1.74
+  across periods 1 to 4. `shots(events)` alone ends an xG chart at 8.79. Filter `period <= 4`.
+- **Extra time reaches minute 121.** The same match runs period 3 to 105' and period 4 to 121', so
+  an axis fixed at 90 clips it.
+- **Halves don't end on 45.** Stoppage time is inside `minute`: the Euro 2024 final (`3943043`)
+  has period 1 running to 47' and the match to 94'. A half-time rule drawn at 45 is in the wrong
+  place.
+- **A booking is `foul_committed.card`.** The final has four, all there. A booking without a foul
+  would be under `bad_behaviour.card`, but none occurs in that match, so it is unverified.
 
 ### SkillCorner
 
