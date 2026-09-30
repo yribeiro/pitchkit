@@ -125,8 +125,8 @@ describe("<RaceChart>", () => {
   it("prints each series total at its line end", () => {
     renderChart();
 
-    expect(screen.getByText("HOME 0.83")).toBeTruthy();
-    expect(screen.getByText("AWAY 0.39")).toBeTruthy();
+    expect(screen.getByText("0.83")).toBeTruthy();
+    expect(screen.getByText("0.39")).toBeTruthy();
   });
 
   it("assigns series colours by slot, so removing one never repaints the others", () => {
@@ -269,8 +269,8 @@ describe("<RaceChart>", () => {
       expect(label.getAttribute("text-anchor")).toBe("end");
       expect(Number(label.getAttribute("x"))).toBeLessThanOrEqual(plotRight);
     }
-    // The label names its series, since there is no swatch beside it now.
-    expect(labels.map((l) => l.textContent)).toEqual(["HOME 0.83", "AWAY 0.39"]);
+    // Value only: the legend already names the series.
+    expect(labels.map((l) => l.textContent)).toEqual(["0.83", "0.39"]);
   });
 
   it("drops a label below its line when the total leaves no headroom", () => {
@@ -425,10 +425,10 @@ describe("<RaceChart>", () => {
       width: 720,
       height: 380,
     });
-    const labelY = (text: string) =>
+    const labelY = (value: string) =>
       Number(
         Array.from(container.querySelectorAll('[data-pitchkit-part="race-end-label"]'))
-          .find((l) => l.textContent?.startsWith(text))
+          .find((l) => l.textContent === value)
           ?.getAttribute("y"),
       );
     const lineEndY = (id: string) => {
@@ -440,10 +440,10 @@ describe("<RaceChart>", () => {
     };
 
     // SVG y grows downward: above the line is a smaller y.
-    expect(labelY("GER")).toBeLessThan(lineEndY("GER"));
-    expect(labelY("ESP")).toBeGreaterThan(lineEndY("ESP"));
+    expect(labelY("1.63")).toBeLessThan(lineEndY("GER"));
+    expect(labelY("1.53")).toBeGreaterThan(lineEndY("ESP"));
     // And the two labels have moved apart, not together.
-    expect(labelY("ESP") - labelY("GER")).toBeGreaterThan(20);
+    expect(labelY("1.53") - labelY("1.63")).toBeGreaterThan(20);
   });
 
   it("lifts a trailing label above its line when it would hit the axis", () => {
@@ -457,18 +457,61 @@ describe("<RaceChart>", () => {
     });
     const away = Array.from(
       container.querySelectorAll('[data-pitchkit-part="race-end-label"]'),
-    ).find((l) => l.textContent?.startsWith("AWAY")) as Element;
+    ).find((l) => l.textContent === "0.00") as Element;
     const hitArea = container.querySelector('rect[fill="transparent"]') as Element;
     const plotBottom = Number(hitArea.getAttribute("y")) + Number(hitArea.getAttribute("height"));
 
     expect(Number(away.getAttribute("y"))).toBeLessThan(plotBottom);
   });
 
+  it("keeps a below label clear of its own line's earlier step", () => {
+    // A cumulative line only rises, so under a right-aligned label its
+    // lowest part is its level at the label's left edge. Placed just
+    // under the end, the label lands on that earlier step.
+    const { container } = renderChart({
+      series: [
+        { id: "LEAD", data: [{ minute: 40, xg: 1.5 }] },
+        {
+          id: "TRAIL",
+          data: [
+            { minute: 20, xg: 0.3 },
+            { minute: 89, xg: 0.2 },
+          ],
+        },
+      ],
+      width: 720,
+      height: 380,
+    });
+    const label = Array.from(
+      container.querySelectorAll('[data-pitchkit-part="race-end-label"]'),
+    ).find((l) => l.textContent === "0.50") as Element;
+    const d =
+      container
+        .querySelector('[data-pitchkit-series="TRAIL"] [data-pitchkit-part="race-line"]')
+        ?.getAttribute("d") ?? "";
+    // The first V is the 0.30 step; SVG y grows downward, so the lowest
+    // part of the line has the largest y.
+    const earlierStepY = Number(d.match(/V([\d.]+)/)?.[1]);
+
+    expect(Number(label.getAttribute("y"))).toBeGreaterThan(earlierStepY);
+  });
+
+  it("paints a surface-coloured halo under end labels", () => {
+    // Where a label does cross a line or a gridline it stays legible
+    // without a box, the same way a ring keeps a marker legible.
+    const { container } = renderChart();
+    const label = container.querySelector('[data-pitchkit-part="race-end-label"]') as Element;
+    const style = label.getAttribute("style") ?? "";
+
+    expect(style).toContain("paint-order: stroke");
+    expect(style).toContain("--pitch-chart-surface");
+  });
+
   it("renders an empty series without throwing", () => {
     const { container } = renderChart({ series: [{ id: "NONE", data: [] }] });
 
     expect(container.querySelectorAll('[data-pitchkit-part="race-line"]')).toHaveLength(1);
-    expect(screen.getByText("NONE 0.00")).toBeTruthy();
+    expect(screen.getByText("0.00")).toBeTruthy();
   });
 
   it("leaves headroom above the leading line", () => {

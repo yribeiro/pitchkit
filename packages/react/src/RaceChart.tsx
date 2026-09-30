@@ -88,32 +88,43 @@ function defaultPadding(appearance: Required<RaceAppearance>): ChartPadding {
 const NARROW_WIDTH = 420;
 const NARROW_ASPECT_RATIO = 1.4;
 
-/** Clearance between a line end and its label. */
-const END_LABEL_GAP = 10;
+/**
+ * Clearance between a line end and its label. Larger than it looks
+ * necessary because the end of a line usually carries a ringed marker.
+ */
+const END_LABEL_GAP = 12;
 
 /** Text height below its baseline-anchored y, near enough for 12px type. */
 const END_LABEL_DESCENT = 8;
+
+/** Average advance of a digit or point at 12px, used to size a label's span. */
+const END_LABEL_CHAR_WIDTH = 7;
 
 /**
  * Where an end label sits relative to its line.
  *
  * The leading series labels above its line and every other series below
- * its own. The two labels then move apart rather than towards each
- * other, so two teams finishing on close totals don't print one name on
- * top of the other — the leader's label heads up, the rest head down.
+ * its own, so the labels move apart rather than towards each other and
+ * two teams finishing on close totals don't overprint.
  *
- * Either way it flips when there's no room: a leader sitting on the axis
- * ceiling drops below, and a trailing total at zero goes above rather
- * than into the minute ticks.
+ * Below has to clear more than the line's end. A cumulative line only
+ * ever rises, so the lowest part of it under a right-aligned label is
+ * its level at the label's *left* edge, and that earlier step runs
+ * straight through a label placed just under the end. `spanLeftY` is
+ * that level in pixels. Above needs no such care: nothing of the line
+ * is higher than its own end.
+ *
+ * Either placement flips when it would be clipped.
  */
 function endLabelY(
   lineY: number,
   placeAbove: boolean,
+  spanLeftY: number,
   plotTop: number,
   plotBottom: number,
 ): number {
   const above = lineY - END_LABEL_GAP;
-  const below = lineY + END_LABEL_GAP + END_LABEL_DESCENT;
+  const below = Math.max(lineY, spanLeftY) + END_LABEL_GAP + END_LABEL_DESCENT;
   const fitsAbove = above - END_LABEL_GAP >= plotTop;
   const fitsBelow = below <= plotBottom;
 
@@ -427,17 +438,44 @@ export function RaceChart<T>({
                         }}
                       />
                     ))}
-                {resolved.endLabels && (
-                  <text
-                    data-pitchkit-part="race-end-label"
-                    x={frame.x1}
-                    y={endLabelY(scaleY(rendered.total), i === leaderIndex, frame.y0, frame.y1)}
-                    textAnchor="end"
-                    style={{ fill: CHART_TEXT, fontSize: 12, fontWeight: 600 }}
-                  >
-                    {`${rendered.label} ${rendered.total.toFixed(2)}`}
-                  </text>
-                )}
+                {resolved.endLabels &&
+                  (() => {
+                    const text = rendered.total.toFixed(2);
+                    // The label's left edge, where the line is at its
+                    // lowest under it. Only the value is printed: the
+                    // legend already names the series, and a name beside
+                    // a number doubled the label's width for no gain.
+                    const leftTime = scaleX.invert(frame.x1 - text.length * END_LABEL_CHAR_WIDTH);
+                    return (
+                      <text
+                        data-pitchkit-part="race-end-label"
+                        x={frame.x1}
+                        y={endLabelY(
+                          scaleY(rendered.total),
+                          i === leaderIndex,
+                          scaleY(valueAtTime(rendered.points, leftTime)),
+                          frame.y0,
+                          frame.y1,
+                        )}
+                        textAnchor="end"
+                        style={{
+                          fill: CHART_TEXT,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          // A halo in the surface colour, painted under the
+                          // glyphs: the text equivalent of the ring round a
+                          // marker. Where a label does cross a line or a
+                          // gridline it stays legible without a box.
+                          stroke: CHART_SURFACE,
+                          strokeWidth: 4,
+                          strokeLinejoin: "round",
+                          paintOrder: "stroke",
+                        }}
+                      >
+                        {text}
+                      </text>
+                    );
+                  })()}
               </g>
             );
           })}

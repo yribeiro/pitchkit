@@ -152,8 +152,11 @@ CSS variables only, as everywhere else.
 Each series' total is printed **at its own line end, inside the plot**, rather than in a
 right-hand gutter, so the lines use the full width of the chart. The leading series labels above its
 line and every other series below its own, so two teams finishing on close totals don't print one
-name on top of the other. Either flips when there's no room — a leader on the axis ceiling drops
-below, and a total at zero goes above rather than into the minute ticks.
+number on top of the other. Only the value is printed, since the legend already names the series.
+A label below its line clears the line's own earlier step rather than sitting on it, and the text
+carries a halo in the surface colour so it stays legible wherever it does cross a line. Either
+placement flips when there's no room — a leader on the axis ceiling drops below, and a total at
+zero goes above rather than into the minute ticks.
 
 For anything the variables don't reach, every element carries a `data-pitchkit-part`, so a Tailwind
 arbitrary variant can select it without owning the JSX: `race-line`, `race-area`, `race-marker`,

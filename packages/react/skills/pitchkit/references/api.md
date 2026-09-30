@@ -79,8 +79,9 @@ in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 | `children`         | `ReactNode`                 | Annotation slot; positions itself via `useRaceChart()`.                                     |
 
 Each series' total is printed at its own line end, inside the plot, rather than in a right-hand
-gutter — so the lines use the full width. The leader's label goes above its line and every other
-label below its own, so close totals never overlap; either flips when it would be clipped.
+gutter — so the lines use the full width. Only the value is printed; the legend names the series.
+The leader's label goes above its line and every other label below its own, clear of the line's own
+earlier step, so close totals never overlap; either flips when it would be clipped.
 
 `appearance.area` is the shading under each line (off by default — two overlapping washes
 muddy the crossover). `appearance.markers` is `"emphasis"` (default), `"all"` or `"none"`.

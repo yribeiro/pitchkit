@@ -12,4 +12,6 @@ markers. Annotation children stay above both.
 Each series' total is now printed at its own line end, inside the plot, rather
 than in a right-hand gutter, so the lines use the full width of the chart. The
 leader's label sits above its line and the others below theirs, so close totals
-never overlap. Each label carries its series name, since there is no swatch beside it.
+never overlap. Only the value is printed, since the legend already names the
+series, and the text has a surface-coloured halo so it stays legible where it
+crosses a line.

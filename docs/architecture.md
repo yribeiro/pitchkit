@@ -93,8 +93,12 @@ RaceChart (root)
 - **Paint order is lines, then marks and labels, then children.** Drawn per series, the second
   team's line runs over the first team's goal markers.
 - **The end label sits above the leader's line and below every other.** Labels move apart, not
-  towards each other, so close totals don't overprint. Either flips when it would be clipped.
-  Three or more series are not handled: the non-leaders all go below their lines.
+  towards each other, so close totals don't overprint. A label below its line clears the line's
+  own earlier step (a cumulative line only rises, so its lowest part under a right-aligned label
+  is its level at the label's left edge). Only the value is printed, since the legend names the
+  series, and a surface-coloured halo keeps the text legible where it crosses a line. Either
+  placement flips when it would be clipped. Three or more series are not handled: the non-leaders
+  all go below their lines.
 - **Responsive by default, as for `<Pitch>`.** `width` and `height` together are the opt-out. Below
   420 px the default box is 1.4:1 instead of 2:1, because a 2:1 plot on a phone is barely taller
   than its own axis labels.
