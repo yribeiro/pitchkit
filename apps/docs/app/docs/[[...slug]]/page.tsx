@@ -2,7 +2,7 @@ import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, X_HANDLE } from "@/lib/site";
 import { source } from "@/lib/source";
 import { AgentLogos, AgentTools } from "@/components/agent-tools";
 import { PitchPreview } from "@/components/pitch-preview";
@@ -70,6 +70,7 @@ export async function generateMetadata(props: {
     },
     twitter: {
       card: "summary_large_image",
+      site: X_HANDLE,
       title: `${title} | PitchKit`,
       description,
     },

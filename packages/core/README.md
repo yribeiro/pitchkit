@@ -68,6 +68,7 @@ unaffected — `@pitchkit/react`'s `<Heatmap>` calls straight into it.)
 - [Documentation & gallery](https://www.pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
+- [X](https://x.com/pitchkitjs) · [Instagram](https://www.instagram.com/pitchkitjs)
 - [`@pitchkit/react`](https://www.npmjs.com/package/@pitchkit/react) — the React bindings
 
 ## Licence

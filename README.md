@@ -9,6 +9,8 @@ for React and Next.js instead of matplotlib.
 [![npm](https://img.shields.io/npm/v/@pitchkit/react)](https://www.npmjs.com/package/@pitchkit/react)
 [![CI](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml/badge.svg)](https://github.com/yribeiro/pitchkit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![X](https://img.shields.io/badge/X-%40pitchkitjs-000000?logo=x&logoColor=white)](https://x.com/pitchkitjs)
+[![Instagram](https://img.shields.io/badge/Instagram-%40pitchkitjs-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/pitchkitjs)
 
 **[pitchkitjs.com](https://www.pitchkitjs.com)** — docs, interactive examples, and the gallery.
 See [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for attribution.

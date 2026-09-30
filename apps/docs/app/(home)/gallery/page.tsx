@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { GalleryGrid } from "@/components/gallery-grid";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, X_HANDLE } from "@/lib/site";
 
 const DESCRIPTION =
   "Finished football visualisations built with PitchKit, the React and TypeScript charting " +
@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: X_HANDLE,
     title: "Gallery | PitchKit",
     description: DESCRIPTION,
   },

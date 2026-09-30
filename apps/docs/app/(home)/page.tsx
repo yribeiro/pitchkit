@@ -3,14 +3,17 @@ import Link from "next/link";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
+import { InstagramIcon, XIcon } from "@/components/social-icons";
 import {
   CONTACT_EMAIL,
   GITHUB_URL,
+  INSTAGRAM_URL,
   ISSUES_URL,
   SEARCH_DESCRIPTION,
   SITE_URL,
   SUBHEAD,
   TAGLINE,
+  X_URL,
 } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -128,6 +131,7 @@ function StructuredData() {
       alternateName: "@pitchkit/react",
       description: SEARCH_DESCRIPTION,
       url: SITE_URL,
+      sameAs: [GITHUB_URL, X_URL, INSTAGRAM_URL],
       codeRepository: "https://github.com/yribeiro/pitchkit",
       programmingLanguage: ["TypeScript", "JavaScript"],
       runtimePlatform: ["React", "Next.js", "Node.js", "Browser"],
@@ -382,6 +386,26 @@ export default function HomePage() {
               PitchKit
             </span>
             <p className="text-sm text-fd-muted-foreground">MIT licensed.</p>
+            <div className="flex items-center gap-1 pt-1">
+              <a
+                href={X_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="PitchKit on X"
+                className="rounded-md p-2 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              >
+                <XIcon size={16} />
+              </a>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="PitchKit on Instagram"
+                className="rounded-md p-2 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              >
+                <InstagramIcon size={16} />
+              </a>
+            </div>
           </div>
 
           <div id="contact" className="flex flex-col gap-3">

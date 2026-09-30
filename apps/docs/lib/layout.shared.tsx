@@ -1,6 +1,7 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import { PitchKitLockup } from "@/components/pitchkit-logo";
-import { CONTACT_EMAIL, GITHUB_URL } from "@/lib/site";
+import { InstagramIcon, XIcon } from "@/components/social-icons";
+import { CONTACT_EMAIL, GITHUB_URL, INSTAGRAM_URL, X_URL } from "@/lib/site";
 
 /**
  * Options shared between the home layout and the docs layout (nav title,
@@ -29,6 +30,26 @@ export function baseOptions(): BaseLayoutProps {
       {
         text: "Contact",
         url: `mailto:${CONTACT_EMAIL}`,
+        external: true,
+      },
+      /*
+       * Icon-only, so `label` is the accessible name (and the tooltip); the
+       * glyph itself is aria-hidden.
+       */
+      {
+        type: "icon",
+        label: "PitchKit on X",
+        text: "X",
+        icon: <XIcon />,
+        url: X_URL,
+        external: true,
+      },
+      {
+        type: "icon",
+        label: "PitchKit on Instagram",
+        text: "Instagram",
+        icon: <InstagramIcon />,
+        url: INSTAGRAM_URL,
         external: true,
       },
     ],
