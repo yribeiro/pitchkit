@@ -98,6 +98,23 @@ function medianInterval(times: readonly number[]): number {
 }
 
 /**
+ * The median width of a period's bars, in minutes; `undefined` for none.
+ *
+ * Lets a caller compare periods: a first half sampled every five minutes
+ * beside a second half sampled every two draws bars of visibly different
+ * widths in one chart, which is almost always a data-prep slip rather than
+ * intent.
+ */
+export function medianBarWidth(bars: readonly MomentumBar[]): number | undefined {
+  if (bars.length === 0) return undefined;
+  const widths = bars.map((bar) => bar.end - bar.start).sort((a, b) => a - b);
+  const middle = widths.length >> 1;
+  return widths.length % 2 === 1
+    ? (widths[middle] as number)
+    : ((widths[middle - 1] as number) + (widths[middle] as number)) / 2;
+}
+
+/**
  * The bar covering `minute`, if any.
  *
  * Half-open (`start <= minute < end`), so a minute exactly on a boundary

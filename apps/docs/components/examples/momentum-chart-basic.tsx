@@ -2,45 +2,44 @@
 
 import { MomentumChart } from "@pitchkit/react";
 
-// Momentum at whatever interval you have it. The first half is sampled
-// every five minutes, the second every two — nothing has to be regular.
+// Momentum every three minutes in each half. The interval is yours to pick —
+// nothing has to be one minute — but use the same one in both halves, or the
+// bars come out different widths on either side of half time.
 // Positive is the home side's pressure, negative the away side's.
 const periods = [
   [
-    { minute: 0, value: 1.5 },
-    { minute: 5, value: 4 },
-    { minute: 10, value: 7 },
-    { minute: 15, value: 2 },
-    { minute: 20, value: -3 },
-    { minute: 25, value: -6 },
-    { minute: 30, value: -2 },
-    { minute: 35, value: 3 },
-    { minute: 40, value: 5 },
+    { minute: 0, value: 2 },
+    { minute: 3, value: 5 },
+    { minute: 6, value: 8 },
+    { minute: 9, value: 4 },
+    { minute: 12, value: -1 },
+    { minute: 15, value: -4 },
+    { minute: 18, value: -7 },
+    { minute: 21, value: -3 },
+    { minute: 24, value: 1 },
+    { minute: 27, value: 4 },
+    { minute: 30, value: 7 },
+    { minute: 33, value: 5 },
+    { minute: 36, value: 2 },
+    { minute: 39, value: -2 },
+    { minute: 42, value: -5 },
   ],
   [
-    { minute: 45, value: -1 },
-    { minute: 47, value: -4 },
-    { minute: 49, value: -7 },
-    { minute: 51, value: -2 },
-    { minute: 53, value: 3 },
-    { minute: 55, value: 8 },
-    { minute: 57, value: 9 },
-    { minute: 59, value: 4 },
-    { minute: 61, value: 1 },
-    { minute: 63, value: -3 },
-    { minute: 65, value: -5 },
-    { minute: 67, value: 2 },
-    { minute: 69, value: 6 },
-    { minute: 71, value: 10 },
-    { minute: 73, value: 5 },
-    { minute: 75, value: -2 },
-    { minute: 77, value: -6 },
-    { minute: 79, value: -8 },
-    { minute: 81, value: -4 },
-    { minute: 83, value: 1 },
-    { minute: 85, value: 5 },
+    { minute: 45, value: -2 },
+    { minute: 48, value: -5 },
+    { minute: 51, value: -8 },
+    { minute: 54, value: -4 },
+    { minute: 57, value: 1 },
+    { minute: 60, value: 5 },
+    { minute: 63, value: 9 },
+    { minute: 66, value: 7 },
+    { minute: 69, value: 3 },
+    { minute: 72, value: -1 },
+    { minute: 75, value: -4 },
+    { minute: 78, value: -6 },
+    { minute: 81, value: -2 },
+    { minute: 84, value: 3 },
     { minute: 87, value: 7 },
-    { minute: 89, value: 3 },
   ],
 ];
 

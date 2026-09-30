@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import {
   stackOffsets,
   barAtMinute,
   computeChartFrame,
   computeMomentumBars,
+  medianBarWidth,
   createLinearScale,
   layoutMomentumPanels,
   matchMinuteTicks,
@@ -55,6 +56,9 @@ const ICON_SIZE = 13;
 const NARROW_ICON_SIZE = 11;
 /** How many rows the event strip may grow to before markers share one. */
 const AXIS_HEIGHT = 18;
+/** How much wider one period's median bar may be than another's before a warning. */
+const UNEVEN_STEP_RATIO = 1.25;
+declare const process: { env: { NODE_ENV?: string } };
 
 /** Whole numbers as they are, everything else to one decimal place. */
 function formatValue(value: number): string {
@@ -137,6 +141,26 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     const values = bars.flatMap((periodBars) => periodBars.map((bar) => bar.value));
     return { ranges, bars, values };
   }, [periods, time, value, periodRanges]);
+
+  // Halves sampled at different intervals draw bars of different widths side
+  // by side, which reads as a bug in the chart. It is allowed — the data can
+  // be at any interval — but it is nearly always a data-prep slip, so say so
+  // in development.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const widths = computed.bars
+      .map((periodBars) => medianBarWidth(periodBars))
+      .filter((width): width is number => width !== undefined);
+    const narrowest = Math.min(...widths);
+    const widest = Math.max(...widths);
+    if (widths.length > 1 && widest > narrowest * UNEVEN_STEP_RATIO) {
+      console.warn(
+        `@pitchkit/react: <MomentumChart> periods are sampled at different intervals ` +
+          `(median bar widths ${widths.map((w) => `${+w.toFixed(2)}'`).join(", ")}), so the ` +
+          `halves draw bars of different widths. Resample them to one interval unless that is intended.`,
+      );
+    }
+  }, [computed.bars]);
 
   const extent = explicitMaxValue ?? momentumExtent(computed.values);
 

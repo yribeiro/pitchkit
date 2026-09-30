@@ -672,4 +672,43 @@ describe("icon colour rules", () => {
     expect(kindLabel("substitution")).toBe("Substitution");
     expect(kindLabel("var")).toBe("VAR");
   });
+
+  describe("uneven sampling", () => {
+    const at = (minutes: number[], start: number) => minutes.map((m) => ({ t: start + m, v: 1 }));
+    const renderHalves = (first: number[], second: number[]) =>
+      render(
+        <MomentumChart
+          periods={[at(first, 0), at(second, 45)]}
+          time={(d) => d.t}
+          value={(d) => d.v}
+          width={600}
+          height={200}
+        />,
+      );
+
+    it("warns in development when the halves are sampled at different intervals", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      renderHalves([0, 5, 10, 15], [0, 2, 4, 6]);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0]?.[0]).toContain("different intervals");
+      warn.mockRestore();
+    });
+
+    it("stays quiet when both halves share an interval, or one is empty", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      renderHalves([0, 5, 10], [0, 5, 10]);
+      renderHalves([0, 5, 10], []);
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it("stays quiet in production", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      vi.stubEnv("NODE_ENV", "production");
+      renderHalves([0, 5, 10, 15], [0, 2, 4, 6]);
+      vi.unstubAllEnvs();
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+  });
 });

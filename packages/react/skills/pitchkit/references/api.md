@@ -135,7 +135,7 @@ PitchKit draws momentum; it does not compute it, so the caller supplies the valu
 
 Each sample's bar runs from its minute to the **next sample's** minute, so data at any interval
 reads correctly; the last bar of a period takes the period's median interval. Gaps draw nothing
-and read "No data" (not "Level"). Panel widths are proportional to minutes, so stoppage time
+and read "No data" (not "Level"). Use one interval in both halves: different ones draw different bar widths either side of half time, and development builds warn about it. Panel widths are proportional to minutes, so stoppage time
 widens a half. The icon row is one row: crowded icons stack with an offset, later over earlier, so
 a dense list (every substitution) becomes a pile on a phone — leave substitutions out or draw
 them as children. `goal` covers a scored penalty. Icons are PitchKit's own.

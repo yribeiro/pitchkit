@@ -41,8 +41,10 @@ number per sample carries both teams. Zero is level.
 
 ## Data at any interval
 
-Samples do not need to be regular or the same across halves, and they do not need a sample per
-minute. The example above samples the first half every five minutes and the second every two.
+Samples do not need to be a minute apart, or evenly spaced. The example above has one every three
+minutes. Use the **same interval in both halves**, though: two halves at different intervals draw
+bars of different widths either side of half time, which reads as a bug. In development the chart
+warns when the median bar widths of two periods differ by more than a quarter.
 
 Each sample draws a bar that **runs from its minute to the next sample's minute**. That is what
 makes an arbitrary interval readable: a value given at 10' and the next at 15' is five minutes wide,

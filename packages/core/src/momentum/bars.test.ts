@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { barAtMinute, computeMomentumBars } from "./bars.js";
+import { barAtMinute, computeMomentumBars, medianBarWidth } from "./bars.js";
 
 describe("computeMomentumBars", () => {
   it("runs each bar from its minute to the next sample's minute", () => {
@@ -193,5 +193,21 @@ describe("barAtMinute", () => {
     );
 
     expect(barAtMinute(gappy, 3)).toBeUndefined();
+  });
+});
+
+describe("medianBarWidth", () => {
+  const bar = (start: number, end: number) => ({ start, end, value: 1, index: 0 });
+
+  it("is undefined for no bars", () => {
+    expect(medianBarWidth([])).toBeUndefined();
+  });
+
+  it("takes the middle width of an odd count", () => {
+    expect(medianBarWidth([bar(0, 1), bar(1, 6), bar(6, 8)])).toBe(2);
+  });
+
+  it("averages the two middle widths of an even count", () => {
+    expect(medianBarWidth([bar(0, 1), bar(1, 3), bar(3, 6), bar(6, 12)])).toBe(2.5);
   });
 });

@@ -17,7 +17,7 @@ touch stack with an offset, so a dense list such as every substitution is better
 drawn as children.
 
 `useMomentumChart()` exposes `frame`, `panels`, `scaleX`, `scaleY` and `bars` so anything else can
-be drawn as a child. Hover and touch readouts work as for `<RaceChart>`, whose readout card is now
+be drawn as a child. Development builds warn when two periods are sampled at different intervals, since the halves then draw bars of different widths. Hover and touch readouts work as for `<RaceChart>`, whose readout card is now
 shared.
 
 The bundled Agent Skill documents both, and PitchKit does not compute momentum — the values come

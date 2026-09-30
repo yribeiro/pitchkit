@@ -96,7 +96,7 @@ export { computeCumulativeSeries, valueAtTime, resolveEndTime } from "./race/cum
 export { stepPath, stepAreaPath } from "./race/step-path.js";
 
 export type { MomentumSample, MomentumBar, MomentumRange } from "./momentum/bars.js";
-export { computeMomentumBars, barAtMinute } from "./momentum/bars.js";
+export { computeMomentumBars, barAtMinute, medianBarWidth } from "./momentum/bars.js";
 export type { MomentumPanel } from "./momentum/layout.js";
 export {
   nominalPeriodRange,
