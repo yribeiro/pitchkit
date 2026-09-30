@@ -3,14 +3,17 @@ import Link from "next/link";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { InstallCommand } from "@/components/install-command";
 import { PitchKitMark } from "@/components/pitchkit-logo";
+import { SocialLinks } from "@/components/social-icons";
 import {
   CONTACT_EMAIL,
   GITHUB_URL,
+  INSTAGRAM_URL,
   ISSUES_URL,
   SEARCH_DESCRIPTION,
   SITE_URL,
   SUBHEAD,
   TAGLINE,
+  X_URL,
 } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -128,6 +131,7 @@ function StructuredData() {
       alternateName: "@pitchkit/react",
       description: SEARCH_DESCRIPTION,
       url: SITE_URL,
+      sameAs: [GITHUB_URL, X_URL, INSTAGRAM_URL],
       codeRepository: "https://github.com/yribeiro/pitchkit",
       programmingLanguage: ["TypeScript", "JavaScript"],
       runtimePlatform: ["React", "Next.js", "Node.js", "Browser"],
@@ -382,6 +386,7 @@ export default function HomePage() {
               PitchKit
             </span>
             <p className="text-sm text-fd-muted-foreground">MIT licensed.</p>
+            <SocialLinks className="-ms-2.5 gap-0.5" />
           </div>
 
           <div id="contact" className="flex flex-col gap-3">
@@ -429,9 +434,6 @@ export default function HomePage() {
             <Link href="/gallery" className="transition-colors hover:text-fd-foreground">
               Gallery
             </Link>
-            <a href={GITHUB_URL} className="transition-colors hover:text-fd-foreground">
-              GitHub
-            </a>
           </div>
         </div>
       </footer>

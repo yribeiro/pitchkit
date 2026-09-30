@@ -3,7 +3,7 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { PostHogProvider } from "@/components/posthog-provider";
-import { SEARCH_DESCRIPTION, SITE_URL as SITE, SUBHEAD, TAGLINE } from "@/lib/site";
+import { SEARCH_DESCRIPTION, SITE_URL as SITE, SUBHEAD, TAGLINE, X_HANDLE } from "@/lib/site";
 import "./globals.css";
 
 /**
@@ -66,6 +66,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: X_HANDLE,
+    creator: X_HANDLE,
     title: `PitchKit — ${TAGLINE}`,
     description: SUBHEAD,
   },

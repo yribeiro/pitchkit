@@ -26,6 +26,19 @@ export const GITHUB_URL = "https://github.com/yribeiro/pitchkit";
 export const ISSUES_URL = `${GITHUB_URL}/issues`;
 
 /**
+ * PitchKit's social accounts. One source of truth for the nav, the footer, the
+ * `twitter:site` card tag and the JSON-LD `sameAs` list, so a renamed handle is
+ * a one-line change. Keep the READMEs' links in step by hand; they can't import
+ * this.
+ *
+ * `X_HANDLE` is what `twitter:site` wants (with the `@`); the platform still
+ * reads `twitter:*` tags, so those names are correct despite the rebrand.
+ */
+export const X_HANDLE = "@pitchkitjs";
+export const X_URL = "https://x.com/pitchkitjs";
+export const INSTAGRAM_URL = "https://www.instagram.com/pitchkitjs";
+
+/**
  * The landing page's own headline and subhead.
  *
  * They live here rather than inline in the hero because three surfaces have to

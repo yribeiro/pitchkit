@@ -172,6 +172,7 @@ the `skills/<name>/SKILL.md` convention, so generic installers like `skills-npm`
 - [Documentation & gallery](https://www.pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
+- [X](https://x.com/pitchkitjs) · [Instagram](https://www.instagram.com/pitchkitjs)
 - [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core) — the framework-agnostic engine
 
 ## Licence
