@@ -75,13 +75,7 @@ export function PassNetworkGallery() {
         strokeWidth={1.5}
         tooltip={(p) => `${p.id} · ${p.touches} touches`}
       />
-      <Annotate
-        data={players}
-        x={(p) => p.x}
-        y={(p) => p.y}
-        label={(p) => p.id}
-        offsetY={-14}
-      />
+      <Annotate data={players} x={(p) => p.x} y={(p) => p.y} label={(p) => p.id} offsetY={-14} />
     </Pitch>
   );
 }

@@ -174,10 +174,13 @@ without the caller resampling. Own icons keep the library's licence clean.
 
 - **The kind is `missed-penalty`, not `penalty`.** A scored penalty is a goal in most feeds and is
   recorded as `goal`; the event worth its own icon is the miss.
-- **The icon row caps at two lanes.** Past that, icons share the least-crowded lane. Letting the
-  row grow made a busy match's chart mostly icons, and eight substitutions on a phone read as a
-  block. Two lanes is ample for goals and cards; substitutions are better left out or drawn as
-  children. This is a known limit, not an oversight.
+- **The icon row is one row, and crowded icons stack with an offset.** Icons are small (13 px, 11
+  on a phone); ones that would touch fan out a little right of each other, later over earlier, on
+  a surface-coloured backing, and a stacked run is re-centred on where its events really were.
+  The first version added rows instead (capped at two), which made a busy match's chart mostly
+  icons and still overprinted on a phone. A stack keeps the chart's height fixed. Eight
+  substitutions in one minute are still a pile, so substitutions are better left out or drawn as
+  children.
 - **Cards and own goals carry their meaning in colour**, so they cannot also carry the team: they
   get an underline in the team's colour. Every other icon is the team's colour. New token:
   `--pitch-card-red`; `--pitch-card-yellow`, already in use, joins `pitchTokens`.
@@ -408,9 +411,11 @@ a pitch.
 would have moved 13 pages and needed 26 permanent redirects. The section also has known tenants
 beyond this chart: radar, pizza and the goal view.
 
-**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on the same
-grass stage as the pitch cards so it sits in the grid as one of the set, and
-`docs-pitch-theme.css` aliases the chart tokens to the existing marker hues rather than adding
-colours. `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
+**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on a near-black
+stage (`.pitchkit-chart-stage`, not the pitch's grass: a chart has no pitch, and the black
+gives bars and lines more contrast) in a 3:2 box so it takes a pitch card's footprint.
+`docs-pitch-theme.css` aliases the chart tokens to the marker hues, and the stage steps the two
+series hues down to `#1492d6` and `#e8590c` so they sit in the dark-mode lightness band on that
+surface (validated: 3:1 contrast, CVD separation above 25). `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
 whatever is actually behind it: the docs theme defaults it to the page stage, and a card that draws
-its own grass overrides it alongside the background.
+its own stage overrides it alongside the background.

@@ -35,3 +35,21 @@
   --pitch-card-yellow: #facc15;
   --pitch-card-red: #ef4444;
 }
+
+/*
+ * The stage a gallery chart card draws for itself. Charts have no pitch, so
+ * they don't sit on grass: near-black gives bars and lines more contrast
+ * than the green did, and reads as a chart panel rather than a pitch with
+ * the lines taken off. The series hues step down a little from the marker
+ * hues (L 0.75 -> 0.67) to sit in the dark-mode lightness band against
+ * this surface; both still clear 3:1 contrast and 25+ CVD separation.
+ */
+.pitchkit-chart-stage {
+  background: #0a0a0a;
+  --pitch-chart-surface: #0a0a0a;
+  --pitch-series-1: #1492d6;
+  --pitch-series-2: #e8590c;
+  --pitch-grid: rgba(255, 255, 255, 0.09);
+  --pitch-axis: rgba(255, 255, 255, 0.3);
+  --pitch-chart-muted: rgba(255, 255, 255, 0.6);
+}

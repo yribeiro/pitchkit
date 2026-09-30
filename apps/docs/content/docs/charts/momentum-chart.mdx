@@ -115,9 +115,10 @@ icons are PitchKit's own, drawn for this library on a 24-unit grid, and inherit 
 
 ### Keep the row readable
 
-Icons that would collide stack into a second lane. The row caps at **two lanes**; past that, icons
-share the least-crowded lane rather than growing the chart. Two lanes is plenty for goals and
-cards, and not enough for every substitution in a close finish on a phone. If you want
+The row is always one row tall. Icons that would touch **stack with an offset**: each sits a little
+right of the last and over it, on a backing in the chart surface colour, and a stack is centred on
+where its events really were. A goal and a booking in the same minute read as two icons, not one
+smudge. Every substitution in a close finish is still a pile, especially on a phone. If you want
 substitutions, prefer them as [annotations](#annotations) — a thin line rather than an icon — or
 leave them out, which is what the examples do.
 

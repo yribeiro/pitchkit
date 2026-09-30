@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import {
-  assignLanes,
+  stackOffsets,
   barAtMinute,
   computeChartFrame,
   computeMomentumBars,
@@ -51,10 +51,9 @@ const NARROW_ASPECT_RATIO = 1.8;
 /** The gap between periods, in pixels. */
 const PERIOD_GAP = 8;
 /** Icons shrink on a phone, where a 16px one is a twentieth of the chart. */
-const ICON_SIZE = 16;
-const NARROW_ICON_SIZE = 14;
+const ICON_SIZE = 13;
+const NARROW_ICON_SIZE = 11;
 /** How many rows the event strip may grow to before markers share one. */
-const MAX_EVENT_LANES = 2;
 const AXIS_HEIGHT = 18;
 
 /** Whole numbers as they are, everything else to one decimal place. */
@@ -188,18 +187,22 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
   }
 
   const iconSize = isNarrow ? NARROW_ICON_SIZE : ICON_SIZE;
-  // One lane of the event strip: the icon, and room for a team underline.
-  const laneHeight = iconSize + 6;
+  // The event strip is one row: the icon, and room for a team underline.
+  const stripHeight = iconSize + 6;
 
-  const eventXs = placedEvents.map((event) => (panels.length > 0 ? xOfMinute(event.minute) : 0));
-  const lanes = assignLanes(eventXs, iconSize + 2, MAX_EVENT_LANES);
-  const laneCount = lanes.length === 0 ? 0 : Math.max(...lanes) + 1;
+  // Icons that would touch fan out into a shallow stack, each a little right
+  // of the last and painted over it, so the row never grows taller.
+  const trueXs = placedEvents.map((event) => (panels.length > 0 ? xOfMinute(event.minute) : 0));
+  const eventXs = stackOffsets(trueXs, iconSize, iconSize * 0.55);
+  const paintOrder = eventXs
+    .map((_, i) => i)
+    .sort((a, b) => (eventXs[a] as number) - (eventXs[b] as number));
 
   const padding: ChartPadding = explicitPadding ?? {
     top: resolved.legend ? 30 : 10,
     right: 10,
     left: 10,
-    bottom: (resolved.axis ? AXIS_HEIGHT : 4) + (laneCount > 0 ? laneCount * laneHeight + 2 : 0),
+    bottom: (resolved.axis ? AXIS_HEIGHT : 4) + (placedEvents.length > 0 ? stripHeight + 2 : 0),
   };
 
   const frame = computeChartFrame(size.width, size.height, padding);
@@ -346,9 +349,10 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
             </g>
           ))}
 
-          {placedEvents.map((event, i) => {
+          {paintOrder.map((i) => {
+            const event = placedEvents[i] as (typeof placedEvents)[number];
             const x = eventXs[i] as number;
-            const y = eventsTop + (lanes[i] as number) * laneHeight + iconSize / 2 + 1;
+            const y = eventsTop + iconSize / 2 + 1;
             const name = event.label ?? kindLabel(event.kind);
             return (
               <g
@@ -358,6 +362,14 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
                 data-pitchkit-side={event.side}
               >
                 <title>{`${name}, ${Math.floor(event.minute)}'`}</title>
+                {/* A surface backing, so an icon stacked over another reads as
+                    sitting on top of it rather than tangled with it. */}
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={iconSize / 2 + 1}
+                  style={{ fill: "var(--pitch-chart-surface, #ffffff)" }}
+                />
                 <MomentumIcon
                   kind={event.kind}
                   x={x}

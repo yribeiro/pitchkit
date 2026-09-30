@@ -351,24 +351,26 @@ describe("<MomentumChart>", () => {
       expect(parts(container, "momentum-event")).toHaveLength(kinds.length);
     });
 
-    it("caps the strip at two lanes however many events crowd one minute", () => {
-      const crowd = Array.from({ length: 8 }, () => ({
+    it("stacks crowded events in one row, each offset from the last", () => {
+      const crowd = Array.from({ length: 4 }, () => ({
         minute: 60,
         side: "home" as const,
         kind: "substitution" as const,
       }));
       const { container } = renderChart({ ...eventProps, events: crowd });
-      const ys = new Set(
-        parts(container, "momentum-event").map(
-          (e) =>
-            e
-              .querySelector("g[transform]")
-              ?.getAttribute("transform")
-              ?.match(/translate\([\d.]+ ([\d.]+)/)?.[1],
-        ),
-      );
+      const at = parts(container, "momentum-event").map((e) =>
+        e
+          .querySelector("g[transform]")
+          ?.getAttribute("transform")
+          ?.match(/translate\(([\d.]+) ([\d.]+)/)
+          ?.slice(1, 3)
+          .map(Number),
+      ) as number[][];
 
-      expect(ys.size).toBe(2);
+      expect(new Set(at.map(([, y]) => y)).size).toBe(1);
+      const xs = at.map(([x]) => x as number).sort((a, b) => a - b);
+      expect(new Set(xs).size).toBe(4);
+      expect(xs[1]! - xs[0]!).toBeGreaterThan(0);
     });
   });
 

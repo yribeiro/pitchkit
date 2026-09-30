@@ -4,7 +4,7 @@
 
 Add the maths `<MomentumChart>` is built on, in a new `momentum/` module: `computeMomentumBars`,
 `barAtMinute`, `nominalPeriodRange`, `resolvePeriodRange`, `layoutMomentumPanels`,
-`momentumExtent` and `assignLanes`, with the `MomentumSample`, `MomentumBar`, `MomentumRange`
+`momentumExtent` and `stackOffsets`, with the `MomentumSample`, `MomentumBar`, `MomentumRange`
 and `MomentumPanel` types.
 
 Like `chart/` and `race/`, it takes plain numbers and has no dependency on `dimensions/`,

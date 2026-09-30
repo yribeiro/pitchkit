@@ -12,8 +12,9 @@ away side. A period's width follows its minutes, so stoppage time widens a half.
 
 Events are passed as `events` with `eventTime`, `eventSide` and `eventKind` accessors, like every
 other prop. The kinds are `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`,
-`substitution` and `var`; the icons are PitchKit's own. The icon row stacks into at most two lanes,
-so a dense list such as every substitution is better left out or drawn as children.
+`substitution` and `var`; the icons are PitchKit's own. The icon row is one row: icons that would
+touch stack with an offset, so a dense list such as every substitution is better left out or
+drawn as children.
 
 `useMomentumChart()` exposes `frame`, `panels`, `scaleX`, `scaleY` and `bars` so anything else can
 be drawn as a child. Hover and touch readouts work as for `<RaceChart>`, whose readout card is now

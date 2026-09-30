@@ -104,7 +104,7 @@ export {
   layoutMomentumPanels,
   momentumExtent,
 } from "./momentum/layout.js";
-export { assignLanes } from "./momentum/lanes.js";
+export { stackOffsets } from "./momentum/stack.js";
 
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

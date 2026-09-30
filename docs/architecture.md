@@ -131,15 +131,16 @@ MomentumChart (root)
 
 - **`core/momentum/` owns the maths.** `computeMomentumBars` turns samples into bars, `barAtMinute`
   finds the bar under a minute, `layoutMomentumPanels` splits the width, `momentumExtent` picks the
-  symmetric axis, and `assignLanes` stacks icons. All take plain numbers.
+  symmetric axis, and `stackOffsets` fans out icons that would touch. All take plain numbers.
 - **A bar runs to the next sample's minute.** Sorted by time; a duplicate minute keeps the later
   sample; non-finite values are dropped; the last bar takes the period's median interval (1 minute
   for a single sample). Bars are clipped to the period's range.
 - **Periods come from the data.** A period starts at its nominal minute (0, 45, 90, 105, then 15-
   minute blocks) and ends at `max(nominal end, ceil(latest sample end))`; `periodRanges` overrides
   either end. A minute between panels resolves to the nearest one.
-- **Events are icons in a strip under the bars**, stacked into lanes when they would touch, capped
-  at two (past that they share the least-crowded lane). A card or own goal is drawn in its own
+- **Events are icons in a strip under the bars**, kept to one row: icons that would touch
+  fan out with an offset, later over earlier on a surface backing, and a run is re-centred on its
+  true minutes. A card or own goal is drawn in its own
   colour with an underline in the team's; other icons take the team colour. Icon colour rules are
   exported as pure functions because happy-dom drops `color: var(--…)` from `style`, so they are
   tested as functions.

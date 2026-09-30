@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { MomentumChart } from "@pitchkit/react";
 
 /**
@@ -44,18 +43,9 @@ const events = [
 
 export function MomentumGallery() {
   return (
-    // Same stage as the xG race card: grass behind a chart that paints no
-    // background of its own, and a 3:2 box so it takes a pitch card's
-    // footprint in the grid.
-    <div
-      className="rounded-md p-2"
-      style={
-        {
-          background: "var(--pitch-surface)",
-          "--pitch-chart-surface": "var(--pitch-surface)",
-        } as CSSProperties
-      }
-    >
+    // Same black stage as the xG race card, and a 3:2 box so it takes a
+    // pitch card's footprint in the grid.
+    <div className="pitchkit-chart-stage rounded-md p-2">
       <MomentumChart
         aspectRatio={1.5}
         periods={periods}
