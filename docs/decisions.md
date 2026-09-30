@@ -145,6 +145,51 @@ child, positioned through `useRaceChart()` (`scaleX`, `scaleY`, `valueAt`), the 
 - Radar and pizza are polar and share none of `chart/`. They get their own module beside it, not
   under it.
 
+### D25. `<MomentumChart>`: signed values, bars to the next sample, our own icons
+
+**Decision:** Match momentum is one more non-pitch root ([D23](#d23-non-pitch-charts-are-roots-with-their-own-scales)),
+with its maths in `core/momentum/`. Five choices shape it:
+
+- **`value` is signed**: positive is the home side, negative the away side. One number per sample
+  carries both teams, which is the shape vendors' momentum feeds already have.
+- **A bar spans from its sample to the next sample's minute**, and the last bar of a period takes
+  the period's median interval. Data can therefore be at any interval, and nothing has to be regular
+  or the same across halves. A gap draws nothing and reads "No data", distinct from "Level" (a
+  value of 0).
+- **`periods` is an array of sample arrays**, one panel each, width proportional to minutes.
+  Half time comes from the data: a period ends at the later of its nominal end and its last sample,
+  because halves do not end on 45. Extra time is two more arrays.
+- **Events are a separate list**, passed as `events` plus `eventTime`/`eventSide`/`eventKind`, the
+  same list-plus-accessors shape as every other prop. The four props are a type-level set: passing
+  `events` alone is a compile error. Anything the built-in kinds don't cover is a child, positioned
+  through `useMomentumChart()`.
+- **The icons are PitchKit's own.** SofaScore's artwork is what prompted the chart, but it is
+  another site's work and a chart library is the wrong place to redistribute it. They are drawn
+  on a 24-unit grid in `currentColor` with one stroke weight.
+
+**Why:** Signed values and span-to-next are the two choices that make arbitrary intervals work
+without the caller resampling. Own icons keep the library's licence clean.
+
+**Consequences:**
+
+- **The kind is `missed-penalty`, not `penalty`.** A scored penalty is a goal in most feeds and is
+  recorded as `goal`; the event worth its own icon is the miss.
+- **The icon row is one row, and crowded icons stack with an offset.** Icons are small (13 px, 11
+  on a phone); ones that would touch fan out a little right of each other, later over earlier, on
+  a surface-coloured backing, and a stacked run is re-centred on where its events really were.
+  The first version added rows instead (capped at two), which made a busy match's chart mostly
+  icons and still overprinted on a phone. A stack keeps the chart's height fixed. Eight
+  substitutions in one minute are still a pile, so substitutions are better left out or drawn as
+  children.
+- **Cards and own goals carry their meaning in colour**, so they cannot also carry the team: they
+  get an underline in the team's colour. Every other icon is the team's colour. New token:
+  `--pitch-card-red`; `--pitch-card-yellow`, already in use, joins `pitchTokens`.
+- **PitchKit draws momentum and does not compute it.** There is no standard metric and no open feed
+  publishes one. The docs example derives one from StatsBomb events and says so.
+- `momentum/` is held at 100% coverage. The readout card and outside-press dismissal are shared with
+  `<RaceChart>` in `chart-readout.tsx`.
+- Like `<RaceChart>` it has no mplsoccer equivalent.
+
 ---
 
 ## Styling and theming
@@ -366,9 +411,13 @@ a pitch.
 would have moved 13 pages and needed 26 permanent redirects. The section also has known tenants
 beyond this chart: radar, pizza and the goal view.
 
-**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on the same
-grass stage as the pitch cards so it sits in the grid as one of the set, and
-`docs-pitch-theme.css` aliases the chart tokens to the existing marker hues rather than adding
-colours. `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
+**Consequences:** Nothing moved, so no redirects were needed. A chart card renders on its own
+stage (`.pitchkit-chart-stage`), not the pitch's grass: a chart has no pitch. The stage and the chart
+tokens follow the site theme, white in light and near-black in dark, in a 3:2 box so the card takes
+a pitch card's footprint. The series hues are not the pitch marker hues, which are tuned for grass:
+each mode has its own pair, run through the dataviz validator against its own surface (lightness
+band, 3:1 contrast, CVD separation above 22), and the yellow card is darkened on white. The same
+tokens apply to live previews on the docs pages, which were previously dark-only and unreadable in
+light mode. `<RaceChart>` paints no background of its own, so `--pitch-chart-surface` has to be
 whatever is actually behind it: the docs theme defaults it to the page stage, and a card that draws
-its own grass overrides it alongside the background.
+its own stage overrides it alongside the background.

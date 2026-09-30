@@ -91,6 +91,11 @@ Colours come from `--pitch-series-1` … `--pitch-series-6` by the series' posit
 array, so removing a series never repaints the others. A series given a `className` and no
 `color` drops its themed default, the same rule as every mark layer.
 
+Pitfalls with StatsBomb open data: `emphasise` is generic — pass `isGoal` for an xG race. Filter
+`period <= 4`: period 5 is the shootout and its penalties carry xG. Pass `period` rather than
+hardcoding half time, since halves do not end on 45. Events that don't accumulate (bookings,
+substitutions) are children positioned with `useRaceChart()`.
+
 ### `useRaceChart()`
 
 Returns `{ frame, scaleX, scaleY, series, endTime, valueAt }` from the enclosing
@@ -101,6 +106,54 @@ Returns `{ frame, scaleX, scaleY, series, endTime, valueAt }` from the enclosing
   step-after semantics: an event landing exactly on `time` is included. Throws for an
   unknown `seriesId`.
 - `frame: ChartFrame` — `{ width, height, x0, y0, x1, y1, plotWidth, plotHeight }`
+
+### `<MomentumChart>`
+
+Match momentum: signed bars above and below a zero line, one panel per period, with an icon row
+beneath for events. A root like `<RaceChart>`: **not** a child of `<Pitch>`, no `type` prop.
+PitchKit draws momentum; it does not compute it, so the caller supplies the values.
+
+| Prop               | Type                                | Notes                                                                                   |
+| ------------------ | ----------------------------------- | --------------------------------------------------------------------------------------- |
+| `periods`          | `T[][]`                             | One array per period: `[firstHalf, secondHalf]`, plus extra time. Any interval.         |
+| `time`             | `Accessor<T, number>`               | Match minute the sample starts at. Fractional is fine.                                  |
+| `value`            | `Accessor<T, number>`               | Signed: positive is home pressure (bars up), negative away (bars down).                 |
+| `teams`            | `{ home: string; away: string }`    | Names for the legend and readout.                                                       |
+| `events`           | `E[]`                               | With all four accessors below, or none. Passing `events` alone is a type error.         |
+| `eventTime`        | `Accessor<E, number>`               | Match minute.                                                                           |
+| `eventSide`        | `Accessor<E, "home" \| "away">`     | Which team.                                                                             |
+| `eventKind`        | `Accessor<E, MomentumEventKind>`    | `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`, `substitution`, `var`. |
+| `eventLabel`       | `Accessor<E, string>`               | Optional readout / screen-reader text. Defaults to the kind.                            |
+| `periodRanges`     | `({ start?, end? } \| undefined)[]` | Override a period's minutes. Default: nominal start, end = max(nominal end, last).      |
+| `maxValue`         | `number`                            | Half the value axis. Default: largest magnitude, rounded up.                            |
+| `width` / `height` | `number`                            | Both together are the fixed-size opt-out.                                               |
+| `aspectRatio`      | `number`                            | Responsive box shape. Default `3`, or `1.8` below 420px wide.                           |
+| `padding`          | `ChartPadding`                      | Defaults derive from what is drawn.                                                     |
+| `appearance`       | `{ axis?, legend? }`                | Structure only, never colour.                                                           |
+| `tooltip`          | `(hover) => ReactNode`              | `hover` is `{ minute, period, bar, datum, events }`. Replaces the readout body.         |
+| `children`         | `ReactNode`                         | Annotation slot; positions itself via `useMomentumChart()`.                             |
+
+Each sample's bar runs from its minute to the **next sample's** minute, so data at any interval
+reads correctly; the last bar of a period takes the period's median interval. Gaps draw nothing
+and read "No data" (not "Level"). Use one interval in both halves: different ones draw different bar widths either side of half time, and development builds warn about it. Panel widths are proportional to minutes, so stoppage time
+widens a half. The icon row is one row: crowded icons stack with an offset, later over earlier, so
+a dense list (every substitution) becomes a pile on a phone — leave substitutions out or draw
+them as children. `goal` covers a scored penalty. Icons are PitchKit's own.
+
+Colours: `--pitch-series-1` (home), `--pitch-series-2` (away), `--pitch-card-yellow`,
+`--pitch-card-red` (red cards and own goals), plus `--pitch-axis`, `--pitch-grid`,
+`--pitch-chart-text`, `--pitch-chart-muted`.
+
+### `useMomentumChart()`
+
+Returns `{ frame, panels, scaleX, scaleY, bars }` from the enclosing `<MomentumChart>`. Throws if
+called outside one.
+
+- `scaleX(minute) -> px`, in whichever period holds that minute (nearest one for a gap)
+- `scaleY(value) -> px`, symmetric about zero and already flipped for SVG
+- `frame: ChartFrame` — the bars' rectangle; `panels` — one `{ index, start, end, x0, x1, scale }`
+  per period; `bars` — one `{ start, end, value, index }[]` per period. `index` points back into
+  the period's input array.
 
 ---
 

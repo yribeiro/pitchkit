@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { DensityPanel } from "./DensityPanel";
 import { HeatmapPanel } from "./HeatmapPanel";
 import { LineupPanel } from "./LineupPanel";
+import { MomentumPanel } from "./MomentumPanel";
 import { RacePanel } from "./RacePanel";
 import { StatsBombPanel } from "./StatsBombPanel";
 import { TailwindPanel } from "./TailwindPanel";
@@ -260,6 +261,7 @@ export function Controls() {
           that isn't a pitch, and the styling controls above don't reach
           it — chart chrome has its own tokens. */}
       <RacePanel />
+      <MomentumPanel />
 
       <TailwindPanel appearance={appearance} />
 

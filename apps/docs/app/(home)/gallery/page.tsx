@@ -5,7 +5,7 @@ import { SITE_URL, X_HANDLE } from "@/lib/site";
 const DESCRIPTION =
   "Finished football visualisations built with PitchKit, the React and TypeScript charting " +
   "library for football — shot maps, pass networks, heatmaps, hexbins, KDE surfaces, Voronoi, xG race " +
-  "charts — each with its full source.";
+  "and match momentum charts — each with its full source.";
 
 export const metadata: Metadata = {
   title: "Gallery",

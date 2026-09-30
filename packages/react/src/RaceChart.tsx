@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import {
   computeChartFrame,
@@ -16,6 +16,7 @@ import { RaceChartContext } from "./race-context.js";
 import type { ResolvedRaceSeries } from "./race-context.js";
 import { RaceGridAndAxes, RaceLegend, RacePeriodBreaks } from "./race-chrome.js";
 import type { RaceAppearance, RaceChartProps, RaceHoverRow } from "./race-types.js";
+import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
 import { useResizeObserver } from "./use-resize-observer.js";
 
 /**
@@ -328,26 +329,7 @@ export function RaceChart<T>({
    * the next tap or until a scroll cancels the gesture, which is how a
    * phone chart is read. A mouse leaving the plot still clears.
    */
-  /**
-   * A touch readout has no pointerleave to end it — the pointer stops
-   * existing the moment the finger lifts — so without this it would stay
-   * up forever, which is exactly how it looks in a browser's device
-   * emulation. Pressing anywhere outside the chart dismisses it, the way
-   * any transient overlay behaves. A mouse has usually cleared it via
-   * pointerleave long before this fires.
-   */
-  useEffect(() => {
-    if (hoverTime === null) return;
-
-    function dismissOnOutsidePress(event: PointerEvent) {
-      const root = containerRef.current;
-      if (root && !root.contains(event.target as Node)) setHoverTime(null);
-    }
-
-    // Capture phase, so a handler that stops propagation can't strand it.
-    document.addEventListener("pointerdown", dismissOnOutsidePress, true);
-    return () => document.removeEventListener("pointerdown", dismissOnOutsidePress, true);
-  }, [hoverTime, containerRef]);
+  useDismissOnOutsidePress(containerRef, hoverTime !== null, () => setHoverTime(null));
 
   function handlePointerLeave(event: ReactPointerEvent<SVGRectElement>) {
     if (event.pointerType === "mouse") setHoverTime(null);
@@ -534,11 +516,6 @@ export function RaceChart<T>({
   );
 }
 
-/**
- * Positioned in percentage terms because the SVG scales to its container
- * while this overlay does not — a pixel offset computed against the
- * viewBox would drift as soon as the two diverge.
- */
 function RaceTooltip({
   rows,
   time,
@@ -553,33 +530,7 @@ function RaceTooltip({
   render: ((rows: readonly RaceHoverRow[], time: number) => ReactNode) | undefined;
 }) {
   return (
-    <div
-      role="tooltip"
-      style={{
-        position: "absolute",
-        left: `${left}%`,
-        // Both offsets are percentages because the SVG scales to its
-        // container while this overlay does not — a pixel offset computed
-        // against the viewBox drifts as soon as the two diverge. Anchoring
-        // to the plot's top keeps it clear of the legend and period labels
-        // that live in the padding above it.
-        top: `${top}%`,
-        // Flips at the midpoint rather than at 60%: on a phone the readout
-        // is a large fraction of the chart's width, and anchoring it right
-        // of a crosshair past halfway runs it over the end labels.
-        transform: left > 50 ? "translateX(-100%)" : "none",
-        marginLeft: left > 50 ? -12 : 12,
-        pointerEvents: "none",
-        background: "var(--pitch-tooltip-bg, rgba(17, 17, 17, 0.92))",
-        color: "var(--pitch-tooltip-color, #fff)",
-        padding: "6px 10px",
-        borderRadius: 4,
-        fontSize: 12,
-        lineHeight: 1.5,
-        whiteSpace: "nowrap",
-        zIndex: 10,
-      }}
-    >
+    <ChartReadout left={left} top={top}>
       {render ? (
         render(rows, time)
       ) : (
@@ -610,6 +561,6 @@ function RaceTooltip({
           ))}
         </>
       )}
-    </div>
+    </ChartReadout>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { RaceChart, useRaceChart } from "@pitchkit/react";
 
 /**
@@ -78,23 +77,11 @@ function Bookings() {
 
 export function XgRaceGallery() {
   return (
-    // The grass block and a 3:2 box are what make this card sit in the
-    // grid as one of the set: a StatsBomb pitch is 120x80, so a pitch card
-    // and this one take the same footprint. <RaceChart> paints no
-    // background of its own — it is transparent, so a consumer's own
-    // surface shows through — which is why the stage is set here rather
-    // than in the component.
-    <div
-      className="rounded-md p-2"
-      style={
-        {
-          background: "var(--pitch-surface)",
-          // This card draws its own stage, so the marker rings knock out
-          // to the grass rather than to the page behind it.
-          "--pitch-chart-surface": "var(--pitch-surface)",
-        } as CSSProperties
-      }
-    >
+    // A black stage and a 3:2 box: a StatsBomb pitch is 120x80, so a pitch
+    // card and this one take the same footprint in the grid. <RaceChart>
+    // paints no background of its own, which is why the stage is set here
+    // rather than in the component.
+    <div className="pitchkit-chart-stage rounded-md p-2">
       <RaceChart
         aspectRatio={1.5}
         series={[

@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart or any cumulative/running-total chart over match minutes; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, or a match momentum chart (momentum bars with goals and cards beneath); when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -27,7 +27,8 @@ Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 `"custom"`) pitch, a `responsive` prop, a `<Pitch>` `onClick` handler that
 hands back pitch coordinates, an `<XgRace>` / `<XgTimeline>` / `<XgFlow>` component
 (the cumulative chart is `<RaceChart>`, and `<Flow>` is an unrelated pitch layer for
-binned pass direction), a `<Radar>` or `<Pizza>` component (not built yet).
+binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
+`<MomentumChart>`), a `<Radar>` or `<Pizza>` component (not built yet).
 
 ## Package split
 
@@ -125,9 +126,12 @@ Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for cus
 Non-pitch charts — separate roots, **not** children of `<Pitch>`:
 
 `<RaceChart>` — a cumulative step chart over match minutes. This is what an "xG race
-chart", "xG timeline" or "xG flow chart" means; all three names describe it. It takes no
-`type` prop, because there is no pitch and no provider coordinate system. Escape hatch:
-`useRaceChart()` returns `{ frame, scaleX, scaleY, series, endTime, valueAt }`.
+chart", "xG timeline" or "xG flow chart" means. `useRaceChart()` returns
+`{ frame, scaleX, scaleY, series, endTime, valueAt }`.
+
+`<MomentumChart>` — match momentum as signed bars per half with an event icon row (goals,
+cards, substitutions, VAR). `useMomentumChart()` returns `{ frame, panels, scaleX, scaleY, bars }`.
+Neither takes a `type` prop: there is no pitch and no provider coordinate system.
 
 Full prop tables for every component are in [references/api.md](references/api.md) — read
 it before writing props not shown in the recipes below.
@@ -354,18 +358,7 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 `<RaceChart>` accumulates a per-event value against the clock. No `<Pitch>` anywhere.
 
 ```tsx
-"use client";
-
-import { RaceChart } from "@pitchkit/react";
-
-const shots = [
-  { minute: 11, team: "Spain", xg: 0.07, goal: false, period: 1 },
-  { minute: 16, team: "England", xg: 0.05, goal: false, period: 1 },
-  { minute: 46, team: "Spain", xg: 0.11, goal: true, period: 2 },
-  { minute: 72, team: "England", xg: 0.04, goal: true, period: 2 },
-  { minute: 86, team: "Spain", xg: 0.28, goal: true, period: 2 },
-];
-
+// shots: { minute, team, xg, goal, period }[]
 export function XgRace() {
   return (
     <RaceChart
@@ -377,30 +370,37 @@ export function XgRace() {
       value={(s) => s.xg}
       emphasise={(s) => s.goal}
       period={(s) => s.period}
-      appearance={{ area: false, markers: "emphasis" }}
     />
   );
 }
 ```
 
-Four things that are easy to get wrong:
-
-1. **`emphasise`, not `isGoal`.** The prop is generic because the accumulating value need
-   not be xG — pass `emphasise={isGoal}` for an xG race, or anything else for a
-   cumulative-shots or cumulative-xT race.
-2. **Filter out penalty shootouts.** StatsBomb period 5 is the shootout and its penalties
-   carry xG like any other shot. On a knockout match `shots(events)` without a
-   `period <= 4` filter overstates the total several times over.
-3. **Do not hardcode half time.** Pass the `period` accessor and the breaks are derived
-   from the data. Halves do not end on 45 — stoppage time is inside StatsBomb's own
-   `minute` numbering, so a real first half runs to 47' as readily as 45'.
-4. **Events that do not accumulate are children, not series.** A booking or a
-   substitution has no value to add, so it goes in the annotation slot and positions
-   itself with `useRaceChart()` — `valueAt(seriesId, minute)` puts the mark _on_ that
-   team's line. See [references/api.md](references/api.md#useracechart).
+Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG), pass
+`period` rather than hardcoding half time, and draw bookings as children via
+`useRaceChart()`. Details: [references/api.md](references/api.md#racechart).
 
 Theming is variables as everywhere else: `--pitch-series-1` … `--pitch-series-6` plus
 `--pitch-axis`, `--pitch-grid`, `--pitch-chart-*`. There are no colour props.
+
+## Recipe 5b — match momentum (the other non-pitch root)
+
+You supply the momentum values: PitchKit has no momentum metric and StatsBomb publishes none.
+
+```tsx
+<MomentumChart
+  periods={[firstHalf, secondHalf]} // [{ minute, value }], any interval
+  time={(d) => d.minute}
+  value={(d) => d.value} // + home, - away
+  events={events} // with eventTime / eventSide / eventKind, as a set
+  eventTime={(e) => e.minute}
+  eventSide={(e) => e.side}
+  eventKind={(e) => e.kind} // goal, yellow-card, red-card, ...
+/>
+```
+
+Bars run to the next sample's minute. Keep icons to goals and cards; substitutions crowd. To derive momentum from StatsBomb events, count on-ball events with
+`x >= 80` per minute (home +1, away −1; all teams attack towards x = 120) and smooth it,
+and say it is derived. See [references/api.md](references/api.md#momentumchart).
 
 ## Recipe 6 — real open data
 

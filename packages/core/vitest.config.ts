@@ -6,7 +6,13 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      include: ["src/dimensions/**", "src/transform/**", "src/chart/**", "src/race/**"],
+      include: [
+        "src/dimensions/**",
+        "src/transform/**",
+        "src/chart/**",
+        "src/race/**",
+        "src/momentum/**",
+      ],
       thresholds: {
         "src/dimensions/**": {
           statements: 100,
@@ -31,6 +37,12 @@ export default defineConfig({
           lines: 100,
         },
         "src/race/**": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/momentum/**": {
           statements: 100,
           branches: 100,
           functions: 100,

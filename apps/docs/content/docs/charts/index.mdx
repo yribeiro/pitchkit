@@ -5,7 +5,7 @@ description: Non-pitch charts — components that draw football data without a p
 
 Everything under [Overlays](/docs/overlays) is a layer **inside** a `<Pitch>`, positioned in a
 provider's own coordinates. The components here are not. They draw football data that has no
-location on a pitch — a quantity accumulating over match minutes, a player's percentile profile —
+location on a pitch — a quantity accumulating over match minutes, which side was on top at each point of it, a player's percentile profile —
 so they are roots in their own right.
 
 ## What that changes
@@ -18,7 +18,8 @@ Three things, and they are the same three every time:
   grid to name, so its scales come from the data instead.
 - **Their escape hatch is their own hook.** `usePitch()` gives you the pitch transform; each chart
   exposes the equivalent for its own space — `useRaceChart()` for
-  [`<RaceChart>`](/docs/charts/race-chart).
+  [`<RaceChart>`](/docs/charts/race-chart), `useMomentumChart()` for
+  [`<MomentumChart>`](/docs/charts/momentum-chart).
 
 Everything else carries over unchanged. Accessors work the same way, responsive-by-default works the
 same way, and theming is still CSS variables only — the chart tokens sit in the same `--pitch-*`
@@ -26,9 +27,10 @@ namespace as the rest, because that namespace is PitchKit's, not the grass's.
 
 ## Available
 
-| Component                                | What it draws                                      |
-| ---------------------------------------- | -------------------------------------------------- |
-| [`<RaceChart>`](/docs/charts/race-chart) | A running total over match minutes, as a step line |
+| Component                                        | What it draws                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------ |
+| [`<RaceChart>`](/docs/charts/race-chart)         | A running total over match minutes, as a step line                       |
+| [`<MomentumChart>`](/docs/charts/momentum-chart) | Who had the upper hand, minute by minute, as bars with an event icon row |
 
 Radar and pizza (percentile) charts and a goal-mouth view are planned; they will land here rather
 than under Overlays.

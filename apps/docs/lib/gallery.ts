@@ -7,7 +7,7 @@
  * still to come.
  *
  * "Timeline" is the one category whose cards are not drawn on a pitch. It
- * exists for <RaceChart> and will take the bumpy chart later.
+ * exists for <RaceChart> and <MomentumChart>, and will take the bumpy chart later.
  */
 
 export const GALLERY_CATEGORIES = [
@@ -111,6 +111,14 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
       "Cumulative expected goals for both sides across the Euro 2024 final — goals marked, bookings anchored to each team's line.",
     category: "Timeline",
     docsHref: "/docs/charts/race-chart",
+  },
+  {
+    name: "momentum-gallery",
+    title: "Match momentum",
+    description:
+      "Who had the ball in the attacking third, minute by minute, across the Euro 2024 final — goals and bookings on a row beneath.",
+    category: "Timeline",
+    docsHref: "/docs/charts/momentum-chart",
   },
   {
     name: "shot-territory-gallery",
