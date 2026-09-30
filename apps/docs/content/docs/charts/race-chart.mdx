@@ -154,9 +154,11 @@ right-hand gutter, so the lines use the full width of the chart. The leading ser
 line and every other series below its own, so two teams finishing on close totals don't print one
 number on top of the other. Only the value is printed, since the legend already names the series.
 A label below its line clears the line's own earlier step rather than sitting on it, and the text
-carries a halo in the surface colour so it stays legible wherever it does cross a line. Either
-placement flips when there's no room — a leader on the axis ceiling drops below, and a total at
-zero goes above rather than into the minute ticks.
+carries a halo in the surface colour so it stays legible wherever it does cross a line. The axis
+ceiling leaves room above the highest total for the leader's label, so the top of the axis can sit
+a little higher than the nearest round number; pin `maxValue` and you get exactly the axis you
+asked for, with the label running into the padding above the plot. A trailing total too close to
+the baseline to fit a label below goes above its line instead.
 
 For anything the variables don't reach, every element carries a `data-pitchkit-part`, so a Tailwind
 arbitrary variant can select it without owning the JSX: `race-line`, `race-area`, `race-marker`,

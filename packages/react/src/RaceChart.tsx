@@ -107,46 +107,54 @@ const END_LABEL_CHAR_WIDTH = 7;
  * its own, so the labels move apart rather than towards each other and
  * two teams finishing on close totals don't overprint.
  *
+ * The leader never flips below. It is the one label with nothing above it
+ * to collide with, and a leader that dropped below its line would land on
+ * the trailing labels, which is the collision this rule exists to avoid.
+ * Room above it is the ceiling's job (`resolveMaxValue`); a pinned
+ * `maxValue` that leaves none lets the label run into the top padding.
+ *
  * Below has to clear more than the line's end. A cumulative line only
  * ever rises, so the lowest part of it under a right-aligned label is
  * its level at the label's *left* edge, and that earlier step runs
  * straight through a label placed just under the end. `spanLeftY` is
- * that level in pixels. Above needs no such care: nothing of the line
- * is higher than its own end.
- *
- * Either placement flips when it would be clipped.
+ * that level in pixels. A trailing label that can't fit below, because
+ * its line is at the baseline, goes above instead.
  */
 function endLabelY(
   lineY: number,
   placeAbove: boolean,
   spanLeftY: number,
-  plotTop: number,
   plotBottom: number,
 ): number {
   const above = lineY - END_LABEL_GAP;
-  const below = Math.max(lineY, spanLeftY) + END_LABEL_GAP + END_LABEL_DESCENT;
-  const fitsAbove = above - END_LABEL_GAP >= plotTop;
-  const fitsBelow = below <= plotBottom;
+  if (placeAbove) return above;
 
-  if (placeAbove) return fitsAbove ? above : below;
-  return fitsBelow ? below : above;
+  const below = Math.max(lineY, spanLeftY) + END_LABEL_GAP + END_LABEL_DESCENT;
+  return below <= plotBottom ? below : above;
 }
 
 /**
- * The next round tick at or above the highest total.
+ * The next round tick at or above the highest total, with room above it.
  *
  * Taking the largest tick that *fits under* the total instead would set
  * the axis ceiling to the total itself, which pins the leading line to the
  * top edge of the plot with no headroom and leaves the top gridline
  * unlabelled. Rounding up gives the chart air and makes every gridline a
  * real tick.
+ *
+ * `headroom` is the fraction of the plot that must stay clear above the
+ * highest total, so the leader's end label has somewhere to sit. A bare
+ * round-up isn't enough: 2.36 rounds to 2.5, which on a short phone chart
+ * is about 10px of air against the 24 a label needs, and the label would
+ * land on top of the other team's.
  */
-function resolveMaxValue(highestTotal: number): number {
+function resolveMaxValue(highestTotal: number, headroom: number): number {
   if (highestTotal <= 0) return 1;
-  const ticks = niceTicks(0, highestTotal);
+  const target = headroom > 0 && headroom < 1 ? highestTotal / (1 - headroom) : highestTotal;
+  const ticks = niceTicks(0, target);
   const step = (ticks[1] ?? 0) - (ticks[0] ?? 0);
-  if (step <= 0) return highestTotal;
-  return Math.ceil(highestTotal / step) * step;
+  if (step <= 0) return target;
+  return Math.ceil(target / step) * step;
 }
 
 /**
@@ -243,9 +251,13 @@ export function RaceChart<T>({
   }, [series, time, value, emphasise, period]);
 
   const endTime = explicitEndTime ?? resolveEndTime(computed.latest);
-  const maxValue = explicitMaxValue ?? resolveMaxValue(computed.highestTotal);
-
   const frame = computeChartFrame(size.width, size.height, padding);
+  // Clear the plot's top by enough for the leader's end label to sit above
+  // its line. A caller who pins `maxValue` has asked for that exact axis,
+  // so they get it and the label simply runs into the top padding.
+  const labelHeadroom =
+    resolved.endLabels && frame.plotHeight > 0 ? (END_LABEL_GAP * 2) / frame.plotHeight : 0;
+  const maxValue = explicitMaxValue ?? resolveMaxValue(computed.highestTotal, labelHeadroom);
   const scaleX = createLinearScale([0, endTime], [frame.x0, frame.x1]);
   // Range reversed: the SVG y-flip lives in the scale, never in a caller.
   const scaleY = createLinearScale([0, maxValue], [frame.y1, frame.y0]);
@@ -454,7 +466,6 @@ export function RaceChart<T>({
                           scaleY(rendered.total),
                           i === leaderIndex,
                           scaleY(valueAtTime(rendered.points, leftTime)),
-                          frame.y0,
                           frame.y1,
                         )}
                         textAnchor="end"

@@ -273,19 +273,59 @@ describe("<RaceChart>", () => {
     expect(labels.map((l) => l.textContent)).toEqual(["0.83", "0.39"]);
   });
 
-  it("drops a label below its line when the total leaves no headroom", () => {
-    // A total landing exactly on the axis ceiling has nothing above it,
-    // so the label would otherwise be clipped by the top of the plot.
+  it("leaves room above the leader so its label never flips below", () => {
+    // Georgia 1.35 v Portugal 2.36 (Euro 2024). 2.36 rounds up to a 2.5
+    // ceiling, which on a phone-height chart is about 10px of air against
+    // the 24 a label needs. The leader used to flip below its line and
+    // land on the trailing label, 3px away, printing "2.36" over "1.35".
+    // The ceiling now keeps room for the label instead.
+    const { container } = renderChart({
+      series: [
+        { id: "GEO", data: [{ minute: 60, xg: 1.35 }] },
+        {
+          id: "POR",
+          data: [
+            { minute: 40, xg: 1.0 },
+            { minute: 92, xg: 1.36 },
+          ],
+        },
+      ],
+      width: 340,
+      height: 243,
+    });
+    const labels = Array.from(container.querySelectorAll('[data-pitchkit-part="race-end-label"]'));
+    const y = (value: string) =>
+      Number(labels.find((l) => l.textContent === value)?.getAttribute("y"));
+    const lineEndY = (id: string) => {
+      const d =
+        container
+          .querySelector(`[data-pitchkit-series="${id}"] [data-pitchkit-part="race-line"]`)
+          ?.getAttribute("d") ?? "";
+      return Number(Array.from(d.matchAll(/V([\d.]+)/g)).pop()?.[1]);
+    };
+    const hitArea = container.querySelector('rect[fill="transparent"]') as Element;
+    const plotTop = Number(hitArea.getAttribute("y"));
+
+    // The leader's label is above its line, and inside the plot.
+    expect(y("2.36")).toBeLessThan(lineEndY("POR"));
+    expect(y("2.36")).toBeGreaterThanOrEqual(plotTop);
+    // And the two labels are clear of each other, not printed over one another.
+    expect(Math.abs(y("2.36") - y("1.35"))).toBeGreaterThan(14);
+  });
+
+  it("honours a pinned maxValue, letting the leader's label run into the padding", () => {
+    // A caller who pins the axis has asked for that exact axis.
     const { container } = renderChart({
       series: [{ id: "HOME", data: [{ minute: 20, xg: 1.5 }] }],
+      maxValue: 1.5,
       width: 720,
       height: 380,
     });
-    const label = container.querySelector('text[data-pitchkit-part="race-end-label"]') as Element;
+    const label = container.querySelector('[data-pitchkit-part="race-end-label"]') as Element;
     const line = container.querySelector('[data-pitchkit-part="race-line"]') as Element;
     const lineTop = Number((line.getAttribute("d") ?? "").match(/V([\d.]+)/)?.[1]);
 
-    expect(Number(label.getAttribute("y"))).toBeGreaterThan(lineTop);
+    expect(Number(label.getAttribute("y"))).toBeLessThan(lineTop);
   });
 
   it("uses a squarer box at phone width", () => {

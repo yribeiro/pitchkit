@@ -81,7 +81,8 @@ in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 Each series' total is printed at its own line end, inside the plot, rather than in a right-hand
 gutter — so the lines use the full width. Only the value is printed; the legend names the series.
 The leader's label goes above its line and every other label below its own, clear of the line's own
-earlier step, so close totals never overlap; either flips when it would be clipped.
+earlier step, so close totals never overlap. The ceiling leaves room above the highest total for
+the leader's label unless `maxValue` is pinned; a trailing label too near the baseline goes above.
 
 `appearance.area` is the shading under each line (off by default — two overlapping washes
 muddy the crossover). `appearance.markers` is `"emphasis"` (default), `"all"` or `"none"`.
