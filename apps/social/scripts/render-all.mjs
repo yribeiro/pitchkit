@@ -27,6 +27,7 @@ const STILLS = [
   "wall-mosaic",
   "wall-mosaic-preview",
   "wall-mosaic-profile",
+  "x-header",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
 

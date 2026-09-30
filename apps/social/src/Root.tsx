@@ -10,6 +10,7 @@ import {
   WallMosaicPreview,
   WallProfilePreview,
 } from "./mosaic";
+import { X_HEADER, XHeader } from "./header";
 import { MOSAIC, POST, REEL } from "./theme";
 
 /**
@@ -28,6 +29,7 @@ export function Root() {
         <Still id="post-06-layers" component={PostLayers} {...POST} />
         <Still id="wall-mosaic" component={WallMosaic} {...MOSAIC} />
         <Still id="wall-mosaic-preview" component={WallMosaicPreview} {...MOSAIC_PREVIEW} />
+        <Still id="x-header" component={XHeader} {...X_HEADER} />
         <Still id="wall-mosaic-profile" component={WallProfilePreview} {...PROFILE_PREVIEW} />
       </Folder>
       <Folder name="Reels">
