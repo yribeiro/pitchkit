@@ -32,7 +32,19 @@ export type { FlowProps } from "./Flow.js";
 export { RaceChart } from "./RaceChart.js";
 export type { RaceChartProps, RaceSeries, RaceAppearance, RaceHoverRow } from "./race-types.js";
 
+export { MomentumChart } from "./MomentumChart.js";
+export type {
+  MomentumChartProps,
+  MomentumAppearance,
+  MomentumEventKind,
+  MomentumHover,
+  MomentumSide,
+  MomentumTeams,
+  MomentumChartContextValue,
+} from "./momentum-types.js";
+
 export { usePitch } from "./use-pitch.js";
 export { useRaceChart } from "./use-race-chart.js";
+export { useMomentumChart } from "./use-momentum-chart.js";
 export type { RaceChartContextValue, ResolvedRaceSeries } from "./race-context.js";
 export type { TooltipState } from "./context.js";

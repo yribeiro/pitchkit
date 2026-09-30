@@ -95,5 +95,16 @@ export type { RaceEvent, RacePoint, RaceSeriesData } from "./race/cumulative.js"
 export { computeCumulativeSeries, valueAtTime, resolveEndTime } from "./race/cumulative.js";
 export { stepPath, stepAreaPath } from "./race/step-path.js";
 
+export type { MomentumSample, MomentumBar, MomentumRange } from "./momentum/bars.js";
+export { computeMomentumBars, barAtMinute } from "./momentum/bars.js";
+export type { MomentumPanel } from "./momentum/layout.js";
+export {
+  nominalPeriodRange,
+  resolvePeriodRange,
+  layoutMomentumPanels,
+  momentumExtent,
+} from "./momentum/layout.js";
+export { assignLanes } from "./momentum/lanes.js";
+
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

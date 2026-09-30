@@ -6,6 +6,7 @@ import { Annotate } from "./Annotate.js";
 import { Arrows } from "./Arrows.js";
 import { Heatmap } from "./Heatmap.js";
 import { Pitch } from "./Pitch.js";
+import { MomentumChart } from "./MomentumChart.js";
 import { RaceChart } from "./RaceChart.js";
 import { Scatter } from "./Scatter.js";
 
@@ -113,5 +114,40 @@ describe("SSR (renderToString)", () => {
 
     expect(html).toContain('viewBox="0 0 720 360"');
     expect(html).toContain('data-pitchkit-part="race-line"');
+  });
+
+  it("renders a MomentumChart to a string, events included", () => {
+    const html = renderToString(
+      <MomentumChart
+        periods={[
+          [
+            { minute: 0, v: 2 },
+            { minute: 7, v: -4 },
+          ],
+          [{ minute: 45, v: 1 }],
+        ]}
+        time={(d) => d.minute}
+        value={(d) => d.v}
+        events={[{ minute: 12, side: "home" as const, kind: "goal" as const }]}
+        eventTime={(e) => e.minute}
+        eventSide={(e) => e.side}
+        eventKind={(e) => e.kind}
+        width={720}
+        height={240}
+      />,
+    );
+
+    expect(html).toContain('viewBox="0 0 720 240"');
+    expect(html).toContain('data-pitchkit-layer="momentum"');
+    expect(html).toContain('data-pitchkit-part="momentum-bar"');
+    expect(html).toContain('data-pitchkit-part="momentum-event"');
+  });
+
+  it("renders a MomentumChart at its responsive fallback size without a DOM", () => {
+    const html = renderToString(
+      <MomentumChart periods={[[{ minute: 0, v: 1 }]]} time={(d) => d.minute} value={(d) => d.v} />,
+    );
+
+    expect(html).toContain('viewBox="0 0 720 240"');
   });
 });

@@ -67,7 +67,7 @@ testable and renderer-independent.
 Some football data has no location on a pitch: a quantity accumulating over match minutes, a
 player's percentile profile. Those charts are roots in their own right, siblings of `<Pitch>` and
 not layers inside it ([D23](./decisions.md#d23-non-pitch-charts-are-roots-with-their-own-scales)).
-`<RaceChart>` is the first.
+`<RaceChart>` is the first and `<MomentumChart>` the second.
 
 ```
 RaceChart (root)
@@ -114,6 +114,39 @@ RaceChart (root)
 
 Not built yet: keyboard focus giving the same readout as hover, and a table view of the values.
 Neither exists anywhere in the library.
+
+### Match momentum
+
+`<MomentumChart>` ([D25](./decisions.md#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons))
+follows the same pattern with a different shape of data.
+
+```
+MomentumChart (root)
+ ├─ periods   (one array of samples per period; data stays on the root)
+ ├─ panels    (one per period, width proportional to its minutes; per-panel x scale)
+ ├─ scaleY    (one symmetric value scale, -max..+max, so both halves are comparable)
+ ├─ bars, zero line, minute ticks, then event icons, then children
+ └─ crosshair (one hit area across the panels)
+```
+
+- **`core/momentum/` owns the maths.** `computeMomentumBars` turns samples into bars, `barAtMinute`
+  finds the bar under a minute, `layoutMomentumPanels` splits the width, `momentumExtent` picks the
+  symmetric axis, and `assignLanes` stacks icons. All take plain numbers.
+- **A bar runs to the next sample's minute.** Sorted by time; a duplicate minute keeps the later
+  sample; non-finite values are dropped; the last bar takes the period's median interval (1 minute
+  for a single sample). Bars are clipped to the period's range.
+- **Periods come from the data.** A period starts at its nominal minute (0, 45, 90, 105, then 15-
+  minute blocks) and ends at `max(nominal end, ceil(latest sample end))`; `periodRanges` overrides
+  either end. A minute between panels resolves to the nearest one.
+- **Events are icons in a strip under the bars**, stacked into lanes when they would touch, capped
+  at two (past that they share the least-crowded lane). A card or own goal is drawn in its own
+  colour with an underline in the team's; other icons take the team colour. Icon colour rules are
+  exported as pure functions because happy-dom drops `color: var(--…)` from `style`, so they are
+  tested as functions.
+- **The readout is shared with `<RaceChart>`.** `chart-readout.tsx` holds the card (which flips
+  left of the crosshair past half width) and the press-outside dismissal. Touch behaves as for the
+  race chart.
+- **Below 420 px** the box is 1.8:1 rather than 3:1 and icons shrink from 16 to 14 px.
 
 ## Packages
 
@@ -389,6 +422,11 @@ Re-verify against a fresh sample before "correcting" any of them.
   place.
 - **A booking is `foul_committed.card`.** The final has four, all there. A booking without a foul
   would be under `bad_behaviour.card`, but none occurs in that match, so it is unverified.
+- **Every team attacks towards x = 120 in both halves.** Verified on the Euro 2024 final
+  (`3943043`): shots by either side land at x of about 104 to 109, in both periods. So the attacking
+  third is `x >= 80` for both teams and the away side's coordinates are not flipped. The docs
+  momentum example counts on-ball events there per minute, home minus away, smoothed over three
+  minutes. That is a derivation, not a StatsBomb metric: no momentum value exists in the feed.
 
 ### SkillCorner
 
