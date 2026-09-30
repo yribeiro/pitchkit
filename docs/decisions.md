@@ -1,0 +1,319 @@
+# Decision log
+
+Decisions that shape how PitchKit is built, with the reason for each. Read the relevant entry
+before changing something it covers. Several of these reverse an earlier decision, and the
+reason is recorded so it doesn't get reversed back by accident.
+
+Entries are grouped by area, not by date. Each one records the decision, why it was made,
+and what follows from it. Superseded entries stay in the log, marked as such.
+
+- [Architecture](#architecture)
+- [Styling and theming](#styling-and-theming)
+- [Distribution and releases](#distribution-and-releases)
+- [Data providers](#data-providers)
+- [Docs site](#docs-site)
+
+---
+
+## Architecture
+
+### D1. Hybrid rendering: SVG for marks, Canvas for density
+
+**Decision:** Pitch geometry and discrete marks (scatter, arrows, comets, hulls, Voronoi)
+render as SVG. Dense raster layers (heatmap, positional heatmap, hexbin, KDE) render to
+Canvas.
+
+**Why:** SVG is crisp at any DPI, server-renderable, and DOM-addressable for tooltips and
+accessibility. One DOM node per bin or point stops scaling for density layers, so those use
+Canvas.
+
+**Consequences:** Canvas layers render nothing on the server and paint after hydration.
+Canvas reads the same `--pitch-*` variables as SVG, so theming stays in one place.
+See [architecture: rendering](./architecture.md#rendering-svg-and-canvas).
+
+### D2. `@pitchkit/core` has no React dependency
+
+**Decision:** `core` owns coordinates, geometry, the scene model and painters, with zero
+runtime dependencies. `@pitchkit/react` is a thin binding over it.
+
+**Why:** It keeps the correctness-critical maths testable in isolation (core is held at
+100% coverage), and leaves room for other bindings later.
+
+**Consequences:** Shared maths lives in `core`, never in `react`. When `react` needs logic
+that a core painter has, extract it into a pure exported function in `core` first. See
+[architecture: shared-maths extraction](./architecture.md#shared-maths-extraction).
+
+### D3. `@pitchkit/react` is the only supported rendering surface
+
+**Decision:** Core's SVG painters (`render/svg/paint-*.ts`, `svgRenderer`,
+`renderSceneToSVGElement`) are internal. They exist only for the
+`packages/core/examples/index.html` dev harness. New mark types ship React-only.
+([Issue #6](https://github.com/yribeiro/pitchkit/issues/6), resolved.)
+
+**Why:** Maintaining a DOM painter and a React component for every mark doubled the cost of
+each new mark for a consumption path nobody had asked for.
+
+**Consequences:** Hexbin, KDE, Flow, Polygon, Convex Hull, Voronoi and Goal Angle have no
+DOM painter. The internal exports carry `@internal` TSDoc. `canvasRenderer` is unaffected,
+because `react`'s density layers call into it.
+
+### D4. Responsive by default; explicit size is the opt-out
+
+**Decision:** `<Pitch>` fills its container via `ResizeObserver` with no prop. Passing both
+`width` and `height` fixes the size.
+
+**Why:** Sensible defaults with full control. A fixed size only makes sense where there is
+no container to measure (image export, OG cards, email).
+
+**Consequences:** The first paint uses an aspect-ratio box so SSR output doesn't shift
+layout before measurement.
+
+### D5. Centre-origin coordinates are handled in core, never in callers
+
+**Decision:** `PitchOrigin: "center"` is supported end to end through
+`toExtentFrame`/`fromExtentFrame` (`transform/canonical.ts`). SkillCorner data plots with its
+raw `x`/`y` on `<Pitch type="skillcorner">`.
+
+**Why:** A caller-side workaround (`toUefaX`/`toUefaY` in `examples/react-nextjs`) squashed
+SkillCorner onto a UEFA grid. It was wrong at the edges and had to be repeated by every
+consumer. It has been deleted; don't reintroduce one.
+
+**Consequences:** `toExtentFrame`/`fromExtentFrame` are identity functions for corner-origin
+providers, which is why StatsBomb, Opta and UEFA are untouched; a test asserts this. Any
+module that reasons about a `0..length` box must convert through the extent frame first.
+See [architecture: centre-origin pitches](./architecture.md#centre-origin-pitches).
+
+### D6. Normalised grids derive their shape from real metres
+
+**Decision:** `displayUnitScale` (`transform/canonical.ts`) converts a normalised grid's
+units to metres, using `realLengthMeters`/`realWidthMeters`, before anything derives
+on-screen shape. It is gated on `normalized`, so StatsBomb, UEFA and SkillCorner render
+byte-identically (their scale is `1`).
+
+**Why:** Opta and Wyscout are `0..100` on both axes. Deriving shape from `length`/`width`
+drew them square ([issue #2](https://github.com/yribeiro/pitchkit/issues/2)). The real-metre
+fields existed from the start, but nothing read them. Measured at 600×400: Opta went from
+aspect 1.0000 to 1.5441. Fixed via [PR #72](https://github.com/yribeiro/pitchkit/pull/72).
+
+**Consequences:** Overriding the dimensions of a normalised grid throws. Test files derive
+their pitch-type list from `Object.keys(PITCH_DIMENSIONS)` rather than hardcoding it. The
+hardcoded lists had silently left `skillcorner` uncovered in six files.
+
+### D7. SkillCorner markings don't scale with pitch size
+
+**Decision:** `getPitchDimensions(type, { length, width })` and `<Pitch dimensions>` accept a
+per-match size, used by SkillCorner's real 104–106 m pitches. Only the outline, halfway line
+and goal lines move; box and circle markings keep their regulation sizes.
+
+**Why:** A penalty area is 16.5 m on any pitch.
+
+---
+
+## Styling and theming
+
+### D8. Theming is CSS variables only
+
+**Decision:** Colours are `--pitch-*` CSS custom properties, shadcn-style. There are no JS
+theme objects and no theme provider. The `appearance` prop controls structure (stripes,
+goal style, `linesOnTop`), never colour.
+
+**Why:** Variables cascade, so one declaration themes every chart, dark mode is a second
+override, and a per-chart change is a wrapper element. Canvas reads the same variables at
+draw time, so both renderers share one source.
+
+**Consequences:** `pitchTokens` exists only for editor autocomplete; values always live in
+CSS. The full variable list is on the
+[Theming page](https://www.pitchkitjs.com/docs/styling/theming). It must match what the
+components read; an audit in [PR #74](https://github.com/yribeiro/pitchkit/pull/74) found
+three variables missing from it.
+
+### D9. Tailwind reaches PitchKit four ways
+
+**Decision:** ([Issue #7](https://github.com/yribeiro/pitchkit/issues/7),
+[PR #13](https://github.com/yribeiro/pitchkit/pull/13).)
+
+1. `className` on SVG marks you render. When `className` is set and the matching colour prop
+   is absent, the mark drops its themed default.
+2. `data-pitchkit-mark`/`-layer`/`-part` attributes, reached with arbitrary-variant selectors
+   and the `!` important modifier, for marks whose JSX you don't own.
+3. A `pitch-surface-*`/`pitch-stripe-*`/`pitch-lines-*` `@utility` recipe
+   (`--value(--color-*)`) for the pitch background.
+4. `pitch-line-width-*`, which takes a number.
+
+**Why:** Themed defaults are applied as inline `style`, and inline style always beats a
+class. Adding `className` alone would have done nothing for colour. The pitch background
+isn't a mark, so it is only restyled through variables.
+
+**Consequences:** Resolution order per visual property: accessor prop → static prop →
+`className` (only if neither is given) → CSS variable default → built-in fallback.
+Eight layers honour mechanism 1: Scatter, Arrows, Comet, Annotate, Polygon, ConvexHull,
+Voronoi and GoalAngle. Flow takes its colours from `colorMin`/`colorMax`.
+
+---
+
+## Distribution and releases
+
+### D10. Marks ship on npm; recipes and theme presets ship as shadcn registry items
+
+**Decision:** `@pitchkit/core`, `@pitchkit/react` and `@pitchkit/data-providers` are npm
+packages. Composite recipes (pass network, shot map, pass map, …) and theme presets are
+shadcn registry items: `npx shadcn add pass-map` copies the source into the consumer's repo,
+with `@pitchkit/react` auto-installed underneath.
+
+**Why:** Marks are correctness-critical plumbing that nobody should fork. Recipes are
+opinionated compositions a consumer wants to own and restyle without waiting on a release.
+This is the same split shadcn/ui uses: its components are copied, and Radix underneath them
+is installed from npm.
+
+**Consequences:** The registry infrastructure does not exist yet: `apps/docs` has only an
+internal examples registry, not a consumable `registry.json`. The recipe issues
+([#23](https://github.com/yribeiro/pitchkit/issues/23),
+[#24](https://github.com/yribeiro/pitchkit/issues/24)) depend on building it.
+
+### D11. Releases are manual until Trusted Publishing is set up
+
+**Decision:** Changesets drives versions and changelogs, but publishing is run by hand.
+`.github/workflows/release.yml` is disabled.
+
+**Why:** The workflow failed with `ENEEDAUTH` because no `NPM_TOKEN` was configured. The
+preferred fix is npm Trusted Publishing (OIDC), which avoids storing a token and adds
+provenance. Tracked in [issue #36](https://github.com/yribeiro/pitchkit/issues/36).
+
+**Consequences:** See [CONTRIBUTING.md: releasing](../CONTRIBUTING.md#releasing) for the
+steps. A change to `packages/react/skills/` ships in the tarball, so it needs a changeset
+like any code change. [PR #63](https://github.com/yribeiro/pitchkit/pull/63) shipped
+without one, and its fix sat unreleased.
+
+### D12. The Agent Skill ships inside `@pitchkit/react`
+
+**Decision:** `skills/pitchkit/` (`SKILL.md` plus `references/api.md`) is in the npm
+tarball. `npx @pitchkit/react skills install` symlinks it into a consumer's project.
+([PR #46](https://github.com/yribeiro/pitchkit/pull/46), part of
+[issue #40](https://github.com/yribeiro/pitchkit/issues/40).)
+
+**Why:** No model has PitchKit in its training data. A skill versioned with the installed
+package moves with `npm update`, so it can't describe an API the consumer doesn't have.
+
+**Consequences:** `packages/react/src/skill-doc.test.ts` asserts the skill's pitch-type table
+matches the registry, so adding a pitch type fails CI until `SKILL.md` is updated. That is
+intentional.
+
+---
+
+## Data providers
+
+### D13. One `@pitchkit/data-providers` package, one entry point per provider
+
+**Decision:** Loaders live in `@pitchkit/data-providers`, exported per provider
+(`/statsbomb`, `/skillcorner`, `/wyscout`).
+
+**Why:** More providers were planned ([#30](https://github.com/yribeiro/pitchkit/issues/30)),
+and one package per provider would multiply release overhead.
+
+**Consequences:** The package depends on neither `core` nor `react`. Its only runtime
+dependency is `csv-parse`, for SkillCorner's CSV files; that is the project's only
+third-party runtime dependency anywhere.
+
+### D14. The provider's data stays the provider's
+
+**Decision:** Loaders keep each provider's own field names and values (StatsBomb's outcome
+is `"Off T"`, not a re-spelled `"off-target"`). The only additions are lifted coordinates
+(`x`/`y`/`endX`/`endY`, and `pitchX`/`pitchY` for SkillCorner). Interpretation lives in
+predicate functions (`isGoal`, `hasTag`), not derived fields.
+
+**Why:** A user can read the provider's own specification alongside the types with no
+mapping table, and a predicate can be fixed without changing the data shape.
+
+**Consequences:** Third-party mirrors are acceptable only when they rename nothing. That is
+what makes the Wyscout per-match mirror usable (see
+[architecture: data provider facts](./architecture.md#data-provider-facts)).
+
+---
+
+## Docs site
+
+### D15. Data gets a top-level docs section
+
+**Decision:** Loader docs live under a top-level **Data** section (`/docs/data`), not under
+Configuration. This reverses [issue #29](https://github.com/yribeiro/pitchkit/issues/29)'s
+recorded plan to park them there until two or three providers existed.
+
+**Why:** That plan was about volume. The reversal is about positioning: Configuration framed
+data loading as one-time setup, when it's a headline capability. Don't restore the old
+placement on the strength of the issue text.
+
+### D16. Live data examples load on selection, with no load button
+
+**Decision:** The StatsBomb examples fetch live open data in the browser and load as soon
+as a match is selected: events are about 3 MB, and 360 data about 10 MB.
+
+**Why:** 360 originally sat behind a "Load tracking data" button because of its size. That
+was dropped, because a click between the page and the chart undercuts the "one call" point
+those pages exist to make. Don't reintroduce it as a payload optimisation.
+
+### D17. Styling is one docs section
+
+**Decision:** Theming, Tailwind and Pitch Palettes live under one **Styling** section, above
+Data. The Configuration section and the Guides → Recipes page were removed, and their old
+URLs redirect in `apps/docs/next.config.ts`.
+([PR #74](https://github.com/yribeiro/pitchkit/pull/74).)
+
+**Why:** Styling had been spread across three sections that repeated each other: the
+variable table was on two pages, and so was the `@utility` recipe.
+
+### D18. Docs generators run from `next.config.ts`
+
+**Decision:** `next.config.ts` runs both generator scripts (`generate-examples-registry.mjs`
+and `generate-api-docs.mjs`) itself via `execFileSync`.
+
+**Why:** The Vercel build broke twice with `ENOENT … registry.ts`. npm `pre*` hooks didn't
+run there, and inlining generation into the `build` script didn't help, because Vercel's
+Next.js preset runs `next build` directly. `next.config.ts` is the one file Next.js always
+loads, whatever invoked it.
+
+**Consequences:** If the ENOENT comes back, check that `next.config.ts` still runs both
+scripts. Don't re-chain npm scripts.
+
+### D19. `llms.txt` covers the narrative docs; the API reference is separate
+
+**Decision:** `/llms.txt` and `/llms-full.txt` exclude the ~117 generated API pages, which
+are served as `/llms-api.txt`. `<PitchPreview>` tags are replaced with the example's source
+in `llms-full.txt`. ([PR #48](https://github.com/yribeiro/pitchkit/pull/48).)
+
+**Why:** A per-symbol reference dump crowds out the pages that teach the library.
+
+**Consequences:** An example shown on a docs page should not import site-only helpers, since
+its source is inlined into `llms-full.txt` where an agent may copy it.
+
+### D20. Search title and visible headline say different things
+
+**Decision:** The `<title>` is "PitchKit — React & TypeScript football visualisation library"
+(what people search for); the `<h1>` is the brand line "Football visualised for the web.".
+The `description` is keyword-bearing, while `og:`/`twitter:` carry the hero copy.
+
+**Why:** Search engines match on the words people type; visitors should see the brand. This
+is not drift, so don't make them match.
+
+**Consequences:** `TAGLINE`, `SUBHEAD` and `SEARCH_DESCRIPTION` live in `apps/docs/lib/site.ts`,
+read by the hero, the metadata and the OG image. The three had drifted apart once before.
+The homepage FAQ renders as both `<details>` and `FAQPage` JSON-LD from one array, so the two
+can't disagree. `app/robots.ts` names the AI crawlers explicitly even though the wildcard
+already allows them, because `Google-Extended` and `Applebot-Extended` are opt-out tokens
+where silence is ambiguous.
+
+### D21. `SITE_URL` is the `www` host
+
+**Decision:** `SITE_URL` is `https://www.pitchkitjs.com`, the host Vercel serves.
+
+**Why:** The apex 308-redirects to `www`. While `SITE_URL` was the apex, every canonical,
+sitemap entry and `llms.txt` link pointed at a redirect, which agent crawlers that don't
+follow redirects can't use. ([PR #69](https://github.com/yribeiro/pitchkit/pull/69).)
+
+**Consequences:** If the Vercel domain settings ever flip, change `SITE_URL` in the same
+commit.
+
+### D22. Two analytics tools, side by side
+
+**Decision:** Vercel Web Analytics and PostHog (`components/posthog-provider.tsx`) are both
+wired into `apps/docs/app/layout.tsx`. PostHog was added alongside Vercel, not as a
+replacement ([PR #64](https://github.com/yribeiro/pitchkit/pull/64)).

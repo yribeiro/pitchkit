@@ -3,8 +3,8 @@
 @import "fumadocs-ui/css/preset.css";
 
 /*
- * PitchKit brand theme (shadcn-style CSS-variable theming, per CLAUDE.md /
- * PRD §8.7): overrides fumadocs-ui's neutral preset with pitch-green
+ * PitchKit brand theme (shadcn-style CSS-variable theming, see
+ * docs/architecture.md#theming-and-styling): overrides fumadocs-ui's neutral preset with pitch-green
  * accents so the docs chrome reads as PitchKit's own site, not generic
  * fumadocs. `--pitch-*` variables (consumed directly by @pitchkit/react)
  * are set separately in docs-appearance below, once per preview, so every
@@ -22,7 +22,7 @@
 }
 
 /*
- * The Tailwind integration recipe from issue #7 (PRD §8.7 / Appendix C.6):
+ * The Tailwind integration recipe from issue #7 (docs/architecture.md#theming-and-styling):
  * turns pitchkit's `--pitch-*` theme variables into first-class Tailwind
  * utilities, e.g. `className="pitch-surface-emerald-950"`. This is the
  * "shadcn add"-style install step the Configuration > Tailwind docs page

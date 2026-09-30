@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * The shadcn-style showcase landing page (issue #28, PRD §9): a tabbed
+ * The shadcn-style showcase landing page (issue #28, docs/architecture.md#docs-site): a tabbed
  * hero showcase of gallery visualisations, feature grid, and a
  * gallery/docs funnel. Chrome uses the
  * fumadocs theme tokens (fd-*) + Tailwind only; the hero pitch itself is

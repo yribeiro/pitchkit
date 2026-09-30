@@ -8,7 +8,7 @@ import type { ComponentPropsWithoutRef } from "react";
  * Painted in `currentColor` deliberately: one file inherits the nav's colour,
  * flips with the theme toggle, and knocks out on a solid accent, so there is
  * no light/dark variant to keep in sync. That's the same discipline as the
- * library's CSS-variable-only theming (CLAUDE.md / PRD §8.7).
+ * library's CSS-variable-only theming (docs/architecture.md#theming-and-styling).
  *
  * The favicon is a separate cut — `app/icon.svg`, at stroke 3.5 — because
  * browsers rasterise it at 16px and hairlines go grey.

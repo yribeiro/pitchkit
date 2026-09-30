@@ -30,6 +30,18 @@ describe("parseMatches", () => {
     expect(() => parseMatches(matchFixture())).toThrow(DataProviderError);
     expect(() => parseMatches(matchFixture())).toThrow(/matches index/);
   });
+
+  it("names the offending row when an entry has no numeric id", () => {
+    expect(() => parseMatches([{ id: 1 }, null])).toThrow(/matches\[1\].*got null/);
+    expect(() => parseMatches([{ id: "1" }])).toThrow(/matches\[0\].*keys: id/);
+  });
+
+  it("describes what it got instead, truncating long key lists", () => {
+    expect(() => parseMatches({})).toThrow(/got an empty object/);
+    expect(() => parseMatches({ a: 1, b: 2, c: 3, d: 4, e: 5 })).toThrow(
+      /keys: a, b, c, d, \.\.\./,
+    );
+  });
 });
 
 describe("parseMatch", () => {
@@ -39,6 +51,11 @@ describe("parseMatch", () => {
     expect(match.pitch_width).toBe(68);
     expect(match.home_team_side).toEqual(["left_to_right", "right_to_left"]);
     expect(match.players.length).toBeGreaterThan(20);
+  });
+
+  it("points at the matches index when given an array", () => {
+    expect(() => parseMatch(matchesFixture())).toThrow(/an array of 20/);
+    expect(() => parseMatch(matchesFixture())).toThrow(/_match\.json/);
   });
 
   it("refuses a match with no pitch dimensions, since coordinates need them", () => {
@@ -111,6 +128,30 @@ describe("parseDynamicEvents", () => {
       expect(event.pitchX).toBeCloseTo((event.x_start as number) + 52.5, 10);
       expect(event.pitchY).toBeCloseTo((event.y_start as number) + 34, 10);
     }
+  });
+
+  it("reads False and false as false, and anything else as null", () => {
+    const [row] = parseDynamicEvents(
+      "event_id,carry,one_touch,is_header,targeted\n1,False,false,True,maybe\n",
+      match,
+    );
+    expect(row?.carry).toBe(false);
+    expect(row?.one_touch).toBe(false);
+    expect(row?.is_header).toBe(true);
+    expect(row?.targeted).toBeNull();
+  });
+
+  it("rejects empty or unreadable CSV text", () => {
+    expect(() => parseDynamicEvents("  ", match)).toThrow(/got no text/);
+    const error = (() => {
+      try {
+        parseDynamicEvents('event_id,carry\n1,"unterminated\n', match);
+      } catch (caught) {
+        return caught;
+      }
+    })();
+    expect(error).toBeInstanceOf(DataProviderError);
+    expect((error as DataProviderError).kind).toBe("parse");
   });
 
   it("keeps the event types SkillCorner ships", () => {

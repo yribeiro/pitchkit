@@ -58,10 +58,10 @@ OG images, PDFs).
 
 ## What's in the box
 
-| Package                                                 | What it is                                                                               |
-| ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`@pitchkit/react`](./packages/react)                   | Declarative React components — the supported way to render. Start here.                  |
-| [`@pitchkit/core`](./packages/core)                     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps. |
+| Package                                                 | What it is                                                                                                                          |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| [`@pitchkit/react`](./packages/react)                   | Declarative React components — the supported way to render. Start here.                                                             |
+| [`@pitchkit/core`](./packages/core)                     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps.                                            |
 | [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb, SkillCorner, Wyscout). One dependency (`csv-parse`), and not on `core`/`react`. |
 
 ### Components
@@ -159,7 +159,10 @@ is in `apps/docs`.
 
 - **[pitchkitjs.com](https://www.pitchkitjs.com)** — guides, API reference, and the
   [gallery](https://www.pitchkitjs.com/gallery) (every card ships its full source).
-- [docs/PRD.md](./docs/PRD.md) — product spec, architecture decisions and roadmap.
+- [docs/PRD.md](./docs/PRD.md) — the product: problem, goals, users, principles.
+- [docs/architecture.md](./docs/architecture.md) — how the library is built.
+- [docs/roadmap.md](./docs/roadmap.md) — feature status, milestones and release history.
+- [docs/decisions.md](./docs/decisions.md) — the decision log.
 
 ## Licence
 

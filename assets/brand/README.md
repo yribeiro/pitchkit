@@ -32,7 +32,7 @@ Drawn on a **48-unit grid at stroke 3**, so it rasterises to whole pixels at 16,
 
 - **Keep `currentColor`.** One file inherits the nav's colour, flips with the theme
   toggle, and knocks out on a solid accent — no light/dark variants to keep in sync. That
-  is the same discipline as the library's CSS-variable-only theming (PRD §8.7).
+  is the same discipline as the library's CSS-variable-only theming ([docs/architecture.md](../../docs/architecture.md#theming-and-styling)).
 - **Don't add elements.** Four widely-spaced strokes are the entire reason the mark
   survives 16px. Variants that add a fifth (globe meridians, angle brackets, a slash
   through the circle) were explored and each one blurs in a tab strip.

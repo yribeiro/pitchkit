@@ -5,7 +5,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      include: ["src/**"],
+      include: ["src/**/*.ts"],
+      exclude: ["src/**/*.test.ts", "src/**/__fixtures__/**"],
       thresholds: {
         "src/**": {
           statements: 90,

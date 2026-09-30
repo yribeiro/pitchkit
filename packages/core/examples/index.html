@@ -97,7 +97,7 @@
          `style="fill: var(--pitch-surface, ...)"` etc. (Milestone 1) — no
          CSS is required for a themed pitch to render correctly. The rules
          below are an *optional* per-page retheme, proving the CSS-variable
-         override path described in PRD §8.7 (per-chart override via the
+         override path described in docs/architecture.md#theming-and-styling (per-chart override via the
          cascade): defining --pitch-* anywhere above a pitch in the DOM
          changes its colours with zero renderer changes. */
       #grid {
@@ -116,7 +116,7 @@
 
       /* Player-number labels painted by the Annotate layer — colour comes
          from the painter's themed default; this just sets typography,
-         demonstrating the `className` styling escape hatch (PRD §8.7). */
+         demonstrating the `className` styling escape hatch (docs/architecture.md#theming-and-styling). */
       .demo-label {
         font-weight: 600;
         font-size: 9px;
@@ -168,7 +168,7 @@
       Styling sandbox: the colour inputs just set --pitch-* CSS custom
       properties on #grid and take effect immediately, since the renderer
       already reads them via var(--pitch-surface, ...) at paint time — no
-      re-render needed (PRD §8.7's CSS-cascade theming). Stripes/goal-type
+      re-render needed (CSS-cascade theming, docs/architecture.md#theming-and-styling). Stripes/goal-type
       are baked into the SVG shapes themselves (not CSS), so those controls
       call renderAll() to rebuild every panel's Scene with the new
       PitchAppearance. The "uefa — print theme" panel intentionally ignores
@@ -310,7 +310,7 @@
         ["CM", "FW"],
       ];
 
-      /** Arrows + Scatter + Annotate composed into a small pass-network recipe (PRD §7.4). */
+      /** Arrows + Scatter + Annotate composed into a small pass-network recipe (docs/roadmap.md#composite-recipes). */
       function buildPassNetworkLayers(dimensions) {
         const standardize = createStandardizeTransform(statsbombDims, dimensions);
         const nodesStd = players.map((p) => ({ ...p, pos: standardize(p.pos) }));
@@ -528,7 +528,7 @@
           addPanel("statsbomb — half (cropForHalf)", svg);
         }
 
-        // Per-chart theme override (PRD §8.7): scoping --pitch-* variables
+        // Per-chart theme override (docs/architecture.md#theming-and-styling): scoping --pitch-* variables
         // on a wrapper element retheme the renderer's output via the CSS
         // cascade — no prop, no provider, no renderer change. Deliberately
         // not driven by the controls above (see comment near #controls).

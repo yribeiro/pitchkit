@@ -16,7 +16,7 @@ export interface RenderHeatmapOptions {
  * `positionalHeatmap`, `hexbin`, `kde`) onto a 2D canvas, ignoring every
  * other layer type — the SVG renderer handles those. Backs the canvas at
  * `cssSize x devicePixelRatio` physical pixels and scales the drawing
- * context accordingly (PRD §8.6), so dense layers stay crisp on retina
+ * context accordingly (docs/architecture.md#responsive-and-multi-device), so dense layers stay crisp on retina
  * displays without every painter needing to know about DPR itself.
  *
  * Does not attempt to composite with the SVG renderer's output — stacking
