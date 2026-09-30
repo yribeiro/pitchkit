@@ -29,10 +29,12 @@ export function baseOptions(): BaseLayoutProps {
       },
       /*
        * Icon-only, so `label` is the accessible name (and the tooltip); the
-       * glyph itself is aria-hidden.
+       * glyph itself is aria-hidden. `on: "nav"` keeps them out of the mobile
+       * dropdown, where the home layout already shows them in the bar itself.
        */
       {
         type: "icon",
+        on: "nav",
         label: "PitchKit on GitHub",
         text: "GitHub",
         icon: <GitHubIcon />,
@@ -41,6 +43,7 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         type: "icon",
+        on: "nav",
         label: "PitchKit on X",
         text: "X",
         icon: <XIcon />,
@@ -49,6 +52,7 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         type: "icon",
+        on: "nav",
         label: "PitchKit on Instagram",
         text: "Instagram",
         icon: <InstagramIcon />,
