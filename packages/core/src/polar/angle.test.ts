@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { axisAngle, polarPoint } from "./angle.js";
+import { axisAngle, nearestAxis, polarPoint } from "./angle.js";
 
 describe("axisAngle", () => {
   it("starts at the top and runs clockwise in equal steps", () => {
@@ -21,5 +21,20 @@ describe("polarPoint", () => {
     const [x1, y1] = polarPoint(100, 100, 50, Math.PI / 2);
     expect(x1).toBeCloseTo(150);
     expect(y1).toBeCloseTo(100);
+  });
+});
+
+describe("nearestAxis", () => {
+  it("inverts axisAngle, rounding to the closest axis", () => {
+    expect(nearestAxis(0, -10, 4)).toBe(0);
+    expect(nearestAxis(10, 0, 4)).toBe(1);
+    expect(nearestAxis(0, 10, 4)).toBe(2);
+    expect(nearestAxis(-10, 0, 4)).toBe(3);
+    // Just left of the top still rounds to axis 0, not the last one.
+    expect(nearestAxis(-1, -10, 4)).toBe(0);
+  });
+
+  it("is 0 with no axes", () => {
+    expect(nearestAxis(5, 5, 0)).toBe(0);
   });
 });

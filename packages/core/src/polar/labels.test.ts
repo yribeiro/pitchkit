@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { LABEL_LINE_HEIGHT, labelPlacement, wrapLabel } from "./labels.js";
+import {
+  LABEL_LINE_HEIGHT,
+  labelBox,
+  labelMargin,
+  labelPlacement,
+  textWidth,
+  wrapLabel,
+} from "./labels.js";
 
 const deg = (d: number) => (d * Math.PI) / 180;
 
@@ -90,5 +97,54 @@ describe("wrapLabel", () => {
   it("never splits a long word and ignores extra spaces", () => {
     expect(wrapLabel("  Interceptions  ", 5)).toEqual(["Interceptions"]);
     expect(wrapLabel("", 5)).toEqual([]);
+  });
+});
+
+describe("textWidth", () => {
+  it("estimates from the average glyph width", () => {
+    expect(textWidth(10, 10)).toBe(60);
+  });
+});
+
+describe("labelMargin", () => {
+  const labels = [["Key passes"], ["Tackles", "+ Int"]];
+
+  it("needs wrapped height round the rim for tangent labels", () => {
+    expect(labelMargin(labels, "tangent", 10)).toEqual({ x: 22, y: 22 });
+  });
+
+  it("needs the longest label's length outward for radial labels", () => {
+    expect(labelMargin(labels, "radial", 10)).toEqual({ x: 60, y: 60 });
+  });
+
+  it("needs length sideways and height vertically for horizontal labels", () => {
+    expect(labelMargin(labels, "horizontal", 10)).toEqual({ x: 60, y: 22 });
+  });
+
+  it("copes with no labels", () => {
+    expect(labelMargin([], "tangent", 10)).toEqual({ x: 11, y: 11 });
+  });
+});
+
+describe("labelBox", () => {
+  const middle = { rotate: 0, anchor: "middle" as const, dy: 0 };
+
+  it("is never smaller than the minimum target", () => {
+    const box = labelBox(middle, ["xA"], 10, 24);
+    expect(box.width).toBe(24);
+    expect(box.height).toBe(24);
+    expect(box.x).toBe(-12);
+  });
+
+  it("grows with the text and anchors to its side", () => {
+    expect(labelBox({ ...middle, anchor: "start" }, ["Pressures"], 10, 24)).toMatchObject({
+      x: -4,
+      width: 62,
+    });
+    expect(labelBox({ ...middle, anchor: "end" }, ["Pressures"], 10, 24).x).toBe(-58);
+  });
+
+  it("copes with no lines", () => {
+    expect(labelBox(middle, [], 10, 24).width).toBe(24);
   });
 });

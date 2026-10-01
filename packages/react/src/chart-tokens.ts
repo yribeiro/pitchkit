@@ -1,3 +1,5 @@
+import { pitchTokens } from "@pitchkit/core";
+
 /**
  * The chart tokens every non-pitch chart reads, with the fallback each one
  * renders when the variable is unset. One table, so a default changes in one
@@ -11,13 +13,15 @@
  * colourblind separation rather than picked by eye; past six, fold the
  * tail into an "Other" series rather than generating a seventh hue.
  */
+const token = (name: string, fallback: string) => `var(${name}, ${fallback})`;
+
 export const SERIES_COLORS = [
-  "var(--pitch-series-1, #3b82f6)",
-  "var(--pitch-series-2, #eb6834)",
-  "var(--pitch-series-3, #1baf7a)",
-  "var(--pitch-series-4, #eda100)",
-  "var(--pitch-series-5, #e87ba4)",
-  "var(--pitch-series-6, #008300)",
+  token(pitchTokens.series1, "#3b82f6"),
+  token(pitchTokens.series2, "#eb6834"),
+  token(pitchTokens.series3, "#1baf7a"),
+  token(pitchTokens.series4, "#eda100"),
+  token(pitchTokens.series5, "#e87ba4"),
+  token(pitchTokens.series6, "#008300"),
 ] as const;
 
 /** The series colour for slot `index`, wrapping past the sixth. */
@@ -26,10 +30,13 @@ export function seriesColor(index: number): string {
 }
 
 /** Whatever is behind the chart: rings and halos knock out to it. */
-export const CHART_SURFACE = "var(--pitch-chart-surface, #ffffff)";
-export const CHART_TEXT = "var(--pitch-chart-text, #12170f)";
-export const CHART_MUTED = "var(--pitch-chart-muted, #7b8474)";
-export const AXIS = "var(--pitch-axis, #c6cebc)";
-export const GRID = "var(--pitch-grid, #e5eade)";
-export const CARD_YELLOW = "var(--pitch-card-yellow, #facc15)";
-export const CARD_RED = "var(--pitch-card-red, #ef4444)";
+export const CHART_SURFACE = token(pitchTokens.chartSurface, "#ffffff");
+export const CHART_TEXT = token(pitchTokens.chartText, "#12170f");
+export const CHART_MUTED = token(pitchTokens.chartMuted, "#7b8474");
+export const AXIS = token(pitchTokens.axis, "#c6cebc");
+export const GRID = token(pitchTokens.grid, "#e5eade");
+export const CARD_YELLOW = token(pitchTokens.cardYellow, "#facc15");
+export const CARD_RED = token(pitchTokens.cardRed, "#ef4444");
+/** Shared by the pitch tooltip and the chart readout. */
+export const TOOLTIP_BG = token(pitchTokens.tooltipBg, "rgba(17, 17, 17, 0.92)");
+export const TOOLTIP_TEXT = token(pitchTokens.tooltipColor, "#fff");

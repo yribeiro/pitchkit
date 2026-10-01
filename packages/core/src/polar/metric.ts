@@ -53,7 +53,14 @@ export function normaliseMetric(
 export function ringValues(range: PolarRange, rings: number): number[] {
   const min = range.min ?? 0;
   const max = range.max ?? 100;
-  const [inner, outer] = range.lowerIsBetter ? [max, min] : [min, max];
+  return range.lowerIsBetter ? ringSteps(max, min, rings) : ringSteps(min, max, rings);
+}
+
+/**
+ * `rings + 1` evenly spaced steps from `from` to `to`, inclusive. One ring
+ * at least, so a radius list and its ring values always line up.
+ */
+export function ringSteps(from: number, to: number, rings: number): number[] {
   const count = Math.max(Math.round(rings), 1);
-  return Array.from({ length: count + 1 }, (_, k) => inner + ((outer - inner) * k) / count);
+  return Array.from({ length: count + 1 }, (_, k) => from + ((to - from) * k) / count);
 }

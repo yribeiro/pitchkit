@@ -163,17 +163,21 @@ RadarChart (root)
  └─ detail    (PolarDetailView replaces the SVG while a metric is selected)
 ```
 
-- **`core/polar/` owns the maths.** `axisAngle`, `polarPoint`, `normaliseMetric` (range, flip,
-  clamp), `ringValues` (flip-aware) and `labelPlacement` (rotation, anchor, first-line offset for
-  each `labelRotation`, with the 180° upright turn) plus `wrapLabel`. All take plain numbers.
+- **`core/polar/` owns the maths.** `axisAngle` and its inverse `nearestAxis` (pointer to axis),
+  `polarPoint`, `normaliseMetric` (range, flip, clamp), `ringSteps`/`ringValues` (flip-aware),
+  `ringPath`, and for labels `labelPlacement` (rotation, anchor, first-line offset for each
+  `labelRotation`, with the 180° upright turn), `wrapLabel`, `labelMargin` and `labelBox` (the
+  24px hit target). Text is estimated with `GLYPH_WIDTH`, since the charts render on the server.
+  All take plain numbers; the pizza reuses them.
 - **The margin is what the labels need.** Tangent labels need their wrapped height round the rim,
   radial ones their length, horizontal ones both. The centre circle is one ring wide, as in
   mplsoccer, so a value at `min` still sits off the centre.
 - **Bands are rings, not stacked discs.** Each band is one even-odd path, so translucent grid
   colours don't accumulate where circles overlap.
 - **The detail swap is shared.** `polar-detail.tsx` holds `usePolarSelection` (uncontrolled unless
-  `selected` is passed) and `PolarDetailView` (Back, Escape, focus on the heading, a 150ms fade
-  that respects reduced motion). The chart restores focus to the label that opened it.
+  `selected` is passed, and it returns focus to the element that opened the detail, found by its
+  `data-pitchkit-metric`) and `PolarDetailView` (Back, Escape, focus on the heading, a 150ms fade
+  that respects reduced motion).
 - **Shared with the other charts:** `useChartBox()` (responsive sizing), `chart-tokens.ts`
   (`--pitch-*` fallbacks), `ChartReadout` and `warnInDevelopment()`.
 - **Below 420 px** labels shrink a step and ring values are hidden by default.

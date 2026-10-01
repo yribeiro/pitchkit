@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { ReactNode, RefObject } from "react";
+import { TOOLTIP_BG, TOOLTIP_TEXT } from "./chart-tokens.js";
 
 /**
  * The crosshair readout shared by every non-pitch chart: a small dark card
@@ -37,8 +38,8 @@ export function ChartReadout({
         transform: left > 50 ? "translateX(-100%)" : "none",
         marginLeft: left > 50 ? -12 : 12,
         pointerEvents: "none",
-        background: "var(--pitch-tooltip-bg, rgba(17, 17, 17, 0.92))",
-        color: "var(--pitch-tooltip-color, #fff)",
+        background: TOOLTIP_BG,
+        color: TOOLTIP_TEXT,
         padding: "6px 10px",
         borderRadius: 4,
         fontSize: 12,

@@ -11,6 +11,62 @@ export type LabelRotation = "tangent" | "radial" | "horizontal";
 /** The spacing between wrapped lines, in `em`. */
 export const LABEL_LINE_HEIGHT = 1.1;
 
+/**
+ * Average glyph width in `em`. Text isn't measured (that needs a DOM, and
+ * the charts render on the server), so label space is estimated from it.
+ */
+export const GLYPH_WIDTH = 0.6;
+
+/** Estimated width of `chars` characters at `fontSize`. */
+export function textWidth(chars: number, fontSize: number): number {
+  return chars * fontSize * GLYPH_WIDTH;
+}
+
+/**
+ * Room labels need outside the rim, horizontally and vertically: wrapped
+ * height for tangent labels, length for radial ones, each in its direction
+ * for horizontal ones. Excludes the gap between rim and label.
+ */
+export function labelMargin(
+  labels: readonly (readonly string[])[],
+  rotation: LabelRotation,
+  fontSize: number,
+): { readonly x: number; readonly y: number } {
+  const longest = textWidth(Math.max(0, ...labels.flat().map((line) => line.length)), fontSize);
+  const tallest =
+    Math.max(1, ...labels.map((lines) => lines.length)) * fontSize * LABEL_LINE_HEIGHT;
+  return {
+    x: rotation === "tangent" ? tallest : longest,
+    y: rotation === "radial" ? longest : tallest,
+  };
+}
+
+/**
+ * The clickable box behind a placed label, in the label's own rotated
+ * frame: the text's estimated extent plus padding, never smaller than
+ * `minTarget` either way (WCAG 2.5.8).
+ */
+export function labelBox(
+  placement: LabelPlacement,
+  lines: readonly string[],
+  fontSize: number,
+  minTarget: number,
+): { readonly x: number; readonly y: number; readonly width: number; readonly height: number } {
+  const textHeight = lines.length * fontSize * LABEL_LINE_HEIGHT;
+  const width = Math.max(
+    minTarget,
+    textWidth(Math.max(0, ...lines.map((l) => l.length)), fontSize) + 8,
+  );
+  const height = Math.max(minTarget, textHeight + 8);
+  return {
+    x: placement.anchor === "middle" ? -width / 2 : placement.anchor === "start" ? -4 : 4 - width,
+    // The first baseline sits at `dy`; the box is centred on the text block.
+    y: placement.dy * fontSize - fontSize + 2 - (height - textHeight) / 2,
+    width,
+    height,
+  };
+}
+
 /** Everything an SVG `<text>` needs to sit a label outside its axis. */
 export interface LabelPlacement {
   /** Degrees, for `rotate()` about the label's anchor point. */

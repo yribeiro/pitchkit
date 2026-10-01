@@ -25,4 +25,6 @@ export const pitchTokens = {
   chartMuted: "--pitch-chart-muted",
   cardYellow: "--pitch-card-yellow",
   cardRed: "--pitch-card-red",
+  tooltipBg: "--pitch-tooltip-bg",
+  tooltipColor: "--pitch-tooltip-color",
 } as const;

@@ -1,25 +1,57 @@
 import { useEffect, useRef, useState } from "react";
-import type { KeyboardEvent, ReactNode } from "react";
+import type { KeyboardEvent, ReactNode, RefObject } from "react";
 import { CHART_MUTED, CHART_TEXT, GRID } from "./chart-tokens.js";
 import type { PolarSelection } from "./polar-types.js";
 
 /**
- * Selection state that is uncontrolled by default and controlled when the
- * caller passes `selected`, the usual React pattern for an input.
+ * A polar chart's selection: uncontrolled by default, controlled when the
+ * caller passes `selected` (the usual React pattern for an input).
+ *
+ * It also owns focus return. When the detail view closes, focus goes back
+ * to the element that opened it, found by its `data-pitchkit-metric` (and,
+ * for a pizza slice, `data-pitchkit-series`) inside `containerRef`, so every
+ * polar chart gets it by tagging its clickable elements.
  */
 export function usePolarSelection(
+  containerRef: RefObject<HTMLElement | null>,
   selected: PolarSelection | null | undefined,
   onSelectedChange: ((selection: PolarSelection | null) => void) | undefined,
-): [PolarSelection | null, (selection: PolarSelection | null) => void] {
+): {
+  selection: PolarSelection | null;
+  open: (selection: PolarSelection) => void;
+  close: () => void;
+} {
   const [internal, setInternal] = useState<PolarSelection | null>(null);
-  const isControlled = selected !== undefined;
+  const opener = useRef<PolarSelection | null>(null);
+  const selection = selected !== undefined ? selected : internal;
 
-  function set(selection: PolarSelection | null) {
-    if (!isControlled) setInternal(selection);
-    onSelectedChange?.(selection);
+  function set(next: PolarSelection | null) {
+    if (selected === undefined) setInternal(next);
+    onSelectedChange?.(next);
   }
 
-  return [isControlled ? selected : internal, set];
+  useEffect(() => {
+    const from = opener.current;
+    if (selection !== null || from === null) return;
+    opener.current = null;
+    const target = Array.from(
+      containerRef.current?.querySelectorAll<SVGElement>("[data-pitchkit-metric]") ?? [],
+    ).find(
+      (el) =>
+        el.getAttribute("data-pitchkit-metric") === from.metricId &&
+        (from.seriesId === undefined || el.getAttribute("data-pitchkit-series") === from.seriesId),
+    );
+    target?.focus();
+  }, [selection, containerRef]);
+
+  return {
+    selection,
+    open: (next) => {
+      opener.current = next;
+      set(next);
+    },
+    close: () => set(null),
+  };
 }
 
 /**
@@ -28,8 +60,8 @@ export function usePolarSelection(
  * chart's own box so the page doesn't jump.
  *
  * Opening moves focus to the heading, so a screen reader announces where
- * it landed; Escape and Back both close. The chart restores focus to the
- * label or slice that opened it.
+ * it landed; Escape and Back both close, and `usePolarSelection` returns
+ * focus to whatever opened it.
  */
 export function PolarDetailView({
   title,

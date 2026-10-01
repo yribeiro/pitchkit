@@ -56,7 +56,6 @@ const shots = [
 const games = [
   {
     opponent: "Croatia",
-    minutes: 85,
     npxg: 0.372,
     shots: 3,
     xa: 0.565,
@@ -68,7 +67,6 @@ const games = [
   },
   {
     opponent: "England",
-    minutes: 89,
     npxg: 0.326,
     shots: 2,
     xa: 0.382,
@@ -80,7 +78,6 @@ const games = [
   },
   {
     opponent: "France",
-    minutes: 93,
     npxg: 0.105,
     shots: 3,
     xa: 0.242,
@@ -92,7 +89,6 @@ const games = [
   },
   {
     opponent: "Germany",
-    minutes: 62,
     npxg: 0.112,
     shots: 2,
     xa: 0.389,
@@ -104,7 +100,6 @@ const games = [
   },
   {
     opponent: "Georgia",
-    minutes: 93,
     npxg: 0.65,
     shots: 7,
     xa: 0.542,
@@ -116,7 +111,6 @@ const games = [
   },
   {
     opponent: "Albania",
-    minutes: 24,
     npxg: 0,
     shots: 0,
     xa: 0.029,
@@ -128,7 +122,6 @@ const games = [
   },
   {
     opponent: "Italy",
-    minutes: 71,
     npxg: 0.022,
     shots: 1,
     xa: 0,

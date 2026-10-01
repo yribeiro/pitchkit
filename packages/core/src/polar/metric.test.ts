@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normaliseMetric, ringValues } from "./metric.js";
+import { normaliseMetric, ringSteps, ringValues } from "./metric.js";
 
 describe("normaliseMetric", () => {
   it("places a value between min and max", () => {
@@ -43,5 +43,11 @@ describe("ringValues", () => {
 
   it("defaults to 0–100 and treats fewer than one ring as one", () => {
     expect(ringValues({}, 0)).toEqual([0, 100]);
+  });
+});
+
+describe("ringSteps", () => {
+  it("spaces rings + 1 steps evenly, inclusive of both ends", () => {
+    expect(ringSteps(10, 50, 4)).toEqual([10, 20, 30, 40, 50]);
   });
 });

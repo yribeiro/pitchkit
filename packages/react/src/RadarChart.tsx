@@ -1,12 +1,18 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
 import {
   LABEL_LINE_HEIGHT,
   axisAngle,
+  labelBox,
+  labelMargin,
   labelPlacement,
+  nearestAxis,
   normaliseMetric,
   polarPoint,
+  ringPath,
+  ringSteps,
   ringValues,
+  textWidth,
   wrapLabel,
 } from "@pitchkit/core";
 import type { NormalisedValue, Point } from "@pitchkit/core";
@@ -24,8 +30,6 @@ const DEFAULT_RINGS = 4;
 const READABLE_SERIES = 3;
 const WRAP_CHARS = 12;
 const TICK_FONT = 8.5;
-/** Average glyph width in `em`, for sizing the margin labels need. */
-const GLYPH_WIDTH = 0.6;
 /** Space between the rim and a label: clear of a dot pinned to the rim. */
 const LABEL_GAP = 12;
 const LEGEND_HEIGHT = 24;
@@ -45,16 +49,41 @@ function formatTick(value: number): string {
   return String(Math.abs(value) >= 10 ? Math.round(value) : Number(value.toPrecision(2)));
 }
 
-/** A ring between two radii (or a disc, when `r0` is 0), as one path. */
-function ringPath(cx: number, cy: number, r0: number, r1: number): string {
-  const circle = (r: number) =>
-    `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
-  return r0 > 0 ? `${circle(r1)}${circle(r0)}` : circle(r1);
-}
+/** Legend swatch, its gap to the label, and the gap to the next entry. */
+const LEGEND_ENTRY_PAD = 33;
 
 interface Vertex {
   readonly point: Point;
   readonly placed: NormalisedValue | undefined;
+  /** The series' value, when it is a finite number. */
+  readonly value: number | undefined;
+}
+
+interface ResolvedSeries {
+  readonly series: PolarSeries;
+  readonly label: string;
+  readonly color: string | undefined;
+  readonly vertices: readonly Vertex[];
+}
+
+/**
+ * Where a metric's value lands: the one mapping both the shapes and
+ * `useRadarChart().pointAt` use, so an annotation always lines up.
+ */
+function placer(
+  metrics: readonly PolarMetric[],
+  cx: number,
+  cy: number,
+  inner: number,
+  outer: number,
+) {
+  return (j: number, value: number | null | undefined) => {
+    const metric = metrics[j];
+    const placed = metric && normaliseMetric(value, metric);
+    if (!placed) return undefined;
+    const radius = inner + placed.t * (outer - inner);
+    return { placed, point: polarPoint(cx, cy, radius, axisAngle(j, metrics.length)) };
+  };
 }
 
 /**
@@ -85,11 +114,9 @@ export function RadarChart({
   const box = useChartBox({ width, height, aspectRatio, wideRatio: 1, narrowRatio: 1 });
   const { containerRef, size, isNarrow } = box;
   const [active, setActive] = useState<number | null>(null);
-  const [selection, setSelection] = usePolarSelection(selected, onSelectedChange);
-  const labelRefs = useRef(new Map<string, SVGGElement>());
+  const { selection, open, close } = usePolarSelection(containerRef, selected, onSelectedChange);
   // useId's colons are legal in an id but not inside url(#…).
   const clipPrefix = `pitchkit-radar-${useId().replace(/:/g, "")}`;
-  const lastOpened = useRef<string | null>(null);
 
   useEffect(() => {
     if (series.length > READABLE_SERIES) {
@@ -103,22 +130,13 @@ export function RadarChart({
     }
   }, [series.length, metrics.length]);
 
-  // Back from the detail view: focus returns to the label that opened it.
-  useEffect(() => {
-    if (selection === null && lastOpened.current !== null) {
-      labelRefs.current.get(lastOpened.current)?.focus();
-      lastOpened.current = null;
-    }
-  }, [selection]);
-
-  const clearActive = () => setActive(null);
+  const clearActive = useCallback(() => setActive(null), []);
   useDismissOnOutsidePress(containerRef, active !== null, clearActive);
 
   const count = metrics.length;
   const showLegend = appearance?.legend ?? series.length > 1;
   const showRangeLabels = appearance?.rangeLabels ?? !isNarrow;
   const fontSize = isNarrow ? 10 : 11;
-  const ringCount = Math.max(Math.round(rings), 1);
   const text = (value: number, metric: PolarMetric) => (format ?? formatValue)(value, metric);
   const tick = (value: number, metric: PolarMetric) => (format ?? formatTick)(value, metric);
 
@@ -127,12 +145,9 @@ export function RadarChart({
     const label = `${m.label ?? m.id}${m.lowerIsBetter ? " ↓" : ""}`;
     return labelRotation === "radial" ? [label] : wrapLabel(label, WRAP_CHARS);
   });
-  const longest =
-    Math.max(0, ...labelLines.flat().map((line) => line.length)) * fontSize * GLYPH_WIDTH;
-  const tallest =
-    Math.max(1, ...labelLines.map((lines) => lines.length)) * fontSize * LABEL_LINE_HEIGHT;
-  const marginX = LABEL_GAP + (labelRotation === "tangent" ? tallest : longest) + 4;
-  const marginY = LABEL_GAP + (labelRotation === "radial" ? longest : tallest) + 4;
+  const margin = labelMargin(labelLines, labelRotation, fontSize);
+  const marginX = LABEL_GAP + margin.x + 4;
+  const marginY = LABEL_GAP + margin.y + 4;
 
   const legendTop = showLegend ? LEGEND_HEIGHT : 0;
   const cx = size.width / 2;
@@ -142,71 +157,69 @@ export function RadarChart({
     Math.min(size.width / 2 - marginX, (size.height - legendTop) / 2 - marginY),
   );
   // mplsoccer's proportions: the centre circle is one ring wide.
-  const inner = outer / (ringCount + 1);
-  const radii = Array.from(
-    { length: ringCount + 1 },
-    (_, k) => inner + ((outer - inner) * k) / ringCount,
-  );
+  const inner = outer / (Math.max(Math.round(rings), 1) + 1);
+  const radii = ringSteps(inner, outer, rings);
+  const ringCount = radii.length - 1;
+  const bandPaths = radii.map((r1, k) => ({
+    d: ringPath(cx, cy, radii[k - 1] ?? 0, r1),
+    strong: k % 2 === ringCount % 2,
+  }));
   const angles = metrics.map((_, j) => axisAngle(j, count));
-  const radiusOf = (t: number) => inner + t * (outer - inner);
+  const place = useMemo(
+    () => placer(metrics, cx, cy, inner, outer),
+    [metrics, cx, cy, inner, outer],
+  );
 
-  const resolved = series.map((s, i) => ({
+  const resolved: ResolvedSeries[] = series.map((s, i) => ({
     series: s,
     label: s.label ?? s.id,
     color: s.color ?? (s.className ? undefined : seriesColor(i)),
     vertices: metrics.map((m, j): Vertex => {
-      const placed = normaliseMetric(s.values[m.id], m);
+      const at = place(j, s.values[m.id]);
       // A missing value pulls the outline to the centre rather than skipping
       // the axis, which would silently change the shape's other angles.
-      const point = placed
-        ? polarPoint(cx, cy, radiusOf(placed.t), angles[j] as number)
-        : ([cx, cy] as const);
-      return { point, placed };
+      return at
+        ? { point: at.point, placed: at.placed, value: s.values[m.id] as number }
+        : { point: [cx, cy], placed: undefined, value: undefined };
     }),
   }));
   const banded = (appearance?.bands ?? true) && resolved.length === 1;
   // Each legend entry starts where the last one's estimated width ends.
-  const legendX = resolved.reduce<number[]>(
-    (xs, r, i) => [
-      ...xs,
-      i === 0
-        ? 4
-        : (xs[i - 1] as number) +
-          33 +
-          (resolved[i - 1] as typeof r).label.length * (fontSize + 1) * GLYPH_WIDTH,
-    ],
-    [],
-  );
+  const legendX: number[] = [];
+  let legendCursor = 4;
+  for (const r of resolved) {
+    legendX.push(legendCursor);
+    legendCursor += LEGEND_ENTRY_PAD + textWidth(r.label.length, fontSize + 1);
+  }
 
-  const indexOf = new Map(metrics.map((m, j) => [m.id, j]));
-  const context: RadarChartContextValue = {
-    cx,
-    cy,
-    inner,
-    outer,
-    angleOf: (id) => angles[indexOf.get(id) ?? 0] ?? 0,
-    pointAt: (id, value) => {
-      const j = indexOf.get(id);
-      const placed =
-        j === undefined ? undefined : normaliseMetric(value, metrics[j] as PolarMetric);
-      return placed && polarPoint(cx, cy, radiusOf(placed.t), angles[j as number] as number);
-    },
-  };
+  const context = useMemo<RadarChartContextValue>(() => {
+    const indexOf = new Map(metrics.map((m, j) => [m.id, j]));
+    return {
+      cx,
+      cy,
+      inner,
+      outer,
+      angleOf: (id) => axisAngle(indexOf.get(id) ?? 0, metrics.length),
+      pointAt: (id, value) => {
+        const j = indexOf.get(id);
+        return j === undefined ? undefined : place(j, value)?.point;
+      },
+    };
+  }, [metrics, cx, cy, inner, outer, place]);
 
-  const openMetric =
-    selection === null ? undefined : metrics.find((m) => m.id === selection.metricId);
-  const close = () => setSelection(null);
+  const openIndex = selection === null ? -1 : metrics.findIndex((m) => m.id === selection.metricId);
+  const openMetric = metrics[openIndex];
+  const interactive = renderDetail !== undefined;
 
-  function open(metric: PolarMetric) {
-    lastOpened.current = metric.id;
+  function openMetricAt(metric: PolarMetric) {
     setActive(null);
-    setSelection({ metricId: metric.id });
+    open({ metricId: metric.id });
   }
 
   function handleLabelKey(event: KeyboardEvent, metric: PolarMetric) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      open(metric);
+      openMetricAt(metric);
     }
   }
 
@@ -215,23 +228,18 @@ export function RadarChart({
     if (!bounds || bounds.width === 0 || count === 0) return;
     const x = ((event.clientX - bounds.left) / bounds.width) * size.width - cx;
     const y = ((event.clientY - bounds.top) / bounds.height) * size.height - cy;
-    // The nearest axis by angle: the readout follows the pointer round the chart.
-    const angle = (Math.atan2(x, -y) + 2 * Math.PI) % (2 * Math.PI);
-    const nearest = Math.round((angle / (2 * Math.PI)) * count) % count;
-    setActive((prev) => (prev === nearest ? prev : nearest));
+    // The readout follows the pointer round the chart to the nearest axis.
+    setActive(nearestAxis(x, y, count));
   }
 
   if (renderDetail !== undefined && openMetric !== undefined) {
     const values = Object.fromEntries(
-      series.map((s) => {
-        const value = s.values[openMetric.id];
-        return [s.id, typeof value === "number" && Number.isFinite(value) ? value : undefined];
-      }),
+      resolved.map((r) => [r.series.id, r.vertices[openIndex]?.value]),
     );
-    const subtitle = series
-      .map((s) => {
-        const value = values[s.id];
-        return `${s.label ?? s.id} ${value === undefined ? "–" : text(value, openMetric)}`;
+    const subtitle = resolved
+      .map((r) => {
+        const value = values[r.series.id];
+        return `${r.label} ${value === undefined ? "–" : text(value, openMetric)}`;
       })
       .join(" · ");
 
@@ -249,8 +257,7 @@ export function RadarChart({
   }
 
   const activeMetric = active === null ? undefined : metrics[active];
-  const activeAnchor =
-    active === null ? undefined : polarPoint(cx, cy, outer + LABEL_GAP, angles[active] as number);
+  const activeAnchor = polarPoint(cx, cy, outer + LABEL_GAP, axisAngle(active ?? 0, count));
 
   return (
     <div
@@ -286,13 +293,13 @@ export function RadarChart({
             </g>
           )}
 
-          {radii.map((r1, k) => (
+          {bandPaths.map((band, k) => (
             <path
               key={k}
               data-pitchkit-part="radar-band"
-              d={ringPath(cx, cy, k === 0 ? 0 : (radii[k - 1] as number), r1)}
+              d={band.d}
               fillRule="evenodd"
-              style={{ fill: GRID, fillOpacity: k % 2 === ringCount % 2 ? 1 : 0.45 }}
+              style={{ fill: GRID, fillOpacity: band.strong ? 1 : 0.45 }}
             />
           ))}
           {angles.map((angle, j) => {
@@ -331,16 +338,13 @@ export function RadarChart({
                       <polygon points={points} />
                     </clipPath>
                     <g clipPath={`url(#${clipId})`}>
-                      {radii.map((r1, k) => (
+                      {bandPaths.map((band, k) => (
                         <path
                           key={k}
                           data-pitchkit-part="radar-band-tone"
-                          d={ringPath(cx, cy, k === 0 ? 0 : (radii[k - 1] as number), r1)}
+                          d={band.d}
                           fillRule="evenodd"
-                          style={{
-                            fill: "currentColor",
-                            fillOpacity: k % 2 === ringCount % 2 ? 0.24 : 0.12,
-                          }}
+                          style={{ fill: "currentColor", fillOpacity: band.strong ? 0.24 : 0.12 }}
                         />
                       ))}
                     </g>
@@ -427,27 +431,11 @@ export function RadarChart({
             const angle = angles[j] as number;
             const placement = labelPlacement(angle, labelRotation, lines.length);
             const [x, y] = polarPoint(cx, cy, outer + LABEL_GAP, angle);
-            const interactive = renderDetail !== undefined;
             const name = metric.label ?? metric.id;
-            const w = Math.max(
-              MIN_TARGET,
-              Math.max(...lines.map((l) => l.length)) * fontSize * GLYPH_WIDTH + 8,
-            );
-            const h = Math.max(MIN_TARGET, lines.length * fontSize * LABEL_LINE_HEIGHT + 8);
-            const top =
-              placement.dy * fontSize -
-              fontSize -
-              (h - lines.length * fontSize * LABEL_LINE_HEIGHT) / 2 +
-              2;
-            const left =
-              placement.anchor === "middle" ? -w / 2 : placement.anchor === "start" ? -4 : 4 - w;
+            const hit = labelBox(placement, lines, fontSize, MIN_TARGET);
             return (
               <g
                 key={metric.id}
-                ref={(el) => {
-                  if (el) labelRefs.current.set(metric.id, el);
-                  else labelRefs.current.delete(metric.id);
-                }}
                 data-pitchkit-part="radar-label"
                 data-pitchkit-metric={metric.id}
                 transform={`translate(${x} ${y}) rotate(${placement.rotate})`}
@@ -458,7 +446,7 @@ export function RadarChart({
                     ? `${name}${metric.lowerIsBetter ? ", lower is better" : ""}. Open details`
                     : undefined
                 }
-                onClick={interactive ? () => open(metric) : undefined}
+                onClick={interactive ? () => openMetricAt(metric) : undefined}
                 onKeyDown={interactive ? (event) => handleLabelKey(event, metric) : undefined}
                 onFocus={() => setActive(j)}
                 onBlur={clearActive}
@@ -466,7 +454,13 @@ export function RadarChart({
                 onPointerLeave={(event) => event.pointerType === "mouse" && clearActive()}
                 style={{ cursor: interactive ? "pointer" : undefined, outlineOffset: 2 }}
               >
-                <rect x={left} y={top} width={w} height={h} fill="transparent" />
+                <rect
+                  x={hit.x}
+                  y={hit.y}
+                  width={hit.width}
+                  height={hit.height}
+                  fill="transparent"
+                />
                 <text
                   textAnchor={placement.anchor}
                   style={{
@@ -489,15 +483,14 @@ export function RadarChart({
         </RadarChartContext.Provider>
       </svg>
 
-      {activeMetric !== undefined && activeAnchor !== undefined && (
+      {activeMetric !== undefined && (
         <ChartReadout
           left={(activeAnchor[0] / size.width) * 100}
           top={(Math.min(activeAnchor[1], size.height - 60) / size.height) * 100}
         >
           <RadarReadout
             metric={activeMetric}
-            series={resolved}
-            index={active as number}
+            rows={resolved.map((r) => ({ ...r, vertex: r.vertices[active ?? 0] }))}
             text={text}
           />
         </ChartReadout>
@@ -508,18 +501,11 @@ export function RadarChart({
 
 function RadarReadout({
   metric,
-  series,
-  index,
+  rows,
   text,
 }: {
   metric: PolarMetric;
-  series: readonly {
-    series: PolarSeries;
-    label: string;
-    color: string | undefined;
-    vertices: readonly Vertex[];
-  }[];
-  index: number;
+  rows: readonly (ResolvedSeries & { vertex: Vertex | undefined })[];
   text: (value: number, metric: PolarMetric) => string;
 }) {
   return (
@@ -530,33 +516,27 @@ function RadarReadout({
           <span style={{ opacity: 0.7, fontWeight: 400 }}> · lower is better</span>
         )}
       </div>
-      {series.map((r) => {
-        const value = r.series.values[metric.id];
-        const placed = r.vertices[index]?.placed;
-        return (
-          <div key={r.series.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span
-              className={r.series.className}
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 2,
-                background: "currentColor",
-                color: r.color,
-              }}
-            />
-            <span style={{ opacity: 0.75 }}>{r.label}</span>
-            <span
-              style={{ marginLeft: "auto", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}
-            >
-              {placed === undefined || typeof value !== "number" ? "No data" : text(value, metric)}
-              {placed?.clamped && (
-                <span style={{ opacity: 0.7, fontWeight: 400 }}> (off scale)</span>
-              )}
-            </span>
-          </div>
-        );
-      })}
+      {rows.map((r) => (
+        <div key={r.series.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            className={r.series.className}
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 2,
+              background: "currentColor",
+              color: r.color,
+            }}
+          />
+          <span style={{ opacity: 0.75 }}>{r.label}</span>
+          <span style={{ marginLeft: "auto", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+            {r.vertex?.value === undefined ? "No data" : text(r.vertex.value, metric)}
+            {r.vertex?.placed?.clamped && (
+              <span style={{ opacity: 0.7, fontWeight: 400 }}> (off scale)</span>
+            )}
+          </span>
+        </div>
+      ))}
     </>
   );
 }
