@@ -293,22 +293,11 @@ layer each; the numbers on the chips come from `src/data/layers-reel.json`
 
 > 11 layers. One <Pitch>. ⚡️
 >
-> Spain 2–1 England, Euro 2024 final — and every number is a real finding, each drawn with one PitchKit component:
+> Spain 2–1 England, Euro 2024 final. Every number is real: 16 v 9 shots, 56 v 36 final-third pressures, 34 v 12 forward carries, and Spain held 68% of the pitch six seconds before Williams scored.
 >
-> • 16 v 9 shots
-> • 56 v 36 final-third pressures
-> • 15 v 5 key passes
-> • 34 v 12 forward carries
-> • 14,234 tracked player positions
-> • Yamal and Williams, opposite flanks
-> • England went more direct: 17% of passes gained 15+ units, Spain's 12%
-> • Six seconds before Williams scored, Spain held 68% of the pitch
-> • Spain's shape sat 11 units higher
-> • Goals from 19°, 18° and 43°
+> StatsBomb open data. Docs & install: link in bio. Follow for a new football chart every few days.
 >
-> StatsBomb open data. (The 360 tracking only covers players the broadcast camera saw.) Docs & install: link in bio. Follow for a new football chart every few days.
->
-> #dataviz #footballanalytics #euro2024 #reactjs #statsbomb #opensource #football
+> #dataviz #footballanalytics #euro2024 #reactjs #statsbomb #opensource
 
 **X**
 
