@@ -281,25 +281,60 @@ slow-mo and time its drop on the GOAL card.
 
 **Alt text:** A football pitch tilted like a TV camera view swings flat to a top-down view, then 22 players shown as blue and orange dots move in real time, with the pitch divided into shaded cells showing which team controls each area, building up to Auckland FC's goal and a "GOAL" caption.
 
-## Reel 03 — layer montage (`reel-03-layers.mp4`, 21 s)
+## Reel 03 — 11 layers, one pitch (`reel-03-layers.mp4`, 18 s)
+
+Hook "11 layers. One <Pitch>." (1.7 s), then 11 beats of 1.2 s each (to ~14.9 s),
+then the end card. Every beat is a real finding from the final, one PitchKit
+layer each; the numbers on the chips come from `src/data/layers-reel.json`
+(`npm run snapshot:layers`). Cuts land on a 1.2 s beat — a ~100 bpm groove
+(samba / batucada) hits every one.
 
 **Instagram**
 
-> One match. Every layer. Four themes. ⚡️
+> 11 layers. One <Pitch>. ⚡️
 >
-> Scatter → Arrows → Comet → Heatmap → Hexbin → KDE → PositionalHeatmap → Flow
-> → Voronoi → ConvexHull → GoalAngle, then Newsprint, Analyst navy, Dracula and
-> Gruvbox.
+> Spain 2–1 England, Euro 2024 final — and every beat is a real finding drawn with one PitchKit component:
 >
-> Everything is a React component. Install it from the link in bio.
+> • 16 v 9 shots
+> • 15 v 5 key passes
+> • 34 v 12 forward carries
+> • 14,234 tracked player positions
+> • 56 v 36 final-third pressures
+> • Yamal and Williams, opposite flanks
+> • England went more direct: 17% of passes gained 15+ units, Spain's 12%
+> • Palmer's equaliser: the biggest pocket of space on screen
+> • Spain's shape sat 11 units higher
+> • Goals from 19°, 18° and 43°
 >
-> #dataviz #reactjs #footballanalytics #opensource #webdev #football
+> StatsBomb open data. (The 360 tracking only covers players the broadcast camera saw.) Docs & install: link in bio. Follow for a new football chart every few days.
+>
+> #dataviz #footballanalytics #euro2024 #reactjs #statsbomb #opensource #football
 
 **X**
 
-> 11 chart layers and 4 themes in 21 seconds — all on one match, all from one React library.
+> 11 chart layers, one pitch. Every beat is a real finding from the Euro 2024 final: 34 v 12 forward carries, Spain's shape 11 units higher, Palmer's equaliser from an 18° angle.
+>
+> Open-source, React-first. Data: @StatsBomb open data.
 >
 > https://www.pitchkitjs.com
+
+**Alt text:** A fast montage of eleven football pitch charts from the Euro 2024 final, each labelled with a PitchKit component and a short statistic: shots, key passes, forward carries, tracked player positions, pressing, two wingers' touches, pass destinations by zone, pass flow, the space around Palmer's equaliser, each team's average shape, and the angles three goals were scored from. It ends on the PitchKit logo.
+
+Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the snapshot):
+
+| Beat              | Claim                                                                               | Caveat                                                                             |
+| ----------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Scatter           | 16 v 9 shots (1.79 v 0.73 xG)                                                       | England mirrored to attack the other way                                           |
+| Arrows            | 15 v 5 key passes (Spain: 2 assists, in orange)                                     |                                                                                    |
+| Comet             | 34 v 12 carries gaining 15+ units                                                   |                                                                                    |
+| Heatmap           | 14,234 tracked positions, 1,780 moments Spain had the ball                          | 360 only includes players the camera saw                                           |
+| Hexbin            | 56 v 36 pressures in the final third                                                |                                                                                    |
+| KDE               | Yamal 142 touches (88% in the attacking half), Williams 178                         |                                                                                    |
+| PositionalHeatmap | 11% of Spain's completed passes landed in their top zone                            |                                                                                    |
+| Flow              | 17% v 12% of completed passes gain 15+ units (England's flow shown)                 |                                                                                    |
+| Voronoi           | Palmer's cell = 43% of the pitch, the largest                                       | Only the 14 tracked players in the freeze frame                                    |
+| ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611 | Average positions from on-ball events, not tracking; both teams drawn attacking up |
+| GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal)                                       | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
 ---
 

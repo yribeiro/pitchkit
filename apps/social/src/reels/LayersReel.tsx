@@ -1,33 +1,39 @@
 /**
- * Reel 03 — rapid-fire montage: the same match through every layer
- * component, then the same chart through four palettes. Cut on a ~1.2 s beat
- * so it lands on whatever trending audio it's posted with.
+ * Reel 03 — "11 layers. One pitch." A rapid-fire montage: one PitchKit layer
+ * per beat, each drawing a real finding from the Euro 2024 final (see
+ * layer-beats.tsx for the data behind every beat). Cut on a ~1.2 s beat so it
+ * lands on whatever trending audio it's posted with.
  */
 import type { ReactNode } from "react";
-import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
-import { LAYER_DEMOS, LayerDemoChart, PALETTES, PaletteShotMap } from "../charts";
+import {
+  AbsoluteFill,
+  interpolate,
+  Sequence,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
 import { Backdrop, Eyebrow } from "../components/Chrome";
 import { EndCard } from "../components/EndCard";
 import { Lockup } from "../components/Logo";
 import { C, FONT } from "../theme";
+import { BEATS, BeatPitch } from "./layer-beats";
+import type { Beat } from "./layer-beats";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const HOOK = 50;
 const BEAT = 36; // 1.2 s at 30 fps
 const FADE = 6;
-const PALETTE_BEAT = 27;
-const LAYERS_END = HOOK + LAYER_DEMOS.length * BEAT;
-const PALETTES_END = LAYERS_END + PALETTES.length * PALETTE_BEAT;
-export const LAYERS_DURATION = PALETTES_END + 90;
+const BEATS_END = HOOK + BEATS.length * BEAT;
+export const LAYERS_DURATION = BEATS_END + 90;
 
-const PITCH_WIDTH = 680;
-const PITCH_TOP = 440;
+const PITCH_WIDTH = 600;
+const PITCH_TOP = 560;
 const PITCH_LEFT = (1080 - PITCH_WIDTH) / 2;
-const CARD_PAD = 26;
 
 /** Fades a beat in over FADE frames and holds; the next beat covers it. */
-function Beat({ children }: { children: ReactNode }) {
+function BeatFrame({ children }: { children: ReactNode }) {
   const frame = useCurrentFrame();
   return (
     <AbsoluteFill style={{ opacity: interpolate(frame, [0, FADE], [0, 1], clamp) }}>
@@ -36,26 +42,104 @@ function Beat({ children }: { children: ReactNode }) {
   );
 }
 
-function Title({ name, what, color = C.accent }: { name: string; what: string; color?: string }) {
+/** `<Layer>` over a four-or-five-word headline, then the stat chip. */
+function BeatHeader({ beat }: { beat: Beat }) {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const pop = interpolate(frame, [0, 8], [0.92, 1], clamp);
+  const chipPop = spring({ frame: frame - 5, fps, config: { damping: 12, mass: 0.5 } });
   return (
-    <div style={{ position: "absolute", top: 250, left: 60, right: 100 }}>
+    <>
+      <div style={{ position: "absolute", top: 232, left: 60, right: 60 }}>
+        <div
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: 68,
+            fontWeight: 600,
+            color: C.accent,
+            letterSpacing: "-0.03em",
+            transform: `scale(${pop})`,
+            transformOrigin: "0 50%",
+          }}
+        >
+          &lt;{beat.layer}&gt;
+        </div>
+        <div
+          style={{
+            marginTop: 8,
+            fontSize: 58,
+            fontWeight: 800,
+            letterSpacing: "-0.035em",
+            lineHeight: 1.05,
+          }}
+        >
+          {beat.headline}
+        </div>
+      </div>
       <div
         style={{
-          fontFamily: FONT.mono,
-          fontSize: 76,
-          fontWeight: 600,
-          color,
-          letterSpacing: "-0.03em",
-          transform: `scale(${pop})`,
+          position: "absolute",
+          top: 432,
+          left: 60,
+          display: "flex",
+          alignItems: "baseline",
+          gap: 20,
+          padding: beat.compact ? "12px 24px 14px" : "14px 28px 16px",
+          borderRadius: 22,
+          background: "rgba(52, 211, 153, 0.12)",
+          border: `1.5px solid ${C.border}`,
+          opacity: chipPop,
+          transform: `scale(${0.85 + 0.15 * chipPop})`,
           transformOrigin: "0 50%",
         }}
       >
-        &lt;{name}&gt;
+        <span
+          style={{
+            fontFamily: FONT.mono,
+            fontSize: beat.compact ? 44 : 56,
+            fontWeight: 700,
+            color: C.accent,
+            letterSpacing: "-0.03em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {beat.chip.big}
+        </span>
+        <span
+          style={{
+            fontSize: beat.compact ? 24 : 28,
+            fontWeight: 600,
+            color: C.muted,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {beat.chip.label}
+        </span>
       </div>
-      <div style={{ marginTop: 8, fontSize: 38, fontWeight: 600, color: C.muted }}>{what}</div>
-    </div>
+      {beat.legend && (
+        <div
+          style={{
+            position: "absolute",
+            top: 456,
+            right: 60,
+            display: "flex",
+            gap: 24,
+            fontSize: 28,
+            fontWeight: 600,
+            color: C.muted,
+          }}
+        >
+          {beat.legend.map((item) => (
+            <span key={item.label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span
+                style={{ width: 20, height: 20, borderRadius: "50%", background: item.color }}
+              />
+              {item.label}
+            </span>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -78,7 +162,7 @@ function Hook() {
         <div
           style={{ fontSize: 120, fontWeight: 800, letterSpacing: "-0.045em", lineHeight: 0.98 }}
         >
-          13 layers.
+          {BEATS.length} layers.
           <br />
           One{" "}
           <span style={{ fontFamily: FONT.mono, color: C.accent, letterSpacing: "-0.06em" }}>
@@ -103,77 +187,26 @@ export function LayersReel() {
         <Hook />
       </Sequence>
 
-      {LAYER_DEMOS.map((demo, i) => (
-        <Sequence key={demo.name} from={HOOK + i * BEAT} durationInFrames={BEAT + FADE}>
-          <Beat>
+      {BEATS.map((beat, i) => (
+        <Sequence key={beat.layer} from={HOOK + i * BEAT} durationInFrames={BEAT + FADE}>
+          <BeatFrame>
             <Backdrop />
-            <Title name={demo.name} what={demo.what} />
+            <BeatHeader beat={beat} />
             <div style={{ position: "absolute", top: PITCH_TOP, left: PITCH_LEFT }}>
-              <LayerDemoChart demo={demo} width={PITCH_WIDTH} orientation="vertical" />
+              <BeatPitch beat={beat} width={PITCH_WIDTH} />
             </div>
-          </Beat>
-        </Sequence>
-      ))}
-
-      {PALETTES.map((palette, i) => (
-        <Sequence
-          key={palette.name}
-          from={LAYERS_END + i * PALETTE_BEAT}
-          durationInFrames={PALETTE_BEAT + FADE}
-        >
-          <Beat>
-            <Backdrop />
-            <div
-              style={{
-                position: "absolute",
-                top: 250,
-                left: 60,
-                right: 100,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              <Eyebrow>Theme {String(i + 1).padStart(2, "0")} / 04</Eyebrow>
-              <div style={{ fontSize: 80, fontWeight: 800, letterSpacing: "-0.04em" }}>
-                {palette.name}
-              </div>
-              <div style={{ fontSize: 38, fontWeight: 600, color: C.muted }}>
-                Just CSS variables.
-              </div>
-            </div>
-            {/* The palette as a card on the shared dark background, like post 05. */}
-            <div
-              style={{
-                position: "absolute",
-                top: PITCH_TOP + 20,
-                left: PITCH_LEFT,
-                width: PITCH_WIDTH,
-                boxSizing: "border-box",
-                padding: CARD_PAD,
-                borderRadius: 28,
-                background: palette.card,
-              }}
-            >
-              <PaletteShotMap
-                palette={palette}
-                width={PITCH_WIDTH - CARD_PAD * 2}
-                orientation="vertical"
-                scale={1}
-              />
-            </div>
-          </Beat>
+          </BeatFrame>
         </Sequence>
       ))}
 
       {/* Above the beats, each of which paints its own backdrop. */}
-      <Sequence durationInFrames={PALETTES_END + FADE}>
+      <Sequence durationInFrames={BEATS_END + FADE}>
         <div style={{ position: "absolute", top: 110, left: 60 }}>
           <Lockup size={46} />
         </div>
       </Sequence>
 
-      <Sequence from={PALETTES_END}>
+      <Sequence from={BEATS_END}>
         <EndCard />
       </Sequence>
     </AbsoluteFill>

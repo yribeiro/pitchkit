@@ -5,6 +5,7 @@
 import finalGoalsJson from "./final-goals.json";
 import finalMetaJson from "./final-meta.json";
 import finalShotsJson from "./final-shots.json";
+import layersReelJson from "./layers-reel.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
 import spainNetworkJson from "./spain-pass-network.json";
@@ -121,3 +122,52 @@ export const surname = (name: string) => {
   const parts = name.split(" ");
   return parts.length > 1 ? parts.slice(1).join(" ") : name;
 };
+
+/** Everything reel 03 plots, plus every number its stat chips show (see scripts/snapshot-layers.mjs). */
+export interface LayersReelData {
+  stats: {
+    shots: { spain: { n: number; xg: number }; england: { n: number; xg: number } };
+    keyPasses: { spain: number; england: number; spainAssists: number };
+    carries: { spain: number; england: number };
+    positions: { n: number; frames: number; pctFinalThird: number; medianX: number };
+    pressures: {
+      spain: number;
+      england: number;
+      spainFinalThird: number;
+      englandFinalThird: number;
+    };
+    touches: { yamal: number; williams: number; yamalPctAttHalf: number };
+    zone: { spain: { pct: number }; england: { pct: number } };
+    direct: { spain: number; england: number };
+    voronoi: { sites: number; palmerSharePct: number; palmerRank: number };
+    shape: {
+      spainMeanX: number;
+      englandMeanX: number;
+      diff: number;
+      spainArea: number;
+      englandArea: number;
+    };
+    goalAngles: {
+      player: string;
+      team: string;
+      minute: number;
+      x: number;
+      y: number;
+      angle: number;
+      xg: number;
+    }[];
+  };
+  keyArrows: (Segment & { assist: boolean; player: string; minute: number })[];
+  carries: Segment[];
+  /** Spain players' tracked positions (360), `[x, y]`. */
+  positions: [number, number][];
+  pressures: Point[];
+  yamal: Point[];
+  williams: Point[];
+  englandFlow: Segment[];
+  shape: {
+    spain: (Point & { label: string })[];
+    england: (Point & { label: string })[];
+  };
+}
+export const layersReel = layersReelJson as unknown as LayersReelData;
