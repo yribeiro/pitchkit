@@ -14,7 +14,7 @@ const SHOWN = 6; // frames after the kick: the ball is in the air
 
 // The window of the pitch shown, in centre-origin metres: the box and the
 // ball arriving into it.
-const CROP = { x0: 12, x1: 52, y0: -20, y1: 6 };
+const CROP = { x0: 28, x1: 52, y0: -11.5, y1: 4.5 };
 const SHOW_W = 960;
 const PAD = { top: 4, right: 4, bottom: 4, left: 4 };
 const K = (SHOW_W - PAD.left - PAD.right) / (CROP.x1 - CROP.x0);
@@ -62,7 +62,7 @@ export function CornerCover() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", left: 60, bottom: 40 }}>
+      <div style={{ position: "absolute", left: 60, bottom: 30 }}>
         <PitchStage>
           <Pitch
             type="skillcorner"
@@ -90,7 +90,7 @@ export function CornerCover() {
               data={players}
               x={(p) => p.x}
               y={(p) => p.y}
-              r={15}
+              r={17}
               fill={(p) => (p.att ? C.sky : C.orange)}
               fillOpacity={(p) => (p.detected ? 1 : 0.7)}
               stroke="rgba(6,16,11,0.9)"
@@ -115,7 +115,7 @@ export function CornerCover() {
         style={{
           position: "absolute",
           right: 64,
-          bottom: 78,
+          top: 130,
           fontFamily: DISPLAY,
           fontSize: 44,
           letterSpacing: "0.04em",
