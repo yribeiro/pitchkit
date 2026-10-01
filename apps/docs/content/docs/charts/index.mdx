@@ -19,7 +19,8 @@ Three things, and they are the same three every time:
 - **Their escape hatch is their own hook.** `usePitch()` gives you the pitch transform; each chart
   exposes the equivalent for its own space — `useRaceChart()` for
   [`<RaceChart>`](/docs/charts/race-chart), `useMomentumChart()` for
-  [`<MomentumChart>`](/docs/charts/momentum-chart).
+  [`<MomentumChart>`](/docs/charts/momentum-chart), `useRadarChart()` for
+  [`<RadarChart>`](/docs/charts/radar-chart).
 
 Everything else carries over unchanged. Accessors work the same way, responsive-by-default works the
 same way, and theming is still CSS variables only — the chart tokens sit in the same `--pitch-*`
@@ -31,6 +32,7 @@ namespace as the rest, because that namespace is PitchKit's, not the grass's.
 | ------------------------------------------------ | ------------------------------------------------------------------------ |
 | [`<RaceChart>`](/docs/charts/race-chart)         | A running total over match minutes, as a step line                       |
 | [`<MomentumChart>`](/docs/charts/momentum-chart) | Who had the upper hand, minute by minute, as bars with an event icon row |
+| [`<RadarChart>`](/docs/charts/radar-chart)       | A player profile: one axis per metric, each on its own range             |
 
-Radar and pizza (percentile) charts and a goal-mouth view are planned; they will land here rather
-than under Overlays.
+A pizza (percentile) chart and a goal-mouth view are planned; they will land here rather than under
+Overlays.

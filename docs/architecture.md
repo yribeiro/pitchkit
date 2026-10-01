@@ -149,6 +149,35 @@ MomentumChart (root)
   race chart.
 - **Below 420 px** the box is 1.8:1 rather than 3:1 and icons shrink from 16 to 14 px.
 
+### Player radar
+
+`<RadarChart>` ([D26](./decisions.md#d26-polar-charts-a-shared-metric-list-translucent-shapes-click-to-replace))
+is the first polar chart; `<PizzaChart>` will share its module and its detail swap.
+
+```
+RadarChart (root)
+ ├─ metrics   (the axes, clockwise from the top; each with its own min/max and flip)
+ ├─ geometry  (centre, inner radius = one ring, outer radius = what the labels leave)
+ ├─ bands, spokes, shapes (two-tone bands for one series), ring values, children
+ ├─ hit disc  (pointer picks the nearest axis by angle) and labels (buttons with renderDetail)
+ └─ detail    (PolarDetailView replaces the SVG while a metric is selected)
+```
+
+- **`core/polar/` owns the maths.** `axisAngle`, `polarPoint`, `normaliseMetric` (range, flip,
+  clamp), `ringValues` (flip-aware) and `labelPlacement` (rotation, anchor, first-line offset for
+  each `labelRotation`, with the 180° upright turn) plus `wrapLabel`. All take plain numbers.
+- **The margin is what the labels need.** Tangent labels need their wrapped height round the rim,
+  radial ones their length, horizontal ones both. The centre circle is one ring wide, as in
+  mplsoccer, so a value at `min` still sits off the centre.
+- **Bands are rings, not stacked discs.** Each band is one even-odd path, so translucent grid
+  colours don't accumulate where circles overlap.
+- **The detail swap is shared.** `polar-detail.tsx` holds `usePolarSelection` (uncontrolled unless
+  `selected` is passed) and `PolarDetailView` (Back, Escape, focus on the heading, a 150ms fade
+  that respects reduced motion). The chart restores focus to the label that opened it.
+- **Shared with the other charts:** `useChartBox()` (responsive sizing), `chart-tokens.ts`
+  (`--pitch-*` fallbacks), `ChartReadout` and `warnInDevelopment()`.
+- **Below 420 px** labels shrink a step and ring values are hidden by default.
+
 ## Packages
 
 npm workspaces + Turborepo.

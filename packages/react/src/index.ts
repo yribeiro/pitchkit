@@ -46,6 +46,7 @@ export type {
 export { RadarChart } from "./RadarChart.js";
 export { useRadarChart } from "./radar-context.js";
 export type { RadarChartProps, RadarAppearance, RadarChartContextValue } from "./radar-types.js";
+export type { LabelRotation } from "@pitchkit/core";
 export type {
   PolarMetric,
   PolarSeries,

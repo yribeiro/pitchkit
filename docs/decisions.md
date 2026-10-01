@@ -190,6 +190,47 @@ without the caller resampling. Own icons keep the library's licence clean.
   `<RaceChart>` in `chart-readout.tsx`.
 - Like `<RaceChart>` it has no mplsoccer equivalent.
 
+### D26. Polar charts: a shared metric list, translucent shapes, click to replace
+
+**Decision:** `<RadarChart>` (and `<PizzaChart>` after it) are non-pitch roots
+([D23](#d23-non-pitch-charts-are-roots-with-their-own-scales)) with their maths in `core/polar/`.
+
+- **One `metrics` list feeds both charts**: `{ id, label, group, min, max, lowerIsBetter }`.
+  `series` carries `values` keyed by metric id. Swapping a radar for a pizza is a component change,
+  not a data change.
+- **The charts compute nothing.** Per-90s, percentiles and ranges are the caller's. The only
+  arithmetic is placing a value between its metric's `min` and `max` (0–100 by default), with the
+  lower-is-better flip and a clamp. A clamped value is drawn hollow at the edge; a missing one draws
+  nothing.
+- **Shapes are translucent.** A single radar series keeps mplsoccer's two-tone banding, but as two
+  light tints of the series colour so the grid and ring values show through.
+- **Labels follow the axis angle**, set by `labelRotation`: `"tangent"` (default, mplsoccer's),
+  `"radial"`, or `"horizontal"`. Text that would read upside down turns 180°.
+- **Clicking replaces the chart.** With `renderDetail`, radar axis labels (and pizza slices) become
+  buttons; activating one swaps the chart for the caller's component in the same box, under a
+  header with a Back button. Escape and `close()` also return, and focus goes back to the label.
+  `selected`/`onSelectedChange` make it controllable. Without `renderDetail` nothing is clickable.
+- **A series or group paints with `currentColor`.** One class (`text-rose-500`) recolours every
+  part of it: outline, wash, dots. This extends D9 to multi-part marks; a `className` with no
+  `color` still drops the themed default.
+
+**Why:** A shared metric list is what lets one dataset drive either chart. Computing nothing keeps
+the charts honest about where numbers come from, which matters for percentiles, whose population
+is a choice. Replacing the chart, rather than a popover, gives the detail the room it needs, which
+is usually another chart.
+
+**Consequences:**
+
+- **Three series is the readable limit.** Overlaid shapes are an all-pairs comparison: every shape
+  overlaps every other. The dataviz validator clears only the first three palette slots on all
+  pairs, so a fourth draws with a development warning. The docs theme defines a validated
+  `--pitch-series-3` for light and dark.
+- `polar/` is held at 100% coverage. Responsive sizing and the chart tokens moved into shared
+  `useChartBox()` and `chart-tokens.ts`, used by every non-pitch chart.
+- The gallery gains a **Profiles** category for player-profile charts.
+- Radar and pizza are mplsoccer parity (`Radar`, `PyPizza`); the click-to-detail swap is not in
+  mplsoccer.
+
 ---
 
 ## Styling and theming

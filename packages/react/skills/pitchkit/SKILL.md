@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, or a match momentum chart (momentum bars with goals and cards beneath); when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -28,7 +28,7 @@ Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 hands back pitch coordinates, an `<XgRace>` / `<XgTimeline>` / `<XgFlow>` component
 (the cumulative chart is `<RaceChart>`, and `<Flow>` is an unrelated pitch layer for
 binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
-`<MomentumChart>`), a `<Radar>` or `<Pizza>` component (not built yet).
+`<MomentumChart>`), a `<Radar>` (it is `<RadarChart>`) or a `<Pizza>` component (not built yet).
 
 ## Package split
 
@@ -131,7 +131,9 @@ chart", "xG timeline" or "xG flow chart" means. `useRaceChart()` returns
 
 `<MomentumChart>` — match momentum as signed bars per half with an event icon row (goals,
 cards, substitutions, VAR). `useMomentumChart()` returns `{ frame, panels, scaleX, scaleY, bars }`.
-Neither takes a `type` prop: there is no pitch and no provider coordinate system.
+
+`<RadarChart>` — the player radar, one axis per metric. `useRadarChart()` returns `{ cx, cy, inner,
+outer, angleOf, pointAt }`. None takes a `type` prop: there is no pitch to have a provider.
 
 Full prop tables for every component are in [references/api.md](references/api.md) — read
 it before writing props not shown in the recipes below.
@@ -359,48 +361,47 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 
 ```tsx
 // shots: { minute, team, xg, goal, period }[]
-export function XgRace() {
-  return (
-    <RaceChart
-      series={[
-        { id: "Spain", data: shots.filter((s) => s.team === "Spain") },
-        { id: "England", data: shots.filter((s) => s.team === "England") },
-      ]}
-      time={(s) => s.minute}
-      value={(s) => s.xg}
-      emphasise={(s) => s.goal}
-      period={(s) => s.period}
-    />
-  );
-}
+<RaceChart
+  series={["Spain", "England"].map((id) => ({ id, data: shots.filter((s) => s.team === id) }))}
+  time={(s) => s.minute}
+  value={(s) => s.xg}
+  emphasise={(s) => s.goal}
+  period={(s) => s.period}
+/>
 ```
 
 Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG), pass
 `period` rather than hardcoding half time, and draw bookings as children via
 `useRaceChart()`. Details: [references/api.md](references/api.md#racechart).
 
-Theming is variables as everywhere else: `--pitch-series-1` … `--pitch-series-6` plus
-`--pitch-axis`, `--pitch-grid`, `--pitch-chart-*`. There are no colour props.
+Chart theming is variables: `--pitch-series-1` … `-6`, `--pitch-axis`, `--pitch-grid`,
+`--pitch-chart-*`. A series `className` such as `text-rose-500` replaces its default.
 
-## Recipe 5b — match momentum (the other non-pitch root)
+## Recipe 5b — match momentum and radar (the other non-pitch roots)
 
-You supply the momentum values: PitchKit has no momentum metric and StatsBomb publishes none.
+Neither computes its numbers: momentum (+ home, − away) and radar values come from the caller.
 
 ```tsx
 <MomentumChart
-  periods={[firstHalf, secondHalf]} // [{ minute, value }], any interval
+  periods={[firstHalf, secondHalf]} // [{ minute, value }]
   time={(d) => d.minute}
-  value={(d) => d.value} // + home, - away
+  value={(d) => d.value}
   events={events} // with eventTime / eventSide / eventKind, as a set
   eventTime={(e) => e.minute}
   eventSide={(e) => e.side}
   eventKind={(e) => e.kind} // goal, yellow-card, red-card, ...
 />
+
+<RadarChart
+  metrics={[{ id: "npxg", label: "npxG", min: 0, max: 0.34 }, /* ≥ 3 */
+    { id: "to", label: "Turnovers", min: 0, max: 4.4, lowerIsBetter: true }]}
+  series={[{ id: "yamal", label: "Yamal", values: { npxg: 0.28, to: 4.2 } }]} // ≤ 3 series
+  renderDetail={({ metric, values, close }) => <Breakdown metric={metric} />} // labels → buttons
+/>
 ```
 
-Bars run to the next sample's minute. Keep icons to goals and cards; substitutions crowd. To derive momentum from StatsBomb events, count on-ball events with
-`x >= 80` per minute (home +1, away −1; all teams attack towards x = 120) and smooth it,
-and say it is derived. See [references/api.md](references/api.md#momentumchart).
+Momentum: keep icons to goals and cards. Radar ranges are usually the population's 5th–95th
+percentile. Details: [momentum](references/api.md#momentumchart), [radar](references/api.md#radarchart).
 
 ## Recipe 6 — real open data
 
@@ -495,6 +496,5 @@ published from it.
 - [references/api.md](references/api.md) — every component's full prop list, plus the
   `@pitchkit/core` exports worth calling directly.
 - <https://www.pitchkitjs.com/docs/data> — the data loaders in depth, per provider and file.
-- <https://www.pitchkitjs.com/docs> — narrative guides.
-- <https://www.pitchkitjs.com/gallery> — worked examples with source.
+- <https://www.pitchkitjs.com/docs> — narrative guides; <https://www.pitchkitjs.com/gallery> — worked examples.
 - The installed package's `dist/index.d.ts` — the authoritative types.

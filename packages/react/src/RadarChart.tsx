@@ -26,8 +26,8 @@ const WRAP_CHARS = 12;
 const TICK_FONT = 8.5;
 /** Average glyph width in `em`, for sizing the margin labels need. */
 const GLYPH_WIDTH = 0.6;
-/** Space between the rim and a label. */
-const LABEL_GAP = 8;
+/** Space between the rim and a label: clear of a dot pinned to the rim. */
+const LABEL_GAP = 12;
 const LEGEND_HEIGHT = 24;
 /** Smallest clickable label, in either direction (WCAG 2.5.8). */
 const MIN_TARGET = 24;

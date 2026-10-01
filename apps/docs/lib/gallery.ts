@@ -8,6 +8,7 @@
  *
  * "Timeline" is the one category whose cards are not drawn on a pitch. It
  * exists for <RaceChart> and <MomentumChart>, and will take the bumpy chart later.
+ * Player profiles (<RadarChart>) sit in "Profiles", the other non-pitch tab.
  */
 
 export const GALLERY_CATEGORIES = [
@@ -17,6 +18,7 @@ export const GALLERY_CATEGORIES = [
   "Structure",
   "Density",
   "Timeline",
+  "Profiles",
 ] as const;
 
 export type GalleryCategory = (typeof GALLERY_CATEGORIES)[number];
@@ -119,6 +121,14 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
       "Who had the ball in the attacking third, minute by minute, across the Euro 2024 final — goals and bookings on a row beneath.",
     category: "Timeline",
     docsHref: "/docs/charts/momentum-chart",
+  },
+  {
+    name: "radar-gallery",
+    title: "Player radar",
+    description:
+      "Lamine Yamal and Bukayo Saka at Euro 2024, per 90 against every outfield player with 270+ minutes — turnovers flipped so outward is always better.",
+    category: "Profiles",
+    docsHref: "/docs/charts/radar-chart",
   },
   {
     name: "shot-territory-gallery",

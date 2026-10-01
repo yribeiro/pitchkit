@@ -94,7 +94,12 @@ export function PolarDetailView({
         >
           ← Back
         </button>
-        <h3 ref={headingRef} tabIndex={-1} style={{ margin: 0, fontSize: 14, fontWeight: 600 }}>
+        {/* Focused only so a screen reader announces it; not interactive, so no ring. */}
+        <h3
+          ref={headingRef}
+          tabIndex={-1}
+          style={{ margin: 0, fontSize: 14, fontWeight: 600, outline: "none" }}
+        >
           {title}
         </h3>
         {subtitle !== undefined && (
