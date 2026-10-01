@@ -30,6 +30,9 @@ import { appearance, C, densityAppearance, PAD } from "../theme";
 
 const SPAIN = C.sky;
 const ENGLAND = "#e2e8f0";
+/** Voronoi-only: saturated so the cells read on a phone. */
+const V_SPAIN = "#1e6fff";
+const V_ENGLAND = "#ff7a00";
 const mirror = (s: Shot): Shot => ({ ...s, x: 120 - s.x, y: 80 - s.y });
 const st = L.stats;
 
@@ -264,9 +267,9 @@ export const BEATS: Beat[] = [
     headline: `${st.voronoi.secondsBefore} seconds before the goal`,
     chip: { big: `${st.voronoi.spainSharePct}%`, label: "of the pitch · Spain" },
     legend: [
-      { color: C.orange, label: st.voronoi.player },
-      { color: SPAIN, label: "ESP" },
-      { color: ENGLAND, label: "ENG" },
+      { color: "#ffffff", label: st.voronoi.player },
+      { color: V_SPAIN, label: "ESP" },
+      { color: V_ENGLAND, label: "ENG" },
     ],
     render: (s) => (
       <>
@@ -274,19 +277,19 @@ export const BEATS: Beat[] = [
           data={L.voronoiSites}
           x={(p) => p.x}
           y={(p) => p.y}
-          fill={(p) => (p.spain ? SPAIN : ENGLAND)}
-          fillOpacity={0.2}
-          stroke="rgba(255,255,255,0.4)"
+          fill={(p) => (p.spain ? V_SPAIN : V_ENGLAND)}
+          fillOpacity={0.85}
+          stroke="rgba(0,0,0,0.7)"
           strokeWidth={1.2 * s}
         />
         <Scatter
           data={L.voronoiSites}
           x={(p) => p.x}
           y={(p) => p.y}
-          r={(p) => (p.actor ? 11 * s : 6.5 * s)}
-          fill={(p) => (p.actor ? C.orange : p.spain ? SPAIN : ENGLAND)}
-          stroke={(p) => (p.actor ? "white" : "rgba(0,0,0,0.8)")}
-          strokeWidth={(p) => (p.actor ? 2.5 * s : 1.2 * s)}
+          r={(p) => (p.actor ? 12 * s : 7.5 * s)}
+          fill={(p) => (p.actor ? "white" : p.spain ? "#0b2a7a" : "#7a2e00")}
+          stroke={(p) => (p.actor ? V_SPAIN : "rgba(255,255,255,0.95)")}
+          strokeWidth={(p) => (p.actor ? 4 * s : 2 * s)}
         />
       </>
     ),
