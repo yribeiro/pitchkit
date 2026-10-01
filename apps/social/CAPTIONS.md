@@ -322,19 +322,19 @@ layer each; the numbers on the chips come from `src/data/layers-reel.json`
 
 Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the snapshot):
 
-| Beat              | Claim                                                                                           | Caveat                                                                             |
-| ----------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Scatter           | 16 v 9 shots (1.79 v 0.73 xG)                                                                   | England mirrored to attack the other way                                           |
-| Hexbin            | 56 v 36 pressures in the final third                                                            |                                                                                    |
-| Arrows            | 15 v 5 key passes (Spain: 2 assists, in orange)                                                 |                                                                                    |
-| Comet             | 34 v 12 carries gaining 15+ units                                                               |                                                                                    |
-| Heatmap           | 14,234 tracked positions, 1,780 moments Spain had the ball                                      | 360 only includes players the camera saw                                           |
-| KDE               | Yamal 142 touches (88% in the attacking half), Williams 178                                     |                                                                                    |
-| PositionalHeatmap | 11% of Spain's completed passes landed in their top zone                                        |                                                                                    |
-| Flow              | 17% v 12% of completed passes gain 15+ units (England's flow shown)                             |                                                                                    |
-| Voronoi           | The 360 frame 6 s before Williams' goal (Carvajal's pass): Spain's cells cover 68% of the pitch | 19 of 22 players tracked; space beyond the tracked players goes to the nearest one |
-| ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611             | Average positions from on-ball events, not tracking; both teams drawn attacking up |
-| GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                       | Posts at y 36 and 44; StatsBomb units, not metres                                  |
+| Beat              | Claim                                                                                                                                  | Caveat                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Scatter           | 16 v 9 shots (1.79 v 0.73 xG)                                                                                                          | England mirrored to attack the other way                                           |
+| Hexbin            | 56 v 36 pressures in the final third                                                                                                   |                                                                                    |
+| Arrows            | 15 v 5 key passes (Spain: 2 assists, in orange)                                                                                        |                                                                                    |
+| Comet             | 34 v 12 carries gaining 15+ units                                                                                                      |                                                                                    |
+| Heatmap           | 14,234 tracked positions, 1,780 moments Spain had the ball                                                                             | 360 only includes players the camera saw                                           |
+| KDE               | Yamal 142 touches (88% in the attacking half), Williams 178                                                                            |                                                                                    |
+| PositionalHeatmap | 11% of Spain's completed passes landed in their top zone                                                                               |                                                                                    |
+| Flow              | 17% v 12% of completed passes gain 15+ units (real stat; the arrows are an illustrative build-up pattern, not England's actual passes) |                                                                                    |
+| Voronoi           | The 360 frame 6 s before Williams' goal (Carvajal's pass): Spain's cells cover 68% of the pitch                                        | 19 of 22 players tracked; space beyond the tracked players goes to the nearest one |
+| ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
+| GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
 ---
 

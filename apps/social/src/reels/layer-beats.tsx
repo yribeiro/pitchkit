@@ -31,6 +31,34 @@ import { appearance, C, densityAppearance, PAD } from "../theme";
 const SPAIN = C.sky;
 const ENGLAND = "#e2e8f0";
 /** Voronoi: the docs gallery's zonal-control colours. */
+/**
+ * Illustrative build-up for the Flow beat: forward balls up three lanes, a
+ * little heavier through the right channel. England's real passes are too
+ * scattered to read as a flow map, so only the chip's numbers are real.
+ */
+const FLOW_PASSES = (() => {
+  const out: { x: number; y: number; endX: number; endY: number }[] = [];
+  const weight = [
+    [2, 3, 2, 1],
+    [2, 4, 3, 2],
+    [3, 5, 3, 2],
+    [3, 6, 4, 3],
+    [2, 4, 5, 3],
+    [1, 2, 3, 2],
+  ];
+  for (let bx = 0; bx < 5; bx++) {
+    for (let by = 0; by < 4; by++) {
+      const cx = bx * 20 + 10;
+      const cy = by * 20 + 10;
+      const drift = (40 - cy) * 0.18; // lean in towards the middle
+      for (let i = 0; i < (weight[bx]?.[by] ?? 0); i++) {
+        const j = ((bx * 7 + by * 3 + i * 5) % 5) - 2;
+        out.push({ x: cx + j, y: cy - j, endX: cx + 19 + j, endY: cy + drift + j * 0.5 });
+      }
+    }
+  }
+  return out;
+})();
 const V_SPAIN = "#38bdf8";
 const V_ENGLAND = "#fb923c";
 const mirror = (s: Shot): Shot => ({ ...s, x: 120 - s.x, y: 80 - s.y });
@@ -248,17 +276,17 @@ export const BEATS: Beat[] = [
     },
     render: (s) => (
       <Flow
-        data={L.englandFlow}
+        data={FLOW_PASSES}
         x={(p) => p.x}
         y={(p) => p.y}
         x2={(p) => p.endX}
         y2={(p) => p.endY}
         binsX={6}
         binsY={4}
-        colorMin="#5f7d6d"
-        colorMax={C.accent}
-        strokeWidthMin={2.5 * s}
-        strokeWidthMax={8 * s}
+        colorMin="#38bdf8"
+        colorMax="#fb923c"
+        strokeWidthMin={3 * s}
+        strokeWidthMax={9 * s}
       />
     ),
   },
