@@ -2,9 +2,7 @@ import { matchMinuteTicks, niceTicks } from "@pitchkit/core";
 import { useRaceChartContext } from "./race-context.js";
 import type { RaceAppearance } from "./race-types.js";
 
-const AXIS = "var(--pitch-axis, #c6cebc)";
-const GRID = "var(--pitch-grid, #e5eade)";
-const MUTED = "var(--pitch-chart-muted, #7b8474)";
+import { AXIS, CHART_MUTED as MUTED, CHART_TEXT, GRID } from "./chart-tokens.js";
 
 /**
  * Gridlines, ticks and the baseline.
@@ -162,7 +160,7 @@ export function RaceLegend({ colors }: { colors: readonly string[] }) {
               x={x + 20}
               y={frame.y0 - 19}
               style={{
-                fill: "var(--pitch-chart-text, #12170f)",
+                fill: CHART_TEXT,
                 fontSize: 11,
                 fontWeight: 600,
               }}

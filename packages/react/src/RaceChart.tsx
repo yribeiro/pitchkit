@@ -17,31 +17,10 @@ import type { ResolvedRaceSeries } from "./race-context.js";
 import { RaceGridAndAxes, RaceLegend, RacePeriodBreaks } from "./race-chrome.js";
 import type { RaceAppearance, RaceChartProps, RaceHoverRow } from "./race-types.js";
 import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
-import { useResizeObserver } from "./use-resize-observer.js";
-
-/**
- * Categorical defaults, in fixed slot order so colour follows the entity
- * and never its rank. Slot 1 is the same hex as `--pitch-marker-primary`,
- * so charts and pitches agree out of the box. The set is validated for
- * colourblind separation rather than picked by eye; past six, fold the
- * tail into an "Other" series rather than generating a seventh hue.
- */
-const SERIES_COLORS = [
-  "var(--pitch-series-1, #3b82f6)",
-  "var(--pitch-series-2, #eb6834)",
-  "var(--pitch-series-3, #1baf7a)",
-  "var(--pitch-series-4, #eda100)",
-  "var(--pitch-series-5, #e87ba4)",
-  "var(--pitch-series-6, #008300)",
-];
-
-/** The ring that keeps a marker legible where it crosses a line. */
-const CHART_SURFACE = "var(--pitch-chart-surface, #ffffff)";
-const CHART_TEXT = "var(--pitch-chart-text, #12170f)";
-const AXIS = "var(--pitch-axis, #c6cebc)";
+import { AXIS, CHART_SURFACE, CHART_TEXT, SERIES_COLORS } from "./chart-tokens.js";
+import { useChartBox } from "./use-chart-box.js";
 
 const DEFAULT_ASPECT_RATIO = 2;
-const NOMINAL_WIDTH = 720;
 
 function resolveAppearance(
   appearance: RaceAppearance | undefined,
@@ -82,11 +61,9 @@ function defaultPadding(appearance: Required<RaceAppearance>): ChartPadding {
 }
 
 /**
- * Below this width a 2:1 box leaves a plot barely taller than its own
- * axis labels, so the chart gets a squarer one. Phone-width only — it
- * never fires on the sizes a chart is usually read at.
+ * On a phone a 2:1 box leaves a plot barely taller than its own axis
+ * labels, so the chart gets a squarer one.
  */
-const NARROW_WIDTH = 420;
 const NARROW_ASPECT_RATIO = 1.4;
 
 /**
@@ -186,27 +163,19 @@ export function RaceChart<T>({
   className,
   children,
 }: RaceChartProps<T>) {
-  const [containerRef, measuredSize] = useResizeObserver<HTMLDivElement>();
   const [hoverTime, setHoverTime] = useState<number | null>(null);
 
   const resolved = resolveAppearance(appearance, series.length);
   const padding = explicitPadding ?? defaultPadding(resolved);
 
-  const isExplicitSize = explicitWidth !== undefined && explicitHeight !== undefined;
-  // Measured width drives the ratio, so the box gets taller on a phone.
-  // Width never depends on height here (the container is a block filling
-  // its parent), so this cannot oscillate with the ResizeObserver.
-  const isNarrow =
-    (isExplicitSize ? explicitWidth : (measuredSize?.width ?? NOMINAL_WIDTH)) < NARROW_WIDTH;
-  const aspectRatio =
-    explicitAspectRatio ?? (isNarrow ? NARROW_ASPECT_RATIO : DEFAULT_ASPECT_RATIO);
-  const fallbackSize = {
-    width: NOMINAL_WIDTH,
-    height: Math.round(NOMINAL_WIDTH / aspectRatio),
-  };
-  const size = isExplicitSize
-    ? { width: explicitWidth, height: explicitHeight }
-    : (measuredSize ?? fallbackSize);
+  const box = useChartBox({
+    width: explicitWidth,
+    height: explicitHeight,
+    aspectRatio: explicitAspectRatio,
+    wideRatio: DEFAULT_ASPECT_RATIO,
+    narrowRatio: NARROW_ASPECT_RATIO,
+  });
+  const { containerRef, size } = box;
 
   // Accessors are resolved here and core is handed plain numbers, which is
   // what keeps `@pitchkit/core`'s race module free of any dependency on
@@ -349,10 +318,7 @@ export function RaceChart<T>({
       className={className}
       data-pitchkit-layer="race"
       style={{
-        position: "relative",
-        width: isExplicitSize ? explicitWidth : "100%",
-        height: isExplicitSize ? explicitHeight : undefined,
-        aspectRatio: isExplicitSize ? undefined : aspectRatio,
+        ...box.style,
         // A horizontal drag scrubs the crosshair; a vertical one still
         // scrolls the page. Without this the browser claims both axes and
         // the chart is unreadable on a phone, where the crosshair is the

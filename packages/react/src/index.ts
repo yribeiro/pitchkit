@@ -43,6 +43,16 @@ export type {
   MomentumChartContextValue,
 } from "./momentum-types.js";
 
+export { RadarChart } from "./RadarChart.js";
+export { useRadarChart } from "./radar-context.js";
+export type { RadarChartProps, RadarAppearance, RadarChartContextValue } from "./radar-types.js";
+export type {
+  PolarMetric,
+  PolarSeries,
+  PolarSelection,
+  PolarDetailContext,
+} from "./polar-types.js";
+
 export { usePitch } from "./use-pitch.js";
 export { useRaceChart } from "./use-race-chart.js";
 export { useMomentumChart } from "./use-momentum-chart.js";

@@ -113,5 +113,11 @@ export {
 } from "./momentum/layout.js";
 export { stackOffsets } from "./momentum/stack.js";
 
+export { axisAngle, polarPoint } from "./polar/angle.js";
+export type { PolarRange, NormalisedValue } from "./polar/metric.js";
+export { normaliseMetric, ringValues } from "./polar/metric.js";
+export type { LabelRotation, LabelPlacement } from "./polar/labels.js";
+export { LABEL_LINE_HEIGHT, labelPlacement, wrapLabel } from "./polar/labels.js";
+
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";
