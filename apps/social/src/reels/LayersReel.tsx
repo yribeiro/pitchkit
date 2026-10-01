@@ -1,7 +1,7 @@
 /**
  * Reel 03 — "11 layers. One pitch." A rapid-fire montage: one PitchKit layer
  * per beat, each drawing a real finding from the Euro 2024 final (see
- * layer-beats.tsx for the data behind every beat). Cut on a ~1.2 s beat so it
+ * layer-beats.tsx for the data behind every beat). Cut on a ~1.4 s beat so it
  * lands on whatever trending audio it's posted with.
  */
 import type { ReactNode } from "react";
@@ -23,14 +23,13 @@ import type { Beat } from "./layer-beats";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const HOOK = 50;
-const BEAT = 36; // 1.2 s at 30 fps
+const BEAT = 42; // 1.4 s at 30 fps
 const FADE = 6;
 const BEATS_END = HOOK + BEATS.length * BEAT;
 export const LAYERS_DURATION = BEATS_END + 90;
 
 const PITCH_WIDTH = 600;
 const PITCH_TOP = 560;
-const PITCH_LEFT = (1080 - PITCH_WIDTH) / 2;
 
 /** Fades a beat in over FADE frames and holds; the next beat covers it. */
 function BeatFrame({ children }: { children: ReactNode }) {
@@ -192,8 +191,17 @@ export function LayersReel() {
           <BeatFrame>
             <Backdrop />
             <BeatHeader beat={beat} />
-            <div style={{ position: "absolute", top: PITCH_TOP, left: PITCH_LEFT }}>
-              <BeatPitch beat={beat} width={PITCH_WIDTH} />
+            <div
+              style={{
+                position: "absolute",
+                top: PITCH_TOP,
+                left: 0,
+                right: 0,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <BeatPitch beat={beat} width={beat.width ?? PITCH_WIDTH} />
             </div>
           </BeatFrame>
         </Sequence>

@@ -11,7 +11,15 @@
       "england": { "name": "middle-2-1", "x": 18, "y": 30, "pct": 10 }
     },
     "direct": { "spain": 12, "england": 17 },
-    "voronoi": { "sites": 14, "palmerSharePct": 43, "palmerRank": 1 },
+    "voronoi": {
+      "event": "Pass",
+      "player": "Carvajal",
+      "clock": "46:03",
+      "secondsBefore": 6,
+      "players": 19,
+      "spainSharePct": 68,
+      "englandSharePct": 32
+    },
     "shape": {
       "spainMeanX": 66.9,
       "englandMeanX": 55.5,
@@ -15193,6 +15201,27 @@
     { "x": 42.9, "y": 0.1, "endX": 13.6, "endY": 25.6 },
     { "x": 39, "y": 48.1, "endX": 46.2, "endY": 37.7 },
     { "x": 40.9, "y": 66.3, "endX": 63.1, "endY": 37.4 }
+  ],
+  "voronoiSites": [
+    { "x": 49, "y": 36, "spain": true, "actor": false, "keeper": false },
+    { "x": 54.3, "y": 63.7, "spain": true, "actor": false, "keeper": false },
+    { "x": 55.5, "y": 19.6, "spain": true, "actor": false, "keeper": false },
+    { "x": 56.6, "y": 45.5, "spain": false, "actor": false, "keeper": false },
+    { "x": 60.1, "y": 60.6, "spain": false, "actor": false, "keeper": false },
+    { "x": 61.2, "y": 44.9, "spain": true, "actor": false, "keeper": false },
+    { "x": 65.6, "y": 20.8, "spain": false, "actor": false, "keeper": false },
+    { "x": 66.9, "y": 41.5, "spain": false, "actor": false, "keeper": false },
+    { "x": 68.7, "y": 69.4, "spain": false, "actor": false, "keeper": false },
+    { "x": 69.7, "y": 74.3, "spain": true, "actor": true, "keeper": false },
+    { "x": 72.7, "y": 56.1, "spain": false, "actor": false, "keeper": false },
+    { "x": 74.3, "y": 29.1, "spain": true, "actor": false, "keeper": false },
+    { "x": 78.5, "y": 6.3, "spain": true, "actor": false, "keeper": false },
+    { "x": 79.7, "y": 23.6, "spain": false, "actor": false, "keeper": false },
+    { "x": 79.7, "y": 69.1, "spain": false, "actor": false, "keeper": false },
+    { "x": 80.7, "y": 61, "spain": true, "actor": false, "keeper": false },
+    { "x": 82.8, "y": 39.5, "spain": false, "actor": false, "keeper": false },
+    { "x": 83.7, "y": 40.3, "spain": true, "actor": false, "keeper": false },
+    { "x": 84.6, "y": 50.9, "spain": false, "actor": false, "keeper": false }
   ],
   "shape": {
     "spain": [

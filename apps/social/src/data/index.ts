@@ -139,7 +139,15 @@ export interface LayersReelData {
     touches: { yamal: number; williams: number; yamalPctAttHalf: number };
     zone: { spain: { pct: number }; england: { pct: number } };
     direct: { spain: number; england: number };
-    voronoi: { sites: number; palmerSharePct: number; palmerRank: number };
+    voronoi: {
+      event: string;
+      player: string;
+      clock: string;
+      secondsBefore: number;
+      players: number;
+      spainSharePct: number;
+      englandSharePct: number;
+    };
     shape: {
       spainMeanX: number;
       englandMeanX: number;
@@ -165,6 +173,8 @@ export interface LayersReelData {
   yamal: Point[];
   williams: Point[];
   englandFlow: Segment[];
+  /** The tracked players in the Voronoi frame (360); `spain` is the acting team. */
+  voronoiSites: { x: number; y: number; spain: boolean; actor: boolean; keeper: boolean }[];
   shape: {
     spain: (Point & { label: string })[];
     england: (Point & { label: string })[];

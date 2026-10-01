@@ -24,7 +24,7 @@ import {
 } from "@pitchkit/react";
 import { Upright, pitchHeightFor, shotRadius, verticalPitchHeightFor } from "../charts";
 import { PitchStage } from "../components/Chrome";
-import { finalShots, layersReel as L, palmerGoal, spainPasses } from "../data";
+import { finalShots, layersReel as L, spainPasses } from "../data";
 import type { Shot } from "../data";
 import { appearance, C, densityAppearance, PAD } from "../theme";
 
@@ -45,6 +45,14 @@ export interface Beat {
   legend?: { color: string; label: string }[];
   /** Crop to a window of the pitch (StatsBomb units) and scale up to fill the width. */
   crop?: { x0: number; x1: number; y0: number; y1: number };
+  /**
+   * "upright" (default) turns the pitch to attack up the screen; "horizontal"
+   * keeps it as recorded, attacking right — used for a half pitch, which is
+   * portrait that way round and fills the same space as the full pitch.
+   */
+  layout?: "upright" | "horizontal";
+  /** Pixel width of the pitch, where it differs from the reel's default. */
+  width?: number;
   /** A smaller chip, for beats with a long figure. */
   compact?: boolean;
   render: (s: number) => ReactNode;
@@ -84,6 +92,27 @@ export const BEATS: Beat[] = [
           />
         ))}
       </>
+    ),
+  },
+  {
+    layer: "Hexbin",
+    headline: "Spain pressed high",
+    chip: {
+      big: `${st.pressures.spainFinalThird} v ${st.pressures.englandFinalThird}`,
+      label: "final-third pressures",
+    },
+    density: true,
+    render: (s) => (
+      <Hexbin
+        data={L.pressures}
+        x={(p) => p.x}
+        y={(p) => p.y}
+        binsX={12}
+        colorMin="#0f3d24"
+        colorMax="#facc15"
+        stroke="rgba(0, 0, 0, 0.25)"
+        strokeWidth={1 * s}
+      />
     ),
   },
   {
@@ -151,28 +180,7 @@ export const BEATS: Beat[] = [
         binsX={15}
         binsY={10}
         colorMin="#0f3d24"
-        colorMax="#fbbf24"
-      />
-    ),
-  },
-  {
-    layer: "Hexbin",
-    headline: "Spain pressed high",
-    chip: {
-      big: `${st.pressures.spainFinalThird} v ${st.pressures.englandFinalThird}`,
-      label: "final-third pressures",
-    },
-    density: true,
-    render: (s) => (
-      <Hexbin
-        data={L.pressures}
-        x={(p) => p.x}
-        y={(p) => p.y}
-        binsX={12}
-        colorMin="#0f3d24"
-        colorMax={C.accent}
-        stroke="rgba(6,16,11,0.6)"
-        strokeWidth={1.5 * s}
+        colorMax="#fb923c"
       />
     ),
   },
@@ -253,46 +261,35 @@ export const BEATS: Beat[] = [
   },
   {
     layer: "Voronoi",
-    headline: "Palmer's pocket of space",
-    chip: { big: `${st.voronoi.palmerSharePct}%`, label: "of the pitch · biggest cell" },
+    headline: `${st.voronoi.secondsBefore} seconds before the goal`,
+    chip: { big: `${st.voronoi.spainSharePct}%`, label: "of the pitch · Spain" },
     legend: [
-      { color: C.orange, label: "Palmer" },
-      { color: ENGLAND, label: "ENG" },
+      { color: C.orange, label: st.voronoi.player },
       { color: SPAIN, label: "ESP" },
+      { color: ENGLAND, label: "ENG" },
     ],
-    render: (s) => {
-      const sites = [
-        { x: palmerGoal.goal.x, y: palmerGoal.goal.y, england: true, shooter: true },
-        ...palmerGoal.freezeFrame.map((p) => ({
-          x: p.x,
-          y: p.y,
-          england: p.teammate,
-          shooter: false,
-        })),
-      ];
-      return (
-        <>
-          <Voronoi
-            data={sites}
-            x={(p) => p.x}
-            y={(p) => p.y}
-            fill={(p) => (p.england ? ENGLAND : SPAIN)}
-            fillOpacity={0.2}
-            stroke="rgba(255,255,255,0.4)"
-            strokeWidth={1.2 * s}
-          />
-          <Scatter
-            data={sites}
-            x={(p) => p.x}
-            y={(p) => p.y}
-            r={(p) => (p.shooter ? 11 * s : 6.5 * s)}
-            fill={(p) => (p.shooter ? C.orange : p.england ? ENGLAND : SPAIN)}
-            stroke={(p) => (p.shooter ? "white" : "rgba(0,0,0,0.8)")}
-            strokeWidth={(p) => (p.shooter ? 2.5 * s : 1.2 * s)}
-          />
-        </>
-      );
-    },
+    render: (s) => (
+      <>
+        <Voronoi
+          data={L.voronoiSites}
+          x={(p) => p.x}
+          y={(p) => p.y}
+          fill={(p) => (p.spain ? SPAIN : ENGLAND)}
+          fillOpacity={0.2}
+          stroke="rgba(255,255,255,0.4)"
+          strokeWidth={1.2 * s}
+        />
+        <Scatter
+          data={L.voronoiSites}
+          x={(p) => p.x}
+          y={(p) => p.y}
+          r={(p) => (p.actor ? 11 * s : 6.5 * s)}
+          fill={(p) => (p.actor ? C.orange : p.spain ? SPAIN : ENGLAND)}
+          stroke={(p) => (p.actor ? "white" : "rgba(0,0,0,0.8)")}
+          strokeWidth={(p) => (p.actor ? 2.5 * s : 1.2 * s)}
+        />
+      </>
+    ),
   },
   {
     layer: "ConvexHull",
@@ -340,8 +337,11 @@ export const BEATS: Beat[] = [
       label: angles.map((g) => g.player).join(" · "),
     },
     compact: true,
-    // Zoom into the penalty-box end, where all three goals were scored.
-    crop: { x0: 80, x1: 120, y0: 16, y1: 64 },
+    // The attacking half, drawn as recorded (goal on the right): portrait, so
+    // it fills the space the full upright pitch does.
+    layout: "horizontal",
+    width: 640,
+    crop: { x0: 60, x1: 120, y0: 0, y1: 80 },
     render: (s) => (
       <>
         <GoalAngle
@@ -369,13 +369,33 @@ export const BEATS: Beat[] = [
 ];
 
 /**
- * A beat's pitch: a horizontal pitch turned to attack up the screen. With a
- * `crop`, only that window is drawn and scaled up to fill the width — the
+ * A beat's pitch: by default a horizontal pitch turned to attack up the screen.
+ * With a `crop`, only that window is drawn and scaled up to fill the width — the
  * `s` handed to `render` grows with it, so marks stay in proportion.
  */
 export function BeatPitch({ beat, width }: { beat: Beat; width: number }) {
   const { crop } = beat;
-  // Screen width runs along the pitch's short axis (y), screen height along x.
+  if (beat.layout === "horizontal") {
+    // Drawn as recorded: width runs along x, height along y.
+    const window = crop ?? { x0: 0, x1: 120, y0: 0, y1: 80 };
+    const k = (width - PAD.left - PAD.right) / (window.x1 - window.x0);
+    const height = (window.y1 - window.y0) * k + PAD.top + PAD.bottom;
+    return (
+      <PitchStage>
+        <Pitch
+          type="statsbomb"
+          width={width}
+          height={height}
+          padding={PAD}
+          crop={crop}
+          appearance={beat.density ? densityAppearance : appearance}
+        >
+          {beat.render(k / 8.33)}
+        </Pitch>
+      </PitchStage>
+    );
+  }
+  // Upright: screen width runs along the pitch's short axis (y), height along x.
   const k = crop
     ? (width - PAD.top - PAD.bottom) / (crop.y1 - crop.y0)
     : (verticalPitchHeightFor(width) - PAD.left - PAD.right) / 120;
@@ -383,7 +403,6 @@ export function BeatPitch({ beat, width }: { beat: Beat; width: number }) {
     ? (crop.x1 - crop.x0) * k + PAD.left + PAD.right
     : verticalPitchHeightFor(width);
   const short = crop ? width : pitchHeightFor(long);
-  const s = k / 8.33; // the layers are tuned for ~8.33 px per unit
   return (
     <PitchStage>
       <Upright width={short} height={long}>
@@ -395,7 +414,7 @@ export function BeatPitch({ beat, width }: { beat: Beat; width: number }) {
           crop={crop}
           appearance={beat.density ? densityAppearance : appearance}
         >
-          {beat.render(s)}
+          {beat.render(k / 8.33)}
         </Pitch>
       </Upright>
     </PitchStage>

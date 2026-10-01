@@ -8,7 +8,8 @@
  *   npm run snapshot:layers --workspace=social
  *
  * Caveats baked into the claims (and the captions):
- * - 360 only contains players the broadcast camera saw, and has no player ids.
+ * - 360 only contains players the broadcast camera saw (19 of 22 in the Voronoi
+ *   frame), and has no player ids.
  * - StatsBomb coordinates are abstract grid units (120 x 80), not metres.
  * - Each team's events are recorded attacking left-to-right.
  */
@@ -127,26 +128,46 @@ const direct = (t) => {
 };
 const flowPass = (p) => ({ x: round(p.x), y: round(p.y), endX: round(p.endX), endY: round(p.endY) });
 
-/* 9 · Voronoi — the space around Palmer's equaliser ----------------------- */
-const palmerGoal = allShots.filter(isGoal).find((g) => g.player.name.includes("Palmer"));
-const sites = [
-  { x: palmerGoal.x, y: palmerGoal.y },
-  ...(palmerGoal.shot.freeze_frame ?? []).map((p) => ({ x: p.location[0], y: p.location[1] })),
-];
-const cells = new Array(sites.length).fill(0);
+/* 9 · Voronoi — the space seconds before Williams' goal ---------------- */
+// Palmer's shot freeze frame only holds 14 players, so its cells are huge and
+// uneven. The 360 frame for Carvajal's pass in the move for Williams' goal has 19 of the
+// 22 players tracked — enough for a Voronoi that reads as a real partition.
+const spainGoal = allShots.filter(isGoal).find((g) => g.player.name.includes("Williams"));
+const lead = events
+  .filter((e) => e.possession === spainGoal.possession && e.index <= spainGoal.index && frames.has(e.id))
+  .map((e) => ({ e, n: frames.get(e.id).freeze_frame.length }))
+  .sort((a, b) => b.n - a.n || b.e.index - a.e.index)[0];
+const vFrame = frames.get(lead.e.id);
+const vSites = vFrame.freeze_frame.map((p) => ({
+  x: round(p.x),
+  y: round(p.y),
+  // `teammate` is relative to the acting team, which is Spain here.
+  spain: p.teammate,
+  actor: p.actor,
+  keeper: p.keeper,
+}));
+const vCells = new Array(vSites.length).fill(0);
 for (let x = 0.5; x < 120; x += 1) {
   for (let y = 0.5; y < 80; y += 1) {
     let best = 0;
     let bestD = Infinity;
-    sites.forEach((s, i) => {
+    vSites.forEach((s, i) => {
       const d = (s.x - x) ** 2 + (s.y - y) ** 2;
       if (d < bestD) [bestD, best] = [d, i];
     });
-    cells[best]++;
+    vCells[best]++;
   }
 }
-const palmerShare = pct(cells[0], 120 * 80, 0);
-const palmerRank = cells.slice().sort((a, b) => b - a).indexOf(cells[0]) + 1;
+const spainShare = vCells.reduce((a, v, i) => a + (vSites[i].spain ? v : 0), 0);
+const voronoi = {
+  event: lead.e.type.name,
+  player: surname(nameOf(lead.e.player)),
+  clock: `${lead.e.minute}:${String(lead.e.second).padStart(2, "0")}`,
+  secondsBefore: spainGoal.minute * 60 + spainGoal.second - (lead.e.minute * 60 + lead.e.second),
+  players: vSites.length,
+  spainSharePct: pct(spainShare, 120 * 80, 0),
+  englandSharePct: 100 - pct(spainShare, 120 * 80, 0),
+};
 
 /* 10 · ConvexHull — first-half average-position shape --------------------- */
 const hullOf = (points) => {
@@ -232,7 +253,7 @@ const data = {
     },
     zone: { spain: topZone("Spain"), england: topZone("England") },
     direct: { spain: direct("Spain"), england: direct("England") },
-    voronoi: { sites: sites.length, palmerSharePct: palmerShare, palmerRank },
+    voronoi,
     shape: {
       spainMeanX: shapeSpain.meanX,
       englandMeanX: shapeEngland.meanX,
@@ -249,6 +270,7 @@ const data = {
   yamal: pts(yamal),
   williams: pts(williams),
   englandFlow: completed("England").map(flowPass),
+  voronoiSites: vSites,
   shape: { spain: shapeSpain.players, england: shapeEngland.players },
 };
 
