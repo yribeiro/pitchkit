@@ -62,12 +62,29 @@ async function window(from, to) {
   return parseTracking(lines, match).filter((f) => f.frame >= from && f.frame <= to);
 }
 
+/** Players inside the penalty area at the kick, split by team. */
+function boxCounts(frames, kick, dir, teamId) {
+  const f = frames.reduce((a, b) => (Math.abs(b.frame - kick) < Math.abs(a.frame - kick) ? b : a));
+  const inBox = (p) => p.x * dir > L / 2 - 16.5 && Math.abs(p.y) < 20.16;
+  const box = f.player_data.filter(inBox);
+  return {
+    attackers: box.filter((p) => teamOf.get(p.player_id) === teamId).length,
+    defenders: box.filter((p) => teamOf.get(p.player_id) !== teamId).length,
+  };
+}
+
 const corners = [];
 for (const e of atFlag) {
   const kick = e.frame_start;
   const dir = attackingSideOf(match, e.team_id, e.period) === "right_to_left" ? -1 : 1;
-  const frames = await window(kick - 10, kick + 40);
-  if (frames.length < 40) throw new Error(`Only ${frames.length} frames for corner at ${kick}`);
+  const shot = dynamic.find(
+    (d) =>
+      d.phase_index === e.phase_index &&
+      d.event_type === "player_possession" &&
+      d.end_type === "shot",
+  );
+  const frames = await window(kick - 10, kick + 140);
+  if (frames.length < 140) throw new Error(`Only ${frames.length} frames for corner at ${kick}`);
   const proj = (x, y) => [r1(x * dir), r1(y * dir)];
   corners.push({
     minute: e.minute_start,
@@ -75,7 +92,15 @@ for (const e of atFlag) {
     team: e.team_shortname,
     taker: e.player_name,
     kick,
-    ledToShot: e.lead_to_shot === true,
+    ledToShot: shot !== undefined,
+    shot: shot && {
+      playerId: shot.player_id,
+      frame: (shot.frame_end ?? shot.frame_start) - kick,
+      // Dynamic-event coordinates are already attacker-relative (+x at goal).
+      x: r1(shot.x_start),
+      y: r1(shot.y_start),
+    },
+    boxAtKick: boxCounts(frames, kick, dir, e.team_id),
     frames: frames.map((f) => ({
       frame: f.frame - kick,
       ball: f.ball_data.x === null ? null : proj(f.ball_data.x, f.ball_data.y),

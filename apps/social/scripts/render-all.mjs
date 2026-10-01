@@ -28,6 +28,14 @@ const STILLS = [
   "wall-mosaic-preview",
   "wall-mosaic-profile",
   "x-header",
+  "carousel-01-cover",
+  "carousel-02-data",
+  "carousel-03-find",
+  "carousel-04-freeze",
+  "carousel-05-follow",
+  "carousel-06-all",
+  "carousel-07-questions",
+  "carousel-08-save",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
 

@@ -325,6 +325,59 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
+## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
+
+Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a
+real code snippet, and a five-question checklist. Every position is a real
+SkillCorner tracking frame (Auckland FC v Newcastle Jets, `npm run
+snapshot:corners`). Post all eight in order; slide 1 is the cover.
+
+**Instagram**
+
+> 5 steps to analyse any corner kick 📌
+>
+> Free SkillCorner tracking data + PitchKit:
+>
+> 1. Find the corners
+> 2. Freeze the kick
+> 3. Follow one player
+> 4. Do it for every corner
+> 5. Ask the same 5 questions
+>
+> Auckland took 4 corners against Newcastle. All 4 ended in a shot. Save this for your next match. Code + docs: link in bio.
+>
+> #footballanalytics #dataviz #soccerdata #reactjs #opensource #skillcorner
+
+**X** (4 images: slides 1, 4, 5, 6)
+
+> Analysing a corner kick doesn't have to be hard. Free SkillCorner tracking data + PitchKit: find the corners, freeze the kick, follow one player, do it for every corner.
+>
+> Open-source, React-first. Data: @SkillCorner open data.
+>
+> https://www.pitchkitjs.com
+
+**Alt text**
+
+1. Cover: "5 steps: analyse any corner kick", over a football pitch showing players waiting in the penalty area at a corner.
+2. "Free tracking data": 10 matches, 10 frames a second, free.
+3. A code snippet that finds corner kicks in SkillCorner's events: 4 corners.
+4. A football pitch frozen at a corner kick: 6 Auckland attackers (blue) and 10 Newcastle defenders (orange) in the penalty area.
+5. A pitch showing one player's paths from two corners: L. Gillion starts on the edge of the box at 71' and out wide at 92', and shoots both times.
+6. A pitch with four lines from each corner flag to the spot of the shot it led to: 4 corners, 4 shots.
+7. A checklist of five questions to ask of any corner, with this match's answers.
+8. Save this: try it on your next match, `npm i @pitchkit/react`, pitchkitjs.com.
+
+Facts behind the slides (all in `corners.json`; re-check if you re-run the snapshot):
+
+| Slide | Claim                                                                                                                           | Caveat                                                                                       |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 2     | 10 matches of A-League 2024/25 broadcast tracking, 10 fps, free (SkillCorner/opendata)                                          |                                                                                              |
+| 3     | 4 Auckland corners taken at the flag (`corner_for`, x > 44, \|y\| > 22)                                                         | The match has 8 corner phases; the other 4 don't record the kick itself, so they're left out |
+| 4     | 62' corner: 6 Auckland v 10 Newcastle in the penalty area at the kick                                                           | Players the camera didn't see are extrapolated (drawn fainter)                               |
+| 5     | L. Gillion shot after both the 71' (3.4 s) and 92' (4.9 s) corners                                                              | At 92' it was a short-corner chain (Moreno, Gallegos, Gillion)                               |
+| 6     | 4 of 4 corners ended in a shot, 3.4–12.8 s after the kick                                                                       | Tiny sample; straight line is kick to shot, not the ball's route                             |
+| 7     | 3–6 attackers v 9–10 defenders; corners from the attacker's left 3×, right 1×; 4 shots by 3 players (Pijnaker, May, Gillion ×2) |                                                                                              |
+
 ---
 
 ## Wall mosaic — six tiles (`mosaic-tile-1.png` … `mosaic-tile-6.png`)

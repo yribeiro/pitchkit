@@ -197,6 +197,10 @@ export interface Corner {
   taker: string;
   kick: number;
   ledToShot: boolean;
+  /** The shot this corner led to, if any: who, frames after the kick, and where (attacker-relative). */
+  shot?: { playerId: number; frame: number; x: number; y: number };
+  /** Players inside the penalty area at the kick. */
+  boxAtKick: { attackers: number; defenders: number };
   frames: CornerFrame[];
 }
 export interface CornersData {
