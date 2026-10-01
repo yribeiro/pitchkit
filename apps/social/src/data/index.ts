@@ -4,6 +4,7 @@
  */
 import finalGoalsJson from "./final-goals.json";
 import finalMetaJson from "./final-meta.json";
+import cornersJson from "./corners.json";
 import finalShotsJson from "./final-shots.json";
 import layersReelJson from "./layers-reel.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
@@ -181,3 +182,30 @@ export interface LayersReelData {
   };
 }
 export const layersReel = layersReelJson as unknown as LayersReelData;
+
+/** Auckland FC's corner kicks with every tracked player's path (see scripts/snapshot-corners.mjs). */
+export interface CornerFrame {
+  /** Frames (10 fps) relative to the kick. */
+  frame: number;
+  ball: [number, number] | null;
+  players: [number, number, number, 0 | 1, 0 | 1][];
+}
+export interface Corner {
+  minute: number;
+  period: number;
+  team: string;
+  taker: string;
+  kick: number;
+  ledToShot: boolean;
+  frames: CornerFrame[];
+}
+export interface CornersData {
+  matchId: number;
+  home: string;
+  away: string;
+  pitchLength: number;
+  pitchWidth: number;
+  players: Record<string, { name: string; number: number | null }>;
+  corners: Corner[];
+}
+export const cornersData = cornersJson as unknown as CornersData;

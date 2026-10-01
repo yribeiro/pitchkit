@@ -24,3 +24,4 @@ Promise.all(
 )
   .then(() => continueRender(handle))
   .catch(() => continueRender(handle));
+import "@fontsource/anton/400.css";

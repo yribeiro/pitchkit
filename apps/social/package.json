@@ -9,9 +9,11 @@
     "snapshot": "node scripts/snapshot.mjs",
     "render": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
-    "snapshot:layers": "node scripts/snapshot-layers.mjs"
+    "snapshot:layers": "node scripts/snapshot-layers.mjs",
+    "snapshot:corners": "node scripts/snapshot-corners.mjs"
   },
   "dependencies": {
+    "@fontsource/anton": "^5.3.0",
     "@fontsource/inter": "^5",
     "@fontsource/jetbrains-mono": "^5",
     "@pitchkit/core": "*",

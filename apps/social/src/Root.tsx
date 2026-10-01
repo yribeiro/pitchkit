@@ -1,5 +1,6 @@
 import { Composition, Folder, Still } from "remotion";
 import { PostCode, PostIntro, PostLayers, PostNetwork, PostPalettes, PostWinner } from "./posts";
+import { CornerCover } from "./carousel/CornerCover";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
 import { TRACKING_DURATION, TrackingReel } from "./reels/TrackingReel";
@@ -31,6 +32,9 @@ export function Root() {
         <Still id="wall-mosaic-preview" component={WallMosaicPreview} {...MOSAIC_PREVIEW} />
         <Still id="x-header" component={XHeader} {...X_HEADER} />
         <Still id="wall-mosaic-profile" component={WallProfilePreview} {...PROFILE_PREVIEW} />
+      </Folder>
+      <Folder name="Carousels">
+        <Still id="carousel-01-cover" component={CornerCover} {...POST} />
       </Folder>
       <Folder name="Reels">
         <Composition
