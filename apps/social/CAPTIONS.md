@@ -293,7 +293,7 @@ layer each; the numbers on the chips come from `src/data/layers-reel.json`
 
 > 11 layers. One <Pitch>. ⚡️
 >
-> Spain 2–1 England, Euro 2024 final — and every beat is a real finding drawn with one PitchKit component:
+> Spain 2–1 England, Euro 2024 final — and every number is a real finding, each drawn with one PitchKit component:
 >
 > • 16 v 9 shots
 > • 56 v 36 final-third pressures
@@ -312,7 +312,7 @@ layer each; the numbers on the chips come from `src/data/layers-reel.json`
 
 **X**
 
-> 11 chart layers, one pitch. Every beat is a real finding from the Euro 2024 final: 56 v 36 pressures in the final third, 34 v 12 forward carries, Palmer's equaliser from an 18° angle.
+> 11 chart layers, one pitch. Every number is real, from the Euro 2024 final: 56 v 36 pressures in the final third, 34 v 12 forward carries, Palmer's equaliser from an 18° angle.
 >
 > Open-source, React-first. Data: @StatsBomb open data.
 >
