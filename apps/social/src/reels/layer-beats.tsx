@@ -278,7 +278,7 @@ export const BEATS: Beat[] = [
           x={(p) => p.x}
           y={(p) => p.y}
           fill={(p) => (p.spain ? V_SPAIN : V_ENGLAND)}
-          fillOpacity={0.85}
+          fillOpacity={0.6}
           stroke="rgba(0,0,0,0.7)"
           strokeWidth={1.2 * s}
         />
