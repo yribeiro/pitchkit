@@ -8,7 +8,6 @@ import { PitchStage } from "../components/Chrome";
 import { cornersData } from "../data";
 import { appearance, C, FONT } from "../theme";
 
-const DISPLAY = "Anton, Impact, sans-serif";
 const COVER_CORNER = cornersData.corners.find((c) => c.minute === 62) ?? cornersData.corners[0]!;
 const SHOWN = 6; // frames after the kick: the ball is in the air
 
@@ -37,23 +36,24 @@ export function CornerCover() {
             display: "inline-block",
             background: C.accent,
             color: "#000",
-            fontFamily: DISPLAY,
-            fontSize: 150,
+            fontFamily: FONT.sans,
+            fontWeight: 800,
+            fontSize: 112,
             lineHeight: 1,
-            padding: "14px 30px 6px",
-            letterSpacing: "0.01em",
+            padding: "16px 32px 20px",
+            letterSpacing: "-0.045em",
           }}
         >
-          5 STEPS
+          5 steps
         </div>
         <div
           style={{
             marginTop: 18,
-            fontFamily: DISPLAY,
-            fontSize: 196,
-            lineHeight: 0.96,
-            letterSpacing: "0.005em",
-            textTransform: "uppercase",
+            fontFamily: FONT.sans,
+            fontWeight: 800,
+            fontSize: 172,
+            lineHeight: 0.98,
+            letterSpacing: "-0.055em",
           }}
         >
           Analyse any
@@ -116,16 +116,17 @@ export function CornerCover() {
           position: "absolute",
           right: 64,
           top: 130,
-          fontFamily: DISPLAY,
-          fontSize: 44,
-          letterSpacing: "0.04em",
+          fontFamily: FONT.mono,
+          fontWeight: 600,
+          fontSize: 34,
+          letterSpacing: "-0.02em",
           background: "#000",
           color: C.accent,
-          padding: "6px 22px 2px",
-          border: `3px solid ${C.accent}`,
+          padding: "10px 22px 12px",
+          border: `2px solid ${C.accent}`,
         }}
       >
-        SWIPE →
+        Swipe →
       </div>
     </AbsoluteFill>
   );
