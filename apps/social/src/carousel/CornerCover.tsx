@@ -58,7 +58,7 @@ export function CornerCover() {
         >
           Analyse any
           <br />
-          corner kick.
+          corner kick
         </div>
       </div>
 
