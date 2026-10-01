@@ -31,7 +31,7 @@ const yamal = {
 
 /**
  * One player against the tournament. Turnovers are flipped, so outward is
- * always better; xA is past the 95th percentile, so its dot sits hollow on
+ * always better; xA is past the 95th percentile, so it is pinned to
  * the rim rather than off the chart.
  */
 export function RadarChartBasic() {

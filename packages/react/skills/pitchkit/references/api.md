@@ -180,7 +180,7 @@ percentiles and ranges are the caller's.
 | `children`                      | `ReactNode`                                | Annotations; position them with `useRadarChart()`.                                        |
 
 `min`/`max` default to 0–100. `lowerIsBetter` flips the axis so outward is always better. A value
-beyond its range is pinned to the edge and drawn hollow; a missing one draws nothing. Ranges are
+beyond its range is pinned to the edge (the readout says "off scale"); a missing one goes to the centre. Ranges are
 commonly the 5th–95th percentile of the comparison population (StatsBomb's convention). Past three
 series, overlaid shapes can't be told apart, and a development warning says so.
 

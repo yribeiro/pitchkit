@@ -200,7 +200,7 @@ without the caller resampling. Own icons keep the library's licence clean.
   not a data change.
 - **The charts compute nothing.** Per-90s, percentiles and ranges are the caller's. The only
   arithmetic is placing a value between its metric's `min` and `max` (0–100 by default), with the
-  lower-is-better flip and a clamp. A clamped value is drawn hollow at the edge; a missing one draws
+  lower-is-better flip and a clamp. A clamped value sits at the edge and the readout marks it "off scale"; a missing one draws
   nothing.
 - **Shapes are translucent.** A single radar series keeps mplsoccer's two-tone banding, but as two
   light tints of the series colour so the grid and ring values show through.

@@ -34,47 +34,49 @@ function parts(container: HTMLElement, part: string): Element[] {
   return Array.from(container.querySelectorAll(`[data-pitchkit-part="${part}"]`));
 }
 
-/** Distance of a dot from the chart's centre, in viewBox pixels. */
-function radiusOf(dot: Element, cx = 250, cy = 250): number {
-  return Math.hypot(Number(dot.getAttribute("cx")) - cx, Number(dot.getAttribute("cy")) - cy);
-}
-
 afterEach(() => vi.restoreAllMocks());
 
 describe("RadarChart: shapes", () => {
-  it("draws one shape per series and a dot per value", () => {
+  /** Each vertex's distance from the centre, from a shape's `points`. */
+  function vertexRadii(container: HTMLElement, series = 0): number[] {
+    const points = parts(container, "radar-shape")[series]?.getAttribute("points") ?? "";
+    return points.split(" ").map((p) => {
+      const [x, y] = p.split(",").map(Number) as [number, number];
+      return Math.hypot(x - 250, y - 250);
+    });
+  }
+
+  it("draws one shape per series, with a vertex per metric and no markers", () => {
     const { container } = renderChart({ series: [winger, fullback] });
     expect(parts(container, "radar-shape")).toHaveLength(2);
-    expect(parts(container, "radar-dot")).toHaveLength(8);
+    expect(vertexRadii(container, 1)).toHaveLength(4);
+    expect(container.querySelectorAll("[data-pitchkit-series] circle")).toHaveLength(0);
   });
 
   it("puts a lower-is-better metric's best value at the rim", () => {
     const { container } = renderChart();
-    const dots = parts(container, "radar-dot");
-    // Turnovers = 1, its min, is the best value: it reaches the rim, as does
-    // nothing else here.
-    const turnovers = dots[2] as Element;
-    const npxg = dots[0] as Element;
-    expect(radiusOf(turnovers)).toBeGreaterThan(radiusOf(npxg));
+    const [npxg, , turnovers] = vertexRadii(container) as [number, number, number];
+    // Turnovers = 1, its min, is the best value: it reaches the rim.
+    expect(turnovers).toBeGreaterThan(npxg);
   });
 
-  it("pins a value beyond the range to the rim and draws it hollow", () => {
+  it("pins a value beyond the range to the rim, and the readout says so", () => {
     const { container } = renderChart({
       series: [{ id: "a", values: { npxg: 0.9, shots: 2, turnovers: 2, pressures: 10 } }],
     });
-    const clamped = parts(container, "radar-dot").filter((d) =>
-      d.hasAttribute("data-pitchkit-clamped"),
-    );
-    expect(clamped).toHaveLength(1);
+    const radii = renderChart().container;
+    const [overshoot] = vertexRadii(container) as [number];
+    const [rimTurnovers] = vertexRadii(radii).slice(2) as [number];
+    expect(overshoot).toBeCloseTo(rimTurnovers);
+    fireEvent.focus(parts(container, "radar-label")[0] as Element);
+    expect(screen.getByRole("tooltip").textContent).toContain("off scale");
   });
 
-  it("draws no dot for a missing value and pulls the outline to the centre", () => {
+  it("pulls the outline to the centre for a missing value", () => {
     const { container } = renderChart({
       series: [{ id: "a", values: { npxg: 0.3, shots: null, turnovers: 2, pressures: 10 } }],
     });
-    expect(parts(container, "radar-dot")).toHaveLength(3);
-    const points = parts(container, "radar-shape")[0]?.getAttribute("points") ?? "";
-    expect(points.split(" ")[1]).toBe("250,250");
+    expect(vertexRadii(container)[1]).toBe(0);
   });
 
   it("bands a single series in two tones, but not several", () => {

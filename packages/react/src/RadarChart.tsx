@@ -17,7 +17,7 @@ import {
 } from "@pitchkit/core";
 import type { NormalisedValue, Point } from "@pitchkit/core";
 import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
-import { AXIS, CHART_MUTED, CHART_SURFACE, CHART_TEXT, GRID, seriesColor } from "./chart-tokens.js";
+import { AXIS, CHART_MUTED, CHART_TEXT, GRID, seriesColor } from "./chart-tokens.js";
 import { warnInDevelopment } from "./dev-warn.js";
 import { PolarDetailView, usePolarSelection } from "./polar-detail.js";
 import type { PolarMetric, PolarSeries } from "./polar-types.js";
@@ -30,8 +30,8 @@ const DEFAULT_RINGS = 4;
 const READABLE_SERIES = 3;
 const WRAP_CHARS = 12;
 const TICK_FONT = 8.5;
-/** Space between the rim and a label: clear of a dot pinned to the rim. */
-const LABEL_GAP = 12;
+/** Space between the rim and a label. */
+const LABEL_GAP = 8;
 const LEGEND_HEIGHT = 24;
 /** Smallest clickable label, in either direction (WCAG 2.5.8). */
 const MIN_TARGET = 24;
@@ -361,26 +361,6 @@ export function RadarChart({
                     strokeLinejoin: "round",
                   }}
                 />
-                {r.vertices.map(
-                  (v, j) =>
-                    v.placed && (
-                      <circle
-                        key={j}
-                        data-pitchkit-part="radar-dot"
-                        data-pitchkit-clamped={v.placed.clamped || undefined}
-                        cx={v.point[0]}
-                        cy={v.point[1]}
-                        r={4}
-                        style={{
-                          // A value past the axis is pinned to it and drawn hollow,
-                          // so the shape never claims more than the range shows.
-                          fill: v.placed.clamped ? CHART_SURFACE : "currentColor",
-                          stroke: v.placed.clamped ? "currentColor" : CHART_SURFACE,
-                          strokeWidth: 2,
-                        }}
-                      />
-                    ),
-                )}
               </g>
             );
           })}
