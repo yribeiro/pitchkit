@@ -30,9 +30,9 @@ import { appearance, C, densityAppearance, PAD } from "../theme";
 
 const SPAIN = C.sky;
 const ENGLAND = "#e2e8f0";
-/** Voronoi-only: saturated so the cells read on a phone. */
-const V_SPAIN = "#1e6fff";
-const V_ENGLAND = "#ff7a00";
+/** Voronoi: the docs gallery's zonal-control colours. */
+const V_SPAIN = "#38bdf8";
+const V_ENGLAND = "#fb923c";
 const mirror = (s: Shot): Shot => ({ ...s, x: 120 - s.x, y: 80 - s.y });
 const st = L.stats;
 
@@ -278,8 +278,8 @@ export const BEATS: Beat[] = [
           x={(p) => p.x}
           y={(p) => p.y}
           fill={(p) => (p.spain ? V_SPAIN : V_ENGLAND)}
-          fillOpacity={0.6}
-          stroke="rgba(0,0,0,0.7)"
+          fillOpacity={0.35}
+          stroke="rgba(255,255,255,0.4)"
           strokeWidth={1.2 * s}
         />
         <Scatter
@@ -287,7 +287,7 @@ export const BEATS: Beat[] = [
           x={(p) => p.x}
           y={(p) => p.y}
           r={(p) => (p.actor ? 12 * s : 7.5 * s)}
-          fill={(p) => (p.actor ? "white" : p.spain ? "#0b2a7a" : "#7a2e00")}
+          fill={(p) => (p.actor ? "white" : p.spain ? V_SPAIN : V_ENGLAND)}
           stroke={(p) => (p.actor ? V_SPAIN : "rgba(255,255,255,0.95)")}
           strokeWidth={(p) => (p.actor ? 4 * s : 2 * s)}
         />
