@@ -228,7 +228,7 @@ describe("PizzaChart: several series", () => {
 });
 
 describe("PizzaChart: value boxes", () => {
-  it("prints each value for one series and for an overlay, not side by side", () => {
+  it("prints each value in every layout", () => {
     expect(parts(renderChart().container, "pizza-value")).toHaveLength(4);
     expect(
       parts(
@@ -238,19 +238,13 @@ describe("PizzaChart: value boxes", () => {
     ).toHaveLength(8);
     expect(
       parts(renderChart({ series: [winger, fullback] }).container, "pizza-value"),
-    ).toHaveLength(0);
+    ).toHaveLength(8);
   });
 
-  it("can be forced on or off", () => {
+  it("can be turned off", () => {
     expect(
       parts(renderChart({ appearance: { values: false } }).container, "pizza-value"),
     ).toHaveLength(0);
-    expect(
-      parts(
-        renderChart({ series: [winger, fullback], appearance: { values: true } }).container,
-        "pizza-value",
-      ),
-    ).toHaveLength(8);
   });
 
   it("drops a box that would not fit its sliver of arc", () => {

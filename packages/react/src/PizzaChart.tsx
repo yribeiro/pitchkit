@@ -138,7 +138,7 @@ export function PizzaChart({
   );
   const hasRim = !byGroup && groupNames.length > 0;
 
-  const showValues = appearance?.values ?? (byGroup || overlay);
+  const showValues = appearance?.values ?? true;
   const showLegend = appearance?.legend ?? (byGroup ? groupNames.length > 1 : true);
   const legendEntries = byGroup
     ? groupNames.map((name) => ({ key: name, label: name, ...(groupPaints.get(name) as Paint) }))

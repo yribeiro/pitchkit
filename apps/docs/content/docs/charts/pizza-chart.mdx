@@ -89,10 +89,9 @@ moves to an arc on the rim. Each series gets its own slice within a metric:
 Past the limit a series still draws, with a development warning. Overlaying a third hides the middle
 value behind the other two, and a fourth side-by-side wedge is too thin to read.
 
-Value boxes follow the layout: printed for one series and for an overlay (each series in its own lane
-across the slice, so close values never print on top of each other), and off for side by side, where
-they would crowd. `appearance={{ values: true }}` forces them on. A box is dropped on a slice too
-narrow to hold it.
+Value boxes are on by default: at the tip for one series, in a lane per series for an overlay (so close
+values never print on top of each other), and centred on each series' wedge side by side.
+`appearance={{ values: false }}` turns them off. A box is dropped on a slice too narrow to hold it.
 
 ## Label rotation
 

@@ -252,9 +252,9 @@ its geometry in `core/polar/`, drawing the caller's numbers and computing nothin
   component in place of the chart, with the same Back button, Escape and focus return as the radar
   (`selected`/`onSelectedChange` take `{ metricId, seriesId }`). A focused slice draws its own ring, since
   the browser's box would wrap the bounding box of a curved slice.
-- **Value boxes follow the layout**: printed at the tip for one series and for an overlay (each series in
-  its own lane across the slice, so close values never print on top of each other), off for side by side,
-  and dropped on a slice too narrow to hold one. Boxes use the surface colour with a series-coloured
+- **Value boxes are on by default**: at the tip for one series, in a lane per series for an overlay (so
+  close values never print on top of each other), centred on each wedge side by side, and dropped on a
+  slice too narrow to hold one. Boxes use the surface colour with a series-coloured
   outline and chart text, never the series colour as text.
 - **Percentiles are the caller's.** Values default to 0–100, which is what a percentile is, with
   `lowerIsBetter` flipping a slice so a long one is always the good one.
