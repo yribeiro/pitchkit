@@ -38,8 +38,8 @@ const SHIFT = { x: WIDTH / 2 - PIVOT.x, y: HEIGHT / 2 - PIVOT.y };
 // frame, turns back to the horizontal pitch, draws the move, and ends on the
 // same final frame.
 const HOLD = 36; // the final frame, held to open
-const OUT = 12; // labels, goal and angle fade away
-const BACK_START = HOLD + OUT;
+const OUT = 12; // labels, goal and angle fade away as the turn begins
+const BACK_START = HOLD; // the turn starts as soon as the hold ends, 1.2 s in
 const BACK_END = BACK_START + 42; // the pitch turns back to horizontal
 const MOVES_START = BACK_END + 8;
 const PER_MOVE = 18;
