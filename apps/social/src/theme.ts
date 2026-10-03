@@ -12,6 +12,8 @@ export const LINKEDIN = { width: 1200, height: 1200 } as const;
 export const TILE = { width: 1080, height: 1440 } as const;
 export const MOSAIC = { width: TILE.width * 3, height: TILE.height * 2 } as const;
 /** Reels / Stories / Shorts (9:16). */
+/** The 4:5 wall-post size as a video (an animated wall post). */
+export const POST_VIDEO = { ...POST, fps: 30 } as const;
 export const REEL = { width: 1080, height: 1920, fps: 30 } as const;
 
 /**

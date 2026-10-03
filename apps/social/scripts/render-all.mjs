@@ -42,7 +42,12 @@ const STILLS = [
   "linkedin-flow",
   "linkedin-momentum",
 ];
-const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
+const REELS = [
+  "reel-01-quickstart",
+  "reel-02-tracking",
+  "reel-03-layers",
+  "post-03-winner-animated",
+];
 
 /**
  * Cut the 3240x2880 mosaic into six 1080x1440 (3:4) tiles, named in reading

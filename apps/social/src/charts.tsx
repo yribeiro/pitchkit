@@ -313,6 +313,9 @@ export function GoalChainChart({
   showFreezeFrame = false,
   showLabels = true,
   goalPop = 1,
+  chainOpacity = 1,
+  freezeOpacity = 1,
+  angleOpacity = 1,
 }: {
   chain: GoalChain;
   width: number;
@@ -320,6 +323,12 @@ export function GoalChainChart({
   showFreezeFrame?: boolean;
   showLabels?: boolean;
   goalPop?: number;
+  /** Fades the passes, carries and their origins (the move up to the shot). */
+  chainOpacity?: number;
+  /** Fades the 360 freeze-frame players. */
+  freezeOpacity?: number;
+  /** Fades the goal-angle wedge. */
+  angleOpacity?: number;
 }) {
   const height = pitchHeightFor(width);
   const s = width / 1000;
@@ -349,57 +358,63 @@ export function GoalChainChart({
       <Pitch type="statsbomb" width={width} height={height} padding={PAD} appearance={appearance}>
         {showFreezeFrame && (
           <>
-            <GoalAngle
-              data={[chain.goal]}
-              x={(g) => g.x}
-              y={(g) => g.y}
-              goal="right"
-              fill={C.orange}
-              fillOpacity={0.16}
-              stroke="rgba(255,255,255,0.3)"
-            />
-            <Scatter
-              data={chain.freezeFrame}
-              x={(p) => p.x}
-              y={(p) => p.y}
-              r={9 * s}
-              fill={(p) => (p.teammate ? C.spain : "#e2e8f0")}
-              fillOpacity={(p) => (p.teammate ? 0.9 : 0.75)}
-              stroke={(p) => (p.position === "Goalkeeper" ? C.orange : "rgba(6,16,11,0.9)")}
-              strokeWidth={(p) => (p.position === "Goalkeeper" ? 3 : 1.5)}
-            />
+            <g opacity={angleOpacity}>
+              <GoalAngle
+                data={[chain.goal]}
+                x={(g) => g.x}
+                y={(g) => g.y}
+                goal="right"
+                fill={C.orange}
+                fillOpacity={0.16}
+                stroke="rgba(255,255,255,0.3)"
+              />
+            </g>
+            <g opacity={freezeOpacity}>
+              <Scatter
+                data={chain.freezeFrame}
+                x={(p) => p.x}
+                y={(p) => p.y}
+                r={9 * s}
+                fill={(p) => (p.teammate ? C.spain : "#e2e8f0")}
+                fillOpacity={(p) => (p.teammate ? 0.9 : 0.75)}
+                stroke={(p) => (p.position === "Goalkeeper" ? C.orange : "rgba(6,16,11,0.9)")}
+                strokeWidth={(p) => (p.position === "Goalkeeper" ? 3 : 1.5)}
+              />
+            </g>
           </>
         )}
-        <Comet
-          data={carries}
-          x={(m) => m.x}
-          y={(m) => m.y}
-          x2={(m) => m.endX}
-          y2={(m) => m.endY}
-          color={C.emerald}
-          gradient
-          endWidth={10 * s}
-        />
-        <Arrows
-          data={passes}
-          x={(m) => m.x}
-          y={(m) => m.y}
-          x2={(m) => m.endX}
-          y2={(m) => m.endY}
-          stroke="white"
-          strokeWidth={4 * s}
-          strokeOpacity={0.92}
-          headSize={16 * s}
-        />
-        <Scatter
-          data={origins}
-          x={(m) => m.x}
-          y={(m) => m.y}
-          r={7 * s}
-          fill="white"
-          stroke="rgba(6,16,11,0.9)"
-          strokeWidth={2}
-        />
+        <g opacity={chainOpacity}>
+          <Comet
+            data={carries}
+            x={(m) => m.x}
+            y={(m) => m.y}
+            x2={(m) => m.endX}
+            y2={(m) => m.endY}
+            color={C.emerald}
+            gradient
+            endWidth={10 * s}
+          />
+          <Arrows
+            data={passes}
+            x={(m) => m.x}
+            y={(m) => m.y}
+            x2={(m) => m.endX}
+            y2={(m) => m.endY}
+            stroke="white"
+            strokeWidth={4 * s}
+            strokeOpacity={0.92}
+            headSize={16 * s}
+          />
+          <Scatter
+            data={origins}
+            x={(m) => m.x}
+            y={(m) => m.y}
+            r={7 * s}
+            fill="white"
+            stroke="rgba(6,16,11,0.9)"
+            strokeWidth={2}
+          />
+        </g>
         {done && shotT > 0 && (
           <Arrows
             data={[shot]}

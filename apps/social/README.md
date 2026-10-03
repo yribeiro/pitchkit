@@ -7,20 +7,21 @@ components a user installs; nothing is mocked up in a design tool.
 
 Private workspace (`"private": true`), never published.
 
-| Id                   | Format              | What                                                                    |
-| -------------------- | ------------------- | ----------------------------------------------------------------------- |
-| `post-01-intro`      | 1080×1350 PNG       | Brand intro over Spain's pass network                                   |
-| `post-02-code`       | 1080×1350 PNG       | 14 lines of code → the shot map they draw                               |
-| `post-03-winner`     | 1080×1350 PNG       | Oyarzabal's Euro 2024 winner + shot freeze frame                        |
-| `post-04-network`    | 1080×1350 PNG       | Spain's first-half pass network                                         |
-| `post-05-palettes`   | 1080×1350 PNG       | One shot map in four palettes                                           |
-| `post-06-layers`     | 1080×1350 PNG       | 3×3 catalogue of layer components                                       |
-| `wall-mosaic`        | 3240×2880 PNG       | One picture cut into six 1080×1440 grid tiles (`mosaic-tile-1…6.png`)   |
-| `carousel-01…08`     | 8 × 1080×1350 PNG   | "Analyse any corner kick": a saveable 5-step how-to on SkillCorner data |
-| `linkedin-*`         | 4 × 1200×1200 PNG   | Hexbin, PositionalHeatmap, Voronoi and Flow, for LinkedIn               |
-| `reel-01-quickstart` | 1080×1920 MP4, 22 s | Palmer's equaliser built in 4 steps (mirrors the docs Quickstart)       |
-| `reel-02-tracking`   | 1080×1920 MP4, 24 s | SkillCorner tracking of a goal with a live Voronoi                      |
-| `reel-03-layers`     | 1080×1920 MP4, 20 s | 11 layers, each drawing a real finding from the final, with stat chips  |
+| Id                        | Format              | What                                                                                                                      |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `post-01-intro`           | 1080×1350 PNG       | Brand intro over Spain's pass network                                                                                     |
+| `post-02-code`            | 1080×1350 PNG       | 14 lines of code → the shot map they draw                                                                                 |
+| `post-03-winner`          | 1080×1350 PNG       | Oyarzabal's Euro 2024 winner + shot freeze frame                                                                          |
+| `post-04-network`         | 1080×1350 PNG       | Spain's first-half pass network                                                                                           |
+| `post-05-palettes`        | 1080×1350 PNG       | One shot map in four palettes                                                                                             |
+| `post-06-layers`          | 1080×1350 PNG       | 3×3 catalogue of layer components                                                                                         |
+| `wall-mosaic`             | 3240×2880 PNG       | One picture cut into six 1080×1440 grid tiles (`mosaic-tile-1…6.png`)                                                     |
+| `carousel-01…08`          | 8 × 1080×1350 PNG   | "Analyse any corner kick": a saveable 5-step how-to on SkillCorner data                                                   |
+| `linkedin-*`              | 4 × 1200×1200 PNG   | Hexbin, PositionalHeatmap, Voronoi and Flow, for LinkedIn                                                                 |
+| `post-03-winner-animated` | 1080×1350 MP4, 11 s | Post 03 as a video: the build-up draws in, then the pitch turns vertical and zooms to the 360 freeze frame and goal angle |
+| `reel-01-quickstart`      | 1080×1920 MP4, 22 s | Palmer's equaliser built in 4 steps (mirrors the docs Quickstart)                                                         |
+| `reel-02-tracking`        | 1080×1920 MP4, 24 s | SkillCorner tracking of a goal with a live Voronoi                                                                        |
+| `reel-03-layers`          | 1080×1920 MP4, 20 s | 11 layers, each drawing a real finding from the final, with stat chips                                                    |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
 

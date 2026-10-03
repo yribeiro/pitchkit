@@ -7,6 +7,7 @@ import {
   LinkedInPositional,
   LinkedInVoronoi,
 } from "./linkedin/LinkedInImage";
+import { WINNER_DURATION, WinnerAnimated } from "./WinnerAnimated";
 import { CornerCover } from "./carousel/CornerCover";
 import {
   SlideAll,
@@ -28,7 +29,7 @@ import {
   WallProfilePreview,
 } from "./mosaic";
 import { X_HEADER, XHeader } from "./header";
-import { LINKEDIN, MOSAIC, POST, REEL } from "./theme";
+import { LINKEDIN, MOSAIC, POST, POST_VIDEO, REEL } from "./theme";
 
 /**
  * Every deliverable, by the id `npm run render` uses for its filename.
@@ -78,6 +79,12 @@ export function Root() {
           component={TrackingReel}
           durationInFrames={TRACKING_DURATION}
           {...REEL}
+        />
+        <Composition
+          id="post-03-winner-animated"
+          component={WinnerAnimated}
+          durationInFrames={WINNER_DURATION}
+          {...POST_VIDEO}
         />
         <Composition
           id="reel-03-layers"
