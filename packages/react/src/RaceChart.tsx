@@ -16,7 +16,7 @@ import { RaceChartContext } from "./race-context.js";
 import type { ResolvedRaceSeries } from "./race-context.js";
 import { RaceGridAndAxes, RaceLegend, RacePeriodBreaks } from "./race-chrome.js";
 import type { RaceAppearance, RaceChartProps, RaceHoverRow } from "./race-types.js";
-import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
+import { ChartReadout, ReadoutRow, useDismissOnOutsidePress } from "./chart-readout.js";
 import { AXIS, CHART_SURFACE, CHART_TEXT, SERIES_COLORS } from "./chart-tokens.js";
 import { useChartBox } from "./use-chart-box.js";
 
@@ -503,27 +503,23 @@ function RaceTooltip({
         <>
           <div style={{ fontWeight: 600 }}>{`${Math.round(time)}'`}</div>
           {rows.map((row) => (
-            <div key={row.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  width: 10,
-                  height: 2.5,
-                  borderRadius: 1.25,
-                  background: row.color,
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ opacity: 0.75 }}>{row.label}</span>
-              <span
-                style={{
-                  marginLeft: "auto",
-                  fontVariantNumeric: "tabular-nums",
-                  fontWeight: 600,
-                }}
-              >
-                {row.value.toFixed(2)}
-              </span>
-            </div>
+            <ReadoutRow
+              key={row.id}
+              label={row.label}
+              swatch={
+                <span
+                  style={{
+                    width: 10,
+                    height: 2.5,
+                    borderRadius: 1.25,
+                    background: row.color,
+                    flexShrink: 0,
+                  }}
+                />
+              }
+            >
+              {row.value.toFixed(2)}
+            </ReadoutRow>
           ))}
         </>
       )}

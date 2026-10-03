@@ -12,11 +12,15 @@ import {
   ringPath,
   ringSteps,
   ringValues,
-  textWidth,
   wrapLabel,
 } from "@pitchkit/core";
 import type { NormalisedValue, Point } from "@pitchkit/core";
-import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
+import {
+  ChartReadout,
+  ReadoutRow,
+  legendOffsets,
+  useDismissOnOutsidePress,
+} from "./chart-readout.js";
 import { AXIS, CHART_MUTED, CHART_TEXT, GRID, seriesColor } from "./chart-tokens.js";
 import { warnInDevelopment } from "./dev-warn.js";
 import { PolarDetailView, usePolarSelection } from "./polar-detail.js";
@@ -185,12 +189,12 @@ export function RadarChart({
   }));
   const banded = (appearance?.bands ?? true) && resolved.length === 1;
   // Each legend entry starts where the last one's estimated width ends.
-  const legendX: number[] = [];
-  let legendCursor = 4;
-  for (const r of resolved) {
-    legendX.push(legendCursor);
-    legendCursor += LEGEND_ENTRY_PAD + textWidth(r.label.length, fontSize + 1);
-  }
+  const legendX = legendOffsets(
+    resolved.map((r) => r.label),
+    fontSize + 1,
+    LEGEND_ENTRY_PAD,
+    4,
+  );
 
   const context = useMemo<RadarChartContextValue>(() => {
     const indexOf = new Map(metrics.map((m, j) => [m.id, j]));
@@ -497,25 +501,27 @@ function RadarReadout({
         )}
       </div>
       {rows.map((r) => (
-        <div key={r.series.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            className={r.series.className}
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 2,
-              background: "currentColor",
-              color: r.color,
-            }}
-          />
-          <span style={{ opacity: 0.75 }}>{r.label}</span>
-          <span style={{ marginLeft: "auto", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
-            {r.vertex?.value === undefined ? "No data" : text(r.vertex.value, metric)}
-            {r.vertex?.placed?.clamped && (
-              <span style={{ opacity: 0.7, fontWeight: 400 }}> (off scale)</span>
-            )}
-          </span>
-        </div>
+        <ReadoutRow
+          key={r.series.id}
+          label={r.label}
+          swatch={
+            <span
+              className={r.series.className}
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 2,
+                background: "currentColor",
+                color: r.color,
+              }}
+            />
+          }
+        >
+          {r.vertex?.value === undefined ? "No data" : text(r.vertex.value, metric)}
+          {r.vertex?.placed?.clamped && (
+            <span style={{ opacity: 0.7, fontWeight: 400 }}> (off scale)</span>
+          )}
+        </ReadoutRow>
       ))}
     </>
   );

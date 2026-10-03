@@ -1,7 +1,9 @@
-import { createContext, useContext } from "react";
+import { createChartContext } from "./chart-context.js";
 import type { RadarChartContextValue } from "./radar-types.js";
 
-export const RadarChartContext = createContext<RadarChartContextValue | null>(null);
+const radar = createChartContext<RadarChartContextValue>("RadarChart");
+
+export const RadarChartContext = radar.Context;
 
 /**
  * The radar's geometry — the `<RadarChart>` counterpart to `usePitch()`.
@@ -16,11 +18,6 @@ export const RadarChartContext = createContext<RadarChartContextValue | null>(nu
  * }
  * ```
  *
- * Throws outside a `<RadarChart>`: an annotation outside its chart is a
- * usage error worth seeing immediately, not a blank panel.
+ * Throws outside a `<RadarChart>`.
  */
-export function useRadarChart(): RadarChartContextValue {
-  const ctx = useContext(RadarChartContext);
-  if (!ctx) throw new Error("@pitchkit/react: useRadarChart() must be used inside <RadarChart>.");
-  return ctx;
-}
+export const useRadarChart: () => RadarChartContextValue = radar.use;

@@ -55,7 +55,7 @@ export type {
 } from "./polar-types.js";
 
 export { usePitch } from "./use-pitch.js";
-export { useRaceChart } from "./use-race-chart.js";
-export { useMomentumChart } from "./use-momentum-chart.js";
+export { useRaceChart } from "./race-context.js";
+export { useMomentumChart } from "./momentum-context.js";
 export type { RaceChartContextValue, ResolvedRaceSeries } from "./race-context.js";
 export type { TooltipState } from "./context.js";

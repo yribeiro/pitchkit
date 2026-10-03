@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { RaceChart } from "./RaceChart.js";
-import { useRaceChart } from "./use-race-chart.js";
+import { useRaceChart } from "./race-context.js";
 
 interface Shot {
   minute: number;

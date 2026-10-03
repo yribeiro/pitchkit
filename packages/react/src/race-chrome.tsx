@@ -1,7 +1,8 @@
 import { matchMinuteTicks, niceTicks } from "@pitchkit/core";
-import { useRaceChartContext } from "./race-context.js";
+import { useRaceChart } from "./race-context.js";
 import type { RaceAppearance } from "./race-types.js";
 
+import { legendOffsets } from "./chart-readout.js";
 import { AXIS, CHART_MUTED as MUTED, CHART_TEXT, GRID } from "./chart-tokens.js";
 
 /**
@@ -17,7 +18,7 @@ import { AXIS, CHART_MUTED as MUTED, CHART_TEXT, GRID } from "./chart-tokens.js"
  * horizontal segments.
  */
 export function RaceGridAndAxes({ appearance }: { appearance: Required<RaceAppearance> }) {
-  const { frame, scaleX, scaleY, endTime } = useRaceChartContext();
+  const { frame, scaleX, scaleY, endTime } = useRaceChart();
   const showX = appearance.axis === "both" || appearance.axis === "x";
   const showY = appearance.axis === "both" || appearance.axis === "y";
 
@@ -93,7 +94,7 @@ export function RaceGridAndAxes({ appearance }: { appearance: Required<RaceAppea
  * wrong place is worse than no rule.
  */
 export function RacePeriodBreaks({ breaks }: { breaks: readonly number[] }) {
-  const { frame, scaleX } = useRaceChartContext();
+  const { frame, scaleX } = useRaceChart();
 
   return (
     <g data-pitchkit-part="race-period">
@@ -130,17 +131,14 @@ export function RacePeriodBreaks({ breaks }: { breaks: readonly number[] }) {
  * text on a light surface.
  */
 export function RaceLegend({ colors }: { colors: readonly string[] }) {
-  const { frame, series } = useRaceChartContext();
+  const { frame, series } = useRaceChart();
 
-  // Laid out with a running offset computed up front rather than mutated
-  // during the map — the React Compiler rejects reassignment across a
-  // render, and a precomputed array is clearer anyway.
-  const positions = series.reduce<number[]>((acc, s, i) => {
-    const previous = acc[i - 1] ?? frame.x0;
-    const previousWidth = i === 0 ? 0 : (series[i - 1]?.label.length ?? 0) * 6.5 + 34;
-    acc.push(previous + previousWidth);
-    return acc;
-  }, []);
+  const positions = legendOffsets(
+    series.map((s) => s.label),
+    11,
+    34,
+    frame.x0,
+  );
 
   return (
     <g data-pitchkit-part="race-legend">
