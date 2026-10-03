@@ -198,9 +198,10 @@ PizzaChart (root)
  └─ detail    (DetailView replaces the SVG while a slice is selected)
 ```
 
-- **`core/polar/` supplies the wedge geometry**: `wedgeAngles` (a slice's span, inset by a gap),
-  `splitWedge` (one sub-wedge per series), `annularSectorPath` (the slice with the hole cut out) and
-  `overlayOrder` (largest first). The label, ring and normalisation maths is the radar's.
+- **`core/polar/` supplies the wedge geometry**: `wedgeAngles` (a slice's span), `splitWedge`
+  (one sub-wedge per series), `annularSectorPath` (the slice with the hole cut out, its edges pulled in
+  by a pixel inset so gaps keep one width from hole to rim), `overlayOrder` (largest first), and for
+  value boxes `wedgeMid`, `wedgeLane` and `valueBoxSpot`. The label, ring and normalisation maths is the radar's.
 - **Each (metric, series) is one cell** with its wedge, tip radius, value and paint. Side by side gives a
   cell its own sub-wedge; overlay gives every cell the full wedge and draws them in `overlayOrder`.
 - **Paint is resolved per cell**: one series takes its metric's group paint, several take their series'

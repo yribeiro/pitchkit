@@ -40,7 +40,7 @@ export interface PizzaSeries {
 
 /** How a group of slices is coloured. */
 export interface PizzaGroup {
-  /** Any CSS colour. Defaults to `--pitch-series-N` in order of first appearance. */
+  /** Any CSS colour. Defaults to `--pitch-series-N` in order of first appearance (after the series' slots when several series share the chart). */
   readonly color?: string;
   /** Applied to the group, as for a series: `text-sky-500`. Drops the themed default. */
   readonly className?: string;
