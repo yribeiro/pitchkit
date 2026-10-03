@@ -143,7 +143,8 @@ export function RadarDetailView({
           {title}
         </h3>
         {subtitle !== undefined && (
-          <span style={{ fontSize: 12, color: CHART_MUTED }}>{subtitle}</span>
+          // Pushed to the far edge so the values sit opposite the title, not run on from it.
+          <span style={{ marginLeft: "auto", fontSize: 12, color: CHART_MUTED }}>{subtitle}</span>
         )}
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>{children}</div>
