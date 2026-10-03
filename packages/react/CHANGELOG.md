@@ -1,5 +1,99 @@
 # @pitchkit/react
 
+## 0.6.0
+
+### Minor Changes
+
+- 31c5279: Add `<MomentumChart>` and `useMomentumChart()` — match momentum as signed bars, one panel per
+  period, with an icon row of events beneath.
+
+  Like `<RaceChart>` it is a root, not a pitch layer, and takes no `type` prop. `periods` takes
+  one array of samples per period (extra time is two more), at any interval: each bar runs from its
+  sample to the next one's minute. `value` is signed, positive for the home side and negative for the
+  away side. A period's width follows its minutes, so stoppage time widens a half.
+
+  Events are passed as `events` with `eventTime`, `eventSide` and `eventKind` accessors, like every
+  other prop. The kinds are `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`,
+  `substitution` and `var`; the icons are PitchKit's own. The icon row is one row: icons that would
+  touch stack with an offset, so a dense list such as every substitution is better left out or
+  drawn as children.
+
+  `useMomentumChart()` exposes `frame`, `panels`, `scaleX`, `scaleY` and `bars` so anything else can
+  be drawn as a child. Development builds warn when two periods are sampled at different intervals, since the halves then draw bars of different widths. Hover and touch readouts work as for `<RaceChart>`, whose readout card is now
+  shared.
+
+  The bundled Agent Skill documents both, and PitchKit does not compute momentum — the values come
+  from the caller.
+
+- 1ae311c: Add `<PizzaChart>` and `usePizzaChart()` — the football percentile pizza.
+
+  One slice per metric, as long as the value, around a hole, with dashed rings at each quarter. The
+  chart computes nothing: values and percentiles come from the caller (0–100 by default), and
+  `lowerIsBetter` flips a slice so a long one is always the good one. With one series the slices take
+  their `group`'s colour; with several they take their series' colour and the group shows as an arc
+  on the rim. Colour a group with `groups={{ Attacking: { className: "text-sky-500" } }}`.
+
+  `seriesLayout` chooses how several series share a slice: `"side-by-side"` (default, readable to
+  three) or `"overlay"` (two, largest drawn first so the smaller shows on top). Value boxes print for one
+  series and for an overlay, each series in its own lane so close values never overlap.
+
+  Pass `renderDetail` and each slice becomes a button: activating it replaces the chart with your
+  component, in the same box, under a Back button; the context names the metric and the series whose
+  slice was clicked. Escape and `close()` return, focus goes back to the slice, and `selected` and
+  `onSelectedChange` make it controllable. `labelRotation` works as on the radar.
+
+  The radar's selection and detail view are now shared with the pizza (`chart-detail.tsx`); the radar's
+  public API and its `radar-detail` / `radar-back` parts are unchanged. The bundled Agent Skill
+  documents the chart.
+
+- 0194e01: Add `<RaceChart>` and `useRaceChart()` — a cumulative step chart over match minutes, the
+  chart usually called an xG race chart or xG timeline.
+
+  It is a sibling of `<Pitch>`, not a layer inside one: there is no pitch and no provider
+  coordinate system, so it owns its own scales and takes no `type` prop. It renders SVG
+  only, so it server-renders like every mark layer, and it is responsive by default like
+  `<Pitch>`. Crosshair hover works with a mouse and by touch.
+
+  Each series' total is printed at its own line end, inside the plot, so the lines use the
+  full width. The leader's label sits above its line and the others below theirs, so close
+  totals never overlap, and the y-axis ceiling leaves room above the highest total for it.
+
+  `useRaceChart()` exposes `scaleX`, `scaleY` and `valueAt(seriesId, time)` so that events
+  which do not accumulate a value — bookings, substitutions — can be drawn as children
+  anchored to a series' line.
+
+  The bundled Agent Skill documents the component, including the two data traps it is easy
+  to hit with StatsBomb open data: penalty shootouts are period 5 and carry xG, and halves
+  do not end on minute 45.
+
+- ccbb12f: Add `<RadarChart>` and `useRadarChart()` — the football player radar.
+
+  Each metric is an axis with its own `min` and `max`, and `lowerIsBetter` flips an axis so outward
+  is always better. Pass one to three `series` and each draws a translucent shape; a single series
+  keeps mplsoccer's two-tone banding. The chart computes nothing: values, per-90s, percentiles and
+  ranges come from the caller. A value beyond its range is pinned to the edge, and the readout marks it off scale.
+
+  `labelRotation` (`"tangent"`, the default, `"radial"` or `"horizontal"`) sets how labels and ring
+  values sit round the rim, turning any that would read upside down.
+
+  Pass `renderDetail` and each axis label becomes a button: activating it replaces the chart with
+  your component, in the same box, under a header with a Back button, styled with `--pitch-chart-accent` and `--pitch-chart-accent-text`. Escape and `close()` return
+  to the chart and restore focus; `selected` and `onSelectedChange` make it controllable.
+
+  A series `className` such as `text-rose-500` recolours every part of it, since each paints with
+  `currentColor`. Also exports the `RadarMetric`, `RadarSeries`, `RadarSelection`,
+  `RadarDetailContext` and `LabelRotation` types. The bundled Agent Skill documents the chart.
+
+### Patch Changes
+
+- d259d34: Link PitchKit's X and Instagram accounts from the package READMEs.
+- Updated dependencies [31c5279]
+- Updated dependencies [1ae311c]
+- Updated dependencies [0194e01]
+- Updated dependencies [ccbb12f]
+- Updated dependencies [d259d34]
+  - @pitchkit/core@0.5.0
+
 ## 0.5.1
 
 ### Patch Changes
