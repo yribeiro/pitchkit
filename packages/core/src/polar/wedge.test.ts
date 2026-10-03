@@ -104,3 +104,30 @@ describe("valueBoxSpot", () => {
     expect(valueBoxSpot(wedge, 0.25, 100, 20, 13, 40)).toBeDefined();
   });
 });
+
+describe("annularSectorPath inset", () => {
+  const wedge = { start: 0, end: QUARTER };
+  /** The x of the outer start point (M) and the inner start point (last, before Z). */
+  const startXs = (d: string) => [
+    Number(/^M(-?[\d.]+) /.exec(d)?.[1]),
+    Number(/(-?[\d.]+) -?[\d.]+Z$/.exec(d)?.[1]),
+  ];
+
+  it("keeps the edge a constant distance from its axis at every radius", () => {
+    // The start axis is the line x = 0, so x is the distance from it.
+    const [outerX, innerX] = startXs(annularSectorPath(0, 0, 20, 100, wedge, [3, 0]));
+    expect(outerX).toBeCloseTo(3, 1);
+    expect(innerX).toBeCloseTo(3, 1);
+  });
+
+  it("insets both edges by one number", () => {
+    expect(annularSectorPath(0, 0, 20, 100, wedge, 2)).toBe(
+      annularSectorPath(0, 0, 20, 100, wedge, [2, 2]),
+    );
+  });
+
+  it("collapses a slice narrower than its inset", () => {
+    const d = annularSectorPath(0, 0, 20, 100, { start: 0, end: 0.01 }, 5);
+    expect(d).toMatch(/^M[\d.]+ -?[\d.]+A100 100 0 0 1/);
+  });
+});

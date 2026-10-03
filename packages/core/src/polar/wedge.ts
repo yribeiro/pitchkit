@@ -39,6 +39,11 @@ const px = (value: number) => String(+value.toFixed(2));
 /**
  * The SVG path of the slice between radii `r0` and `r1` and angles
  * `start`..`end`: a pizza slice with the hole cut out of its point.
+ *
+ * `inset` pulls each straight edge in by that many pixels (one number for
+ * both edges, or `[start, end]`). The edge stays parallel to its axis, so
+ * neighbouring slices are separated by a gap of constant width instead of
+ * one that widens towards the rim.
  */
 export function annularSectorPath(
   cx: number,
@@ -46,12 +51,24 @@ export function annularSectorPath(
   r0: number,
   r1: number,
   { start, end }: Wedge,
+  inset: number | readonly [number, number] = 0,
 ): string {
-  const large = end - start > Math.PI ? 1 : 0;
-  const [ox0, oy0] = polarPoint(cx, cy, r1, start).map(px);
-  const [ox1, oy1] = polarPoint(cx, cy, r1, end).map(px);
-  const [ix1, iy1] = polarPoint(cx, cy, r0, end).map(px);
-  const [ix0, iy0] = polarPoint(cx, cy, r0, start).map(px);
+  const [insetStart, insetEnd] = typeof inset === "number" ? [inset, inset] : inset;
+  /** The edge's angle at radius `r`, moved `distance` pixels off its axis. */
+  const shift = (r: number, distance: number) => Math.asin(Math.min(1, distance / r));
+  const edges = (r: number): [number, number] => {
+    const from = start + shift(r, insetStart);
+    const to = end - shift(r, insetEnd);
+    // An inset wider than the slice collapses it to its middle.
+    return from < to ? [from, to] : [(start + end) / 2, (start + end) / 2];
+  };
+  const [outerFrom, outerTo] = edges(r1);
+  const [innerFrom, innerTo] = edges(r0);
+  const large = outerTo - outerFrom > Math.PI ? 1 : 0;
+  const [ox0, oy0] = polarPoint(cx, cy, r1, outerFrom).map(px);
+  const [ox1, oy1] = polarPoint(cx, cy, r1, outerTo).map(px);
+  const [ix1, iy1] = polarPoint(cx, cy, r0, innerTo).map(px);
+  const [ix0, iy0] = polarPoint(cx, cy, r0, innerFrom).map(px);
   const [outer, inner] = [px(r1), px(r0)];
   return (
     `M${ox0} ${oy0}A${outer} ${outer} 0 ${large} 1 ${ox1} ${oy1}` +

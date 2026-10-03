@@ -44,9 +44,9 @@ import { useChartBox } from "./use-chart-box.js";
 /** Rings between the hole and the rim, as in mplsoccer: dashed at each quarter, solid at the rim. */
 const RINGS = 4;
 const HOLE_RATIO = 0.22;
-/** Angular inset at a slice's edges, and between series sharing a slice. */
-const SLICE_GAP = 0.012;
-const SERIES_GAP = 0.006;
+/** Pixels each slice's edge is pulled in, so gaps keep one width from hole to rim. */
+const SLICE_INSET = 1.5;
+const SERIES_INSET = 0.75;
 /** Readable limits: past them the slices can't be told apart or read. */
 const SIDE_BY_SIDE_LIMIT = 3;
 const OVERLAY_LIMIT = 2;
@@ -60,6 +60,8 @@ const BOX_HEIGHT = 13;
 interface Cell {
   readonly series: PizzaSeries;
   readonly wedge: Wedge;
+  /** Pixels pulled in from the wedge's start and end edges. */
+  readonly inset: readonly [number, number];
   /** Radius of the slice's tip, or `undefined` when there is no value. */
   readonly tip: number | undefined;
   readonly value: number | undefined;
@@ -165,9 +167,9 @@ export function PizzaChart({
   const labelRadius = outer + LABEL_GAP + rim;
 
   const rows = metrics.map((metric, j) => {
-    const wedge = wedgeAngles(j, count, SLICE_GAP);
+    const wedge = wedgeAngles(j, count);
     const mid = axisAngle(j + 0.5, count);
-    const shares = overlay ? series.map(() => wedge) : splitWedge(wedge, series.length, SERIES_GAP);
+    const shares = overlay ? series.map(() => wedge) : splitWedge(wedge, series.length);
     const cells = series.map((s, i): Cell => {
       const at = place(j, s.values[metric.id]);
       const cellWedge = shares[i] as Wedge;
@@ -186,6 +188,13 @@ export function PizzaChart({
       return {
         series: s,
         wedge: cellWedge,
+        // Series share a slice, so only its outer edges get the full gap.
+        inset: overlay
+          ? [SLICE_INSET, SLICE_INSET]
+          : [
+              i === 0 ? SLICE_INSET : SERIES_INSET,
+              i === series.length - 1 ? SLICE_INSET : SERIES_INSET,
+            ],
         tip: at?.radius,
         value: at ? (s.values[metric.id] as number) : undefined,
         clamped: at?.placed.clamped ?? false,
@@ -290,7 +299,7 @@ export function PizzaChart({
                 {overlay && (
                   <path
                     data-pitchkit-part="pizza-blank"
-                    d={annularSectorPath(cx, cy, inner, outer, wedge)}
+                    d={annularSectorPath(cx, cy, inner, outer, wedge, SLICE_INSET)}
                     style={{ fill: GRID }}
                   />
                 )}
@@ -303,7 +312,7 @@ export function PizzaChart({
                     >
                       <path
                         data-pitchkit-part="pizza-blank"
-                        d={annularSectorPath(cx, cy, inner, outer, cell.wedge)}
+                        d={annularSectorPath(cx, cy, inner, outer, cell.wedge, cell.inset)}
                         style={{ fill: "currentColor", fillOpacity: 0.14 }}
                       />
                     </g>
@@ -355,7 +364,7 @@ export function PizzaChart({
                       }}
                     >
                       <path
-                        d={annularSectorPath(cx, cy, inner, cell.tip, cell.wedge)}
+                        d={annularSectorPath(cx, cy, inner, cell.tip, cell.wedge, cell.inset)}
                         style={{
                           fill: "currentColor",
                           stroke: isFocused ? CHART_TEXT : CHART_SURFACE,
@@ -417,6 +426,7 @@ export function PizzaChart({
                         outer + RIM_GAP,
                         outer + RIM_GAP + RIM_WIDTH,
                         wedge,
+                        SLICE_INSET,
                       )}
                       style={{ fill: "currentColor" }}
                     />
