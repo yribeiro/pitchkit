@@ -23,6 +23,8 @@ export const pitchTokens = {
   chartSurface: "--pitch-chart-surface",
   chartText: "--pitch-chart-text",
   chartMuted: "--pitch-chart-muted",
+  chartAccent: "--pitch-chart-accent",
+  chartAccentText: "--pitch-chart-accent-text",
   cardYellow: "--pitch-card-yellow",
   cardRed: "--pitch-card-red",
   tooltipBg: "--pitch-tooltip-bg",

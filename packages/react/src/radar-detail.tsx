@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode, RefObject } from "react";
-import { CHART_MUTED, CHART_TEXT, GRID } from "./chart-tokens.js";
+import { CHART_ACCENT, CHART_ACCENT_TEXT, CHART_MUTED, CHART_TEXT } from "./chart-tokens.js";
 import type { RadarSelection } from "./radar-types.js";
 
 /**
@@ -108,17 +108,31 @@ export function RadarDetailView({
           data-pitchkit-part="radar-back"
           onClick={onClose}
           style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
             font: "inherit",
             fontSize: 12,
-            color: "inherit",
-            background: "transparent",
-            border: `1px solid ${GRID}`,
+            fontWeight: 600,
+            color: CHART_ACCENT_TEXT,
+            background: CHART_ACCENT,
+            border: "none",
             borderRadius: 6,
-            padding: "2px 8px",
+            padding: "3px 10px 3px 6px",
             cursor: "pointer",
           }}
         >
-          ← Back
+          <svg width={12} height={12} viewBox="0 0 12 12" aria-hidden="true">
+            <path
+              d="M7.5 2.5 4 6l3.5 3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.75}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Back
         </button>
         {/* Focused only so a screen reader announces it; not interactive, so no ring. */}
         <h3

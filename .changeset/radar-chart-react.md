@@ -13,7 +13,7 @@ ranges come from the caller. A value beyond its range is pinned to the edge, and
 values sit round the rim, turning any that would read upside down.
 
 Pass `renderDetail` and each axis label becomes a button: activating it replaces the chart with
-your component, in the same box, under a header with a Back button. Escape and `close()` return
+your component, in the same box, under a header with a Back button, styled with `--pitch-chart-accent` and `--pitch-chart-accent-text`. Escape and `close()` return
 to the chart and restore focus; `selected` and `onSelectedChange` make it controllable.
 
 A series `className` such as `text-rose-500` recolours every part of it, since each paints with

@@ -187,6 +187,8 @@ series, overlaid shapes can't be told apart, and a development warning says so.
 Colours come from `--pitch-series-1` … by position. Every part of a series paints with
 `currentColor`, so `className: "text-rose-500"` recolours all of it (and drops the default).
 
+The detail view's Back button is `--pitch-chart-accent` with `--pitch-chart-accent-text` on it.
+
 ### `useRadarChart()`
 
 Returns `{ cx, cy, inner, outer, angleOf, pointAt }`. `pointAt(metricId, value)` applies the same

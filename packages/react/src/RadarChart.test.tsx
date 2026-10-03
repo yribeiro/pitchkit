@@ -214,7 +214,7 @@ describe("RadarChart: readout", () => {
 
   it("follows the pointer to the nearest axis and clears when a mouse leaves", () => {
     const { container } = renderChart();
-    const svg = container.querySelector("svg") as SVGSVGElement;
+    const svg = container.querySelector("svg[role=group]") as SVGSVGElement;
     vi.spyOn(svg, "getBoundingClientRect").mockReturnValue({
       left: 0,
       top: 0,
@@ -264,7 +264,7 @@ describe("RadarChart: click to detail", () => {
     expect(label.getAttribute("role")).toBe("button");
 
     fireEvent.click(label);
-    expect(container.querySelector("svg")).toBeNull();
+    expect(container.querySelector("svg[role=group]")).toBeNull();
     expect(screen.getByText("shot map")).toBeTruthy();
     expect(screen.getByRole("heading").textContent).toBe("Shots");
     expect(screen.getByText("Winger A 2 · Full-back B 1")).toBeTruthy();
@@ -276,8 +276,8 @@ describe("RadarChart: click to detail", () => {
     );
     expect(document.activeElement).toBe(screen.getByRole("heading"));
 
-    fireEvent.click(screen.getByRole("button", { name: "← Back" }));
-    expect(container.querySelector("svg")).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(container.querySelector("svg[role=group]")).not.toBeNull();
     expect(document.activeElement?.getAttribute("data-pitchkit-metric")).toBe("shots");
   });
 
@@ -335,7 +335,7 @@ describe("RadarChart: click to detail", () => {
       renderDetail: () => <p>detail</p>,
       selected: { metricId: "nope" },
     });
-    expect(container.querySelector("svg")).not.toBeNull();
+    expect(container.querySelector("svg[role=group]")).not.toBeNull();
   });
 
   it("shows a dash for a series with no value in the detail heading", () => {

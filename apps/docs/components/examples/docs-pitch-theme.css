@@ -36,6 +36,9 @@
  */
 .pitchkit-docs-pitch,
 .pitchkit-chart-stage {
+  /* The radar's Back button: the site's own primary button colours. */
+  --pitch-chart-accent: var(--color-fd-primary);
+  --pitch-chart-accent-text: var(--color-fd-primary-foreground);
   --pitch-series-1: #0b7cc1;
   --pitch-series-2: #d9480f;
   --pitch-series-3: #0f8a5f;

@@ -33,6 +33,9 @@ export function seriesColor(index: number): string {
 export const CHART_SURFACE = token(pitchTokens.chartSurface, "#ffffff");
 export const CHART_TEXT = token(pitchTokens.chartText, "#12170f");
 export const CHART_MUTED = token(pitchTokens.chartMuted, "#7b8474");
+/** Controls a chart draws itself, such as the radar's Back button. Green-700 on white text is 5:1. */
+export const CHART_ACCENT = token(pitchTokens.chartAccent, "#15803d");
+export const CHART_ACCENT_TEXT = token(pitchTokens.chartAccentText, "#ffffff");
 export const AXIS = token(pitchTokens.axis, "#c6cebc");
 export const GRID = token(pitchTokens.grid, "#e5eade");
 export const CARD_YELLOW = token(pitchTokens.cardYellow, "#facc15");
