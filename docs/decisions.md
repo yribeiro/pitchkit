@@ -231,6 +231,46 @@ detail the room it needs, which is usually another chart.
 - The gallery gains a **Profiles** category for player-profile charts.
 - `<RadarChart>` is mplsoccer parity for `Radar`; the click-to-detail swap is not in mplsoccer.
 
+### D27. `<PizzaChart>`: slices coloured by group, series side by side or overlaid
+
+**Decision:** `<PizzaChart>` is the second polar chart, built the way `<RadarChart>`
+([D26](#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)) is: a non-pitch root with
+its geometry in `core/polar/`, drawing the caller's numbers and computing nothing. Its types are its own
+(`PizzaMetric`, `PizzaSeries`, `PizzaSelection`, `PizzaDetailContext`), and `PizzaSelection` and the
+`renderDetail` context carry the series whose slice was clicked, which a radar axis doesn't have.
+
+- **One series colours by group; several colour by series.** A metric's `group` ("Attacking") sets the
+  slice colour for a single player, taking `--pitch-series-1`, `-2`, `-3`… in order of first appearance,
+  or the colour or class given in `groups`. With several series, colour identifies the player and the
+  group moves to an arc on the rim.
+- **`seriesLayout` is the caller's choice**: `"side-by-side"` (default) splits each metric's wedge into
+  one thin wedge per series; `"overlay"` gives every series the full wedge, drawn largest first so a
+  smaller one stays visible. Side by side is readable to three series and overlay to two; past that a
+  series still draws, with a development warning.
+- **Slices are the buttons.** With `renderDetail`, each slice is focusable and opens the caller's
+  component in place of the chart, with the same Back button, Escape and focus return as the radar
+  (`selected`/`onSelectedChange` take `{ metricId, seriesId }`). A focused slice draws its own ring, since
+  the browser's box would wrap the bounding box of a curved slice.
+- **Value boxes follow the layout**: printed at the tip for one series and for an overlay (each series in
+  its own lane across the slice, so close values never print on top of each other), off for side by side,
+  and dropped on a slice too narrow to hold one. Boxes use the surface colour with a series-coloured
+  outline and chart text, never the series colour as text.
+- **Percentiles are the caller's.** Values default to 0–100, which is what a percentile is, with
+  `lowerIsBetter` flipping a slice so a long one is always the good one.
+
+**Why:** A pizza reads as categories first (what a player does), so a single player takes the group
+colours; comparing players needs colour to say who, so it takes that over. Both layouts exist because
+they trade off: side by side hides nothing, overlay compares the same metric directly but only for two.
+
+**Consequences:**
+
+- The radar's selection and detail view are now shared (`chart-detail.tsx`), as is the focus return
+  by `data-pitchkit-metric` and `data-pitchkit-series`.
+- `core/polar/` gains `wedgeAngles`, `splitWedge`, `annularSectorPath` and `overlayOrder`, at 100%
+  coverage. Path coordinates are rounded to two decimals so floating-point dust doesn't reach the markup.
+- `<PizzaChart>` is mplsoccer parity for `PyPizza`. mplsoccer only overlays two series and has no
+  click-to-detail.
+
 ---
 
 ## Styling and theming

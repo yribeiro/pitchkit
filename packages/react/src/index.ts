@@ -43,6 +43,20 @@ export type {
   MomentumChartContextValue,
 } from "./momentum-types.js";
 
+export { PizzaChart } from "./PizzaChart.js";
+export { usePizzaChart } from "./pizza-context.js";
+export type {
+  PizzaChartProps,
+  PizzaChartContextValue,
+  PizzaMetric,
+  PizzaSeries,
+  PizzaGroup,
+  PizzaSeriesLayout,
+  PizzaAppearance,
+  PizzaSelection,
+  PizzaDetailContext,
+} from "./pizza-types.js";
+
 export { RadarChart } from "./RadarChart.js";
 export { useRadarChart } from "./radar-context.js";
 export type {

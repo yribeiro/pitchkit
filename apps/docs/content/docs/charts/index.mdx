@@ -20,7 +20,8 @@ Three things, and they are the same three every time:
   exposes the equivalent for its own space — `useRaceChart()` for
   [`<RaceChart>`](/docs/charts/race-chart), `useMomentumChart()` for
   [`<MomentumChart>`](/docs/charts/momentum-chart), `useRadarChart()` for
-  [`<RadarChart>`](/docs/charts/radar-chart).
+  [`<RadarChart>`](/docs/charts/radar-chart), `usePizzaChart()` for
+  [`<PizzaChart>`](/docs/charts/pizza-chart).
 
 Everything else carries over unchanged. Accessors work the same way, responsive-by-default works the
 same way, and theming is still CSS variables only — the chart tokens sit in the same `--pitch-*`
@@ -33,6 +34,6 @@ namespace as the rest, because that namespace is PitchKit's, not the grass's.
 | [`<RaceChart>`](/docs/charts/race-chart)         | A running total over match minutes, as a step line                       |
 | [`<MomentumChart>`](/docs/charts/momentum-chart) | Who had the upper hand, minute by minute, as bars with an event icon row |
 | [`<RadarChart>`](/docs/charts/radar-chart)       | A player profile: one axis per metric, each on its own range             |
+| [`<PizzaChart>`](/docs/charts/pizza-chart)       | A percentile pizza: one slice per metric, coloured by group              |
 
-A pizza (percentile) chart and a goal-mouth view are planned; they will land here rather than under
-Overlays.
+A goal-mouth view is planned; it will land here rather than under Overlays.

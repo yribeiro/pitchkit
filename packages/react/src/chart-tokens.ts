@@ -43,3 +43,23 @@ export const CARD_RED = token(pitchTokens.cardRed, "#ef4444");
 /** Shared by the pitch tooltip and the chart readout. */
 export const TOOLTIP_BG = token(pitchTokens.tooltipBg, "rgba(17, 17, 17, 0.92)");
 export const TOOLTIP_TEXT = token(pitchTokens.tooltipColor, "#fff");
+
+/** What colours a part: a CSS colour, a class, or both. */
+export interface Paint {
+  readonly color: string | undefined;
+  readonly className: string | undefined;
+}
+
+/**
+ * The paint rule every chart shares (D8, D9): the caller's colour or class,
+ * else slot `slot`'s colour. A class alone is left to recolour the part.
+ */
+export function resolvePaint(
+  custom: { color?: string | undefined; className?: string | undefined } | undefined,
+  slot: number,
+): Paint {
+  return {
+    className: custom?.className,
+    color: custom?.color ?? (custom?.className ? undefined : seriesColor(slot)),
+  };
+}

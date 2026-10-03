@@ -1,0 +1,171 @@
+---
+title: PizzaChart
+description: A football pizza — one slice per metric, as long as the value, coloured by group, with one to three players side by side or two overlaid, and slices that open your own detail view.
+---
+
+<PitchPreview name="pizza-chart-basic" />
+
+`<PizzaChart>` is the percentile pizza analysts use to profile a player: one slice per metric, as long
+as the value, coloured by category, around a hole in the middle. It is a polar bar chart, so lengths
+read directly against the dashed rings at each quarter.
+
+It is a root, not a layer, like the other [charts](/docs/charts): no `<Pitch>`, no `type` prop.
+
+## Usage
+
+```tsx
+const metrics = [
+  { id: "npxg", label: "npxG", group: "Attacking" },
+  { id: "shots", label: "Shots", group: "Attacking" },
+  { id: "turnovers", label: "Turnovers", group: "Possession", lowerIsBetter: true },
+  // ...at least three
+];
+
+<PizzaChart metrics={metrics} series={[{ id: "yamal", label: "Lamine Yamal", values: yamal }]} />;
+```
+
+- **`metrics`** are the slices, drawn clockwise from the top. Each has an `id`, an optional `label`
+  and `group`, and a `min` and `max` (0–100 if you leave them out, which is what a percentile is).
+- **`series`** are the players. `values` is keyed by metric id, so a row from your own data usually
+  drops straight in.
+
+The same `metrics` shape feeds [`<RadarChart>`](/docs/charts/radar-chart), apart from `group`, so one
+list can drive either chart.
+
+### The chart computes nothing
+
+`<PizzaChart>` draws the values you give it. Percentiles, per-90s and the population they are ranked
+against are yours to compute, and the population is a real choice: the same player has a different
+percentile against a league than against a tournament. The examples here rank against the 168 outfield
+players with 270 or more minutes at Euro 2024, derived once from StatsBomb open data.
+
+## Lower is better
+
+```tsx
+{ id: "turnovers", label: "Turnovers", group: "Possession", lowerIsBetter: true }
+```
+
+A percentile of turnovers is high for a player who loses the ball a lot. `lowerIsBetter` flips the
+slice so a long one is always the good one, the label carries a ↓, and the readout says "lower is
+better". Pass the raw percentile and let the flag do the flip.
+
+## Colour
+
+With **one series** the slices take their **group's** colour. Groups take `--pitch-series-1`, `-2`,
+`-3`… in order of first appearance, and the tinted rest of each slice is the same colour, so the
+chart reads as three categories at a glance. Override a group with a colour or a class:
+
+```tsx
+<PizzaChart
+  ...
+  groups={{
+    Attacking: { className: "text-sky-500" },
+    Possession: { className: "text-emerald-500" },
+    Defending: { color: "var(--my-defending)" },
+  }}
+/>
+```
+
+A group (or series) given a `className` and no `color` drops its themed default, the same rule as
+every mark layer. Every part paints with `currentColor`, so one class recolours the slice, its tint and
+its value box.
+
+## Comparing players
+
+<PitchPreview name="pizza-chart-compare-basic" />
+
+With **several series** the slices are coloured by **series**, with a legend, and each metric's group
+moves to an arc on the rim. Each series gets its own slice within a metric:
+
+<PitchPreview name="pizza-chart-layout-basic" />
+
+`seriesLayout` decides how they share it:
+
+| Value                      | Slices                                                                                                    |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `"side-by-side"` (default) | Split the metric's wedge into one thin wedge per series. Nothing is hidden. Readable up to three.         |
+| `"overlay"`                | Use the full wedge for every series, largest drawn first so a smaller one stays visible on top. Two only. |
+
+Past the limit a series still draws, with a development warning. Overlaying a third hides the middle
+value behind the other two, and a fourth side-by-side wedge is too thin to read.
+
+Value boxes follow the layout: printed for one series and for an overlay (each series in its own lane
+across the slice, so close values never print on top of each other), and off for side by side, where
+they would crowd. `appearance={{ values: true }}` forces them on. A box is dropped on a slice too
+narrow to hold it.
+
+## Label rotation
+
+`labelRotation` is `"tangent"` (default), `"radial"` or `"horizontal"`, the same as
+[`<RadarChart>`](/docs/charts/radar-chart#label-rotation): labels follow the slice's angle, those that
+would read upside down turn 180°, and long ones wrap.
+
+## Click a slice to open a detail view
+
+<PitchPreview name="pizza-chart-detail-basic" />
+
+Pass `renderDetail` and every slice becomes a button. Activating one replaces the chart with whatever
+you return, in the same box, under a header with a Back button:
+
+```tsx
+<PizzaChart
+  metrics={metrics}
+  series={series}
+  renderDetail={({ metric, series, values, close }) => (
+    <MetricBreakdown player={series.id} metric={metric} />
+  )}
+/>
+```
+
+`renderDetail` receives the `metric`, the `series` whose slice was clicked, every series' value for
+that metric in `values` (keyed by series id), and `close()`. Back, Escape and `close()` all return to
+the chart, and focus goes back to the slice you opened. Slices are reachable with Tab and open with
+Enter or Space, and each is announced as, for example, "Shots, Lamine Yamal, 96. Open details".
+
+Without `renderDetail`, slices are plain graphics: nothing looks clickable that isn't. To keep the
+selection in the URL, control it with `selected` and `onSelectedChange`, whose value is
+`{ metricId, seriesId }`.
+
+## Reading values
+
+Hover anywhere in a slice, or focus it, and the readout shows every series' value for that metric. On
+a touch screen a tap does the same and stays up until you tap outside the chart.
+
+## Annotations
+
+Children are drawn over the slices and positioned with `usePizzaChart()`. `pointAt(metricId, value)`
+uses the same range and flip as the slices and returns a point along the slice's middle:
+
+```tsx
+function Median({ metricId }: { metricId: string }) {
+  const { pointAt } = usePizzaChart();
+  const [x, y] = pointAt(metricId, 50) ?? [];
+  return x === undefined ? null : <circle cx={x} cy={y} r={3} fill="currentColor" />;
+}
+```
+
+It also returns `cx`, `cy`, the `inner` and `outer` radii, and `angleOf(metricId)`.
+
+## Sizing
+
+Responsive by default and square. Passing `width` **and** `height` is the opt-out, and `aspectRatio`
+changes the box. Below 420px wide the labels shrink a step.
+
+## Theming
+
+CSS variables only.
+
+| Variable                    | What it colours                                   |
+| --------------------------- | ------------------------------------------------- |
+| `--pitch-series-1` … `-6`   | Groups (one series) or series (several), in order |
+| `--pitch-axis`              | The rings                                         |
+| `--pitch-grid`              | The empty part of an overlaid slice               |
+| `--pitch-chart-surface`     | The edge between slices; value boxes              |
+| `--pitch-chart-text`        | Labels, the legend and values                     |
+| `--pitch-chart-accent`      | The detail view's Back button                     |
+| `--pitch-chart-accent-text` | The Back button's label                           |
+
+`appearance` is structural only: `values` and `legend`. Every element carries a `data-pitchkit-part`
+for Tailwind arbitrary variants: `pizza-wedge`, `pizza-slice`, `pizza-blank`, `pizza-value`,
+`pizza-rim`, `pizza-label`, `pizza-ring`, `pizza-legend`, `pizza-detail`, `pizza-back`. Slices carry
+`data-pitchkit-metric` and `data-pitchkit-series`, and the root `data-pitchkit-layer="pizza"`.

@@ -69,7 +69,7 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 | Feature                                                 | Phase | Status                                                                    |
 | ------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
 | Radar (range bands, lower-is-better flip)               | 1     | ✅ `<RadarChart>` (unreleased)                                            |
-| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21)                  |
+| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ✅ `<PizzaChart>` (unreleased)                                            |
 | Bumpy chart (rank over time)                            | L     | ⬜                                                                        |
 | Race chart: cumulative step lines over match minutes    | 1     | ✅ `<RaceChart>` ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)) |
 | Match momentum: signed bars per half, with event icons  | 1     | ✅ `<MomentumChart>` (unreleased)                                         |
@@ -92,8 +92,14 @@ race chart.
 ([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)):
 per-axis ranges, lower-is-better flips, range rings with values, and up to three overlaid series.
 It adds what mplsoccer can't: rotated labels as a prop, a hover and touch readout, and axis labels
-that open the caller's detail view in place of the chart. `<PizzaChart>` is next, on the same
-`polar/` module and detail swap, with `seriesLayout` choosing side-by-side or overlaid series.
+that open the caller's detail view in place of the chart.
+
+`<PizzaChart>` is mplsoccer parity for `PyPizza`
+([D27](./decisions.md#d27-pizzachart-slices-coloured-by-group-series-side-by-side-or-overlaid)):
+slices coloured by group, value boxes, and a comparison mode. `seriesLayout` chooses side by side
+(up to three players) or overlaid (two, as mplsoccer does), and slices open the caller's detail view.
+Follow-ups, none started: keyboard focus giving the readout on the radar's axis labels the way slices
+do, and a table view of the values for both.
 
 Follow-ups, none started: keyboard focus giving the crosshair readout, a table view of the values,
 a `<RaceEvents>` child as sugar over the annotation slot once the manual version has been written
@@ -161,8 +167,8 @@ Complete as of 2026-09-06.
       fixed square rendering of normalised grids
       ([#2](https://github.com/yribeiro/pitchkit/issues/2)). Remaining: Tracab,
       SecondSpectrum, Metrica, custom; a public `Standardizer`.
-- [ ] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)). Radar done
-      (`<RadarChart>`, unreleased); pizza next.
+- [x] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)):
+      `<RadarChart>` and `<PizzaChart>`, unreleased.
 - [ ] Goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)).
 - [ ] shadcn registry infrastructure and the first recipes: attack/territory
       ([#23](https://github.com/yribeiro/pitchkit/issues/23)), pass map
