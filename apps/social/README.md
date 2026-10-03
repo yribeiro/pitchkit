@@ -17,6 +17,7 @@ Private workspace (`"private": true`), never published.
 | `post-06-layers`     | 1080×1350 PNG       | 3×3 catalogue of layer components                                       |
 | `wall-mosaic`        | 3240×2880 PNG       | One picture cut into six 1080×1440 grid tiles (`mosaic-tile-1…6.png`)   |
 | `carousel-01…08`     | 8 × 1080×1350 PNG   | "Analyse any corner kick": a saveable 5-step how-to on SkillCorner data |
+| `linkedin-*`         | 4 × 1200×1200 PNG   | Hexbin, PositionalHeatmap, Voronoi and Flow, for LinkedIn               |
 | `reel-01-quickstart` | 1080×1920 MP4, 22 s | Palmer's equaliser built in 4 steps (mirrors the docs Quickstart)       |
 | `reel-02-tracking`   | 1080×1920 MP4, 24 s | SkillCorner tracking of a goal with a live Voronoi                      |
 | `reel-03-layers`     | 1080×1920 MP4, 20 s | 11 layers, each drawing a real finding from the final, with stat chips  |

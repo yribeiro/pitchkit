@@ -36,6 +36,10 @@ const STILLS = [
   "carousel-06-all",
   "carousel-07-questions",
   "carousel-08-save",
+  "linkedin-hexbin",
+  "linkedin-positional",
+  "linkedin-voronoi",
+  "linkedin-flow",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
 

@@ -378,6 +378,22 @@ Facts behind the slides (all in `corners.json`; re-check if you re-run the snaps
 | 6     | 4 of 4 corners ended in a shot, 3.4–12.8 s after the kick                                                                       | Tiny sample; straight line is kick to shot, not the ball's route                             |
 | 7     | 3–6 attackers v 9–10 defenders; corners from the attacker's left 3×, right 1×; 4 shots by 3 players (Pijnaker, May, Gillion ×2) |                                                                                              |
 
+## LinkedIn images (`linkedin-hexbin|positional|voronoi|flow.png`, 1200×1200)
+
+Square so a multi-image LinkedIn post never crops them. Each shows one layer on
+the Euro 2024 final, with the component name, one stat and the line of code
+that draws it. Hexbin, PositionalHeatmap and Voronoi are the same data as reel
+03 (the Voronoi is the 360 frame six seconds before Williams' goal). PitchKit
+has no momentum chart, so the fourth is `<Flow>` drawn from Spain's real
+completed forward passes (211 that gain 5+ units).
+
+**Alt text**
+
+1. Hexbin: a football pitch covered in hexagons, brighter yellow where Spain pressed more, with the caption "56 v 36 final-third pressures".
+2. PositionalHeatmap: a football pitch divided into zones shaded blue by where Spain's passes landed, with the central zone brightest; 11% landed in the top zone.
+3. Voronoi: a pitch split into cells around each tracked player, blue for Spain and orange for England, six seconds before Williams' goal; Spain controls 68%.
+4. Flow: a pitch with one arrow per zone showing the average direction of Spain's 211 forward passes, thicker and more orange where there were more.
+
 ---
 
 ## Wall mosaic — six tiles (`mosaic-tile-1.png` … `mosaic-tile-6.png`)

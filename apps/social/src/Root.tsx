@@ -1,5 +1,11 @@
 import { Composition, Folder, Still } from "remotion";
 import { PostCode, PostIntro, PostLayers, PostNetwork, PostPalettes, PostWinner } from "./posts";
+import {
+  LinkedInFlow,
+  LinkedInHexbin,
+  LinkedInPositional,
+  LinkedInVoronoi,
+} from "./linkedin/LinkedInImage";
 import { CornerCover } from "./carousel/CornerCover";
 import {
   SlideAll,
@@ -21,7 +27,7 @@ import {
   WallProfilePreview,
 } from "./mosaic";
 import { X_HEADER, XHeader } from "./header";
-import { MOSAIC, POST, REEL } from "./theme";
+import { LINKEDIN, MOSAIC, POST, REEL } from "./theme";
 
 /**
  * Every deliverable, by the id `npm run render` uses for its filename.
@@ -51,6 +57,12 @@ export function Root() {
         <Still id="carousel-06-all" component={SlideAll} {...POST} />
         <Still id="carousel-07-questions" component={SlideQuestions} {...POST} />
         <Still id="carousel-08-save" component={SlideSave} {...POST} />
+      </Folder>
+      <Folder name="LinkedIn">
+        <Still id="linkedin-hexbin" component={LinkedInHexbin} {...LINKEDIN} />
+        <Still id="linkedin-positional" component={LinkedInPositional} {...LINKEDIN} />
+        <Still id="linkedin-voronoi" component={LinkedInVoronoi} {...LINKEDIN} />
+        <Still id="linkedin-flow" component={LinkedInFlow} {...LINKEDIN} />
       </Folder>
       <Folder name="Reels">
         <Composition
