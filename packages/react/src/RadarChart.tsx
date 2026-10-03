@@ -23,10 +23,14 @@ import {
 } from "./chart-readout.js";
 import { AXIS, CHART_MUTED, CHART_TEXT, GRID, seriesColor } from "./chart-tokens.js";
 import { warnInDevelopment } from "./dev-warn.js";
-import { PolarDetailView, usePolarSelection } from "./polar-detail.js";
-import type { PolarMetric, PolarSeries } from "./polar-types.js";
+import { RadarDetailView, useRadarSelection } from "./radar-detail.js";
 import { RadarChartContext } from "./radar-context.js";
-import type { RadarChartContextValue, RadarChartProps } from "./radar-types.js";
+import type {
+  RadarChartContextValue,
+  RadarChartProps,
+  RadarMetric,
+  RadarSeries,
+} from "./radar-types.js";
 import { useChartBox } from "./use-chart-box.js";
 
 const DEFAULT_RINGS = 4;
@@ -64,7 +68,7 @@ interface Vertex {
 }
 
 interface ResolvedSeries {
-  readonly series: PolarSeries;
+  readonly series: RadarSeries;
   readonly label: string;
   readonly color: string | undefined;
   readonly vertices: readonly Vertex[];
@@ -75,7 +79,7 @@ interface ResolvedSeries {
  * `useRadarChart().pointAt` use, so an annotation always lines up.
  */
 function placer(
-  metrics: readonly PolarMetric[],
+  metrics: readonly RadarMetric[],
   cx: number,
   cy: number,
   inner: number,
@@ -118,7 +122,7 @@ export function RadarChart({
   const box = useChartBox({ width, height, aspectRatio, wideRatio: 1, narrowRatio: 1 });
   const { containerRef, size, isNarrow } = box;
   const [active, setActive] = useState<number | null>(null);
-  const { selection, open, close } = usePolarSelection(containerRef, selected, onSelectedChange);
+  const { selection, open, close } = useRadarSelection(containerRef, selected, onSelectedChange);
   // useId's colons are legal in an id but not inside url(#…).
   const clipPrefix = `pitchkit-radar-${useId().replace(/:/g, "")}`;
 
@@ -141,8 +145,8 @@ export function RadarChart({
   const showLegend = appearance?.legend ?? series.length > 1;
   const showRangeLabels = appearance?.rangeLabels ?? !isNarrow;
   const fontSize = isNarrow ? 10 : 11;
-  const text = (value: number, metric: PolarMetric) => (format ?? formatValue)(value, metric);
-  const tick = (value: number, metric: PolarMetric) => (format ?? formatTick)(value, metric);
+  const text = (value: number, metric: RadarMetric) => (format ?? formatValue)(value, metric);
+  const tick = (value: number, metric: RadarMetric) => (format ?? formatTick)(value, metric);
 
   // Margin is whatever the labels need, so the shape gets the rest.
   const labelLines = metrics.map((m) => {
@@ -215,12 +219,12 @@ export function RadarChart({
   const openMetric = metrics[openIndex];
   const interactive = renderDetail !== undefined;
 
-  function openMetricAt(metric: PolarMetric) {
+  function openMetricAt(metric: RadarMetric) {
     setActive(null);
     open({ metricId: metric.id });
   }
 
-  function handleLabelKey(event: KeyboardEvent, metric: PolarMetric) {
+  function handleLabelKey(event: KeyboardEvent, metric: RadarMetric) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       openMetricAt(metric);
@@ -249,13 +253,13 @@ export function RadarChart({
 
     return (
       <div ref={containerRef} className={className} data-pitchkit-layer="radar" style={box.style}>
-        <PolarDetailView
+        <RadarDetailView
           title={openMetric.label ?? openMetric.id}
           subtitle={subtitle}
           onClose={close}
         >
-          {renderDetail({ metric: openMetric, series: undefined, values, close })}
-        </PolarDetailView>
+          {renderDetail({ metric: openMetric, values, close })}
+        </RadarDetailView>
       </div>
     );
   }
@@ -488,9 +492,9 @@ function RadarReadout({
   rows,
   text,
 }: {
-  metric: PolarMetric;
+  metric: RadarMetric;
   rows: readonly (ResolvedSeries & { vertex: Vertex | undefined })[];
-  text: (value: number, metric: PolarMetric) => string;
+  text: (value: number, metric: RadarMetric) => string;
 }) {
   return (
     <>

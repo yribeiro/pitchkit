@@ -17,5 +17,5 @@ your component, in the same box, under a header with a Back button. Escape and `
 to the chart and restore focus; `selected` and `onSelectedChange` make it controllable.
 
 A series `className` such as `text-rose-500` recolours every part of it, since each paints with
-`currentColor`. Also exports the `PolarMetric`, `PolarSeries`, `PolarSelection`,
-`PolarDetailContext` and `LabelRotation` types. The bundled Agent Skill documents the chart.
+`currentColor`. Also exports the `RadarMetric`, `RadarSeries`, `RadarSelection`,
+`RadarDetailContext` and `LabelRotation` types. The bundled Agent Skill documents the chart.

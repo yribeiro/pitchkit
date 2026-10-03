@@ -89,7 +89,7 @@ helper for substitutions, which crowd the icon row, and the same keyboard and ta
 race chart.
 
 `<RadarChart>` is mplsoccer parity for `Radar`
-([D26](./decisions.md#d26-polar-charts-a-shared-metric-list-translucent-shapes-click-to-replace)):
+([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)):
 per-axis ranges, lower-is-better flips, range rings with values, and up to three overlaid series.
 It adds what mplsoccer can't: rotated labels as a prop, a hover and touch readout, and axis labels
 that open the caller's detail view in place of the chart. `<PizzaChart>` is next, on the same

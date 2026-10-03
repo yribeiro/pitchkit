@@ -165,19 +165,19 @@ The player radar: one axis per metric, each on its own range, one translucent sh
 root in its own right — **not** a child of `<Pitch>`, no `type` prop. It computes nothing: per-90s,
 percentiles and ranges are the caller's.
 
-| Prop                            | Type                                       | Notes                                                                                     |
-| ------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| `metrics`                       | `PolarMetric[]`                            | `{ id, label?, group?, min?, max?, lowerIsBetter? }`, clockwise from the top. At least 3. |
-| `series`                        | `PolarSeries[]`                            | `{ id, label?, values, color?, className? }`; `values` keyed by metric id. Up to 3.       |
-| `rings`                         | `number`                                   | Range rings between the centre circle and the rim. Default `4`.                           |
-| `labelRotation`                 | `"tangent" \| "radial" \| "horizontal"`    | How labels and ring values sit round the rim. Default `"tangent"`.                        |
-| `format`                        | `(value, metric) => string`                | Ring values and readout text.                                                             |
-| `renderDetail`                  | `({ metric, values, close }) => ReactNode` | Makes axis labels buttons; activating one replaces the chart, with a Back button.         |
-| `selected` / `onSelectedChange` | `PolarSelection \| null`                   | `{ metricId }`. Optional control, e.g. to keep the selection in the URL.                  |
-| `appearance`                    | `{ rangeLabels?, legend?, bands? }`        | Structure only, never colour.                                                             |
-| `width` / `height`              | `number`                                   | Both together are the fixed-size opt-out. Responsive and square by default.               |
-| `aspectRatio`                   | `number`                                   | Responsive box shape. Default `1`.                                                        |
-| `children`                      | `ReactNode`                                | Annotations; position them with `useRadarChart()`.                                        |
+| Prop                            | Type                                       | Notes                                                                               |
+| ------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `metrics`                       | `RadarMetric[]`                            | `{ id, label?, min?, max?, lowerIsBetter? }`, clockwise from the top. At least 3.   |
+| `series`                        | `RadarSeries[]`                            | `{ id, label?, values, color?, className? }`; `values` keyed by metric id. Up to 3. |
+| `rings`                         | `number`                                   | Range rings between the centre circle and the rim. Default `4`.                     |
+| `labelRotation`                 | `"tangent" \| "radial" \| "horizontal"`    | How labels and ring values sit round the rim. Default `"tangent"`.                  |
+| `format`                        | `(value, metric) => string`                | Ring values and readout text.                                                       |
+| `renderDetail`                  | `({ metric, values, close }) => ReactNode` | Makes axis labels buttons; activating one replaces the chart, with a Back button.   |
+| `selected` / `onSelectedChange` | `RadarSelection \| null`                   | `{ metricId }`. Optional control, e.g. to keep the selection in the URL.            |
+| `appearance`                    | `{ rangeLabels?, legend?, bands? }`        | Structure only, never colour.                                                       |
+| `width` / `height`              | `number`                                   | Both together are the fixed-size opt-out. Responsive and square by default.         |
+| `aspectRatio`                   | `number`                                   | Responsive box shape. Default `1`.                                                  |
+| `children`                      | `ReactNode`                                | Annotations; position them with `useRadarChart()`.                                  |
 
 `min`/`max` default to 0–100. `lowerIsBetter` flips the axis so outward is always better. A value
 beyond its range is pinned to the edge (the readout says "off scale"); a missing one goes to the centre. Ranges are

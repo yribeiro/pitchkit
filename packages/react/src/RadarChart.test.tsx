@@ -3,22 +3,21 @@ import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RadarChart } from "./RadarChart.js";
 import { useRadarChart } from "./radar-context.js";
-import type { PolarMetric, PolarSeries } from "./polar-types.js";
-import type { RadarChartProps } from "./radar-types.js";
+import type { RadarChartProps, RadarMetric, RadarSeries } from "./radar-types.js";
 
-const metrics: PolarMetric[] = [
+const metrics: RadarMetric[] = [
   { id: "npxg", label: "npxG", min: 0, max: 0.6 },
   { id: "shots", label: "Shots", min: 0, max: 4 },
   { id: "turnovers", label: "Turnovers", min: 1, max: 5, lowerIsBetter: true },
   { id: "pressures", label: "Pressures", min: 5, max: 25 },
 ];
 
-const winger: PolarSeries = {
+const winger: RadarSeries = {
   id: "a",
   label: "Winger A",
   values: { npxg: 0.3, shots: 2, turnovers: 1, pressures: 15 },
 };
-const fullback: PolarSeries = {
+const fullback: RadarSeries = {
   id: "b",
   label: "Full-back B",
   values: { npxg: 0.1, shots: 1, turnovers: 3, pressures: 20 },
@@ -272,7 +271,6 @@ describe("RadarChart: click to detail", () => {
     expect(renderDetail).toHaveBeenCalledWith(
       expect.objectContaining({
         metric: metrics[1],
-        series: undefined,
         values: { a: 2, b: 1 },
       }),
     );

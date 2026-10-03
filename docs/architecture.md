@@ -151,8 +151,8 @@ MomentumChart (root)
 
 ### Player radar
 
-`<RadarChart>` ([D26](./decisions.md#d26-polar-charts-a-shared-metric-list-translucent-shapes-click-to-replace))
-is the first polar chart; `<PizzaChart>` will share its module and its detail swap.
+`<RadarChart>` ([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)) is the
+first polar chart.
 
 ```
 RadarChart (root)
@@ -160,7 +160,7 @@ RadarChart (root)
  ├─ geometry  (centre, inner radius = one ring, outer radius = what the labels leave)
  ├─ bands, spokes, shapes (two-tone bands for one series), ring values, children
  ├─ hit disc  (pointer picks the nearest axis by angle) and labels (buttons with renderDetail)
- └─ detail    (PolarDetailView replaces the SVG while a metric is selected)
+ └─ detail    (RadarDetailView replaces the SVG while a metric is selected)
 ```
 
 - **`core/polar/` owns the maths.** `axisAngle` and its inverse `nearestAxis` (pointer to axis),
@@ -168,15 +168,15 @@ RadarChart (root)
   `ringPath`, and for labels `labelPlacement` (rotation, anchor, first-line offset for each
   `labelRotation`, with the 180° upright turn), `wrapLabel`, `labelMargin` and `labelBox` (the
   24px hit target). Text is estimated with `GLYPH_WIDTH`, since the charts render on the server.
-  All take plain numbers; the pizza reuses them.
+  All take plain numbers.
 - **The margin is what the labels need.** Tangent labels need their wrapped height round the rim,
   radial ones their length, horizontal ones both. The centre circle is one ring wide, as in
   mplsoccer, so a value at `min` still sits off the centre.
 - **Bands are rings, not stacked discs.** Each band is one even-odd path, so translucent grid
   colours don't accumulate where circles overlap.
-- **The detail swap is shared.** `polar-detail.tsx` holds `usePolarSelection` (uncontrolled unless
+- **The detail swap** is `radar-detail.tsx`: `useRadarSelection` (uncontrolled unless
   `selected` is passed, and it returns focus to the element that opened the detail, found by its
-  `data-pitchkit-metric`) and `PolarDetailView` (Back, Escape, focus on the heading, a 150ms fade
+  `data-pitchkit-metric`) and `RadarDetailView` (Back, Escape, focus on the heading, a 150ms fade
   that respects reduced motion).
 - **Shared with the other charts:** `useChartBox()` (responsive sizing), `chart-tokens.ts`
   (`--pitch-*` fallbacks), `ChartReadout` and `warnInDevelopment()`.

@@ -2,7 +2,7 @@
 
 import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
 import { RadarChart, Scatter, VerticalPitch } from "@pitchkit/react";
-import type { PolarMetric } from "@pitchkit/react";
+import type { RadarMetric } from "@pitchkit/react";
 
 // Per 90 minutes. Each axis runs from the 5th to the 95th percentile of the
 // 168 outfield players with 270+ minutes at the tournament, so the rim is
@@ -136,7 +136,7 @@ const games = [
 const half = cropForHalf(getPitchDimensions("statsbomb"));
 
 /** What opens in place of the chart. Anything can go here. */
-function Detail({ metric }: { metric: PolarMetric }) {
+function Detail({ metric }: { metric: RadarMetric }) {
   if (metric.id === "npxg" || metric.id === "shots") {
     return (
       <VerticalPitch type="statsbomb" crop={half} className="mx-auto max-w-xs">

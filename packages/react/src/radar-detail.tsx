@@ -1,31 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode, RefObject } from "react";
 import { CHART_MUTED, CHART_TEXT, GRID } from "./chart-tokens.js";
-import type { PolarSelection } from "./polar-types.js";
+import type { RadarSelection } from "./radar-types.js";
 
 /**
- * A polar chart's selection: uncontrolled by default, controlled when the
+ * The radar's selection: uncontrolled by default, controlled when the
  * caller passes `selected` (the usual React pattern for an input).
  *
- * It also owns focus return. When the detail view closes, focus goes back
- * to the element that opened it, found by its `data-pitchkit-metric` (and,
- * for a pizza slice, `data-pitchkit-series`) inside `containerRef`, so every
- * polar chart gets it by tagging its clickable elements.
+ * It also owns focus return: when the detail view closes, focus goes back
+ * to the label that opened it, found by its `data-pitchkit-metric`.
  */
-export function usePolarSelection(
+export function useRadarSelection(
   containerRef: RefObject<HTMLElement | null>,
-  selected: PolarSelection | null | undefined,
-  onSelectedChange: ((selection: PolarSelection | null) => void) | undefined,
+  selected: RadarSelection | null | undefined,
+  onSelectedChange: ((selection: RadarSelection | null) => void) | undefined,
 ): {
-  selection: PolarSelection | null;
-  open: (selection: PolarSelection) => void;
+  selection: RadarSelection | null;
+  open: (selection: RadarSelection) => void;
   close: () => void;
 } {
-  const [internal, setInternal] = useState<PolarSelection | null>(null);
-  const opener = useRef<PolarSelection | null>(null);
+  const [internal, setInternal] = useState<RadarSelection | null>(null);
+  const opener = useRef<RadarSelection | null>(null);
   const selection = selected !== undefined ? selected : internal;
 
-  function set(next: PolarSelection | null) {
+  function set(next: RadarSelection | null) {
     if (selected === undefined) setInternal(next);
     onSelectedChange?.(next);
   }
@@ -36,11 +34,7 @@ export function usePolarSelection(
     opener.current = null;
     const target = Array.from(
       containerRef.current?.querySelectorAll<SVGElement>("[data-pitchkit-metric]") ?? [],
-    ).find(
-      (el) =>
-        el.getAttribute("data-pitchkit-metric") === from.metricId &&
-        (from.seriesId === undefined || el.getAttribute("data-pitchkit-series") === from.seriesId),
-    );
+    ).find((el) => el.getAttribute("data-pitchkit-metric") === from.metricId);
     target?.focus();
   }, [selection, containerRef]);
 
@@ -55,15 +49,15 @@ export function usePolarSelection(
 }
 
 /**
- * The detail view a polar chart swaps itself for: a header with a Back
+ * The detail view the radar swaps itself for: a header with a Back
  * button and the metric's name, then whatever the caller rendered, in the
  * chart's own box so the page doesn't jump.
  *
  * Opening moves focus to the heading, so a screen reader announces where
- * it landed; Escape and Back both close, and `usePolarSelection` returns
+ * it landed; Escape and Back both close, and `useRadarSelection` returns
  * focus to whatever opened it.
  */
-export function PolarDetailView({
+export function RadarDetailView({
   title,
   subtitle,
   onClose,
@@ -96,7 +90,7 @@ export function PolarDetailView({
   return (
     <div
       ref={rootRef}
-      data-pitchkit-part="polar-detail"
+      data-pitchkit-part="radar-detail"
       onKeyDown={handleKeyDown}
       style={{
         position: "absolute",
@@ -111,7 +105,7 @@ export function PolarDetailView({
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
         <button
           type="button"
-          data-pitchkit-part="polar-back"
+          data-pitchkit-part="radar-back"
           onClick={onClose}
           style={{
             font: "inherit",

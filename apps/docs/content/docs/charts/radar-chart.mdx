@@ -110,7 +110,7 @@ Without `renderDetail`, labels are plain text: nothing looks clickable that isn'
 To keep the selection in the URL, control it:
 
 ```tsx
-const [selected, setSelected] = useState<PolarSelection | null>(null);
+const [selected, setSelected] = useState<RadarSelection | null>(null);
 
 <RadarChart ... renderDetail={...} selected={selected} onSelectedChange={setSelected} />;
 ```
@@ -167,5 +167,5 @@ layer. `appearance` is structural only: `rangeLabels`, `legend` and `bands`.
 
 Every element carries a `data-pitchkit-part` for Tailwind arbitrary variants: `radar-band`,
 `radar-spoke`, `radar-shape`, `radar-band-tone`, `radar-tick`, `radar-label`,
-`radar-legend`, `polar-detail`, `polar-back`. Series groups carry `data-pitchkit-series`, labels
+`radar-legend`, `radar-detail`, `radar-back`. Series groups carry `data-pitchkit-series`, labels
 `data-pitchkit-metric`, and the root `data-pitchkit-layer="radar"`.
