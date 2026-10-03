@@ -94,6 +94,32 @@ const shotsEngland = finalShots.filter((s) => s.team === "England").map(mirror);
 const spainComplete = spainPasses.filter((p) => p.complete);
 const angles = st.goalAngles;
 
+/** The Voronoi beat's marks; `fillOpacity` lets other formats run the cells stronger. */
+export function voronoiMarks(s: number, fillOpacity = 0.35) {
+  return (
+    <>
+      <Voronoi
+        data={L.voronoiSites}
+        x={(p) => p.x}
+        y={(p) => p.y}
+        fill={(p) => (p.spain ? V_SPAIN : V_ENGLAND)}
+        fillOpacity={fillOpacity}
+        stroke="rgba(255,255,255,0.4)"
+        strokeWidth={1.2 * s}
+      />
+      <Scatter
+        data={L.voronoiSites}
+        x={(p) => p.x}
+        y={(p) => p.y}
+        r={(p) => (p.actor ? 12 * s : 7.5 * s)}
+        fill={(p) => (p.actor ? "white" : p.spain ? V_SPAIN : V_ENGLAND)}
+        stroke={(p) => (p.actor ? V_SPAIN : "rgba(255,255,255,0.95)")}
+        strokeWidth={(p) => (p.actor ? 4 * s : 2 * s)}
+      />
+    </>
+  );
+}
+
 export const BEATS: Beat[] = [
   {
     layer: "Scatter",
@@ -299,28 +325,7 @@ export const BEATS: Beat[] = [
       { color: V_SPAIN, label: "ESP" },
       { color: V_ENGLAND, label: "ENG" },
     ],
-    render: (s) => (
-      <>
-        <Voronoi
-          data={L.voronoiSites}
-          x={(p) => p.x}
-          y={(p) => p.y}
-          fill={(p) => (p.spain ? V_SPAIN : V_ENGLAND)}
-          fillOpacity={0.35}
-          stroke="rgba(255,255,255,0.4)"
-          strokeWidth={1.2 * s}
-        />
-        <Scatter
-          data={L.voronoiSites}
-          x={(p) => p.x}
-          y={(p) => p.y}
-          r={(p) => (p.actor ? 12 * s : 7.5 * s)}
-          fill={(p) => (p.actor ? "white" : p.spain ? V_SPAIN : V_ENGLAND)}
-          stroke={(p) => (p.actor ? V_SPAIN : "rgba(255,255,255,0.95)")}
-          strokeWidth={(p) => (p.actor ? 4 * s : 2 * s)}
-        />
-      </>
-    ),
+    render: (s) => voronoiMarks(s),
   },
   {
     layer: "ConvexHull",

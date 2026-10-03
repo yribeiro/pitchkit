@@ -9,7 +9,7 @@ import { Flow } from "@pitchkit/react";
 import { AbsoluteFill } from "remotion";
 import { Backdrop } from "../components/Chrome";
 import { layersReel as L, spainPasses } from "../data";
-import { BEATS, BeatPitch } from "../reels/layer-beats";
+import { BEATS, BeatPitch, voronoiMarks } from "../reels/layer-beats";
 import type { Beat } from "../reels/layer-beats";
 import { C, FONT } from "../theme";
 
@@ -35,7 +35,8 @@ const IMAGES: Record<LinkedInLayer, { beat: Beat; code: string }> = {
     code: "<PositionalHeatmap data={passes} x={(p) => p.endX} y={(p) => p.endY} />",
   },
   Voronoi: {
-    beat: pick("Voronoi"),
+    // Stronger cells than the reel: a LinkedIn feed image is seen small.
+    beat: { ...pick("Voronoi"), render: (s) => voronoiMarks(s, 0.62) },
     code: "<Voronoi data={players} x={(p) => p.x} y={(p) => p.y} fill={teamColour} />",
   },
   Flow: {
