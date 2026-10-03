@@ -4,7 +4,7 @@
  * pitch are animated. Spain's build-up to Oyarzabal's winner draws in action
  * by action; just before the shot the horizontal pitch turns to a vertical
  * half pitch and zooms into the goal end, where StatsBomb's 360 positions
- * fade in, then the goal angle, the shot, and the goal.
+ * fade in (outfield players only), then the goal angle and the scorer.
  */
 import {
   AbsoluteFill,
@@ -40,17 +40,11 @@ const PER_MOVE = 20;
 const MOVES_END = START + N * PER_MOVE;
 const TURN_START = MOVES_END + 8;
 const TURN = 42;
-const SHOT_START = TURN_START + TURN + 14;
-const SHOT = 18;
-export const WINNER_DURATION = SHOT_START + SHOT + 78;
+const GOAL_START = TURN_START + TURN + 14;
+export const WINNER_DURATION = GOAL_START + 90;
 
-/** Where a pitch point lands once the pitch has fully turned and zoomed. */
-function turned(x: number, y: number) {
-  const vx = PAD.left + x * K - PIVOT.x;
-  const vy = PAD.top + y * K - PIVOT.y;
-  // rotate(-90deg): (vx, vy) -> (vy, -vx), then zoom and shift.
-  return { x: PIVOT.x + SHIFT.x + ZOOM * vy, y: PIVOT.y + SHIFT.y - ZOOM * vx };
-}
+/** The 360 frame without the goalkeeper: only the outfield players are plotted. */
+const outfield = { ...g, freezeFrame: g.freezeFrame.filter((p) => p.position !== "Goalkeeper") };
 
 const angle = L.stats.goalAngles.find((a) => a.player.includes(surname(g.scorer)));
 
@@ -63,22 +57,14 @@ export function WinnerAnimated() {
     ...clamp,
     easing: Easing.inOut(Easing.cubic),
   });
-  const shotT = interpolate(frame, [SHOT_START, SHOT_START + SHOT], [0, 1], clamp);
   const freeze = interpolate(turnT, [0.4, 1], [0, 1], clamp);
   const wedge = interpolate(frame, [TURN_START + TURN, TURN_START + TURN + 12], [0, 1], clamp);
   const goalPop = spring({
-    frame: frame - (SHOT_START + SHOT),
+    frame: frame - GOAL_START,
     fps,
     config: { damping: 11, mass: 0.6 },
   });
-  const labels = interpolate(frame, [SHOT_START + SHOT + 6, SHOT_START + SHOT + 22], [0, 1], clamp);
-
-  const goalAt = turned(g.goal.x, g.goal.y);
-  const mouth = turned(120, 40);
-  const wedgeLabel = {
-    x: goalAt.x + (mouth.x - goalAt.x) * 0.45,
-    y: goalAt.y + (mouth.y - goalAt.y) * 0.45,
-  };
+  const labels = interpolate(frame, [GOAL_START + 8, GOAL_START + 24], [0, 1], clamp);
 
   return (
     <PostFrame
@@ -102,34 +88,43 @@ export function WinnerAnimated() {
             }}
           >
             <GoalChainChart
-              chain={g}
+              chain={outfield}
               width={WIDTH}
               showFreezeFrame
               showLabels={false}
-              progress={moves + shotT}
-              goalPop={frame < SHOT_START + SHOT ? 0 : goalPop}
-              chainOpacity={1 - 0.6 * turnT}
+              progress={moves}
+              goalPop={frame < GOAL_START ? 0 : goalPop}
+              chainOpacity={1 - turnT}
               freezeOpacity={freeze}
               angleOpacity={wedge}
             />
           </div>
-          <AbsoluteFill style={{ opacity: labels, pointerEvents: "none" }}>
-            <Label x={goalAt.x} y={goalAt.y} dx={34} dy={-16} color={C.orange}>
+          <div
+            style={{
+              position: "absolute",
+              right: 98,
+              bottom: 62,
+              opacity: labels,
+              textAlign: "right",
+              fontFamily: FONT.sans,
+              fontSize: 30,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              textShadow: "0 0 6px rgba(6,16,11,0.95), 0 0 2px rgba(6,16,11,1)",
+            }}
+          >
+            <div style={{ color: C.orange }}>
               {surname(g.scorer)} · {g.xg.toFixed(2)} xG
-            </Label>
-            {angle && (
-              <Label x={wedgeLabel.x} y={wedgeLabel.y} dx={-290} dy={-22} color="white">
-                {Math.round(angle.angle)}° goal angle
-              </Label>
-            )}
-          </AbsoluteFill>
+            </div>
+            {angle && <div style={{ color: "white" }}>{Math.round(angle.angle)}° goal angle</div>}
+          </div>
         </div>
         <div style={{ display: "flex", gap: 30, flexWrap: "wrap", justifyContent: "center" }}>
           <Key color="white" label="Pass" />
           <Key color={C.emerald} label="Carry" />
           <Key color={C.spain} label="Spain" />
           <Key color="#e2e8f0" label="England" />
-          <Key color={C.orange} label="Keeper · shot" hollow />
+          <Key color={C.orange} label="Scorer" />
         </div>
         <div style={{ display: "flex", gap: 14 }}>
           {["<Arrows>", "<Comet>", "<Scatter>", "<GoalAngle>"].map((t) => (
@@ -140,40 +135,5 @@ export function WinnerAnimated() {
         </div>
       </div>
     </PostFrame>
-  );
-}
-
-/** Text over the pitch, anchored to a pixel position inside the chart box. */
-function Label({
-  x,
-  y,
-  dx,
-  dy,
-  color,
-  children,
-}: {
-  x: number;
-  y: number;
-  dx: number;
-  dy: number;
-  color: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: x + dx,
-        top: y + dy,
-        fontFamily: FONT.sans,
-        fontSize: 28,
-        fontWeight: 700,
-        color,
-        whiteSpace: "nowrap",
-        textShadow: "0 0 6px rgba(6,16,11,0.95), 0 0 2px rgba(6,16,11,1)",
-      }}
-    >
-      {children}
-    </div>
   );
 }
