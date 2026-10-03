@@ -47,13 +47,28 @@ const nameOf = (ref) => (ref ? (nickname.get(ref.id) ?? ref.name) : "Unknown");
 const surname = (n) => n.split(" ").slice(-1)[0];
 
 const team = (e, t) => e.team.name === t;
-const TOUCH = ["Pass", "Carry", "Ball Receipt*", "Dribble", "Shot", "Ball Recovery", "Duel", "Pressure"];
+const TOUCH = [
+  "Pass",
+  "Carry",
+  "Ball Receipt*",
+  "Dribble",
+  "Shot",
+  "Ball Recovery",
+  "Duel",
+  "Pressure",
+];
 
 /* 1 · Scatter — every shot, both teams ----------------------------------- */
 const allShots = shots(events);
 const shotStats = (t) => {
   const s = allShots.filter((x) => team(x, t));
-  return { n: s.length, xg: round(s.reduce((a, b) => a + b.shot.statsbomb_xg, 0), 2) };
+  return {
+    n: s.length,
+    xg: round(
+      s.reduce((a, b) => a + b.shot.statsbomb_xg, 0),
+      2,
+    ),
+  };
 };
 
 /* 2 · Arrows — Spain's key passes ---------------------------------------- */
@@ -86,12 +101,14 @@ for (const e of events) {
   const f = frames.get(e.id);
   if (!f) continue;
   positionFrames++;
-  for (const p of f.freeze_frame) if (p.teammate && !p.keeper) positions.push([round(p.x), round(p.y)]);
+  for (const p of f.freeze_frame)
+    if (p.teammate && !p.keeper) positions.push([round(p.x), round(p.y)]);
 }
 const sortedX = positions.map((p) => p[0]).sort((a, b) => a - b);
 
 /* 5 · Hexbin — pressures -------------------------------------------------- */
-const pressures = (t) => events.filter((e) => e.type.name === "Pressure" && team(e, t) && e.x != null);
+const pressures = (t) =>
+  events.filter((e) => e.type.name === "Pressure" && team(e, t) && e.x != null);
 const sp = pressures("Spain");
 const en = pressures("England");
 const finalThird = (list) => list.filter((e) => e.x >= 80).length;
@@ -126,7 +143,12 @@ const direct = (t) => {
   const c = completed(t);
   return pct(c.filter((p) => p.endX - p.x >= 15).length, c.length, 0);
 };
-const flowPass = (p) => ({ x: round(p.x), y: round(p.y), endX: round(p.endX), endY: round(p.endY) });
+const flowPass = (p) => ({
+  x: round(p.x),
+  y: round(p.y),
+  endX: round(p.endX),
+  endY: round(p.endY),
+});
 
 /* 9 · Voronoi — the space seconds before Williams' goal ---------------- */
 // Palmer's shot freeze frame only holds 14 players, so its cells are huge and
@@ -134,7 +156,9 @@ const flowPass = (p) => ({ x: round(p.x), y: round(p.y), endX: round(p.endX), en
 // 22 players tracked — enough for a Voronoi that reads as a real partition.
 const spainGoal = allShots.filter(isGoal).find((g) => g.player.name.includes("Williams"));
 const lead = events
-  .filter((e) => e.possession === spainGoal.possession && e.index <= spainGoal.index && frames.has(e.id))
+  .filter(
+    (e) => e.possession === spainGoal.possession && e.index <= spainGoal.index && frames.has(e.id),
+  )
   .map((e) => ({ e, n: frames.get(e.id).freeze_frame.length }))
   .sort((a, b) => b.n - a.n || b.e.index - a.e.index)[0];
 const vFrame = frames.get(lead.e.id);
@@ -186,12 +210,19 @@ const hullOf = (points) => {
   return lo.slice(0, -1).concat(up.slice(0, -1));
 };
 const polyArea = (h) =>
-  Math.abs(h.reduce((a, [x1, y1], i) => a + x1 * h[(i + 1) % h.length][1] - h[(i + 1) % h.length][0] * y1, 0)) / 2;
+  Math.abs(
+    h.reduce(
+      (a, [x1, y1], i) => a + x1 * h[(i + 1) % h.length][1] - h[(i + 1) % h.length][0] * y1,
+      0,
+    ),
+  ) / 2;
 const shapeOf = (t) => {
   const xi = events
     .find((e) => e.type.name === "Starting XI" && team(e, t))
     .tactics.lineup.filter((p) => p.position.name !== "Goalkeeper");
-  const half = events.filter((e) => team(e, t) && e.period === 1 && e.player && e.x != null && TOUCH.includes(e.type.name));
+  const half = events.filter(
+    (e) => team(e, t) && e.period === 1 && e.player && e.x != null && TOUCH.includes(e.type.name),
+  );
   const players = [];
   for (const entry of xi) {
     const mine = half.filter((e) => e.player.id === entry.player.id);
@@ -277,3 +308,72 @@ const data = {
 writeFileSync(join(OUT, "layers-reel.json"), JSON.stringify(data));
 console.log(JSON.stringify(data.stats, null, 1));
 console.log(`wrote layers-reel.json (${(JSON.stringify(data).length / 1024).toFixed(0)} KB)`);
+
+/* 12 · MomentumChart — derived pressure by minute ------------------------- */
+// StatsBomb publishes no momentum number, so this uses the docs recipe
+// (apps/docs/components/examples/momentum-chart-statsbomb-basic.tsx): on-ball
+// events in the attacking third (x >= 80 for both teams), +1 Spain / -1
+// England per minute, smoothed over a three-minute centred window. A stand-in
+// for pressure, not anyone's official metric. Spain is the home side.
+const ON_BALL = new Set([
+  "Pass",
+  "Carry",
+  "Shot",
+  "Dribble",
+  "Ball Receipt*",
+  "Duel",
+  "Interception",
+  "Ball Recovery",
+  "Clearance",
+  "Miscontrol",
+  "Dispossessed",
+]);
+const HOME = "Spain";
+const momentumPeriods = [];
+for (let period = 1; period <= 4; period++) {
+  const inPeriod = events.filter((e) => e.period === period);
+  if (inPeriod.length === 0) continue;
+  const counts = new Map();
+  for (const e of inPeriod) {
+    if (!ON_BALL.has(e.type.name) || e.x === undefined || e.x < 80) continue;
+    counts.set(e.minute, (counts.get(e.minute) ?? 0) + (e.team.name === HOME ? 1 : -1));
+  }
+  if (counts.size === 0) continue;
+  const first = Math.min(...inPeriod.map((e) => e.minute));
+  const last = Math.max(...counts.keys());
+  const raw = Array.from({ length: last - first + 1 }, (_, i) => counts.get(first + i) ?? 0);
+  momentumPeriods.push(
+    raw.map((_, i) => {
+      const w = raw.slice(Math.max(0, i - 1), i + 2);
+      return { minute: first + i, value: round(w.reduce((a, b) => a + b, 0) / w.length, 1) };
+    }),
+  );
+}
+const momentumEvents = [];
+for (const s of allShots) {
+  if (s.period <= 4 && isGoal(s)) {
+    momentumEvents.push({
+      minute: round(s.minute + s.second / 60, 2),
+      side: s.team.name === HOME ? "home" : "away",
+      kind: "goal",
+      label: `Goal, ${nameOf(s.player)}`,
+    });
+  }
+}
+for (const e of events) {
+  const card = e.foul_committed?.card?.name;
+  if (!card || e.period > 4) continue;
+  momentumEvents.push({
+    minute: round(e.minute + e.second / 60, 2),
+    side: e.team.name === HOME ? "home" : "away",
+    kind: card === "Yellow Card" ? "yellow-card" : "red-card",
+    label: `${card}, ${nameOf(e.player)}`,
+  });
+}
+writeFileSync(
+  join(OUT, "momentum.json"),
+  JSON.stringify({ home: HOME, away: "England", periods: momentumPeriods, events: momentumEvents }),
+);
+console.log(
+  `wrote momentum.json (${momentumPeriods.map((p) => p.length).join("+")} minutes, ${momentumEvents.length} events)`,
+);

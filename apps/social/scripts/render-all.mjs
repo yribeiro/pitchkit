@@ -40,6 +40,7 @@ const STILLS = [
   "linkedin-positional",
   "linkedin-voronoi",
   "linkedin-flow",
+  "linkedin-momentum",
 ];
 const REELS = ["reel-01-quickstart", "reel-02-tracking", "reel-03-layers"];
 

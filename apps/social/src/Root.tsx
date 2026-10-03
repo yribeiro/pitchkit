@@ -3,6 +3,7 @@ import { PostCode, PostIntro, PostLayers, PostNetwork, PostPalettes, PostWinner 
 import {
   LinkedInFlow,
   LinkedInHexbin,
+  LinkedInMomentum,
   LinkedInPositional,
   LinkedInVoronoi,
 } from "./linkedin/LinkedInImage";
@@ -63,6 +64,7 @@ export function Root() {
         <Still id="linkedin-positional" component={LinkedInPositional} {...LINKEDIN} />
         <Still id="linkedin-voronoi" component={LinkedInVoronoi} {...LINKEDIN} />
         <Still id="linkedin-flow" component={LinkedInFlow} {...LINKEDIN} />
+        <Still id="linkedin-momentum" component={LinkedInMomentum} {...LINKEDIN} />
       </Folder>
       <Folder name="Reels">
         <Composition

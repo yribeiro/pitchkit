@@ -7,6 +7,7 @@ import finalMetaJson from "./final-meta.json";
 import cornersJson from "./corners.json";
 import finalShotsJson from "./final-shots.json";
 import layersReelJson from "./layers-reel.json";
+import momentumJson from "./momentum.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
 import spainNetworkJson from "./spain-pass-network.json";
@@ -213,3 +214,17 @@ export interface CornersData {
   corners: Corner[];
 }
 export const cornersData = cornersJson as unknown as CornersData;
+
+/** Derived match momentum for the Euro 2024 final (see scripts/snapshot-layers.mjs). */
+export interface MomentumData {
+  home: string;
+  away: string;
+  periods: { minute: number; value: number }[][];
+  events: {
+    minute: number;
+    side: "home" | "away";
+    kind: "goal" | "yellow-card" | "red-card";
+    label: string;
+  }[];
+}
+export const momentum = momentumJson as unknown as MomentumData;

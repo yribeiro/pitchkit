@@ -378,14 +378,18 @@ Facts behind the slides (all in `corners.json`; re-check if you re-run the snaps
 | 6     | 4 of 4 corners ended in a shot, 3.4–12.8 s after the kick                                                                       | Tiny sample; straight line is kick to shot, not the ball's route                             |
 | 7     | 3–6 attackers v 9–10 defenders; corners from the attacker's left 3×, right 1×; 4 shots by 3 players (Pijnaker, May, Gillion ×2) |                                                                                              |
 
-## LinkedIn images (`linkedin-hexbin|positional|voronoi|flow.png`, 1200×1200)
+## LinkedIn images (`linkedin-hexbin|positional|voronoi|flow|momentum.png`, 1200×1200)
 
 Square so a multi-image LinkedIn post never crops them. Each shows one layer on
 the Euro 2024 final, with the component name, one stat and the line of code
-that draws it. Hexbin, PositionalHeatmap and Voronoi are the same data as reel
-03 (the Voronoi is the 360 frame six seconds before Williams' goal). PitchKit
-has no momentum chart, so the fourth is `<Flow>` drawn from Spain's real
-completed forward passes (211 that gain 5+ units).
+that draws it. Hexbin, PositionalHeatmap and Voronoi use the same data as reel
+03 (the Voronoi is the 360 frame six seconds before Williams' goal, with the
+cells run stronger for a small feed image). Flow is drawn from Spain's real
+completed forward passes (211 that gain 5+ units), not reel 03's illustrative
+pattern. Momentum is `<MomentumChart>`, with momentum **derived** by the docs
+recipe (attacking-third on-ball events, Spain minus England per minute,
+three-minute smoothing; `npm run snapshot:layers`). It is not an official
+metric, and the image says so.
 
 **Alt text**
 
@@ -393,6 +397,7 @@ completed forward passes (211 that gain 5+ units).
 2. PositionalHeatmap: a football pitch divided into zones shaded blue by where Spain's passes landed, with the central zone brightest; 11% landed in the top zone.
 3. Voronoi: a pitch split into cells around each tracked player, blue for Spain and orange for England, six seconds before Williams' goal; Spain controls 68%.
 4. Flow: a pitch with one arrow per zone showing the average direction of Spain's 211 forward passes, thicker and more orange where there were more.
+5. Momentum: two bar charts, one per half, with Spain's pressure in blue above a zero line and England's in orange below it, and icons beneath marking the three goals and four yellow cards.
 
 ---
 
