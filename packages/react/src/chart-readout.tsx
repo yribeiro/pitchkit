@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import type { ReactNode, RefObject } from "react";
+import { textWidth } from "@pitchkit/core";
+import { TOOLTIP_BG, TOOLTIP_TEXT } from "./chart-tokens.js";
 
 /**
  * The crosshair readout shared by every non-pitch chart: a small dark card
@@ -37,8 +39,8 @@ export function ChartReadout({
         transform: left > 50 ? "translateX(-100%)" : "none",
         marginLeft: left > 50 ? -12 : 12,
         pointerEvents: "none",
-        background: "var(--pitch-tooltip-bg, rgba(17, 17, 17, 0.92))",
-        color: "var(--pitch-tooltip-color, #fff)",
+        background: TOOLTIP_BG,
+        color: TOOLTIP_TEXT,
         padding: "6px 10px",
         borderRadius: 4,
         fontSize: 12,
@@ -82,4 +84,53 @@ export function useDismissOnOutsidePress(
     document.addEventListener("pointerdown", dismissOnOutsidePress, true);
     return () => document.removeEventListener("pointerdown", dismissOnOutsidePress, true);
   }, [active, containerRef, dismiss]);
+}
+
+/**
+ * One series in a readout: its swatch, its name, and its value pushed to
+ * the right in tabular figures so a column of numbers lines up. Each chart
+ * passes the swatch that matches its marks (a line key, a square).
+ */
+export function ReadoutRow({
+  swatch,
+  label,
+  children,
+}: {
+  swatch: ReactNode;
+  label: string;
+  /** The value, and any note after it. */
+  children: ReactNode;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      {swatch}
+      <span style={{ opacity: 0.75 }}>{label}</span>
+      <span style={{ marginLeft: "auto", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+        {children}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Where each legend entry starts: after the previous one's swatch, gap and
+ * estimated label width. Labels aren't measured, since charts render on
+ * the server.
+ */
+export function legendOffsets(
+  labels: readonly string[],
+  fontSize: number,
+  entryPad: number,
+  start: number,
+): number[] {
+  const offsets: number[] = [];
+  for (let i = 0; i < labels.length; i += 1) {
+    const previous = labels[i - 1];
+    offsets.push(
+      previous === undefined
+        ? start
+        : (offsets[i - 1] as number) + entryPad + textWidth(previous.length, fontSize),
+    );
+  }
+  return offsets;
 }

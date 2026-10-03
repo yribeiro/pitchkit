@@ -149,6 +149,39 @@ MomentumChart (root)
   race chart.
 - **Below 420 px** the box is 1.8:1 rather than 3:1 and icons shrink from 16 to 14 px.
 
+### Player radar
+
+`<RadarChart>` ([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)) is the
+first polar chart.
+
+```
+RadarChart (root)
+ ├─ metrics   (the axes, clockwise from the top; each with its own min/max and flip)
+ ├─ geometry  (centre, inner radius = one ring, outer radius = what the labels leave)
+ ├─ bands, spokes, shapes (two-tone bands for one series), ring values, children
+ ├─ hit disc  (pointer picks the nearest axis by angle) and labels (buttons with renderDetail)
+ └─ detail    (RadarDetailView replaces the SVG while a metric is selected)
+```
+
+- **`core/polar/` owns the maths.** `axisAngle` and its inverse `nearestAxis` (pointer to axis),
+  `polarPoint`, `normaliseMetric` (range, flip, clamp), `ringSteps`/`ringValues` (flip-aware),
+  `ringPath`, and for labels `labelPlacement` (rotation, anchor, first-line offset for each
+  `labelRotation`, with the 180° upright turn), `wrapLabel`, `labelMargin` and `labelBox` (the
+  24px hit target). Text is estimated with `GLYPH_WIDTH`, since the charts render on the server.
+  All take plain numbers.
+- **The margin is what the labels need.** Tangent labels need their wrapped height round the rim,
+  radial ones their length, horizontal ones both. The centre circle is one ring wide, as in
+  mplsoccer, so a value at `min` still sits off the centre.
+- **Bands are rings, not stacked discs.** Each band is one even-odd path, so translucent grid
+  colours don't accumulate where circles overlap.
+- **The detail swap** is `radar-detail.tsx`: `useRadarSelection` (uncontrolled unless
+  `selected` is passed, and it returns focus to the element that opened the detail, found by its
+  `data-pitchkit-metric`) and `RadarDetailView` (Back, Escape, focus on the heading, a 150ms fade
+  that respects reduced motion).
+- **Shared with the other charts:** `useChartBox()` (responsive sizing), `chart-tokens.ts`
+  (`--pitch-*` fallbacks), `ChartReadout` and `warnInDevelopment()`.
+- **Below 420 px** labels shrink a step and ring values are hidden by default.
+
 ## Packages
 
 npm workspaces + Turborepo.

@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { MomentumChart } from "./MomentumChart.js";
 import { colorSaysTeam, iconColor, kindLabel } from "./momentum-icons.js";
-import { useMomentumChart } from "./use-momentum-chart.js";
+import { useMomentumChart } from "./momentum-context.js";
 import type { MomentumEventKind, MomentumSide } from "./momentum-types.js";
 
 interface Sample {

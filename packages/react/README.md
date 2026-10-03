@@ -75,8 +75,10 @@ and `fill={(d) => d.teamColor}` are the same prop.
 | `useRaceChart()`      | Hook exposing a `<RaceChart>`'s scales, for annotations      |
 | `<MomentumChart>`     | Match momentum bars per half, with an event icon row         |
 | `useMomentumChart()`  | Hook exposing a `<MomentumChart>`'s scales, for annotations  |
+| `<RadarChart>`        | Player radar: per-axis ranges, flips, click-to-detail labels |
+| `useRadarChart()`     | Hook exposing a `<RadarChart>`'s geometry, for annotations   |
 
-`<RaceChart>` and `<MomentumChart>` are the exception to "children are layers drawn into a `<Pitch>`": they have no pitch,
+`<RaceChart>`, `<MomentumChart>` and `<RadarChart>` are the exception to "children are layers drawn into a `<Pitch>`": they have no pitch,
 so each is a root in its own right and takes no `type` prop. See
 [Charts](https://www.pitchkitjs.com/docs/charts).
 

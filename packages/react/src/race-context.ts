@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createChartContext } from "./chart-context.js";
 import type { ChartFrame, LinearScale, RacePoint } from "@pitchkit/core";
 
 /** One series after its accessors have been resolved and accumulated. */
@@ -30,18 +30,24 @@ export interface RaceChartContextValue {
   readonly valueAt: (seriesId: string, time: number) => number;
 }
 
-export const RaceChartContext = createContext<RaceChartContextValue | null>(null);
+const race = createChartContext<RaceChartContextValue>("RaceChart");
+
+export const RaceChartContext = race.Context;
 
 /**
- * Internal: the chart's own children read scales through this. Throws
- * rather than rendering nothing, for the same reason `usePitchContext`
- * does — "annotation outside its chart" is a usage error the consumer
- * should see immediately, not debug from a blank panel.
+ * The chart's scales, frame and accumulated series — the `<RaceChart>`
+ * counterpart to `usePitch()`.
+ *
+ * This is how anything the chart doesn't draw itself gets drawn: bookings,
+ * substitutions, a red card, a period annotation. None of those accumulate
+ * a value, so none of them is a series; they are children that position
+ * themselves through `scaleX` and `valueAt`.
+ *
+ * ```tsx
+ * function Card({ minute, team }: { minute: number; team: string }) {
+ *   const { scaleX, scaleY, valueAt } = useRaceChart();
+ *   return <rect x={scaleX(minute) - 3} y={scaleY(valueAt(team, minute)) - 9} width={6} height={8} />;
+ * }
+ * ```
  */
-export function useRaceChartContext(): RaceChartContextValue {
-  const ctx = useContext(RaceChartContext);
-  if (!ctx) {
-    throw new Error("@pitchkit/react: this component must be rendered inside <RaceChart>.");
-  }
-  return ctx;
-}
+export const useRaceChart: () => RaceChartContextValue = race.use;

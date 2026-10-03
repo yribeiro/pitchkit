@@ -1,4 +1,5 @@
 import type { TooltipState } from "./context.js";
+import { TOOLTIP_BG, TOOLTIP_TEXT } from "./chart-tokens.js";
 
 /**
  * Positioned absolutely within `<Pitch>`'s wrapper, offset above the
@@ -15,8 +16,8 @@ export function TooltipOverlay({ tooltip }: { tooltip: TooltipState }) {
         top: tooltip.y,
         transform: "translate(-50%, -100%)",
         pointerEvents: "none",
-        background: "var(--pitch-tooltip-bg, rgba(17, 17, 17, 0.92))",
-        color: "var(--pitch-tooltip-color, #fff)",
+        background: TOOLTIP_BG,
+        color: TOOLTIP_TEXT,
         padding: "4px 8px",
         borderRadius: 4,
         fontSize: 12,

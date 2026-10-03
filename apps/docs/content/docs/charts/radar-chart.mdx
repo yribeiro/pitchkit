@@ -1,0 +1,173 @@
+---
+title: RadarChart
+description: A football radar — one axis per metric, each on its own range, with translucent shapes for one to three players and axis labels that open your own detail view.
+---
+
+<PitchPreview name="radar-chart-basic" />
+
+`<RadarChart>` is the player radar analysts use to profile a player: one axis per metric, each with
+its own range, and a shape joining the player's values. Lower-is-better metrics are flipped so that
+outward is always better.
+
+It is a root, not a layer, like the other [charts](/docs/charts): no `<Pitch>`, no `type` prop.
+
+## Usage
+
+```tsx
+const metrics = [
+  { id: "npxg", label: "npxG", min: 0, max: 0.34 },
+  { id: "shots", label: "Shots", min: 0, max: 3 },
+  { id: "turnovers", label: "Turnovers", min: 0.04, max: 4.36, lowerIsBetter: true },
+  // ...at least three
+];
+
+<RadarChart metrics={metrics} series={[{ id: "yamal", label: "Lamine Yamal", values: yamal }]} />;
+```
+
+- **`metrics`** are the axes, drawn clockwise from the top. Each has an `id`, an optional `label`,
+  and a `min` and `max` (0–100 if you leave them out).
+- **`series`** are the shapes. `values` is keyed by metric id, so a row from your own data usually
+  drops straight in.
+
+### The chart computes nothing
+
+`<RadarChart>` draws the values you give it, on the ranges you give it. Per-90s, percentiles and
+the ranges themselves are yours to compute. The only arithmetic is placing each value between its
+metric's `min` and `max`.
+
+A common choice for the range is the **5th to 95th percentile** of the comparison population, which
+is StatsBomb's convention: a value at the rim is top 5%, and one at the centre is bottom 5%. That is
+what the examples here use, derived from every outfield player with 270 or more minutes at Euro 2024.
+
+## Lower is better
+
+```tsx
+{ id: "turnovers", label: "Turnovers", min: 0.04, max: 4.36, lowerIsBetter: true }
+```
+
+The axis runs from `max` at the centre to `min` at the rim, so a careful player's shape still
+reaches outward. The label carries a ↓, the ring values count down, and the readout says "lower is
+better".
+
+## Out of range and missing values
+
+A value beyond its axis is **pinned to the edge**, so the shape never claims more than the range
+shows. The readout still gives the real number, marked "off scale". In the example above, Yamal's
+xA is past the 95th percentile.
+
+A missing or non-finite value takes the outline to the centre on that axis, and the readout says
+"No data". There are no markers at the vertices: the outline bends at each value, and the readout
+gives the numbers.
+
+## Comparing players
+
+<PitchPreview name="radar-chart-compare-basic" />
+
+Pass more than one series and each gets a light wash and an outline in its own colour, with a
+legend. **Three is the most that stay readable.** Every shape overlaps every other, and past three
+the colours can't be told apart reliably, especially with colour-blindness. A fourth series still
+draws, with a development warning; small multiples are the better answer.
+
+A single series is drawn in two tones of its colour where it crosses the rings, mplsoccer's look.
+Turn that off with `appearance={{ bands: false }}`.
+
+## Label rotation
+
+<PitchPreview name="radar-chart-rotation-basic" />
+
+`labelRotation` decides how labels sit round the rim:
+
+| Value                 | Labels                                                            |
+| --------------------- | ----------------------------------------------------------------- |
+| `"tangent"` (default) | Run along the rim, at right angles to the axis, as mplsoccer does |
+| `"radial"`            | Run outward along the axis line; suits long names                 |
+| `"horizontal"`        | Stay upright, anchored by side                                    |
+
+Labels that would read upside down are turned 180°, and long labels wrap onto two lines. The ring
+values follow the same rotation.
+
+## Click a label to open a detail view
+
+<PitchPreview name="radar-chart-detail-basic" />
+
+Pass `renderDetail` and every axis label becomes a button. Activating one replaces the chart with
+whatever you return, in the same box, under a header with a Back button:
+
+```tsx
+<RadarChart
+  metrics={metrics}
+  series={series}
+  renderDetail={({ metric, values, close }) => <MetricBreakdown metric={metric} values={values} />}
+/>
+```
+
+`renderDetail` receives the `metric`, every series' value for it in `values` (keyed by series id),
+and `close()`. Back, Escape and `close()` all return to the chart, and focus goes back to the label
+you opened. Labels are reachable with Tab and open with Enter or Space.
+
+Without `renderDetail`, labels are plain text: nothing looks clickable that isn't.
+
+To keep the selection in the URL, control it:
+
+```tsx
+const [selected, setSelected] = useState<RadarSelection | null>(null);
+
+<RadarChart ... renderDetail={...} selected={selected} onSelectedChange={setSelected} />;
+```
+
+## Reading values
+
+Hover anywhere on the chart, or focus a label, and the readout shows every series' value on the
+nearest axis. On a touch screen a tap does the same and stays up until you tap outside the chart.
+
+## Annotations
+
+Children are drawn over the shapes and positioned with `useRadarChart()`. `pointAt(metricId,
+value)` uses the same range and flip as the shapes, so a benchmark lines up exactly:
+
+```tsx
+function LeagueAverage({ values }: { values: Record<string, number> }) {
+  const { pointAt } = useRadarChart();
+  const points = Object.entries(values).flatMap(([id, v]) => pointAt(id, v) ?? []);
+  return (
+    <polygon points={points.join(" ")} fill="none" stroke="currentColor" strokeDasharray="3 3" />
+  );
+}
+```
+
+It also returns `cx`, `cy`, the `inner` and `outer` radii, and `angleOf(metricId)`.
+
+## Sizing
+
+Responsive by default and square. Passing `width` **and** `height` is the opt-out, and
+`aspectRatio` changes the box (the chart stays centred). Below 420px wide the labels shrink a step
+and the ring values are hidden, since they collide there; turn them back on with
+`appearance={{ rangeLabels: true }}`.
+
+## Theming
+
+CSS variables only.
+
+| Variable                    | What it colours                     |
+| --------------------------- | ----------------------------------- |
+| `--pitch-series-1` … `-3`   | The shapes, by position in `series` |
+| `--pitch-grid`              | The range bands                     |
+| `--pitch-axis`              | The spokes                          |
+| `--pitch-chart-text`        | Labels and the legend               |
+| `--pitch-chart-muted`       | Ring values                         |
+| `--pitch-chart-accent`      | The detail view's Back button       |
+| `--pitch-chart-accent-text` | The Back button's label             |
+
+Every part of a series paints with `currentColor`, so one class recolours all of it:
+
+```tsx
+series={[{ id: "yamal", values: yamal, className: "text-rose-500" }]}
+```
+
+A series with a `className` and no `color` drops its themed default, the same rule as every mark
+layer. `appearance` is structural only: `rangeLabels`, `legend` and `bands`.
+
+Every element carries a `data-pitchkit-part` for Tailwind arbitrary variants: `radar-band`,
+`radar-spoke`, `radar-shape`, `radar-band-tone`, `radar-tick`, `radar-label`,
+`radar-legend`, `radar-detail`, `radar-back`. Series groups carry `data-pitchkit-series`, labels
+`data-pitchkit-metric`, and the root `data-pitchkit-layer="radar"`.

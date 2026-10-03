@@ -1,18 +1,25 @@
-import { createContext, useContext } from "react";
+import { createChartContext } from "./chart-context.js";
 import type { MomentumChartContextValue } from "./momentum-types.js";
 
-export const MomentumChartContext = createContext<MomentumChartContextValue | null>(null);
+const momentum = createChartContext<MomentumChartContextValue>("MomentumChart");
+
+export const MomentumChartContext = momentum.Context;
 
 /**
- * Internal: the chart's own children read scales through this. Throws
- * rather than rendering nothing, for the same reason `usePitchContext`
- * does — "annotation outside its chart" is a usage error the consumer
- * should see immediately, not debug from a blank panel.
+ * The chart's frame, per-period scales and bars — the `<MomentumChart>`
+ * counterpart to `usePitch()` and `useRaceChart()`.
+ *
+ * This is how anything the chart doesn't draw itself gets drawn: a team
+ * crest, a substitution annotated with a name, a shaded spell of pressure.
+ * `scaleX(minute)` finds the right period for you, and `scaleY(value)`
+ * is symmetric about the zero line.
+ *
+ * ```tsx
+ * function Crest({ side, src }: { side: "home" | "away"; src: string }) {
+ *   const { frame, scaleY } = useMomentumChart();
+ *   const y = side === "home" ? scaleY(0) - 24 : scaleY(0) + 6;
+ *   return <image href={src} x={frame.x0 - 22} y={y} width={18} height={18} />;
+ * }
+ * ```
  */
-export function useMomentumChartContext(): MomentumChartContextValue {
-  const ctx = useContext(MomentumChartContext);
-  if (!ctx) {
-    throw new Error("@pitchkit/react: this component must be rendered inside <MomentumChart>.");
-  }
-  return ctx;
-}
+export const useMomentumChart: () => MomentumChartContextValue = momentum.use;
