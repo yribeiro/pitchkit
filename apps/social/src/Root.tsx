@@ -7,6 +7,7 @@ import {
   LinkedInPositional,
   LinkedInVoronoi,
 } from "./linkedin/LinkedInImage";
+import { BALL_INTRO_DURATION, BallIntro } from "./ball/BallIntro";
 import { WINNER_DURATION, WinnerAnimated } from "./WinnerAnimated";
 import { CornerCover } from "./carousel/CornerCover";
 import {
@@ -85,6 +86,12 @@ export function Root() {
           component={WinnerAnimated}
           durationInFrames={WINNER_DURATION}
           {...POST_VIDEO}
+        />
+        <Composition
+          id="experiment-ball-intro"
+          component={BallIntro}
+          durationInFrames={BALL_INTRO_DURATION}
+          {...REEL}
         />
         <Composition
           id="reel-03-layers"

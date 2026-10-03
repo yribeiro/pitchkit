@@ -18,14 +18,19 @@
     "@fontsource/jetbrains-mono": "^5",
     "@pitchkit/core": "*",
     "@pitchkit/react": "*",
+    "@react-three/fiber": "^9.8.1",
+    "@remotion/motion-blur": "^4.0.529",
+    "@remotion/three": "4.0.529",
     "react": "^19",
     "react-dom": "^19",
-    "remotion": "4.0.529"
+    "remotion": "4.0.529",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@pitchkit/data-providers": "*",
     "@remotion/cli": "4.0.529",
     "@types/react": "^19",
+    "@types/three": "^0.186.0",
     "typescript": "^5"
   }
 }
