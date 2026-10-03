@@ -96,6 +96,22 @@ describe("PizzaChart: slices", () => {
 });
 
 describe("PizzaChart: colour", () => {
+  it("colours rim arcs from the slots after the series", () => {
+    const html = renderToString(
+      <PizzaChart
+        metrics={metrics}
+        series={[winger, { ...winger, id: "other" }]}
+        width={500}
+        height={500}
+      />,
+    );
+    const rims = [
+      ...html.matchAll(/data-pitchkit-part="pizza-rim"[^>]*style="color:var\((--pitch-series-\d)/g),
+    ];
+    expect(rims.length).toBeGreaterThan(0);
+    for (const m of rims) expect(["--pitch-series-1", "--pitch-series-2"]).not.toContain(m[1]);
+  });
+
   it("colours one series' slices by group, in order of first appearance", () => {
     // happy-dom drops `color: var(…)` from inline styles, so read the
     // server-rendered markup, which keeps it.

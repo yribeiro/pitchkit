@@ -130,7 +130,12 @@ export function PizzaChart({
   // One series colours its slices by group; several colour by series and show the group on the rim.
   const byGroup = series.length === 1;
   const groupNames = [...new Set(metrics.flatMap((m) => m.group ?? []))];
-  const groupPaints = new Map(groupNames.map((name, i) => [name, resolvePaint(groups?.[name], i)]));
+  // Beside several series, groups take the slots after theirs, so a rim arc never
+  // shares a colour with a series.
+  const groupSlot = byGroup ? 0 : series.length;
+  const groupPaints = new Map(
+    groupNames.map((name, i) => [name, resolvePaint(groups?.[name], groupSlot + i)]),
+  );
   const hasRim = !byGroup && groupNames.length > 0;
 
   const showValues = appearance?.values ?? (byGroup || overlay);

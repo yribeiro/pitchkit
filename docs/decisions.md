@@ -242,7 +242,8 @@ its geometry in `core/polar/`, drawing the caller's numbers and computing nothin
 - **One series colours by group; several colour by series.** A metric's `group` ("Attacking") sets the
   slice colour for a single player, taking `--pitch-series-1`, `-2`, `-3`… in order of first appearance,
   or the colour or class given in `groups`. With several series, colour identifies the player and the
-  group moves to an arc on the rim.
+  group moves to an arc on the rim, coloured from the slots after the series' so no arc
+  repeats a player's colour.
 - **`seriesLayout` is the caller's choice**: `"side-by-side"` (default) splits each metric's wedge into
   one thin wedge per series; `"overlay"` gives every series the full wedge, drawn largest first so a
   smaller one stays visible. Side by side is readable to three series and overlay to two; past that a
