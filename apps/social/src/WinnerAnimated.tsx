@@ -1,5 +1,5 @@
 /**
- * Wall post 03 as a video (1080 x 1350): the frame is exactly the static post's
+ * Wall post 03 as a looping video (1080 x 1350): the frame is exactly the static post's
  * — headline, sub, key and tags don't move — and only the markers on the
  * pitch are animated. Spain's build-up to Oyarzabal's winner draws in action
  * by action; just before the shot the horizontal pitch turns to a vertical
@@ -34,13 +34,19 @@ const ZOOM = 1.3;
 const PIVOT = { x: PAD.left + 90 * K, y: PAD.top + 40 * K };
 const SHIFT = { x: WIDTH / 2 - PIVOT.x, y: HEIGHT / 2 - PIVOT.y };
 
-// Timeline, in frames at 30 fps.
-const START = 12;
-const PER_MOVE = 20;
-const MOVES_END = START + N * PER_MOVE;
+// Timeline, in frames at 30 fps. The video is a loop: it opens on the final
+// frame, turns back to the horizontal pitch, draws the move, and ends on the
+// same final frame.
+const HOLD = 36; // the final frame, held to open
+const OUT = 12; // labels, goal and angle fade away
+const BACK_START = HOLD + OUT;
+const BACK_END = BACK_START + 42; // the pitch turns back to horizontal
+const MOVES_START = BACK_END + 8;
+const PER_MOVE = 18;
+const MOVES_END = MOVES_START + N * PER_MOVE;
 const TURN_START = MOVES_END + 8;
-const TURN = 42;
-const GOAL_START = TURN_START + TURN + 14;
+const TURN_END = TURN_START + 42; // and turns vertical again
+const GOAL_START = TURN_END + 14;
 export const WINNER_DURATION = GOAL_START + 90;
 
 /** The 360 frame without the goalkeeper: only the outfield players are plotted. */
@@ -52,19 +58,26 @@ export function WinnerAnimated() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const moves = interpolate(frame, [START, MOVES_END], [0, N], clamp);
-  const turnT = interpolate(frame, [TURN_START, TURN_START + TURN], [0, 1], {
-    ...clamp,
-    easing: Easing.inOut(Easing.cubic),
-  });
+  const opening = frame < MOVES_START;
+  const ease = Easing.inOut(Easing.cubic);
+  const turnT = opening
+    ? interpolate(frame, [BACK_START, BACK_END], [1, 0], { ...clamp, easing: ease })
+    : interpolate(frame, [TURN_START, TURN_END], [0, 1], { ...clamp, easing: ease });
+  // While the pitch turns back the drawn move stays hidden; it then draws in
+  // from nothing.
+  const moves = opening ? N : interpolate(frame, [MOVES_START, MOVES_END], [0, N], clamp);
+  const chainOpacity = opening ? 0 : 1 - turnT;
   const freeze = interpolate(turnT, [0.4, 1], [0, 1], clamp);
-  const wedge = interpolate(frame, [TURN_START + TURN, TURN_START + TURN + 12], [0, 1], clamp);
-  const goalPop = spring({
-    frame: frame - GOAL_START,
-    fps,
-    config: { damping: 11, mass: 0.6 },
-  });
-  const labels = interpolate(frame, [GOAL_START + 8, GOAL_START + 24], [0, 1], clamp);
+  const fadeOut = interpolate(frame, [HOLD, HOLD + OUT], [1, 0], clamp);
+  const wedge = opening ? fadeOut : interpolate(frame, [TURN_END, TURN_END + 12], [0, 1], clamp);
+  const goalPop = opening
+    ? fadeOut
+    : frame < GOAL_START
+      ? 0
+      : spring({ frame: frame - GOAL_START, fps, config: { damping: 11, mass: 0.6 } });
+  const labels = opening
+    ? interpolate(frame, [HOLD, HOLD + 8], [1, 0], clamp)
+    : interpolate(frame, [GOAL_START + 8, GOAL_START + 24], [0, 1], clamp);
 
   return (
     <PostFrame
@@ -93,8 +106,8 @@ export function WinnerAnimated() {
               showFreezeFrame
               showLabels={false}
               progress={moves}
-              goalPop={frame < GOAL_START ? 0 : goalPop}
-              chainOpacity={1 - turnT}
+              goalPop={goalPop}
+              chainOpacity={chainOpacity}
               freezeOpacity={freeze}
               angleOpacity={wedge}
             />
