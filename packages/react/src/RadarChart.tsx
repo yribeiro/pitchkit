@@ -1,29 +1,34 @@
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { KeyboardEvent, PointerEvent as ReactPointerEvent } from "react";
 import {
-  LABEL_LINE_HEIGHT,
   axisAngle,
   labelBox,
   labelMargin,
   labelPlacement,
+  metricLabelLines,
   nearestAxis,
-  normaliseMetric,
+  polarLayout,
   polarPoint,
   ringPath,
   ringSteps,
   ringValues,
-  wrapLabel,
 } from "@pitchkit/core";
 import type { NormalisedValue, Point } from "@pitchkit/core";
-import {
-  ChartReadout,
-  ReadoutRow,
-  legendOffsets,
-  useDismissOnOutsidePress,
-} from "./chart-readout.js";
-import { AXIS, CHART_MUTED, CHART_TEXT, GRID, seriesColor } from "./chart-tokens.js";
+import { DetailView, useDetailSelection } from "./chart-detail.js";
+import { ChartReadout, useDismissOnOutsidePress } from "./chart-readout.js";
+import { AXIS, CHART_MUTED, CHART_TEXT, GRID, resolvePaint } from "./chart-tokens.js";
+import type { Paint } from "./chart-tokens.js";
 import { warnInDevelopment } from "./dev-warn.js";
-import { RadarDetailView, useRadarSelection } from "./radar-detail.js";
+import {
+  ChartLegend,
+  LABEL_GAP,
+  LEGEND_HEIGHT,
+  LabelTspans,
+  MetricReadout,
+  formatValue,
+  placer,
+  polarContext,
+} from "./polar-parts.js";
 import { RadarChartContext } from "./radar-context.js";
 import type {
   RadarChartContextValue,
@@ -36,18 +41,9 @@ import { useChartBox } from "./use-chart-box.js";
 const DEFAULT_RINGS = 4;
 /** Past three, overlapping shapes stop being tellable apart (dataviz all-pairs cap). */
 const READABLE_SERIES = 3;
-const WRAP_CHARS = 12;
 const TICK_FONT = 8.5;
-/** Space between the rim and a label. */
-const LABEL_GAP = 8;
-const LEGEND_HEIGHT = 24;
 /** Smallest clickable label, in either direction (WCAG 2.5.8). */
 const MIN_TARGET = 24;
-
-/** At most two decimals, with trailing zeros dropped. */
-function formatValue(value: number): string {
-  return String(Number(value.toFixed(2)));
-}
 
 /**
  * Ring values are reference marks, not data: two significant figures (3.1,
@@ -57,9 +53,6 @@ function formatTick(value: number): string {
   return String(Math.abs(value) >= 10 ? Math.round(value) : Number(value.toPrecision(2)));
 }
 
-/** Legend swatch, its gap to the label, and the gap to the next entry. */
-const LEGEND_ENTRY_PAD = 33;
-
 interface Vertex {
   readonly point: Point;
   readonly placed: NormalisedValue | undefined;
@@ -67,31 +60,10 @@ interface Vertex {
   readonly value: number | undefined;
 }
 
-interface ResolvedSeries {
+interface ResolvedSeries extends Paint {
   readonly series: RadarSeries;
   readonly label: string;
-  readonly color: string | undefined;
   readonly vertices: readonly Vertex[];
-}
-
-/**
- * Where a metric's value lands: the one mapping both the shapes and
- * `useRadarChart().pointAt` use, so an annotation always lines up.
- */
-function placer(
-  metrics: readonly RadarMetric[],
-  cx: number,
-  cy: number,
-  inner: number,
-  outer: number,
-) {
-  return (j: number, value: number | null | undefined) => {
-    const metric = metrics[j];
-    const placed = metric && normaliseMetric(value, metric);
-    if (!placed) return undefined;
-    const radius = inner + placed.t * (outer - inner);
-    return { placed, point: polarPoint(cx, cy, radius, axisAngle(j, metrics.length)) };
-  };
 }
 
 /**
@@ -122,7 +94,7 @@ export function RadarChart({
   const box = useChartBox({ width, height, aspectRatio, wideRatio: 1, narrowRatio: 1 });
   const { containerRef, size, isNarrow } = box;
   const [active, setActive] = useState<number | null>(null);
-  const { selection, open, close } = useRadarSelection(containerRef, selected, onSelectedChange);
+  const { selection, open, close } = useDetailSelection(containerRef, selected, onSelectedChange);
   // useId's colons are legal in an id but not inside url(#…).
   const clipPrefix = `pitchkit-radar-${useId().replace(/:/g, "")}`;
 
@@ -149,21 +121,13 @@ export function RadarChart({
   const tick = (value: number, metric: RadarMetric) => (format ?? formatTick)(value, metric);
 
   // Margin is whatever the labels need, so the shape gets the rest.
-  const labelLines = metrics.map((m) => {
-    const label = `${m.label ?? m.id}${m.lowerIsBetter ? " ↓" : ""}`;
-    return labelRotation === "radial" ? [label] : wrapLabel(label, WRAP_CHARS);
-  });
+  const labelLines = metricLabelLines(metrics, labelRotation);
   const margin = labelMargin(labelLines, labelRotation, fontSize);
   const marginX = LABEL_GAP + margin.x + 4;
   const marginY = LABEL_GAP + margin.y + 4;
 
   const legendTop = showLegend ? LEGEND_HEIGHT : 0;
-  const cx = size.width / 2;
-  const cy = legendTop + (size.height - legendTop) / 2;
-  const outer = Math.max(
-    0,
-    Math.min(size.width / 2 - marginX, (size.height - legendTop) / 2 - marginY),
-  );
+  const { cx, cy, outer } = polarLayout(size.width, size.height, legendTop, marginX, marginY);
   // mplsoccer's proportions: the centre circle is one ring wide.
   const inner = outer / (Math.max(Math.round(rings), 1) + 1);
   const radii = ringSteps(inner, outer, rings);
@@ -174,14 +138,14 @@ export function RadarChart({
   }));
   const angles = metrics.map((_, j) => axisAngle(j, count));
   const place = useMemo(
-    () => placer(metrics, cx, cy, inner, outer),
+    () => placer(metrics, cx, cy, inner, outer, 0),
     [metrics, cx, cy, inner, outer],
   );
 
   const resolved: ResolvedSeries[] = series.map((s, i) => ({
     series: s,
     label: s.label ?? s.id,
-    color: s.color ?? (s.className ? undefined : seriesColor(i)),
+    ...resolvePaint(s, i),
     vertices: metrics.map((m, j): Vertex => {
       const at = place(j, s.values[m.id]);
       // A missing value pulls the outline to the centre rather than skipping
@@ -192,28 +156,11 @@ export function RadarChart({
     }),
   }));
   const banded = (appearance?.bands ?? true) && resolved.length === 1;
-  // Each legend entry starts where the last one's estimated width ends.
-  const legendX = legendOffsets(
-    resolved.map((r) => r.label),
-    fontSize + 1,
-    LEGEND_ENTRY_PAD,
-    4,
-  );
 
-  const context = useMemo<RadarChartContextValue>(() => {
-    const indexOf = new Map(metrics.map((m, j) => [m.id, j]));
-    return {
-      cx,
-      cy,
-      inner,
-      outer,
-      angleOf: (id) => axisAngle(indexOf.get(id) ?? 0, metrics.length),
-      pointAt: (id, value) => {
-        const j = indexOf.get(id);
-        return j === undefined ? undefined : place(j, value)?.point;
-      },
-    };
-  }, [metrics, cx, cy, inner, outer, place]);
+  const context = useMemo<RadarChartContextValue>(
+    () => polarContext(metrics, { cx, cy, inner, outer }, place, 0),
+    [metrics, cx, cy, inner, outer, place],
+  );
 
   const openIndex = selection === null ? -1 : metrics.findIndex((m) => m.id === selection.metricId);
   const openMetric = metrics[openIndex];
@@ -253,13 +200,14 @@ export function RadarChart({
 
     return (
       <div ref={containerRef} className={className} data-pitchkit-layer="radar" style={box.style}>
-        <RadarDetailView
+        <DetailView
+          chart="radar"
           title={openMetric.label ?? openMetric.id}
           subtitle={subtitle}
           onClose={close}
         >
           {renderDetail({ metric: openMetric, values, close })}
-        </RadarDetailView>
+        </DetailView>
       </div>
     );
   }
@@ -284,21 +232,11 @@ export function RadarChart({
       >
         <RadarChartContext.Provider value={context}>
           {showLegend && (
-            <g data-pitchkit-part="radar-legend" style={{ fontSize: fontSize + 1 }}>
-              {resolved.map((r, i) => (
-                <g
-                  key={r.series.id}
-                  className={r.series.className}
-                  style={{ color: r.color }}
-                  transform={`translate(${legendX[i]} 12)`}
-                >
-                  <rect y={-5} width={10} height={10} rx={2} style={{ fill: "currentColor" }} />
-                  <text x={15} dy="0.35em" style={{ fill: CHART_TEXT, fontWeight: 600 }}>
-                    {r.label}
-                  </text>
-                </g>
-              ))}
-            </g>
+            <ChartLegend
+              part="radar-legend"
+              fontSize={fontSize}
+              entries={resolved.map((r) => ({ ...r, key: r.series.id }))}
+            />
           )}
 
           {bandPaths.map((band, k) => (
@@ -337,7 +275,7 @@ export function RadarChart({
               <g
                 key={r.series.id}
                 data-pitchkit-series={r.series.id}
-                className={r.series.className}
+                className={r.className}
                 style={{ color: r.color }}
               >
                 {banded && (
@@ -459,11 +397,7 @@ export function RadarChart({
                     textUnderlineOffset: 3,
                   }}
                 >
-                  {lines.map((line, k) => (
-                    <tspan key={k} x={0} dy={`${k === 0 ? placement.dy : LABEL_LINE_HEIGHT}em`}>
-                      {line}
-                    </tspan>
-                  ))}
+                  <LabelTspans lines={lines} dy={placement.dy} />
                 </text>
               </g>
             );
@@ -476,57 +410,22 @@ export function RadarChart({
           left={(activeAnchor[0] / size.width) * 100}
           top={(Math.min(activeAnchor[1], size.height - 60) / size.height) * 100}
         >
-          <RadarReadout
-            metric={activeMetric}
-            rows={resolved.map((r) => ({ ...r, vertex: r.vertices[active ?? 0] }))}
-            text={text}
+          <MetricReadout
+            title={activeMetric.label ?? activeMetric.id}
+            lowerIsBetter={activeMetric.lowerIsBetter}
+            rows={resolved.map((r) => {
+              const vertex = r.vertices[active ?? 0];
+              return {
+                ...r,
+                key: r.series.id,
+                value: vertex?.value,
+                clamped: vertex?.placed?.clamped ?? false,
+              };
+            })}
+            format={(value) => text(value, activeMetric)}
           />
         </ChartReadout>
       )}
     </div>
-  );
-}
-
-function RadarReadout({
-  metric,
-  rows,
-  text,
-}: {
-  metric: RadarMetric;
-  rows: readonly (ResolvedSeries & { vertex: Vertex | undefined })[];
-  text: (value: number, metric: RadarMetric) => string;
-}) {
-  return (
-    <>
-      <div style={{ fontWeight: 600 }}>
-        {metric.label ?? metric.id}
-        {metric.lowerIsBetter && (
-          <span style={{ opacity: 0.7, fontWeight: 400 }}> · lower is better</span>
-        )}
-      </div>
-      {rows.map((r) => (
-        <ReadoutRow
-          key={r.series.id}
-          label={r.label}
-          swatch={
-            <span
-              className={r.series.className}
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 2,
-                background: "currentColor",
-                color: r.color,
-              }}
-            />
-          }
-        >
-          {r.vertex?.value === undefined ? "No data" : text(r.vertex.value, metric)}
-          {r.vertex?.placed?.clamped && (
-            <span style={{ opacity: 0.7, fontWeight: 400 }}> (off scale)</span>
-          )}
-        </ReadoutRow>
-      ))}
-    </>
   );
 }

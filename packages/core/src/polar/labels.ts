@@ -146,3 +146,41 @@ export function wrapLabel(text: string, maxChars: number): string[] {
   }
   return lines;
 }
+
+/**
+ * Each metric's label as lines: `↓` marks lower-is-better, radial labels
+ * stay on one line, the rest wrap at `maxChars`.
+ */
+export function metricLabelLines(
+  metrics: readonly {
+    id: string;
+    label?: string | undefined;
+    lowerIsBetter?: boolean | undefined;
+  }[],
+  rotation: LabelRotation,
+  maxChars = 12,
+): string[][] {
+  return metrics.map((m) => {
+    const label = `${m.label ?? m.id}${m.lowerIsBetter ? " ↓" : ""}`;
+    return rotation === "radial" ? [label] : wrapLabel(label, maxChars);
+  });
+}
+
+/**
+ * The centre and outer radius of a polar plot in a `width` x `height` box
+ * with `top` reserved above it (a legend), leaving `insetX` and `insetY`
+ * clear on each side for labels.
+ */
+export function polarLayout(
+  width: number,
+  height: number,
+  top: number,
+  insetX: number,
+  insetY: number,
+): { cx: number; cy: number; outer: number } {
+  return {
+    cx: width / 2,
+    cy: top + (height - top) / 2,
+    outer: Math.max(0, Math.min(width / 2 - insetX, (height - top) / 2 - insetY)),
+  };
+}

@@ -8,6 +8,7 @@ import { Heatmap } from "./Heatmap.js";
 import { Pitch } from "./Pitch.js";
 import { MomentumChart } from "./MomentumChart.js";
 import { RaceChart } from "./RaceChart.js";
+import { PizzaChart } from "./PizzaChart.js";
 import { RadarChart } from "./RadarChart.js";
 import { Scatter } from "./Scatter.js";
 
@@ -164,6 +165,21 @@ describe("SSR (renderToString)", () => {
     expect(html).toContain('viewBox="0 0 720 720"');
     expect(html).toContain('data-pitchkit-layer="radar"');
     expect(html).toContain('data-pitchkit-part="radar-shape"');
+    expect(html).toContain('role="button"');
+  });
+
+  it("renders a PizzaChart to a string, at its fallback size without a DOM", () => {
+    const html = renderToString(
+      <PizzaChart
+        metrics={[{ id: "a", group: "G" }, { id: "b", group: "G" }, { id: "c" }]}
+        series={[{ id: "p", values: { a: 40, b: 60, c: 20 } }]}
+        renderDetail={() => null}
+      />,
+    );
+
+    expect(html).toContain('viewBox="0 0 720 720"');
+    expect(html).toContain('data-pitchkit-layer="pizza"');
+    expect(html).toContain('data-pitchkit-part="pizza-slice"');
     expect(html).toContain('role="button"');
   });
 });

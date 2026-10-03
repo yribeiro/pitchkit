@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar or percentile pizza chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -28,7 +28,7 @@ Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 hands back pitch coordinates, an `<XgRace>` / `<XgTimeline>` / `<XgFlow>` component
 (the cumulative chart is `<RaceChart>`, and `<Flow>` is an unrelated pitch layer for
 binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
-`<MomentumChart>`), a `<Radar>` (it is `<RadarChart>`) or a `<Pizza>` component (not built yet).
+`<MomentumChart>`), a `<Radar>` (it is `<RadarChart>`) or a `<Pizza>` (it is `<PizzaChart>`).
 
 ## Package split
 
@@ -123,20 +123,14 @@ Canvas density layers — client-only, accept `className` and `style` but **no**
 Roots: `<Pitch>`, and `<VerticalPitch>` (exactly `<Pitch orientation="vertical">`).
 Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for custom marks.
 
-Non-pitch charts — separate roots, **not** children of `<Pitch>`:
+Non-pitch charts — separate roots, **not** children of `<Pitch>`, with no `type` prop (there is no
+pitch to have a provider): `<RaceChart>` (an "xG race chart", "xG timeline" or "xG flow chart"),
+`<MomentumChart>` (signed bars per half with an event icon row), `<RadarChart>` and `<PizzaChart>`
+(player profiles). Each has a hook for annotations: `useRaceChart()` returns `{ frame, scaleX, scaleY,
+series, endTime, valueAt }`, `useMomentumChart()` `{ frame, panels, scaleX, scaleY, bars }`, and
+`useRadarChart()` / `usePizzaChart()` `{ cx, cy, inner, outer, angleOf, pointAt }`.
 
-`<RaceChart>` — a cumulative step chart over match minutes. This is what an "xG race
-chart", "xG timeline" or "xG flow chart" means. `useRaceChart()` returns
-`{ frame, scaleX, scaleY, series, endTime, valueAt }`.
-
-`<MomentumChart>` — match momentum as signed bars per half with an event icon row (goals,
-cards, substitutions, VAR). `useMomentumChart()` returns `{ frame, panels, scaleX, scaleY, bars }`.
-
-`<RadarChart>` — the player radar, one axis per metric. `useRadarChart()` returns `{ cx, cy, inner,
-outer, angleOf, pointAt }`. None takes a `type` prop: there is no pitch to have a provider.
-
-Full prop tables for every component are in [references/api.md](references/api.md) — read
-it before writing props not shown in the recipes below.
+Full prop tables are in [references/api.md](references/api.md); read it before writing props not shown below.
 
 ## Composite charts are compositions, not components
 
@@ -357,7 +351,7 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 
 ## Recipe 5 — xG race chart (the non-pitch root)
 
-`<RaceChart>` accumulates a per-event value against the clock. No `<Pitch>` anywhere.
+`<RaceChart>` accumulates a per-event value against the clock, with no `<Pitch>`.
 
 ```tsx
 // shots: { minute, team, xg, goal, period }[]
@@ -370,16 +364,14 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 />
 ```
 
-Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG), pass
-`period` rather than hardcoding half time, and draw bookings as children via
-`useRaceChart()`. Details: [references/api.md](references/api.md#racechart).
+Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG), pass `period`
+rather than hardcoding half time, and draw bookings as children via `useRaceChart()`
+([api.md](references/api.md#racechart)). Chart theming is variables (`--pitch-series-1` … `-6`,
+`--pitch-axis`, `--pitch-grid`, `--pitch-chart-*`); a series `className` such as `text-rose-500` replaces its default.
 
-Chart theming is variables: `--pitch-series-1` … `-6`, `--pitch-axis`, `--pitch-grid`,
-`--pitch-chart-*`. A series `className` such as `text-rose-500` replaces its default.
+## Recipe 5b — momentum, radar and pizza (the other non-pitch roots)
 
-## Recipe 5b — match momentum and radar (the other non-pitch roots)
-
-Neither computes its numbers: momentum (+ home, − away) and radar values come from the caller.
+None computes its numbers: momentum (+ home, − away), radar values and percentiles are the caller's.
 
 ```tsx
 <MomentumChart
@@ -398,10 +390,19 @@ Neither computes its numbers: momentum (+ home, − away) and radar values come 
   series={[{ id: "yamal", label: "Yamal", values: { npxg: 0.28, to: 4.2 } }]} // ≤ 3 series
   renderDetail={({ metric, values, close }) => <Breakdown metric={metric} />} // labels → buttons
 />
+
+<PizzaChart
+  metrics={[{ id: "npxg", label: "npxG", group: "Attacking" }, /* ≥ 3; values 0–100 */
+    { id: "to", label: "Turnovers", group: "Possession", lowerIsBetter: true }]}
+  series={[{ id: "yamal", label: "Yamal", values: { npxg: 91, to: 93 } }]} // percentiles; ≤ 3 side by side
+  seriesLayout="side-by-side" // or "overlay" (two series)
+  renderDetail={({ metric, series, close }) => <Breakdown metric={metric} />} // slices → buttons
+/>
 ```
 
 Momentum: keep icons to goals and cards. Radar ranges are usually the population's 5th–95th
-percentile. Details: [momentum](references/api.md#momentumchart), [radar](references/api.md#radarchart).
+percentile; a pizza's values are percentiles. Details: [momentum](references/api.md#momentumchart),
+[radar](references/api.md#radarchart), [pizza](references/api.md#pizzachart).
 
 ## Recipe 6 — real open data
 
@@ -493,8 +494,7 @@ published from it.
 
 ## Where to look next
 
-- [references/api.md](references/api.md) — every component's full prop list, plus the
-  `@pitchkit/core` exports worth calling directly.
-- <https://www.pitchkitjs.com/docs/data> — the data loaders in depth, per provider and file.
-- <https://www.pitchkitjs.com/docs> — narrative guides; <https://www.pitchkitjs.com/gallery> — worked examples.
+- [references/api.md](references/api.md) — every component's props, plus `@pitchkit/core` exports.
+- <https://www.pitchkitjs.com/docs/data> — the data loaders; <https://www.pitchkitjs.com/docs> —
+  guides; <https://www.pitchkitjs.com/gallery> — worked examples.
 - The installed package's `dist/index.d.ts` — the authoritative types.

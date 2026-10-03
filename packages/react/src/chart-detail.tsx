@@ -1,29 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode, RefObject } from "react";
 import { CHART_ACCENT, CHART_ACCENT_TEXT, CHART_MUTED, CHART_TEXT } from "./chart-tokens.js";
-import type { RadarSelection } from "./radar-types.js";
+
+/** What every chart's selection has: the metric, and the series for charts that select one. */
+interface Selection {
+  readonly metricId: string;
+  readonly seriesId?: string;
+}
 
 /**
- * The radar's selection: uncontrolled by default, controlled when the
- * caller passes `selected` (the usual React pattern for an input).
+ * A chart's selection: uncontrolled by default, controlled when the caller
+ * passes `selected` (the usual React pattern for an input).
  *
  * It also owns focus return: when the detail view closes, focus goes back
- * to the label that opened it, found by its `data-pitchkit-metric`.
+ * to the element that opened it, found by its `data-pitchkit-metric` (and
+ * `data-pitchkit-series`, when the selection names a series).
  */
-export function useRadarSelection(
+export function useDetailSelection<S extends Selection>(
   containerRef: RefObject<HTMLElement | null>,
-  selected: RadarSelection | null | undefined,
-  onSelectedChange: ((selection: RadarSelection | null) => void) | undefined,
+  selected: S | null | undefined,
+  onSelectedChange: ((selection: S | null) => void) | undefined,
 ): {
-  selection: RadarSelection | null;
-  open: (selection: RadarSelection) => void;
+  selection: S | null;
+  open: (selection: S) => void;
   close: () => void;
 } {
-  const [internal, setInternal] = useState<RadarSelection | null>(null);
-  const opener = useRef<RadarSelection | null>(null);
+  const [internal, setInternal] = useState<S | null>(null);
+  const opener = useRef<S | null>(null);
   const selection = selected !== undefined ? selected : internal;
 
-  function set(next: RadarSelection | null) {
+  function set(next: S | null) {
     if (selected === undefined) setInternal(next);
     onSelectedChange?.(next);
   }
@@ -34,7 +40,11 @@ export function useRadarSelection(
     opener.current = null;
     const target = Array.from(
       containerRef.current?.querySelectorAll<SVGElement>("[data-pitchkit-metric]") ?? [],
-    ).find((el) => el.getAttribute("data-pitchkit-metric") === from.metricId);
+    ).find(
+      (el) =>
+        el.getAttribute("data-pitchkit-metric") === from.metricId &&
+        (from.seriesId === undefined || el.getAttribute("data-pitchkit-series") === from.seriesId),
+    );
     target?.focus();
   }, [selection, containerRef]);
 
@@ -49,20 +59,23 @@ export function useRadarSelection(
 }
 
 /**
- * The detail view the radar swaps itself for: a header with a Back
+ * The detail view a chart swaps itself for: a header with a Back
  * button and the metric's name, then whatever the caller rendered, in the
  * chart's own box so the page doesn't jump.
  *
  * Opening moves focus to the heading, so a screen reader announces where
- * it landed; Escape and Back both close, and `useRadarSelection` returns
+ * it landed; Escape and Back both close, and `useDetailSelection` returns
  * focus to whatever opened it.
  */
-export function RadarDetailView({
+export function DetailView({
+  chart,
   title,
   subtitle,
   onClose,
   children,
 }: {
+  /** Prefixes the `data-pitchkit-part` names, as `radar-detail` and `radar-back`. */
+  chart: "radar" | "pizza";
   title: string;
   subtitle?: string;
   onClose: () => void;
@@ -90,7 +103,7 @@ export function RadarDetailView({
   return (
     <div
       ref={rootRef}
-      data-pitchkit-part="radar-detail"
+      data-pitchkit-part={`${chart}-detail`}
       onKeyDown={handleKeyDown}
       style={{
         position: "absolute",
@@ -105,7 +118,7 @@ export function RadarDetailView({
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
         <button
           type="button"
-          data-pitchkit-part="radar-back"
+          data-pitchkit-part={`${chart}-back`}
           onClick={onClose}
           style={{
             display: "inline-flex",

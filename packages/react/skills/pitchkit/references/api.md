@@ -195,6 +195,42 @@ Returns `{ cx, cy, inner, outer, angleOf, pointAt }`. `pointAt(metricId, value)`
 range and flip as the shapes, clamped; `angleOf(metricId)` is radians clockwise from the top.
 Throws outside a `<RadarChart>`.
 
+### `<PizzaChart>`
+
+The percentile pizza: one slice per metric, as long as the value, around a hole. A root in its own
+right — **not** a child of `<Pitch>`, no `type` prop. It computes nothing: percentiles are the
+caller's, and the population they are ranked against is a choice.
+
+| Prop                            | Type                                               | Notes                                                                                                        |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `metrics`                       | `PizzaMetric[]`                                    | `{ id, label?, group?, min?, max?, lowerIsBetter? }`, clockwise from the top. At least 3.                    |
+| `series`                        | `PizzaSeries[]`                                    | `{ id, label?, values, color?, className? }`; `values` keyed by metric id.                                   |
+| `seriesLayout`                  | `"side-by-side" \| "overlay"`                      | How several series share a slice. Default `"side-by-side"` (up to 3); overlay is up to 2.                    |
+| `groups`                        | `Record<string, { color?, className? }>`           | Colours by group name. Default: `--pitch-series-1…` by first appearance, after the series' slots if several. |
+| `labelRotation`                 | `"tangent" \| "radial" \| "horizontal"`            | As for the radar. Default `"tangent"`.                                                                       |
+| `format`                        | `(value, metric) => string`                        | Value boxes and readout text.                                                                                |
+| `renderDetail`                  | `({ metric, series, values, close }) => ReactNode` | Makes slices buttons; activating one replaces the chart, with a Back button.                                 |
+| `selected` / `onSelectedChange` | `PizzaSelection \| null`                           | `{ metricId, seriesId }`. Optional control.                                                                  |
+| `appearance`                    | `{ values?, legend? }`                             | Structure only, never colour.                                                                                |
+| `width` / `height`              | `number`                                           | Both together are the fixed-size opt-out. Responsive and square by default.                                  |
+| `aspectRatio`                   | `number`                                           | Responsive box shape. Default `1`.                                                                           |
+| `children`                      | `ReactNode`                                        | Annotations; position them with `usePizzaChart()`.                                                           |
+
+`min`/`max` default to 0–100. With **one series** slices take their group's colour; with **several**
+they take their series' colour and the group shows as an arc on the rim, coloured from the slots after the series'. Value boxes print in every
+layout, and `appearance={{ values: false }}` hides them. `lowerIsBetter` flips a slice so a long one is always
+good. A value past its range is pinned and flagged "off scale" in the readout; a missing one draws
+no slice. Past the layout's series limit a development warning says so.
+
+Every part of a series or group paints with `currentColor`, so `className: "text-rose-500"` recolours
+all of it (and drops the default).
+
+### `usePizzaChart()`
+
+Returns `{ cx, cy, inner, outer, angleOf, pointAt }`. `pointAt(metricId, value)` applies the same range
+and flip as the slices, along the slice's middle; `angleOf(metricId)` is that middle in radians
+clockwise from the top. Throws outside a `<PizzaChart>`.
+
 ---
 
 ## SVG layers

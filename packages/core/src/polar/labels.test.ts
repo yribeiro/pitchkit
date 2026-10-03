@@ -4,6 +4,8 @@ import {
   labelBox,
   labelMargin,
   labelPlacement,
+  metricLabelLines,
+  polarLayout,
   textWidth,
   wrapLabel,
 } from "./labels.js";
@@ -146,5 +148,30 @@ describe("labelBox", () => {
 
   it("copes with no lines", () => {
     expect(labelBox(middle, [], 10, 24).width).toBe(24);
+  });
+});
+
+describe("metricLabelLines", () => {
+  const metrics = [
+    { id: "a", label: "Non-penalty xG" },
+    { id: "to", lowerIsBetter: true },
+  ];
+
+  it("wraps labels and marks lower-is-better", () => {
+    expect(metricLabelLines(metrics, "tangent", 8)).toEqual([["Non-penalty", "xG"], ["to ↓"]]);
+  });
+
+  it("keeps radial labels on one line", () => {
+    expect(metricLabelLines(metrics, "radial")).toEqual([["Non-penalty xG"], ["to ↓"]]);
+  });
+});
+
+describe("polarLayout", () => {
+  it("centres below the reserved top and fits the tighter axis", () => {
+    expect(polarLayout(400, 300, 20, 50, 30)).toEqual({ cx: 200, cy: 160, outer: 110 });
+  });
+
+  it("never goes negative", () => {
+    expect(polarLayout(40, 40, 0, 50, 50).outer).toBe(0);
   });
 });

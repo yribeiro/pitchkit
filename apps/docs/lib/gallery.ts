@@ -131,6 +131,14 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     docsHref: "/docs/charts/radar-chart",
   },
   {
+    name: "pizza-gallery",
+    title: "Player pizza",
+    description:
+      "Lamine Yamal at Euro 2024 as percentiles against every outfield player with 270+ minutes — slices coloured by attacking, possession and defending.",
+    category: "Profiles",
+    docsHref: "/docs/charts/pizza-chart",
+  },
+  {
     name: "shot-territory-gallery",
     title: "Shot territory",
     description:
