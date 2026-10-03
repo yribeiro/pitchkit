@@ -37,8 +37,8 @@ Instagram's grid shows the **newest post top-left**. Two ways to run it:
 Reels: in the Instagram composer, leave "Also share to feed" on, and pick the
 grid cover from the reel's own first frames (reel 01's hook frame and reel 02's
 title frame both work as covers). The reels are rendered **without audio** so
-you can attach trending audio in-app — reel 03 is cut on a 1.2 s beat (100 BPM,
-or 50 half-time), so anything around 100/200 BPM lands on the cuts.
+you can attach trending audio in-app — reel 03 is cut on a 1.4 s beat (~85 BPM,
+or 170 BPM double-time), so anything around 85 or 170 BPM lands on the cuts.
 
 ## Hashtags
 
@@ -365,7 +365,7 @@ snapshot:corners`). Post all eight in order; slide 1 is the cover.
 5. A pitch showing one player's paths from two corners: L. Gillion starts on the edge of the box at 71' and out wide at 92', and shoots both times.
 6. A pitch with four lines from each corner flag to the spot of the shot it led to: 4 corners, 4 shots.
 7. A checklist of five questions to ask of any corner, with this match's answers.
-8. Save this: try it on your next match, `npm i @pitchkit/react`, pitchkitjs.com.
+8. Save this: try it on your next match, an npm install command and pitchkitjs.com.
 
 Facts behind the slides (all in `corners.json`; re-check if you re-run the snapshot):
 
