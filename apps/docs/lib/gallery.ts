@@ -5,9 +5,19 @@
  * here incrementally as each Milestone 2 mark lands. Positional heatmap,
  * hexbin and KDE arrived with issue #19; radar/pizza and the goal view are
  * still to come.
+ *
+ * "Timeline" is the one category whose cards are not drawn on a pitch. It
+ * exists for <RaceChart> and <MomentumChart>, and will take the bumpy chart later.
  */
 
-export const GALLERY_CATEGORIES = ["All", "Shooting", "Passing", "Structure", "Density"] as const;
+export const GALLERY_CATEGORIES = [
+  "All",
+  "Shooting",
+  "Passing",
+  "Structure",
+  "Density",
+  "Timeline",
+] as const;
 
 export type GalleryCategory = (typeof GALLERY_CATEGORIES)[number];
 
@@ -93,6 +103,22 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
       "A full match's touches on a hexagonal lattice — even packing in every direction, and empty cells left as grass.",
     category: "Density",
     docsHref: "/docs/overlays/hexbin",
+  },
+  {
+    name: "xg-race-gallery",
+    title: "xG race",
+    description:
+      "Cumulative expected goals for both sides across the Euro 2024 final — goals marked, bookings anchored to each team's line.",
+    category: "Timeline",
+    docsHref: "/docs/charts/race-chart",
+  },
+  {
+    name: "momentum-gallery",
+    title: "Match momentum",
+    description:
+      "Who had the ball in the attacking third, minute by minute, across the Euro 2024 final — goals and bookings on a row beneath.",
+    category: "Timeline",
+    docsHref: "/docs/charts/momentum-chart",
   },
   {
     name: "shot-territory-gallery",

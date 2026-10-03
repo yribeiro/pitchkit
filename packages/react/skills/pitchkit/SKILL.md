@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, or a match momentum chart (momentum bars with goals and cards beneath); when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -25,7 +25,10 @@ needed is not in those, say so rather than inventing it.
 Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 `<PassNetwork>` component, a `theme` prop or JS theme object, a `type="tracab"` (or
 `"custom"`) pitch, a `responsive` prop, a `<Pitch>` `onClick` handler that
-hands back pitch coordinates.
+hands back pitch coordinates, an `<XgRace>` / `<XgTimeline>` / `<XgFlow>` component
+(the cumulative chart is `<RaceChart>`, and `<Flow>` is an unrelated pitch layer for
+binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
+`<MomentumChart>`), a `<Radar>` or `<Pizza>` component (not built yet).
 
 ## Package split
 
@@ -119,6 +122,16 @@ Canvas density layers — client-only, accept `className` and `style` but **no**
 
 Roots: `<Pitch>`, and `<VerticalPitch>` (exactly `<Pitch orientation="vertical">`).
 Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for custom marks.
+
+Non-pitch charts — separate roots, **not** children of `<Pitch>`:
+
+`<RaceChart>` — a cumulative step chart over match minutes. This is what an "xG race
+chart", "xG timeline" or "xG flow chart" means. `useRaceChart()` returns
+`{ frame, scaleX, scaleY, series, endTime, valueAt }`.
+
+`<MomentumChart>` — match momentum as signed bars per half with an event icon row (goals,
+cards, substitutions, VAR). `useMomentumChart()` returns `{ frame, panels, scaleX, scaleY, bars }`.
+Neither takes a `type` prop: there is no pitch and no provider coordinate system.
 
 Full prop tables for every component are in [references/api.md](references/api.md) — read
 it before writing props not shown in the recipes below.
@@ -271,70 +284,11 @@ raw datum.
 
 ## Recipe 3 — heatmap (the responsive-canvas pattern)
 
-This is the pattern for **all four** density layers. Copy it whenever one is used.
-
-```tsx
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { Heatmap, Pitch } from "@pitchkit/react";
-
-const events = [
-  { x: 52, y: 22 },
-  { x: 55, y: 18 },
-  { x: 61, y: 20 },
-  { x: 66, y: 23 },
-  { x: 74, y: 22 },
-  { x: 59, y: 43 },
-  { x: 47, y: 52 },
-  { x: 82, y: 24 },
-];
-
-const PITCH_ASPECT = 120 / 80; // statsbomb length / width
-
-export function PressureHeatmap() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(480);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setWidth(entry.contentRect.width);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div ref={containerRef}>
-      <Pitch
-        type="statsbomb"
-        width={width}
-        height={Math.round(width / PITCH_ASPECT)}
-        appearance={{ linesOnTop: true }}
-      >
-        <Heatmap
-          data={events}
-          x={(e) => e.x}
-          y={(e) => e.y}
-          binsX={12}
-          binsY={8}
-          colorMin="#0f3d24"
-          colorMax="#38bdf8"
-          style={{ opacity: 0.85 }}
-        />
-      </Pitch>
-    </div>
-  );
-}
-```
-
-Same shape for the variants: `<PositionalHeatmap layout="full" />` for Juego de Posición
-zones, `<Hexbin binsX={14} />` for a hex lattice, `<KDE resolution={64} maxOpacity={0.8} />`
-for a smooth surface. Every one of them takes an optional `weight` accessor — omit it to
-count points per bin, provide it to sum a value (total xG per zone, say).
+This is the pattern for **all four** density layers (`<Heatmap>`, `<PositionalHeatmap>`,
+`<Hexbin>`, `<KDE>`). They paint to a `<canvas>` after hydration, so they need an explicit
+pixel size and a `ResizeObserver` to stay responsive — unlike every SVG layer, which just
+works. The full copy-paste version is in
+[references/api.md](references/api.md#the-responsive-canvas-pattern).
 
 ## Recipe 4 — pass network
 
@@ -399,7 +353,56 @@ export function PassNetwork() {
 
 Layer order is paint order: arrows first, then nodes, then labels on top.
 
-## Recipe 5 — real open data
+## Recipe 5 — xG race chart (the non-pitch root)
+
+`<RaceChart>` accumulates a per-event value against the clock. No `<Pitch>` anywhere.
+
+```tsx
+// shots: { minute, team, xg, goal, period }[]
+export function XgRace() {
+  return (
+    <RaceChart
+      series={[
+        { id: "Spain", data: shots.filter((s) => s.team === "Spain") },
+        { id: "England", data: shots.filter((s) => s.team === "England") },
+      ]}
+      time={(s) => s.minute}
+      value={(s) => s.xg}
+      emphasise={(s) => s.goal}
+      period={(s) => s.period}
+    />
+  );
+}
+```
+
+Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG), pass
+`period` rather than hardcoding half time, and draw bookings as children via
+`useRaceChart()`. Details: [references/api.md](references/api.md#racechart).
+
+Theming is variables as everywhere else: `--pitch-series-1` … `--pitch-series-6` plus
+`--pitch-axis`, `--pitch-grid`, `--pitch-chart-*`. There are no colour props.
+
+## Recipe 5b — match momentum (the other non-pitch root)
+
+You supply the momentum values: PitchKit has no momentum metric and StatsBomb publishes none.
+
+```tsx
+<MomentumChart
+  periods={[firstHalf, secondHalf]} // [{ minute, value }], any interval
+  time={(d) => d.minute}
+  value={(d) => d.value} // + home, - away
+  events={events} // with eventTime / eventSide / eventKind, as a set
+  eventTime={(e) => e.minute}
+  eventSide={(e) => e.side}
+  eventKind={(e) => e.kind} // goal, yellow-card, red-card, ...
+/>
+```
+
+Bars run to the next sample's minute. Keep icons to goals and cards; substitutions crowd. To derive momentum from StatsBomb events, count on-ball events with
+`x >= 80` per minute (home +1, away −1; all teams attack towards x = 120) and smooth it,
+and say it is derived. See [references/api.md](references/api.md#momentumchart).
+
+## Recipe 6 — real open data
 
 Only when the user wants **real matches** rather than their own data. Requires the separate
 `npm install @pitchkit/data-providers`; it is not a dependency of `@pitchkit/react`.

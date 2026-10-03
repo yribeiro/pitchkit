@@ -10,4 +10,62 @@
   --pitch-lines: rgba(255, 255, 255, 0.85);
   --pitch-marker-primary: #38bdf8;
   --pitch-marker-goal: #fb923c;
+
+  /*
+   * The ring a marker knocks out to, so it stays legible where it crosses
+   * a line. <RaceChart> paints no background of its own, so this must be
+   * whatever is actually behind it: on a docs preview that is the stage,
+   * not the grass. An example that sets up its own stage — the gallery
+   * card — overrides this alongside it. The other chart tokens follow the
+   * site theme; see the chart tokens block below.
+   */
+  --pitch-chart-surface: var(--color-fd-background);
+}
+
+/*
+ * Chart tokens, per site theme. Charts have no pitch, so they follow the
+ * theme rather than the grass: these are declared for live previews on the
+ * docs pages (`.pitchkit-docs-pitch`) and for the gallery's chart stage
+ * (`.pitchkit-chart-stage`), light by default and dark under `.dark`.
+ *
+ * The series hues are not the pitch marker hues: those are tuned for grass,
+ * and sit too light on a dark surface and too pale on a white one. Each
+ * mode's pair was run through the dataviz validator against its own surface
+ * (lightness band, 3:1 contrast, CVD separation above 22). The yellow card
+ * is darkened on white, where #facc15 is under 1.5:1.
+ */
+.pitchkit-docs-pitch,
+.pitchkit-chart-stage {
+  --pitch-series-1: #0b7cc1;
+  --pitch-series-2: #d9480f;
+  --pitch-chart-text: rgba(10, 10, 10, 0.92);
+  --pitch-chart-muted: rgba(10, 10, 10, 0.6);
+  --pitch-grid: rgba(0, 0, 0, 0.07);
+  --pitch-axis: rgba(0, 0, 0, 0.3);
+  --pitch-card-yellow: #bf8700;
+  --pitch-card-red: #dc2626;
+}
+
+.dark .pitchkit-docs-pitch,
+.dark .pitchkit-chart-stage {
+  --pitch-series-1: #1492d6;
+  --pitch-series-2: #e8590c;
+  --pitch-chart-text: rgba(255, 255, 255, 0.95);
+  --pitch-chart-muted: rgba(255, 255, 255, 0.6);
+  --pitch-grid: rgba(255, 255, 255, 0.09);
+  --pitch-axis: rgba(255, 255, 255, 0.3);
+  --pitch-card-yellow: #facc15;
+  --pitch-card-red: #ef4444;
+}
+
+/* The gallery's chart card draws its own surface, white in light, near-black in dark. */
+.pitchkit-chart-stage {
+  --pitch-chart-surface: #ffffff;
+  background: var(--pitch-chart-surface);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.dark .pitchkit-chart-stage {
+  --pitch-chart-surface: #0a0a0a;
+  box-shadow: none;
 }

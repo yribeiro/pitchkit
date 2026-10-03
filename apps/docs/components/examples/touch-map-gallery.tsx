@@ -24,7 +24,8 @@ function generateTouches(): Touch[] {
     seed = (seed * 1103515245 + 12345) % 2147483648;
     return seed / 2147483648;
   };
-  const normal = () => Math.sqrt(-2 * Math.log(random() || 1e-9)) * Math.cos(2 * Math.PI * random());
+  const normal = () =>
+    Math.sqrt(-2 * Math.log(random() || 1e-9)) * Math.cos(2 * Math.PI * random());
   const round = (value: number) => Math.round(value * 100) / 100;
 
   const clusters = [

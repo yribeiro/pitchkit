@@ -51,7 +51,15 @@ export function BuildupGallery() {
         strokeWidth={1.5}
         tooltip={(t) => t.label}
       />
-      <Scatter data={[shot]} x={(s) => s.x} y={(s) => s.y} r={6} fill="#fb923c" stroke="white" strokeWidth={2} />
+      <Scatter
+        data={[shot]}
+        x={(s) => s.x}
+        y={(s) => s.y}
+        r={6}
+        fill="#fb923c"
+        stroke="white"
+        strokeWidth={2}
+      />
       <Annotate
         data={[{ x: 109, y: 39, label: "Goal · 0.41 xG" }]}
         x={(a) => a.x}

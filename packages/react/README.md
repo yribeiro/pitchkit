@@ -53,24 +53,32 @@ and `fill={(d) => d.teamColor}` are the same prop.
 
 ## Components
 
-| Component          | Draws                                                       |
-| ------------------ | ----------------------------------------------------------- |
-| `<Pitch>`          | The pitch surface + coordinate context (horizontal)         |
-| `<VerticalPitch>`  | Same, rotated to a vertical framing                         |
-| `<Scatter>`        | Circles — shots, players, events                            |
-| `<Annotate>`       | Text labels                                                 |
-| `<Arrows>`         | Straight arrows — passes, carries                           |
-| `<Comet>`          | Tapered lines with direction implied by width               |
-| `<Heatmap>`        | Binned density on Canvas (client-only)                      |
-| `<PositionalHeatmap>` | Juego de Posición zone density on Canvas (client-only)   |
-| `<Hexbin>`         | Hexagonal density on Canvas (client-only)                   |
-| `<KDE>`            | Smooth kernel density surface on Canvas (client-only)       |
-| `<Polygon>`        | Arbitrary closed shapes                                     |
-| `<ConvexHull>`     | Convex hull of a point set                                  |
-| `<Voronoi>`        | Voronoi cells, clipped to the pitch                         |
-| `<GoalAngle>`      | The angle-to-goal wedge from a shot location                |
-| `<Flow>`           | Binned direction + magnitude vectors                        |
-| `usePitch()`       | Hook exposing the pixel transform for custom SVG            |
+| Component             | Draws                                                        |
+| --------------------- | ------------------------------------------------------------ |
+| `<Pitch>`             | The pitch surface + coordinate context (horizontal)          |
+| `<VerticalPitch>`     | Same, rotated to a vertical framing                          |
+| `<Scatter>`           | Circles — shots, players, events                             |
+| `<Annotate>`          | Text labels                                                  |
+| `<Arrows>`            | Straight arrows — passes, carries                            |
+| `<Comet>`             | Tapered lines with direction implied by width                |
+| `<Heatmap>`           | Binned density on Canvas (client-only)                       |
+| `<PositionalHeatmap>` | Juego de Posición zone density on Canvas (client-only)       |
+| `<Hexbin>`            | Hexagonal density on Canvas (client-only)                    |
+| `<KDE>`               | Smooth kernel density surface on Canvas (client-only)        |
+| `<Polygon>`           | Arbitrary closed shapes                                      |
+| `<ConvexHull>`        | Convex hull of a point set                                   |
+| `<Voronoi>`           | Voronoi cells, clipped to the pitch                          |
+| `<GoalAngle>`         | The angle-to-goal wedge from a shot location                 |
+| `<Flow>`              | Binned direction + magnitude vectors                         |
+| `usePitch()`          | Hook exposing the pixel transform for custom SVG             |
+| `<RaceChart>`         | Cumulative step chart over match minutes — the xG race chart |
+| `useRaceChart()`      | Hook exposing a `<RaceChart>`'s scales, for annotations      |
+| `<MomentumChart>`     | Match momentum bars per half, with an event icon row         |
+| `useMomentumChart()`  | Hook exposing a `<MomentumChart>`'s scales, for annotations  |
+
+`<RaceChart>` and `<MomentumChart>` are the exception to "children are layers drawn into a `<Pitch>`": they have no pitch,
+so each is a root in its own right and takes no `type` prop. See
+[Charts](https://www.pitchkitjs.com/docs/charts).
 
 ## Sizing
 
@@ -84,7 +92,7 @@ Responsive is the default — with no size props the pitch fills its container v
 
 ## Layer order
 
-Markings paint *below* the layer children by default, so discrete marks sit on top of the
+Markings paint _below_ the layer children by default, so discrete marks sit on top of the
 lines. An opaque density fill will therefore cover them — set `appearance.linesOnTop` to paint
 the markings above instead (mplsoccer's `line_zorder`):
 
@@ -106,7 +114,9 @@ import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
 
 const dimensions = getPitchDimensions("statsbomb");
 
-<VerticalPitch type="statsbomb" crop={cropForHalf(dimensions)}>{/* … */}</VerticalPitch>
+<VerticalPitch type="statsbomb" crop={cropForHalf(dimensions)}>
+  {/* … */}
+</VerticalPitch>;
 ```
 
 ## Theming
@@ -134,7 +144,7 @@ so your class wins. For marks whose JSX you don't own, every element carries
 
 ## Next.js / SSR
 
-SVG marks server-render cleanly. Because layer components take accessor *functions* as props,
+SVG marks server-render cleanly. Because layer components take accessor _functions_ as props,
 the `<Pitch>` tree must originate inside a `"use client"` component — React Server Components
 can't pass functions across the client boundary. SSR still happens; only the prop-serialisation
 boundary moves. `<Heatmap>` is Canvas-backed and therefore client-only.
@@ -151,7 +161,7 @@ npx @pitchkit/react skills install --dir .cursor/skills
 npx @pitchkit/react skills path             # where it lives in node_modules
 ```
 
-Install *symlinks* the target at the copy inside `node_modules`, so `npm update
+Install _symlinks_ the target at the copy inside `node_modules`, so `npm update
 @pitchkit/react` moves the skill with it and an agent can't end up reading last version's
 API. On a filesystem that won't take a symlink it copies instead and says so — that copy is
 a snapshot, so re-run with `--force` after upgrading.
@@ -166,6 +176,7 @@ the `skills/<name>/SKILL.md` convention, so generic installers like `skills-npm`
 - [Documentation & gallery](https://www.pitchkitjs.com)
 - [Repository](https://github.com/yribeiro/pitchkit)
 - [Issues](https://github.com/yribeiro/pitchkit/issues)
+- [X](https://x.com/pitchkitjs) · [Instagram](https://www.instagram.com/pitchkitjs)
 - [`@pitchkit/core`](https://www.npmjs.com/package/@pitchkit/core) — the framework-agnostic engine
 
 ## Licence

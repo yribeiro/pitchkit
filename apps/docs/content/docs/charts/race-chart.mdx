@@ -1,0 +1,183 @@
+---
+title: RaceChart
+description: A cumulative step chart over match minutes — the chart usually called an xG race chart, xG timeline or xG flow chart.
+---
+
+<PitchPreview name="race-chart-basic" />
+
+`<RaceChart>` accumulates a value against the clock and draws one step line per series. With xG per
+shot, that is the chart variously called an **xG race chart**, **xG timeline** or **xG flow chart**
+— they all describe this. It is named generically because the quantity need not be xG: point it at
+shot counts, expected threat, or anything else that adds up over a match.
+
+It is a root, not a layer. There is no `<Pitch>` involved and no `type` prop — see
+[Charts](/docs/charts) for why.
+
+## Usage
+
+```tsx
+<RaceChart
+  series={[
+    { id: "Spain", data: spainShots },
+    { id: "England", data: englandShots },
+  ]}
+  time={(s) => s.minute}
+  value={(s) => s.xg}
+  emphasise={(s) => s.goal}
+  period={(s) => s.period}
+/>
+```
+
+`series` carries the data; `time` and `value` are accessors like every other PitchKit prop. Nothing
+is pre-aggregated — the running total is computed for you, so you hand it the same flat list of
+shots a provider gives you.
+
+## Why it steps
+
+A cumulative total is flat between events and jumps at each one. Anything that slopes between points
+would draw xG accruing during minutes when no shot was taken, which is not a thing that happens, so
+there is no `curve` option. This is what d3 calls `curveStepAfter`.
+
+The line is anchored at kick-off and runs to full time rather than starting at the first shot and
+stopping at the last — a chart that begins at 11' and ends at 86' misreads as a shorter match.
+
+## Goals, and anything else worth marking
+
+`emphasise` is an accessor like any other, so it can pick out whatever matters in your data. It
+draws the larger ringed marker on the events it returns `true` for:
+
+```tsx
+<RaceChart ... emphasise={isGoal} />
+```
+
+It is not a goal flag — it is "mark this one". Some things it is good for:
+
+| Series            | `emphasise`                                   |
+| ----------------- | --------------------------------------------- |
+| Cumulative xG     | `isGoal` — the canonical case                 |
+| Cumulative xG     | `(s) => s.xg > 0.3` to call out big chances   |
+| Cumulative shots  | `isOnTarget`                                  |
+| Cumulative passes | `isKeyPass` or `isAssist`                     |
+| Cumulative xT     | the action that started the move that scored  |
+| Any series        | one player's contributions inside a team line |
+
+Leave it off and no event is emphasised. `appearance.markers` decides how much else is drawn:
+`"emphasis"` (default) dots only the emphasised events, `"all"` dots every one, `"none"` dots
+nothing.
+
+Goals take their **team's** colour rather than `--pitch-marker-goal`. On a pitch, "goal" is a
+property of a shot and a distinct colour reads well; here a goal already belongs to a team, so shape
+carries "goal" and colour carries "whose" — which also means the chart never encodes meaning by
+colour alone.
+
+## Half time comes from the data
+
+Pass `period` and the period breaks are derived rather than assumed:
+
+```tsx
+<RaceChart ... period={(s) => s.period} />
+```
+
+This matters more than it looks. **Halves do not end on 45.** Stoppage time is inside StatsBomb's
+own `minute` numbering, so the Euro 2024 final's first half runs to 47'. A rule drawn at a fixed 45
+sits in the wrong place in most matches. Without a `period` accessor no rules are drawn at all,
+which is better than drawing one somewhere wrong.
+
+The same accessor gives you the extra-time breaks free. The x-axis ends at `max(90, ceil(latest))`,
+so a knockout match that reaches 121' is not clipped and a quiet one still shows a full 90.
+
+## Reading a value at a minute
+
+Hover or tap anywhere on the plot: a crosshair reports **every** series at that minute. That is the
+question a race chart exists to answer, and a per-mark tooltip cannot answer it — you would have to
+land on a line. Pass `tooltip` to replace the readout's body.
+
+On a touch screen a horizontal drag scrubs the crosshair while a vertical one still scrolls the
+page.
+
+## Annotations
+
+Events that accumulate nothing — bookings, substitutions, a red card — are not series. They are
+children, positioned through `useRaceChart()`:
+
+```tsx
+function Card({ minute, team }: { minute: number; team: string }) {
+  const { scaleX, scaleY, valueAt } = useRaceChart();
+  return (
+    <rect x={scaleX(minute) - 3} y={scaleY(valueAt(team, minute)) - 9} width={6} height={8} />
+  );
+}
+
+<RaceChart ...>
+  <Card minute={52} team="England" />
+</RaceChart>;
+```
+
+`valueAt(seriesId, time)` is what anchors the mark **to** a line rather than leaving it floating: a
+52' booking sits at whatever that team's cumulative xG was at 52'. It uses the same step-after
+semantics as the line, so an event landing exactly on `time` is included.
+
+<PitchPreview name="race-chart-annotations-basic" />
+
+## Shading under the line
+
+```tsx
+<RaceChart ... appearance={{ area: true }} />
+```
+
+Off by default. With two series the washes overlap exactly where the lines cross, which is the part
+of the chart worth reading. It works well for a single series:
+
+<PitchPreview name="race-chart-area-basic" />
+
+## Sizing
+
+Responsive by default, like `<Pitch>` — it fills its container, so sizing one means sizing its
+parent. Passing `width` **and** `height` is the opt-out. Below 420px the box gets squarer, because a
+2:1 chart on a phone leaves a plot barely taller than its own axis labels.
+
+## Theming
+
+CSS variables only, as everywhere else.
+
+| Variable                  | What it colours                            |
+| ------------------------- | ------------------------------------------ |
+| `--pitch-series-1` … `-6` | The series lines, by position in the array |
+| `--pitch-axis`            | Baseline and period rules                  |
+| `--pitch-grid`            | Gridlines                                  |
+| `--pitch-chart-surface`   | The ring around each marker                |
+| `--pitch-chart-text`      | Values and labels                          |
+| `--pitch-chart-muted`     | Tick labels                                |
+
+Each series' total is printed **at its own line end, inside the plot**, rather than in a
+right-hand gutter, so the lines use the full width of the chart. The leading series labels above its
+line and every other series below its own, so two teams finishing on close totals don't print one
+number on top of the other. Only the value is printed, since the legend already names the series.
+A label below its line clears the line's own earlier step rather than sitting on it, and the text
+carries a halo in the surface colour so it stays legible wherever it does cross a line. The axis
+ceiling leaves room above the highest total for the leader's label, so the top of the axis can sit
+a little higher than the nearest round number; pin `maxValue` and you get exactly the axis you
+asked for, with the label running into the padding above the plot. A trailing total too close to
+the baseline to fit a label below goes above its line instead.
+
+For anything the variables don't reach, every element carries a `data-pitchkit-part`, so a Tailwind
+arbitrary variant can select it without owning the JSX: `race-line`, `race-area`, `race-marker`,
+`race-emphasis`, `race-end-label`, `race-axis`, `race-grid`, `race-label`, `race-period`,
+`race-legend`, `race-crosshair`. The root carries `data-pitchkit-layer="race"` and each series group
+a `data-pitchkit-series` with its id.
+
+Colour follows the entity, not its rank: a series takes its slot from its position in the `series`
+array, so removing one never repaints the others. A series given a `className` and no `color` drops
+its themed default, the same rule as every mark layer — the class goes on the series group, so one
+utility reaches the line, the area and the markers.
+
+## Live data
+
+The same chart against a real Euro 2024 match, fetched in the browser.
+
+<PitchPreview name="race-chart-statsbomb-basic" />
+
+Note the `period <= 4` filter in the source. StatsBomb's period 5 is the **penalty shootout**, and
+shootout penalties carry xG like any other shot — in the England–Switzerland quarter-final they add
+7.05 xG on top of the 1.74 from the match itself. Without that filter every tie that goes to
+penalties draws a chart several times too tall.
