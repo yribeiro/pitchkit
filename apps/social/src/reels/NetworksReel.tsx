@@ -2,9 +2,9 @@
  * Reel 04: how Spain and England set up in the Euro 2024 final, from their
  * first-half pass networks.
  *
- * Hook (0-4 s): the question over both finished networks side by side, pass
- * counters rolling up underneath, then the gap slams in. A short card
- * explains how to read a network. Each chapter replays the half over 7 s:
+ * It opens on a block-letter title card ("Let's check out pass networks"),
+ * then the question over both finished networks side by side, pass counters
+ * rolling up underneath, before the gap slams in. Each chapter replays the half over 7 s:
  * every disc starts in the 4-2-3-1 team sheet and drifts smoothly to the
  * player's average position while partnerships fade in and thicken, then it
  * holds on the strongest link; a whip-pan carries Spain into England. A
@@ -45,7 +45,7 @@ const HOOK = 120;
 const HEADLINE_AT = 4;
 /** The counters roll up until here, then the gap slams in. */
 const COUNT_END = 56;
-/** An explainer card between scenes. */
+/** A title card between scenes. */
 const CARD = 66;
 const SECTION = 300;
 /** The half replays over these frames of a chapter (7 s), then holds. */
@@ -54,8 +54,9 @@ const BUILD_END = 226;
 const OUTRO = 120;
 /** The closing card every reel ends on. */
 const END = 90;
-const NETWORKS_CARD_AT = HOOK - OVERLAP;
-const SPAIN_AT = NETWORKS_CARD_AT + CARD - OVERLAP;
+// The reel opens on the "Let's check out pass networks" card, then the hook.
+const HOOK_AT = CARD - OVERLAP;
+const SPAIN_AT = HOOK_AT + HOOK - OVERLAP;
 const ENGLAND_AT = SPAIN_AT + SECTION - OVERLAP;
 const SHAPE_CARD_AT = ENGLAND_AT + SECTION - OVERLAP;
 const OUTRO_AT = SHAPE_CARD_AT + CARD - OVERLAP;
@@ -113,7 +114,7 @@ function Hook() {
 
   const slam = spring({ frame: frame - (COUNT_END + 2), fps, config: { damping: 9, mass: 0.5 } });
   const shake = frame > COUNT_END && frame < COUNT_END + 8 ? Math.sin(frame * 2.7) * 7 : 0;
-  // Fade out into the first card.
+  // Fade out into the first chapter.
   const fadeOut = interpolate(frame, [HOOK - OVERLAP, HOOK], [0, 1], clamp);
   const glow = interpolate(frame, [COUNT_END, COUNT_END + 6, HOOK], [0, 1, 0.6], clamp);
 
@@ -121,7 +122,7 @@ function Hook() {
     <AbsoluteFill
       style={{
         transform: `translateX(${shake}px)`,
-        opacity: 1 - fadeOut,
+        opacity: interpolate(frame, [0, OVERLAP], [0, 1], clamp) - fadeOut,
       }}
     >
       <div style={{ position: "absolute", top: 240, left: 60, right: 60 }}>
@@ -208,9 +209,17 @@ function Hook() {
  * A title between scenes: a few words in big block capitals, rising in one
  * line at a time. The words that name the thing go PitchKit green.
  */
-function Card({ lines }: { lines: { text: string; accent?: boolean }[] }) {
+function Card({
+  lines,
+  opening = false,
+}: {
+  lines: { text: string; accent?: boolean }[];
+  /** The reel's first frame: no fade, and the first line is already in. */
+  opening?: boolean;
+}) {
   const frame = useCurrentFrame();
-  const fadeIn = interpolate(frame, [0, OVERLAP], [0, 1], clamp);
+  const fadeIn = opening ? 1 : interpolate(frame, [0, OVERLAP], [0, 1], clamp);
+  const lead = opening ? -14 : 4;
   const size = 176;
   return (
     <AbsoluteFill style={{ opacity: fadeIn }}>
@@ -218,7 +227,7 @@ function Card({ lines }: { lines: { text: string; accent?: boolean }[] }) {
       <AbsoluteFill style={{ justifyContent: "center", padding: "0 80px 120px" }}>
         <div style={{ fontFamily: FONT.display, fontSize: size, lineHeight: 0.98 }}>
           {lines.map((line, i) => {
-            const t = interpolate(frame, [4 + i * 6, 18 + i * 6], [0, 1], {
+            const t = interpolate(frame, [lead + i * 6, lead + 14 + i * 6], [0, 1], {
               ...clamp,
               easing: Easing.out(Easing.cubic),
             });
@@ -449,11 +458,9 @@ export function NetworksReel() {
   return (
     <AbsoluteFill style={{ fontFamily: FONT.sans, color: C.text }}>
       <Backdrop />
-      <Layer from={0} duration={HOOK}>
-        <Hook />
-      </Layer>
-      <Layer from={NETWORKS_CARD_AT} duration={CARD}>
+      <Layer from={0} duration={CARD}>
         <Card
+          opening
           lines={[
             { text: "LET'S" },
             { text: "CHECK OUT" },
@@ -461,6 +468,9 @@ export function NetworksReel() {
             { text: "NETWORKS", accent: true },
           ]}
         />
+      </Layer>
+      <Layer from={HOOK_AT} duration={HOOK}>
+        <Hook />
       </Layer>
       <Layer from={SPAIN_AT} duration={SECTION}>
         <Chapter net={SPAIN} color={C.sky} title="Spain" enterFrom={0} exitTo={-1} />
