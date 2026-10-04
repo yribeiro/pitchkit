@@ -77,14 +77,18 @@ export function annularSectorPath(
 }
 
 /**
- * Draw order for series sharing one wedge: largest first, so each smaller
- * slice sits on top of the larger one behind it and stays visible. Ties
- * keep series order; a missing value draws nothing, so is left out.
+ * Draw order for series sharing one wedge: longest first, so each shorter
+ * slice sits on top of the longer one behind it and stays visible. Ties
+ * keep series order; a missing slice draws nothing, so is left out.
+ *
+ * Pass each slice's drawn length (its tip radius), not its raw value: on a
+ * lower-is-better metric the lower value is the longer slice, so ordering
+ * by value would paint the longer slice over the shorter one.
  */
-export function overlayOrder(values: readonly (number | undefined)[]): number[] {
-  return values
-    .flatMap((value, index) => (value === undefined ? [] : [{ value, index }]))
-    .sort((a, b) => b.value - a.value || a.index - b.index)
+export function overlayOrder(lengths: readonly (number | undefined)[]): number[] {
+  return lengths
+    .flatMap((length, index) => (length === undefined ? [] : [{ length, index }]))
+    .sort((a, b) => b.length - a.length || a.index - b.index)
     .map(({ index }) => index);
 }
 

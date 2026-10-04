@@ -248,8 +248,9 @@ its geometry in `core/polar/`, drawing the caller's numbers and computing nothin
   group moves to an arc on the rim, coloured from the slots after the series' so no arc
   repeats a player's colour.
 - **`seriesLayout` is the caller's choice**: `"side-by-side"` (default) splits each metric's wedge into
-  one thin wedge per series; `"overlay"` gives every series the full wedge, drawn largest first so a
-  smaller one stays visible. Side by side is readable to three series and overlay to two; past that a
+  one thin wedge per series; `"overlay"` gives every series the full wedge, the longest slice drawn first so a
+  shorter one stays visible. Longest means drawn length, not value: on a `lowerIsBetter` metric the
+  lower value is the longer slice ([#89](https://github.com/yribeiro/pitchkit/issues/89)). Side by side is readable to three series and overlay to two; past that a
   series still draws, with a development warning.
 - **Slices are the buttons.** With `renderDetail`, each slice is focusable and opens the caller's
   component in place of the chart, with the same Back button, Escape and focus return as the radar
