@@ -61,13 +61,25 @@ export interface RaceSeriesData {
  * running sum poisons every point after it, and an xG feed with a missing
  * value should lose that shot, not the rest of the match. So is an event
  * whose period isn't a whole number from 1, which has nowhere to be drawn.
+ *
+ * `until`, when given, is where the chart ends: events after that minute of
+ * that period are dropped, so the total is what the chart draws. An event
+ * exactly at `until` is kept.
  */
-export function computeCumulativeSeries(events: readonly RaceEvent[]): RaceSeriesData {
+export function computeCumulativeSeries(
+  events: readonly RaceEvent[],
+  until?: Pick<RaceEvent, "period" | "time">,
+): RaceSeriesData {
   const usable = events
     .map((event, index) => ({ event, index }))
     .filter(
       ({ event }) =>
-        isPeriod(event.period) && Number.isFinite(event.time) && Number.isFinite(event.value),
+        isPeriod(event.period) &&
+        Number.isFinite(event.time) &&
+        Number.isFinite(event.value) &&
+        (until === undefined ||
+          event.period < until.period ||
+          (event.period === until.period && event.time <= until.time)),
     );
 
   // Ties broken by original index keeps the sort stable across engines, so

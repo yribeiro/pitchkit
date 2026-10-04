@@ -69,7 +69,7 @@ in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 | `value`            | `Accessor<T, number>`               | The quantity that accumulates.                                                              |
 | `emphasise`        | `Accessor<T, boolean>`              | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
 | `period`           | `Accessor<T, number>`               | **Required.** 1 = first half, 2 = second, 3–4 extra time. Others dropped.                   |
-| `endTime`          | `number`                            | Where the last period ends. Default: its nominal end, or its last event if later.           |
+| `endTime`          | `number`                            | Where the last period ends; later data is dropped. Default: nominal end, or last event.     |
 | `maxValue`         | `number`                            | Default: the next round tick at or above the highest total.                                 |
 | `width` / `height` | `number`                            | Both together are the fixed-size opt-out.                                                   |
 | `aspectRatio`      | `number`                            | Responsive box shape. Default `2`.                                                          |

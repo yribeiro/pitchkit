@@ -14,7 +14,7 @@ import {
   valueAtTime,
   xToMinute,
 } from "@pitchkit/core";
-import type { ChartPadding, Point, RaceEvent } from "@pitchkit/core";
+import type { ChartPadding, MomentumRange, Point, RaceEvent } from "@pitchkit/core";
 import { RaceChartContext } from "./race-context.js";
 import type { ResolvedRaceSeries } from "./race-context.js";
 import { RaceGridAndAxes, RaceLegend, RacePeriodBreaks } from "./race-chrome.js";
@@ -188,24 +188,34 @@ export function RaceChart<T>({
   // what keeps `@pitchkit/core`'s race module free of any dependency on
   // the pitch-shaped `scene/` types.
   const computed = useMemo(() => {
-    const accumulated = series.map((s) => {
-      const events: RaceEvent[] = s.data.map((d, i) => ({
+    const resolved = series.map((s) =>
+      s.data.map((d, i): RaceEvent => ({
         period: resolve(period, d, i),
         time: resolve(time, d, i),
         value: resolve(value, d, i),
         emphasis: emphasise === undefined ? false : resolve(emphasise, d, i),
-      }));
-      return { series: s, ...computeCumulativeSeries(events) };
-    });
+      })),
+    );
 
-    const highestTotal = accumulated.reduce((max, entry) => Math.max(max, entry.total), 0);
-
-    // Each period runs to its own last point, floored at its nominal end,
-    // so stoppage time widens its own half.
+    // Each period runs to its own last event, floored at its nominal end,
+    // so stoppage time widens its own half. An explicit `endTime` sets the
+    // last period's end.
     const ranges = racePeriodRanges(
-      accumulated.flatMap((entry) => entry.points),
+      resolved.flat().filter((event) => Number.isFinite(event.value)),
       explicitEndTime,
     );
+
+    // The chart ends where the last period does, and so does the running
+    // total: anything after an explicit `endTime` is dropped rather than
+    // drawn off the plot.
+    const last = ranges[ranges.length - 1] as MomentumRange;
+    const until = { period: ranges.length, time: last.end };
+    const accumulated = series.map((s, i) => ({
+      series: s,
+      ...computeCumulativeSeries(resolved[i] as RaceEvent[], until),
+    }));
+
+    const highestTotal = accumulated.reduce((max, entry) => Math.max(max, entry.total), 0);
 
     return { accumulated, highestTotal, ranges };
   }, [series, time, value, emphasise, period, explicitEndTime]);
@@ -500,7 +510,9 @@ function RaceTooltip({
         render(rows, time, period)
       ) : (
         <>
-          <div style={{ fontWeight: 600 }}>{`${Math.round(time)}'`}</div>
+          {/* Floored, not rounded: the total is step-after, so at 44.6' a
+              45' shot hasn't counted yet and the label mustn't say 45'. */}
+          <div style={{ fontWeight: 600 }}>{`${Math.floor(time)}'`}</div>
           {rows.map((row) => (
             <ReadoutRow
               key={row.id}

@@ -68,7 +68,8 @@ export interface RaceChartProps<T> {
 
   /**
    * Where the last period ends, in match minutes. Defaults to its nominal
-   * end (90, or 120 after extra time), or later if its data runs on.
+   * end (90, or 120 after extra time), or later if its data runs on. Data
+   * after an explicit `endTime` is dropped, from the line and the total.
    */
   readonly endTime?: number;
   /** Top of the y-axis. Defaults to a round ceiling above the highest total. */

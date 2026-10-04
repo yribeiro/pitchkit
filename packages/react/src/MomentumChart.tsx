@@ -193,8 +193,14 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
                 : resolve(eventProps.eventLabel, datum, i),
           }))
           // An event in a period the chart doesn't draw (a shootout, say)
-          // has nowhere true to go.
-          .filter((event) => isPeriod(event.period) && event.period <= computed.ranges.length);
+          // has nowhere true to go, and one without a minute has no place
+          // in its period: both are dropped, as the bars drop such samples.
+          .filter(
+            (event) =>
+              Number.isFinite(event.minute) &&
+              isPeriod(event.period) &&
+              event.period <= computed.ranges.length,
+          );
 
   const iconSize = isNarrow ? NARROW_ICON_SIZE : ICON_SIZE;
   // The event strip is one row: the icon, and room for a team underline.
