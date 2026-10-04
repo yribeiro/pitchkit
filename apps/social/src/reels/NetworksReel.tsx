@@ -47,7 +47,7 @@ const HOOK = 120;
 /** The counters roll up until here, then the gap slams in. */
 const COUNT_END = 50;
 /** An explainer card between scenes. */
-const CARD = 78;
+const CARD = 66;
 const SECTION = 300;
 /** The half replays over these frames of a chapter (7 s), then holds. */
 const BUILD_START = 16;
@@ -212,9 +212,9 @@ function Hook() {
 /* Explainer cards --------------------------------------------------------- */
 
 /**
- * A pause between scenes that says what's coming, so the viewer has a moment
- * to get their bearings: a kicker, a two-line headline that rises in line by
- * line, a plain-language explainer, and an optional little diagram.
+ * A short pause between scenes that says what's coming: a kicker, a two-line
+ * headline that rises in line by line, one short line, and an optional little
+ * diagram.
  */
 function Card({
   kicker,
@@ -257,17 +257,17 @@ function Card({
         </div>
         <div
           style={{
-            fontSize: 38,
-            fontWeight: 600,
-            lineHeight: 1.35,
-            color: C.muted,
-            marginTop: 34,
-            ...rise(24),
+            fontFamily: FONT.display,
+            fontSize: 60,
+            letterSpacing: "0.02em",
+            color: C.sky,
+            marginTop: 28,
+            ...rise(22),
           }}
         >
           {body}
         </div>
-        {children && <div style={{ marginTop: 50, ...rise(32) }}>{children}</div>}
+        {children && <div style={{ marginTop: 40, ...rise(26) }}>{children}</div>}
       </div>
     </AbsoluteFill>
   );
@@ -276,7 +276,7 @@ function Card({
 /** Two players and the line between them thickening: how to read a link. */
 function LinkKey() {
   const frame = useCurrentFrame();
-  const t = interpolate(frame, [34, 70], [0, 1], { ...clamp, easing: ease });
+  const t = interpolate(frame, [28, 58], [0, 1], { ...clamp, easing: ease });
   const passes = Math.round(1 + 30 * t);
   const disc = (cx: number, n: string) => (
     <g>
@@ -592,15 +592,8 @@ export function NetworksReel() {
       <Layer from={NETWORKS_CARD_AT} duration={CARD}>
         <Card
           kicker="FIRST"
-          lines={["LET'S SEE THE", "PASS NETWORKS"]}
-          body={
-            <>
-              Each circle is a player at their average position.{" "}
-              <span style={{ color: C.text }}>
-                The thicker the line, the more two players passed to each other.
-              </span>
-            </>
-          }
+          lines={["CHECK OUT THE", "PASS NETWORKS"]}
+          body="THICKER = MORE PASSES"
         >
           <LinkKey />
         </Card>
@@ -612,17 +605,7 @@ export function NetworksReel() {
         <Chapter net={ENGLAND} color={C.orange} title="England" enterFrom={1} exitTo={-1} />
       </Layer>
       <Layer from={SHAPE_CARD_AT} duration={CARD}>
-        <Card
-          kicker="THEN"
-          lines={["LET'S MEASURE", "THE SHAPE"]}
-          body={
-            <>
-              <span style={{ color: C.text }}>Height:</span> furthest player forward to the last
-              defender. <span style={{ color: C.text }}>Width:</span> between the two widest
-              players.
-            </>
-          }
-        />
+        <Card kicker="THEN" lines={["MEASURE", "THE SHAPE"]} body="FRONT TO BACK. SIDE TO SIDE." />
       </Layer>
       <Layer from={OUTRO_AT} duration={OUTRO}>
         <Outro />
