@@ -26,7 +26,7 @@ import { Lockup } from "../components/Logo";
 import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
-import { NetworkPitch, networkAt, uprightHeight } from "./NetworkPitch";
+import { NetworkPitch, networkAt, shapeOf, uprightHeight } from "./NetworkPitch";
 import type { Link } from "./NetworkPitch";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -36,6 +36,8 @@ const SPAIN = passNetworks.spain;
 const ENGLAND = passNetworks.england;
 const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p.t)) + 0.1;
 const RATIO = (SPAIN.completed / ENGLAND.completed).toFixed(1);
+const SPAIN_SHAPE = shapeOf(SPAIN);
+const ENGLAND_SHAPE = shapeOf(ENGLAND);
 
 // Timeline (30 fps).
 const HOOK = 84;
@@ -48,7 +50,7 @@ const OVERLAP = 10;
 const SPAIN_AT = HOOK - 8;
 const ENGLAND_AT = SPAIN_AT + SECTION - OVERLAP;
 const OUTRO_AT = ENGLAND_AT + SECTION - OVERLAP;
-const OUTRO = 96;
+const OUTRO = 126;
 export const NETWORKS_DURATION = OUTRO_AT + OUTRO;
 
 const surname = (name: string) => {
@@ -360,7 +362,9 @@ const OUTRO_W = 470;
 function Outro() {
   const frame = useCurrentFrame();
   const fade = interpolate(frame, [0, 10], [0, 1], clamp);
-  const line = interpolate(frame, [14, 26], [0, 1], clamp);
+  const measure = interpolate(frame, [12, 40], [0, 1], clamp);
+  const takeaway = interpolate(frame, [36, 46], [0, 1], clamp);
+  const line = interpolate(frame, [50, 62], [0, 1], clamp);
   return (
     <AbsoluteFill style={{ opacity: fade }}>
       <Backdrop />
@@ -379,13 +383,36 @@ function Outro() {
         { net: ENGLAND, color: C.orange, left: 560 },
       ].map(({ net, color, left }) => (
         <div key={net.team} style={{ position: "absolute", top: 470, left }}>
-          <NetworkPitch net={net} color={color} width={OUTRO_W} showNames={false} />
+          <NetworkPitch
+            net={net}
+            color={color}
+            width={OUTRO_W}
+            showNames={false}
+            measure={measure}
+          />
         </div>
       ))}
       <div
         style={{
           position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 50,
+          top: 470 + uprightHeight(OUTRO_W) + 26,
+          left: 60,
+          right: 60,
+          opacity: takeaway,
+          transform: `translateY(${(1 - takeaway) * 20}px)`,
+          fontSize: 34,
+          fontWeight: 700,
+          lineHeight: 1.3,
+          color: C.muted,
+        }}
+      >
+        Striker to last defender: <span style={{ color: C.sky }}>Spain {SPAIN_SHAPE.height} m</span>
+        , <span style={{ color: C.orange }}>England {ENGLAND_SHAPE.height} m</span>.
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          top: 470 + uprightHeight(OUTRO_W) + 110,
           left: 60,
           right: 60,
           opacity: line,
@@ -400,10 +427,10 @@ function Outro() {
       <div
         style={{
           position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 140,
+          top: 470 + uprightHeight(OUTRO_W) + 196,
           left: 60,
           right: 60,
-          opacity: interpolate(frame, [24, 36], [0, 1], clamp),
+          opacity: interpolate(frame, [58, 70], [0, 1], clamp),
           fontSize: 34,
           fontWeight: 700,
           lineHeight: 1.3,

@@ -326,7 +326,7 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
-## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 19 s)
+## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 20 s)
 
 Hook (0–2.8 s): both finished first-half pass networks side by side from the
 first frame, with the completed-pass counters rolling up underneath; at 1.3 s
@@ -337,8 +337,9 @@ every later touch, settling into the shape the hook showed. A partnership's
 line draws in the first time two players connect, then thickens and briefly
 glows each time they combine again, while "Top link" in the header tracks the
 leading pair live. It lands on the strongest link; a whip-pan to England does
-the same; the outro puts the two finished networks side by side again, so the
-loop lands back on the hook. For the grid cover, pick the banner frame
+the same; the outro puts the two finished networks side by side again and
+measures each shape (striker to last defender, and width), so the loop lands
+back on the hook. For the grid cover, pick the banner frame
 (~1.5 s). If you add audio, a track with a hit around 1.3 s lands on the banner.
 
 **Instagram**
@@ -369,7 +370,7 @@ Open-source, React-first. Data: @StatsBomb open data.
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** Two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". Each half is then replayed full screen with player names: the circles drift as each player's average position builds up and settle into place, and lines appear and thicken as partnerships form. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
+**Alt text:** Two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". Each half is then replayed full screen with player names: the circles drift as each player's average position builds up and settle into place, and lines appear and thicken as partnerships form. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side with each shape measured: 22 metres from Spain's striker to their last defender and 52 metres wide, against 29 metres and 50 metres for England. Then the PitchKit logo.
 
 Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
 
@@ -379,6 +380,9 @@ Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:ne
 | Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                                               |
 | Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                                                             |
 | Circle positions            | Average of each player's pass and reception locations (running average while it replays); circles closer than 7.5 units are nudged apart |
+| Spain 22 m × 52 m           | Morata (70.5) to Le Normand (45.5) = 25.0 units; Cucurella to Carvajal = 60.6 units                                                      |
+| England 29 m × 50 m         | Kane (68.9) to Guehi (35.6) = 33.3 units; Shaw to Walker = 58.9 units                                                                    |
+| Metres                      | StatsBomb's 120 × 80 frame scaled to the Olympiastadion's 105 × 68 m pitch; average positions, goalkeepers excluded                      |
 | Timing                      | Each pass and touch counts at its real match minute; each chapter replays the half in ~5 s                                               |
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)

@@ -179,6 +179,32 @@ export function finalNetwork(net: TeamNetwork) {
   return state;
 }
 
+/** The final at the Olympiastadion was played on a 105 × 68 m pitch. */
+const METRES_PER_UNIT = { x: 105 / 120, y: 68 / 80 };
+
+/**
+ * A team's shape from its average positions: height from the striker to the
+ * last outfield defender, width between the two widest outfield players, in
+ * metres.
+ */
+export function shapeOf(net: TeamNetwork) {
+  const outfield = net.nodes.filter((n) => n.position !== "Goalkeeper");
+  const striker = outfield.find((n) => n.position === "Center Forward")!;
+  const lastDefender = outfield.reduce((a, b) => (b.x < a.x ? b : a));
+  const left = outfield.reduce((a, b) => (b.y < a.y ? b : a));
+  const right = outfield.reduce((a, b) => (b.y > a.y ? b : a));
+  return {
+    striker,
+    lastDefender,
+    left,
+    right,
+    /** The most advanced outfield player, so the width line can sit above everyone. */
+    front: Math.max(...outfield.map((n) => n.x)),
+    height: Math.round((striker.x - lastDefender.x) * METRES_PER_UNIT.x),
+    width: Math.round((right.y - left.y) * METRES_PER_UNIT.y),
+  };
+}
+
 const width_ = (weight: number) => Math.min(1.5 + weight * 0.5, 17);
 const opacity_ = (weight: number) => Math.min(0.28 + weight * 0.05, 0.92);
 
@@ -190,6 +216,7 @@ export function NetworkPitch({
   pace = 1,
   showNames = true,
   highlight = 0,
+  measure = 0,
 }: {
   net: TeamNetwork;
   color: string;
@@ -201,6 +228,8 @@ export function NetworkPitch({
   showNames?: boolean;
   /** 0..1: pick out the team's strongest link. */
   highlight?: number;
+  /** 0..1: draw the shape's height and width on the finished network. */
+  measure?: number;
 }) {
   const height = uprightHeight(width);
   const s = width / 720;
@@ -261,6 +290,7 @@ export function NetworkPitch({
               headSize={0}
             />
           )}
+          {measure > 0 && <Shape net={net} positions={state.positions} s={s} t={measure} />}
           <Discs
             net={net}
             state={state}
@@ -275,6 +305,114 @@ export function NetworkPitch({
         </Pitch>
       </Upright>
     </PitchStage>
+  );
+}
+
+/**
+ * Dimension lines for the team's shape: a vertical one beside the team from
+ * the last defender up to the striker, a horizontal one above it between the
+ * two widest players, each with dashed guides back to the players. Lines draw
+ * out over the first half of `t`, labels pop in over the second.
+ */
+function Shape({
+  net,
+  positions,
+  s,
+  t,
+}: {
+  net: TeamNetwork;
+  positions: Map<number, Point>;
+  s: number;
+  t: number;
+}) {
+  const { transform } = usePitch();
+  const shape = shapeOf(net);
+  const at = (id: number) => positions.get(id)!;
+  const px = (x: number, y: number) => transform.toPixel([x, y]);
+  const draw = Math.min(t / 0.6, 1);
+  const label = Math.max(0, Math.min((t - 0.5) / 0.4, 1));
+  const ink = "rgba(255,255,255,0.95)";
+
+  // Height: a line in pitch-x just outside the widest player on the left of
+  // the screen (the quieter flank for both teams), from the last defender to
+  // the striker.
+  const yLine = Math.max(at(shape.left.id).y - 4.5, 2.5);
+  const xBack = at(shape.lastDefender.id).x;
+  const xFront = at(shape.striker.id).x;
+  // Width: a line in pitch-y just ahead of the most advanced player (the top
+  // of the screen), between the two widest players.
+  const xLine = Math.min(shape.front + 7, 116);
+  const yLeft = at(shape.left.id).y;
+  const yRight = at(shape.right.id).y;
+
+  const seg = (a: readonly [number, number], b: readonly [number, number], u = 1) => {
+    const [x1, y1] = px(a[0], a[1]);
+    const [x2, y2] = px(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u);
+    return { x1, y1, x2, y2 };
+  };
+  const tick = 2.2;
+  const fs = 44 * s;
+  // Keep the label inside the pitch: half its width, in pitch units.
+  const unit = transform.toPixel([0, 1])[1] - transform.toPixel([0, 0])[1];
+  const halfTag = ((4 * fs * 0.5 + 18 * s) / 2 + 4 * s) / Math.abs(unit);
+  const midH = px((xBack + xFront) / 2, Math.max(yLine, halfTag));
+  const midW = px(xLine, (yLeft + yRight) / 2);
+
+  const Tag = ({ at: [x, y], text }: { at: readonly [number, number]; text: string }) => (
+    <g transform={`translate(${x} ${y}) rotate(90) scale(${0.6 + 0.4 * label})`} opacity={label}>
+      <rect
+        x={-(text.length * fs * 0.5 + 18 * s) / 2}
+        y={-fs * 0.68}
+        width={text.length * fs * 0.5 + 18 * s}
+        height={fs * 1.36}
+        rx={8 * s}
+        fill="rgba(4,10,7,0.92)"
+        stroke={ink}
+        strokeWidth={2 * s}
+      />
+      <text
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily={FONT.display}
+        fontSize={fs}
+        letterSpacing={0.5 * s}
+        fill="white"
+      >
+        {text}
+      </text>
+    </g>
+  );
+
+  return (
+    <g data-pitchkit-mark="shape">
+      <g
+        stroke={ink}
+        strokeWidth={1.6 * s}
+        strokeDasharray={`${5 * s} ${5 * s}`}
+        opacity={0.6 * draw}
+      >
+        <line {...seg([xBack, at(shape.lastDefender.id).y], [xBack, yLine])} />
+        <line {...seg([xFront, at(shape.striker.id).y], [xFront, yLine])} />
+        <line {...seg([at(shape.left.id).x, yLeft], [xLine, yLeft])} />
+        <line {...seg([at(shape.right.id).x, yRight], [xLine, yRight])} />
+      </g>
+      <g stroke={ink} strokeWidth={3 * s} strokeLinecap="round">
+        <line {...seg([xBack, yLine], [xFront, yLine], draw)} />
+        <line {...seg([xBack, yLine - tick], [xBack, yLine + tick])} opacity={draw} />
+        <line
+          {...seg([xFront, yLine - tick], [xFront, yLine + tick])}
+          opacity={draw >= 1 ? 1 : 0}
+        />
+        <line {...seg([xLine, yLeft], [xLine, yRight], draw)} />
+        <line {...seg([xLine - tick, yLeft], [xLine + tick, yLeft])} opacity={draw} />
+        <line
+          {...seg([xLine - tick, yRight], [xLine + tick, yRight])}
+          opacity={draw >= 1 ? 1 : 0}
+        />
+      </g>
+      <Tag at={midH} text={`${shape.height} M`} />
+      <Tag at={midW} text={`${shape.width} M`} />
+    </g>
   );
 }
 
