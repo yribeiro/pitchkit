@@ -23,9 +23,9 @@ const secondHalf = [
   5.7, 16.3, 14.7, 22.7, 14.7, 14.0, 6.0, -0.3, -2.3, -4.7, -2.3, -2.0, -1.0, -0.7, -1.5,
 ];
 
-const periods = [
-  firstHalf.map((value, i) => ({ minute: i, value })),
-  secondHalf.map((value, i) => ({ minute: 45 + i, value })),
+const samples = [
+  ...firstHalf.map((value, i) => ({ minute: i, period: 1, value })),
+  ...secondHalf.map((value, i) => ({ minute: 45 + i, period: 2, value })),
 ];
 
 // Goals and bookings only. Substitutions are left out on purpose: eight of
@@ -49,8 +49,9 @@ export function MomentumGallery() {
     <div className="pitchkit-chart-stage rounded-md p-2">
       <MomentumChart
         aspectRatio={1.5}
-        periods={periods}
+        data={samples}
         time={(d) => d.minute}
+        period={(d) => d.period}
         value={(d) => d.value}
         teams={{ home: "Spain", away: "England" }}
         events={events}

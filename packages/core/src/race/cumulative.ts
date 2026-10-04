@@ -1,3 +1,4 @@
+import { groupByPeriod, isPeriod } from "../chart/periods.js";
 import type { MomentumRange } from "../momentum/bars.js";
 import { resolvePeriodRange } from "../momentum/layout.js";
 
@@ -134,11 +135,6 @@ export function resolveEndTime(latestTime: number, minimum = 90): number {
   return Math.max(minimum, Math.ceil(latestTime));
 }
 
-/** A period number that can be drawn: a whole number from 1. */
-function isPeriod(period: number): boolean {
-  return Number.isInteger(period) && period >= 1;
-}
-
 /**
  * Each period's range in match minutes, for laying a race chart out one
  * period after another (`layoutMomentumPanels` with no gap).
@@ -153,16 +149,12 @@ export function racePeriodRanges(
   events: readonly Pick<RaceEvent, "period" | "time">[],
   endTime?: number,
 ): MomentumRange[] {
-  const latest = new Map<number, number>();
-  for (const { period, time } of events) {
-    if (!isPeriod(period) || !Number.isFinite(time)) continue;
-    latest.set(period, Math.max(latest.get(period) ?? time, time));
-  }
-
-  const count = Math.max(2, ...latest.keys());
-  const ranges = Array.from({ length: count }, (_, index) =>
-    resolvePeriodRange(index, latest.get(index + 1)),
-  );
+  const usable = events.filter(({ time }) => Number.isFinite(time));
+  const ranges = groupByPeriod(usable.map((event) => event.period)).map((indices, index) => {
+    const times = indices.map((i) => (usable[i] as RaceEvent).time);
+    return resolvePeriodRange(index, times.length > 0 ? Math.max(...times) : undefined);
+  });
+  const count = ranges.length;
   const last = ranges[count - 1] as MomentumRange;
   if (endTime !== undefined && Number.isFinite(endTime)) {
     ranges[count - 1] = { start: last.start, end: endTime };

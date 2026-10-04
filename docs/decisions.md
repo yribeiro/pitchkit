@@ -158,7 +158,9 @@ with its maths in `core/momentum/`. Five choices shape it:
   value of 0).
 - **`periods` is an array of sample arrays**, one panel each, width proportional to minutes.
   Half time comes from the data: a period ends at the later of its nominal end and its last sample,
-  because halves do not end on 45. Extra time is two more arrays.
+  because halves do not end on 45. Extra time is two more arrays. _Superseded by
+  [D28](#d28-time-based-charts-require-a-period): samples are now one flat `data` list with a
+  `period` accessor._
 - **Events are a separate list**, passed as `events` plus `eventTime`/`eventSide`/`eventKind`, the
   same list-plus-accessors shape as every other prop. The four props are a type-level set: passing
   `events` alone is a compile error. `eventPeriod` joined the set later
@@ -278,9 +280,14 @@ they trade off: side by side hides nothing, overlay compares the same metric dir
 **Decision:** Every event `<MomentumChart>` draws and every datum `<RaceChart>` accumulates carries
 its period: `eventPeriod` and `period` are required accessors, and the hooks' `scaleX(minute,
 period)` and `valueAt(seriesId, time, period)` take one too. A period is the feed's own number, 1
-for the first half, so StatsBomb's `period` field plugs straight in; period _n_ is
-`<MomentumChart>`'s `periods[n - 1]`. `<RaceChart>` draws each period after the one before, in its
-own panel (`layoutMomentumPanels` with no gap), instead of on one 0–90 axis.
+for the first half, so StatsBomb's `period` field plugs straight in. `<RaceChart>` draws each
+period after the one before, in its own panel (`layoutMomentumPanels` with no gap), instead of on
+one 0–90 axis.
+
+**Every time-based input is the same shape: one flat list, each row tagged with its period by an
+accessor.** `<MomentumChart>`'s samples moved from `periods` (an array of arrays, one per half) to
+`data` plus a `period` accessor, the same as its events and as `<RaceChart>`'s series data.
+`periodRanges` is keyed by period number.
 
 **Why:** Feeds restart the clock at 45 for the second half, so a first half with stoppage time and
 the second half share minutes 45'–48'. A minute alone can't place an event in that overlap, and it
@@ -288,10 +295,15 @@ happens in most matches: in 5 of 8 Euro 2024 matches checked, a second-half goal
 substitution fell inside the first half's stoppage minutes
 ([issue #82](https://github.com/yribeiro/pitchkit/issues/82)). An optional period would have kept
 the wrong placement as the default for exactly the data these charts are for. The packages are
-pre-1.0, so the break was taken rather than carried.
+pre-1.0, so the break was taken rather than carried. Feeds tag every row with its period rather
+than splitting them, so a flat list is what a caller already has; with samples split by position
+and events tagged by accessor, the same chart had two ways to say which half something was in, and
+an empty half had to keep its slot by hand or every later period shifted.
 
 **Consequences:**
 
+- `groupByPeriod` in `core/chart/` is the one rule for which periods get a panel: every period from
+  1 to the highest seen, at least two. Both charts use it.
 - `core` sorts a race by period, then minute (`computeCumulativeSeries`), and `valueAtTime` counts
   every earlier period. `racePeriodRanges` gives each period its nominal range extended to its own
   last event, the rule `<MomentumChart>` already used.

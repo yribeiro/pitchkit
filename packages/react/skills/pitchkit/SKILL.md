@@ -128,8 +128,8 @@ pitch to have a provider): `<RaceChart>` (an "xG race chart", "xG timeline" or "
 `<MomentumChart>` (signed bars per half with an event icon row), `<RadarChart>` and `<PizzaChart>`
 (player profiles). Each has a hook for annotations: `useRaceChart()` returns `{ frame, panels, scaleX,
 scaleY, series, endTime, valueAt }`, `useMomentumChart()` `{ frame, panels, scaleX, scaleY, bars }`
-(both `scaleX(minute, period)`), and
-`useRadarChart()` / `usePizzaChart()` `{ cx, cy, inner, outer, angleOf, pointAt }`.
+(both `scaleX(minute, period)`), and `useRadarChart()` / `usePizzaChart()` `{ cx, cy, inner, outer,
+angleOf, pointAt }`.
 
 Full prop tables are in [references/api.md](references/api.md); read it before writing props not shown below.
 
@@ -366,9 +366,8 @@ Layer order is paint order: arrows first, then nodes, then labels on top.
 ```
 
 Easy to get wrong: filter `period <= 4` (period 5 is the shootout and carries xG). `period` is
-required because minutes restart at 45, so first-half stoppage time and the start of the second half
-share minutes. Draw bookings as children via `useRaceChart()`
-([api.md](references/api.md#racechart)). Chart theming is variables (`--pitch-series-1` … `-6`,
+required: minutes restart at 45, so first-half stoppage time and the second half share minutes.
+Draw bookings as children via `useRaceChart()` ([api.md](references/api.md#racechart)). Chart theming is variables (`--pitch-series-1` … `-6`,
 `--pitch-axis`, `--pitch-grid`, `--pitch-chart-*`); a series `className` such as `text-rose-500` replaces its default.
 
 ## Recipe 5b — momentum, radar and pizza (the other non-pitch roots)
@@ -377,12 +376,13 @@ None computes its numbers: momentum (+ home, − away), radar values and percent
 
 ```tsx
 <MomentumChart
-  periods={[firstHalf, secondHalf]} // [{ minute, value }]
+  data={samples} // one flat list: [{ minute, period, value }]
   time={(d) => d.minute}
+  period={(d) => d.period} // required: 1 = first half
   value={(d) => d.value}
   events={events} // with eventTime / eventPeriod / eventSide / eventKind, as a set
   eventTime={(e) => e.minute}
-  eventPeriod={(e) => e.period} // 1 = first half; drawn in periods[period - 1]
+  eventPeriod={(e) => e.period} // required, numbered like `period`
   eventSide={(e) => e.side}
   eventKind={(e) => e.kind} // goal, yellow-card, red-card, ...
 />

@@ -118,26 +118,27 @@ Match momentum: signed bars above and below a zero line, one panel per period, w
 beneath for events. A root like `<RaceChart>`: **not** a child of `<Pitch>`, no `type` prop.
 PitchKit draws momentum; it does not compute it, so the caller supplies the values.
 
-| Prop               | Type                                | Notes                                                                                   |
-| ------------------ | ----------------------------------- | --------------------------------------------------------------------------------------- |
-| `periods`          | `T[][]`                             | One array per period: `[firstHalf, secondHalf]`, plus extra time. Any interval.         |
-| `time`             | `Accessor<T, number>`               | Match minute the sample starts at. Fractional is fine.                                  |
-| `value`            | `Accessor<T, number>`               | Signed: positive is home pressure (bars up), negative away (bars down).                 |
-| `teams`            | `{ home: string; away: string }`    | Names for the legend and readout.                                                       |
-| `events`           | `E[]`                               | With the required accessors below, or none. Passing `events` alone is a type error.     |
-| `eventTime`        | `Accessor<E, number>`               | Match minute.                                                                           |
-| `eventPeriod`      | `Accessor<E, number>`               | **Required.** 1 = first half; drawn in `periods[period - 1]`, else not drawn.           |
-| `eventSide`        | `Accessor<E, "home" \| "away">`     | Which team.                                                                             |
-| `eventKind`        | `Accessor<E, MomentumEventKind>`    | `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`, `substitution`, `var`. |
-| `eventLabel`       | `Accessor<E, string>`               | Optional readout / screen-reader text. Defaults to the kind.                            |
-| `periodRanges`     | `({ start?, end? } \| undefined)[]` | Override a period's minutes. Default: nominal start, end = max(nominal end, last).      |
-| `maxValue`         | `number`                            | Half the value axis. Default: largest magnitude, rounded up.                            |
-| `width` / `height` | `number`                            | Both together are the fixed-size opt-out.                                               |
-| `aspectRatio`      | `number`                            | Responsive box shape. Default `3`, or `1.8` below 420px wide.                           |
-| `padding`          | `ChartPadding`                      | Defaults derive from what is drawn.                                                     |
-| `appearance`       | `{ axis?, legend? }`                | Structure only, never colour.                                                           |
-| `tooltip`          | `(hover) => ReactNode`              | `hover` is `{ minute, period, bar, datum, events }`; `period` is 1-based.               |
-| `children`         | `ReactNode`                         | Annotation slot; positions itself via `useMomentumChart()`.                             |
+| Prop               | Type                             | Notes                                                                                                      |
+| ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `data`             | `T[]`                            | One flat list of samples, any order and interval. Grouped by `period`.                                     |
+| `time`             | `Accessor<T, number>`            | Match minute the sample starts at. Fractional is fine.                                                     |
+| `period`           | `Accessor<T, number>`            | **Required.** 1 = first half; one panel per period from 1 to the highest, at least 2.                      |
+| `value`            | `Accessor<T, number>`            | Signed: positive is home pressure (bars up), negative away (bars down).                                    |
+| `teams`            | `{ home: string; away: string }` | Names for the legend and readout.                                                                          |
+| `events`           | `E[]`                            | With the required accessors below, or none. Passing `events` alone is a type error.                        |
+| `eventTime`        | `Accessor<E, number>`            | Match minute.                                                                                              |
+| `eventPeriod`      | `Accessor<E, number>`            | **Required.** Numbered like `period`. Not drawn if the chart has no panel for it.                          |
+| `eventSide`        | `Accessor<E, "home" \| "away">`  | Which team.                                                                                                |
+| `eventKind`        | `Accessor<E, MomentumEventKind>` | `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`, `substitution`, `var`.                    |
+| `eventLabel`       | `Accessor<E, string>`            | Optional readout / screen-reader text. Defaults to the kind.                                               |
+| `periodRanges`     | `{ [period]: { start?, end? } }` | Override a period's minutes, keyed by period number. Default: nominal start, end = max(nominal end, last). |
+| `maxValue`         | `number`                         | Half the value axis. Default: largest magnitude, rounded up.                                               |
+| `width` / `height` | `number`                         | Both together are the fixed-size opt-out.                                                                  |
+| `aspectRatio`      | `number`                         | Responsive box shape. Default `3`, or `1.8` below 420px wide.                                              |
+| `padding`          | `ChartPadding`                   | Defaults derive from what is drawn.                                                                        |
+| `appearance`       | `{ axis?, legend? }`             | Structure only, never colour.                                                                              |
+| `tooltip`          | `(hover) => ReactNode`           | `hover` is `{ minute, period, bar, datum, events }`; `period` is 1-based.                                  |
+| `children`         | `ReactNode`                      | Annotation slot; positions itself via `useMomentumChart()`.                                                |
 
 Each sample's bar runs from its minute to the **next sample's** minute, so data at any interval
 reads correctly; the last bar of a period takes the period's median interval. Gaps draw nothing

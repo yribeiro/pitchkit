@@ -10,6 +10,8 @@ import {
   xToMinute,
   unevenBarWidths,
   createLinearScale,
+  groupByPeriod,
+  isPeriod,
   layoutMomentumPanels,
   matchMinuteTicks,
   momentumExtent,
@@ -84,8 +86,9 @@ function resolveAppearance(
  */
 export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
   const {
-    periods,
+    data,
     time,
+    period,
     value,
     periodRanges,
     maxValue: explicitMaxValue,
@@ -113,22 +116,29 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
   });
   const { containerRef, size, isNarrow } = box;
 
-  // Accessors are resolved here and core is handed plain numbers. Each
-  // period's bars are built once, unclipped, to find where its data really
-  // ends, then clipped to the range that produces.
+  // Accessors are resolved here and core is handed plain numbers. The flat
+  // list is grouped by period, then each period's bars are built once,
+  // unclipped, to find where its data really ends, and clipped to the range
+  // that produces. A bar's index is mapped back to its place in `data`.
   const computed = useMemo(() => {
-    const samples = periods.map((period) =>
-      period.map((datum, i) => ({
-        time: resolve(time, datum, i),
-        value: resolve(value, datum, i),
-      })),
+    const overridden = Object.keys(periodRanges ?? {}).map(Number);
+    const groups = groupByPeriod(
+      data.map((datum, i) => resolve(period, datum, i)),
+      Math.max(2, ...overridden.filter(isPeriod)),
     );
-    const unclippedBars = samples.map((sample) => computeMomentumBars(sample));
+    const unclippedBars = groups.map((indices) =>
+      computeMomentumBars(
+        indices.map((i) => ({
+          time: resolve(time, data[i] as T, i),
+          value: resolve(value, data[i] as T, i),
+        })),
+      ).map((bar) => ({ ...bar, index: indices[bar.index] as number })),
+    );
     const ranges: MomentumRange[] = unclippedBars.map((unclipped, index) => {
       const latestEnd =
         unclipped.length > 0 ? (unclipped[unclipped.length - 1] as MomentumBar).end : undefined;
       const natural = resolvePeriodRange(index, latestEnd);
-      const override = periodRanges?.[index];
+      const override = periodRanges?.[index + 1];
       return { start: override?.start ?? natural.start, end: override?.end ?? natural.end };
     });
     const bars = unclippedBars.map((unclipped, index) =>
@@ -136,7 +146,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     );
     const values = bars.flatMap((periodBars) => periodBars.map((bar) => bar.value));
     return { ranges, bars, values };
-  }, [periods, time, value, periodRanges]);
+  }, [data, time, period, value, periodRanges]);
 
   // Halves sampled at different intervals draw bars of different widths side
   // by side, which reads as a bug in the chart. It is allowed — the data can
@@ -184,9 +194,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
           }))
           // An event in a period the chart doesn't draw (a shootout, say)
           // has nowhere true to go.
-          .filter(
-            (event) => Number.isInteger(event.period) && periods[event.period - 1] !== undefined,
-          );
+          .filter((event) => isPeriod(event.period) && event.period <= computed.ranges.length);
 
   const iconSize = isNarrow ? NARROW_ICON_SIZE : ICON_SIZE;
   // The event strip is one row: the icon, and room for a team underline.
@@ -236,7 +244,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
       minute: hover.minute,
       period: hover.panel + 1,
       bar,
-      datum: bar === undefined ? undefined : periods[hover.panel]?.[bar.index],
+      datum: bar === undefined ? undefined : data[bar.index],
       events: hoveredEvents.map((event) => event.datum),
     };
   }

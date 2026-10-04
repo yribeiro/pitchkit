@@ -34,6 +34,7 @@ const ON_BALL = new Set([
 
 interface Sample {
   minute: number;
+  period: number;
   value: number;
 }
 
@@ -45,42 +46,33 @@ interface MatchEvent {
   label: string;
 }
 
-/**
- * One array of samples per period, the shape `<MomentumChart>` takes:
- * `periods[n - 1]` is period n, which is what lines events up with their half.
- */
-function derivePeriods(events: readonly StatsBombEvent[], home: string): Sample[][] {
-  const periods: Sample[][] = [];
+/** One flat list of samples, each tagged with its period, like the events it came from. */
+function deriveMomentum(events: readonly StatsBombEvent[], home: string): Sample[] {
+  const samples: Sample[] = [];
 
   // Period 5 is the penalty shootout; it has no place on a match clock.
-  const lastPeriod = Math.max(0, ...events.filter((e) => e.period <= 4).map((e) => e.period));
-  for (let period = 1; period <= lastPeriod; period++) {
+  for (let period = 1; period <= 4; period++) {
     const inPeriod = events.filter((e) => e.period === period);
+    if (inPeriod.length === 0) continue;
 
     const counts = new Map<number, number>();
     for (const e of inPeriod) {
       if (!ON_BALL.has(e.type.name) || e.x === undefined || e.x < 80) continue;
       counts.set(e.minute, (counts.get(e.minute) ?? 0) + (e.team.name === home ? 1 : -1));
     }
-    // An empty period keeps its slot, so the ones after it stay in line.
-    if (counts.size === 0) {
-      periods.push([]);
-      continue;
-    }
+    if (counts.size === 0) continue;
 
     const first = Math.min(...inPeriod.map((e) => e.minute));
     const last = Math.max(...counts.keys());
     const raw = Array.from({ length: last - first + 1 }, (_, i) => counts.get(first + i) ?? 0);
 
-    periods.push(
-      raw.map((_, i) => {
-        const window = raw.slice(Math.max(0, i - 1), i + 2);
-        const mean = window.reduce((sum, v) => sum + v, 0) / window.length;
-        return { minute: first + i, value: Math.round(mean * 10) / 10 };
-      }),
-    );
+    raw.forEach((_, i) => {
+      const window = raw.slice(Math.max(0, i - 1), i + 2);
+      const mean = window.reduce((sum, v) => sum + v, 0) / window.length;
+      samples.push({ minute: first + i, period, value: Math.round(mean * 10) / 10 });
+    });
   }
-  return periods;
+  return samples;
 }
 
 /** Goals and bookings. Bookings live at `foul_committed.card` in StatsBomb's feed. */
@@ -133,7 +125,7 @@ export function MomentumChartStatsbombBasic() {
   const home = match?.home_team.home_team_name ?? "";
   const away = match?.away_team.away_team_name ?? "";
 
-  const periods = loaded && home ? derivePeriods(loaded, home) : [];
+  const samples = loaded && home ? deriveMomentum(loaded, home) : [];
   const marks = loaded && home ? pickEvents(loaded, home) : [];
 
   return (
@@ -164,8 +156,9 @@ export function MomentumChartStatsbombBasic() {
       </p>
 
       <MomentumChart
-        periods={periods}
+        data={samples}
         time={(d) => d.minute}
+        period={(d) => d.period}
         value={(d) => d.value}
         teams={{ home, away }}
         events={marks}

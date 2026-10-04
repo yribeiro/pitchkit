@@ -22,8 +22,9 @@ each publish their own and none of them is in an open feed — so you bring the 
 
 ```tsx
 <MomentumChart
-  periods={[firstHalf, secondHalf]}
+  data={samples}
   time={(d) => d.minute}
+  period={(d) => d.period}
   value={(d) => d.value}
   teams={{ home: "Roma", away: "Barcelona" }}
   events={events}
@@ -34,8 +35,11 @@ each publish their own and none of them is in an open feed — so you bring the 
 />
 ```
 
-`periods` is **one array of samples per period**: `[firstHalf, secondHalf]`, and two more for extra
-time. `time` and `value` are accessors like every other PitchKit prop.
+`data` is **one flat list of samples**, each tagged with its period, the way a feed gives them:
+`{ minute, period, value }`. `time`, `period` and `value` are accessors like every other PitchKit
+prop. `period` is 1 for the first half, 2 for the second, and 3 and 4 for extra time; StatsBomb's
+`period` field is already this. The chart groups the list itself, one panel per period. A period
+with no samples still gets its panel, and a sample without a whole-number period from 1 is dropped.
 
 `value` is **signed**. Positive is the home side's pressure and negative is the away side's, so one
 number per sample carries both teams. Zero is level.
@@ -66,13 +70,13 @@ wider than one with two, and a bar is the same width in either half for the same
 
 Each period starts at its nominal minute (0, 45, 90, 105) and ends at the later of its nominal end
 (45, 90, 105, 120) and its last sample. Half time therefore comes from the data, for the same reason
-as in the race chart: **halves do not end on 45**. Pass `periodRanges` to override either end:
+as in the race chart: **halves do not end on 45**. Pass `periodRanges`, keyed by period number, to override either end:
 
 ```tsx
-<MomentumChart ... periodRanges={[undefined, { start: 45, end: 95 }]} />
+<MomentumChart ... periodRanges={{ 2: { start: 45, end: 95 } }} />
 ```
 
-Extra time is two more arrays in `periods`; the axis then ends at 105 and 120. Periods beyond the
+Extra time is samples tagged period 3 and 4; the axis then ends at 105 and 120. Periods beyond the
 fourth continue in 15-minute blocks.
 
 ## The value axis
@@ -102,9 +106,9 @@ a compile error rather than an empty icon row.
 
 `eventPeriod` is required because a minute alone can't place an event. The second half restarts at
 45', so when the first half has stoppage time, 45'–48' happen twice. In the Euro 2024 final, Nico
-Williams scored at 46:09 of the second half, and the first half had run to 47:02. Period _n_ is drawn
-in `periods[n - 1]`, which matches StatsBomb's own `period` field. An event in a period the chart
-has no panel for, such as a shootout, isn't drawn.
+Williams scored at 46:09 of the second half, and the first half had run to 47:02. Events are
+numbered like the samples, so an event in period 2 is drawn in the second-half panel. An event in a
+period the chart has no panel for, such as a shootout, isn't drawn.
 
 | Kind             | Icon                            | Colour                |
 | ---------------- | ------------------------------- | --------------------- |

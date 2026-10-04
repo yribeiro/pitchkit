@@ -90,6 +90,7 @@ export type { ChartPadding, ChartFrame, LinearScale } from "./chart/types.js";
 export { createLinearScale } from "./chart/linear-scale.js";
 export { niceTicks, matchMinuteTicks } from "./chart/ticks.js";
 export { computeChartFrame } from "./chart/frame.js";
+export { isPeriod, groupByPeriod } from "./chart/periods.js";
 
 export type { RaceEvent, RacePoint, RaceSeriesData } from "./race/cumulative.js";
 export {

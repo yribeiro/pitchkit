@@ -2,13 +2,15 @@
 
 import { MomentumChart, useMomentumChart } from "@pitchkit/react";
 
-const periods = [
-  Array.from({ length: 10 }, (_, i) => ({
+const samples = [
+  ...Array.from({ length: 10 }, (_, i) => ({
     minute: i * 5,
+    period: 1,
     value: Math.round(8 * Math.sin(i / 1.6)),
   })),
-  Array.from({ length: 10 }, (_, i) => ({
+  ...Array.from({ length: 10 }, (_, i) => ({
     minute: 45 + i * 5,
+    period: 2,
     value: Math.round(9 * Math.cos(i / 1.4)),
   })),
 ];
@@ -41,7 +43,12 @@ function Change({ minute }: { minute: number }) {
 
 export function MomentumChartAnnotationsBasic() {
   return (
-    <MomentumChart periods={periods} time={(d) => d.minute} value={(d) => d.value}>
+    <MomentumChart
+      data={samples}
+      time={(d) => d.minute}
+      period={(d) => d.period}
+      value={(d) => d.value}
+    >
       {substitutions.map((minute) => (
         <Change key={minute} minute={minute} />
       ))}

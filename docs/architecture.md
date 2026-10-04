@@ -129,7 +129,7 @@ follows the same pattern with a different shape of data.
 
 ```
 MomentumChart (root)
- ├─ periods   (one array of samples per period; data stays on the root)
+ ├─ data      (one flat list, grouped by its period accessor; data stays on the root)
  ├─ panels    (one per period, width proportional to its minutes; per-panel x scale)
  ├─ scaleY    (one symmetric value scale, -max..+max, so both halves are comparable)
  ├─ bars, zero line, minute ticks, then event icons, then children
@@ -144,10 +144,13 @@ MomentumChart (root)
   for a single sample). Bars are clipped to the period's range.
 - **Periods come from the data.** A period starts at its nominal minute (0, 45, 90, 105, then 15-
   minute blocks) and ends at `max(nominal end, ceil(latest sample end))`; `periodRanges` overrides
-  either end.
-- **Every event has a period.** Period _n_ is drawn in `periods[n - 1]` (`minuteToX(panels, minute,
-period)`, clamped to that panel), and the readout lists only the hovered period's events. An
-  event with no panel for its period isn't drawn
+  either end, keyed by period number.
+- **Samples and events are flat lists tagged with their period**, as feeds give them.
+  `groupByPeriod` (in `core/chart/`) groups the samples into one panel per period, from 1 to the
+  highest seen and at least two, so an empty period keeps its place; a bar's `index` is mapped back
+  into `data`. An event is drawn in its period's panel (`minuteToX(panels, minute, period)`,
+  clamped to that panel), and the readout lists only the hovered period's events. An event with
+  no panel for its period isn't drawn
   ([D28](./decisions.md#d28-time-based-charts-require-a-period)).
 - **Events are icons in a strip under the bars**, kept to one row: icons that would touch
   fan out with an offset, later over earlier on a surface backing, and a run is re-centred on its

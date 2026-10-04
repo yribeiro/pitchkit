@@ -8,6 +8,12 @@ import type { MomentumEventKind, MomentumSide } from "./momentum-types.js";
 interface Sample {
   minute: number;
   value: number;
+  period: number;
+}
+
+/** Tags each array's samples with its period, 1 for the first, as a feed would. */
+function halves(...periods: Omit<Sample, "period">[][]): Sample[] {
+  return periods.flatMap((samples, i) => samples.map((s) => ({ ...s, period: i + 1 })));
 }
 interface Incident {
   minute: number;
@@ -21,8 +27,12 @@ interface Incident {
 const halfOf = (e: Incident) => e.period ?? (e.minute < 45 ? 1 : 2);
 
 /** One sample a minute from `start` to `end`, each worth `value`. */
-function period(start: number, end: number, value: (minute: number) => number): Sample[] {
-  const samples: Sample[] = [];
+function period(
+  start: number,
+  end: number,
+  value: (minute: number) => number,
+): Omit<Sample, "period">[] {
+  const samples: Omit<Sample, "period">[] = [];
   for (let minute = start; minute < end; minute += 1)
     samples.push({ minute, value: value(minute) });
   return samples;
@@ -36,8 +46,9 @@ type Props = Partial<Parameters<typeof MomentumChart<Sample, Incident>>[0]>;
 function renderChart(props: Props = {}) {
   return render(
     <MomentumChart<Sample, Incident>
-      periods={[FIRST, SECOND]}
+      data={halves(FIRST, SECOND)}
       time={(s) => s.minute}
+      period={(s) => s.period}
       value={(s) => s.value}
       teams={{ home: "Roma", away: "Barcelona" }}
       width={720}
@@ -97,12 +108,10 @@ describe("<MomentumChart>", () => {
 
   it("scales bars against one symmetric axis, so equal pressure looks equal", () => {
     const { container } = renderChart({
-      periods: [
-        [
-          { minute: 0, value: 6 },
-          { minute: 1, value: -6 },
-        ],
-      ],
+      data: halves([
+        { minute: 0, value: 6 },
+        { minute: 1, value: -6 },
+      ]),
     });
     const [up, down] = parts(container, "momentum-bar");
 
@@ -121,12 +130,10 @@ describe("<MomentumChart>", () => {
 
   it("never lets a nonzero bar vanish into the zero line", () => {
     const { container } = renderChart({
-      periods: [
-        [
-          { minute: 0, value: 0.0001 },
-          { minute: 1, value: 100 },
-        ],
-      ],
+      data: halves([
+        { minute: 0, value: 0.0001 },
+        { minute: 1, value: 100 },
+      ]),
     });
     const tiny = parts(container, "momentum-bar")[0] as Element;
 
@@ -135,12 +142,10 @@ describe("<MomentumChart>", () => {
 
   it("draws a level sample as no bar height at all", () => {
     const { container } = renderChart({
-      periods: [
-        [
-          { minute: 0, value: 0 },
-          { minute: 1, value: 5 },
-        ],
-      ],
+      data: halves([
+        { minute: 0, value: 0 },
+        { minute: 1, value: 5 },
+      ]),
     });
 
     expect(Number(parts(container, "momentum-bar")[0]?.getAttribute("height"))).toBe(0);
@@ -150,14 +155,12 @@ describe("<MomentumChart>", () => {
     // One-minute samples, then a five-minute one: the last bar is wider, and
     // neither overlaps nor leaves a gap.
     const { container } = renderChart({
-      periods: [
-        [
-          { minute: 0, value: 1 },
-          { minute: 1, value: 1 },
-          { minute: 2, value: 1 },
-          { minute: 7, value: 1 },
-        ],
-      ],
+      data: halves([
+        { minute: 0, value: 1 },
+        { minute: 1, value: 1 },
+        { minute: 2, value: 1 },
+        { minute: 7, value: 1 },
+      ]),
     });
     const widths = parts(container, "momentum-bar").map((b) => Number(b.getAttribute("width")));
 
@@ -167,7 +170,12 @@ describe("<MomentumChart>", () => {
   it("widens a half to fit its stoppage time", () => {
     // A second half running to 94' is wider than a first ending on 45', in
     // proportion, so a minute is the same width in both.
-    const { container } = renderChart({ periods: [FIRST, period(45, 94, () => 1)] });
+    const { container } = renderChart({
+      data: halves(
+        FIRST,
+        period(45, 94, () => 1),
+      ),
+    });
     const [first, second] = parts(container, "momentum-panel").map((p) =>
       Number(p.querySelector("rect")?.getAttribute("width")),
     );
@@ -176,7 +184,7 @@ describe("<MomentumChart>", () => {
   });
 
   it("lets periodRanges override a period's extent", () => {
-    const { container } = renderChart({ periodRanges: [{ end: 60 }] });
+    const { container } = renderChart({ periodRanges: { 1: { end: 60 } } });
     const [first, second] = parts(container, "momentum-panel").map((p) =>
       Number(p.querySelector("rect")?.getAttribute("width")),
     );
@@ -184,9 +192,47 @@ describe("<MomentumChart>", () => {
     expect(first as number).toBeGreaterThan(second as number);
   });
 
+  it("groups a flat list by its period, in any order", () => {
+    // As a feed gives it: one list, every sample tagged, the halves interleaved.
+    const shuffled = [...halves(FIRST, SECOND)].reverse();
+    const { container } = renderChart({ data: shuffled });
+
+    expect(parts(container, "momentum-panel")).toHaveLength(2);
+    expect(parts(container, "momentum-bar")).toHaveLength(FIRST.length + SECOND.length);
+  });
+
+  it("keeps a panel for a period with no samples between two that have them", () => {
+    const { container } = renderChart({
+      data: [
+        { minute: 10, value: 2, period: 1 },
+        { minute: 95, value: 2, period: 3 },
+      ],
+    });
+
+    expect(parts(container, "momentum-panel")).toHaveLength(3);
+  });
+
+  it("drops samples without a whole-number period from 1", () => {
+    const { container } = renderChart({
+      data: [
+        { minute: 10, value: 2, period: 1 },
+        { minute: 20, value: 2, period: 0 },
+        { minute: 30, value: 2, period: 1.5 },
+        { minute: 40, value: 2, period: NaN },
+      ],
+    });
+
+    expect(parts(container, "momentum-bar")).toHaveLength(1);
+  });
+
   it("supports extra time as further periods", () => {
     const { container } = renderChart({
-      periods: [FIRST, SECOND, period(90, 105, () => 2), period(105, 120, () => -2)],
+      data: halves(
+        FIRST,
+        SECOND,
+        period(90, 105, () => 2),
+        period(105, 120, () => -2),
+      ),
     });
 
     expect(parts(container, "momentum-panel")).toHaveLength(4);
@@ -202,14 +248,14 @@ describe("<MomentumChart>", () => {
   });
 
   it("renders with no data without throwing", () => {
-    const { container } = renderChart({ periods: [[], []] });
+    const { container } = renderChart({ data: halves([], []) });
 
     expect(parts(container, "momentum-panel")).toHaveLength(2);
     expect(parts(container, "momentum-bar")).toHaveLength(0);
   });
 
   it("renders a chart of all zeros", () => {
-    const { container } = renderChart({ periods: [period(0, 10, () => 0)] });
+    const { container } = renderChart({ data: halves(period(0, 10, () => 0)) });
 
     expect(parts(container, "momentum-bar").every((b) => b.getAttribute("height") === "0")).toBe(
       true,
@@ -385,9 +431,12 @@ describe("<MomentumChart>", () => {
   describe("periods whose minutes overlap", () => {
     // Stoppage time takes the first half to 48', and the second half
     // restarts at 45', so 45'-48' happen twice. Panels: 10-352.4 and 360.4-710.
-    const STOPPAGE = [period(0, 48, () => 2), period(45, 94, () => 2)];
+    const STOPPAGE = halves(
+      period(0, 48, () => 2),
+      period(45, 94, () => 2),
+    );
     const overlap = (events: Incident[]) => ({
-      periods: STOPPAGE,
+      data: STOPPAGE,
       events,
       eventTime: (e: Incident) => e.minute,
       eventPeriod: (e: Incident) => e.period as number,
@@ -458,8 +507,8 @@ describe("<MomentumChart>", () => {
 
     it("says nothing is there in a stretch with no data", () => {
       const { container } = renderChart({
-        periods: [[{ minute: 0, value: 4 }], SECOND],
-        periodRanges: [{ end: 45 }],
+        data: halves([{ minute: 0, value: 4 }], SECOND),
+        periodRanges: { 1: { end: 45 } },
       });
       hoverAt(container, 173);
 
@@ -467,7 +516,12 @@ describe("<MomentumChart>", () => {
     });
 
     it("says level for a zero sample", () => {
-      const { container } = renderChart({ periods: [period(0, 45, () => 0), SECOND] });
+      const { container } = renderChart({
+        data: halves(
+          period(0, 45, () => 0),
+          SECOND,
+        ),
+      });
       hoverAt(container, 173);
 
       expect(container.querySelector('[role="tooltip"]')?.textContent).toContain("Level");
@@ -505,6 +559,21 @@ describe("<MomentumChart>", () => {
 
       expect(container.querySelector('[role="tooltip"]')?.textContent).toBe("custom 1");
       expect(seen.at(-1)?.minute).toBeGreaterThanOrEqual(21);
+    });
+
+    it("finds the datum in the flat list, in the hovered period", () => {
+      const seen: Array<Sample | undefined> = [];
+      const { container } = renderChart({
+        tooltip: (hover) => {
+          seen.push(hover.datum);
+          return null;
+        },
+      });
+      // About 67', in the second half.
+      hoverAt(container, 520);
+
+      expect(seen.at(-1)?.period).toBe(2);
+      expect(seen.at(-1)?.minute).toBeGreaterThanOrEqual(65);
     });
 
     it("draws the crosshair where the pointer is", () => {
@@ -578,8 +647,9 @@ describe("<MomentumChart>", () => {
     it("fills its container at a 3:1 box before it has been measured", () => {
       const { container } = render(
         <MomentumChart<Sample>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
         />,
       );
@@ -590,8 +660,9 @@ describe("<MomentumChart>", () => {
     it("uses a taller box at phone width, and an explicit ratio wins", () => {
       const narrow = render(
         <MomentumChart<Sample>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           width={340}
           height={190}
@@ -601,8 +672,9 @@ describe("<MomentumChart>", () => {
 
       const explicit = render(
         <MomentumChart<Sample>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           aspectRatio={2}
         />,
@@ -628,8 +700,9 @@ describe("<MomentumChart>", () => {
     it("positions a child on the period it names", () => {
       const { container } = render(
         <MomentumChart<Sample>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           width={720}
           height={240}
@@ -649,8 +722,12 @@ describe("<MomentumChart>", () => {
     it("tells overlapping minutes apart by their period", () => {
       const { container } = render(
         <MomentumChart<Sample>
-          periods={[period(0, 48, () => 2), period(45, 94, () => 2)]}
+          data={halves(
+            period(0, 48, () => 2),
+            period(45, 94, () => 2),
+          )}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           width={720}
           height={240}
@@ -673,8 +750,9 @@ describe("<MomentumChart>", () => {
     it("clamps a minute outside its period to that period's edge", () => {
       const { container } = render(
         <MomentumChart<Sample>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           width={720}
           height={240}
@@ -691,6 +769,35 @@ describe("<MomentumChart>", () => {
       expect(after).toBeCloseTo(710, 5);
     });
 
+    it("points each bar's index back into the flat list", () => {
+      const data = [...halves(FIRST, SECOND)].reverse();
+      let seen: { bars: readonly (readonly { index: number; start: number }[])[] } | undefined;
+      function Probe() {
+        seen = useMomentumChart();
+        return null;
+      }
+      render(
+        <MomentumChart<Sample>
+          data={data}
+          time={(s) => s.minute}
+          period={(s) => s.period}
+          value={(s) => s.value}
+          width={720}
+          height={240}
+        >
+          <Probe />
+        </MomentumChart>,
+      );
+
+      for (const [i, periodBars] of (seen?.bars ?? []).entries()) {
+        for (const bar of periodBars) {
+          expect(data[bar.index]?.period).toBe(i + 1);
+          expect(data[bar.index]?.minute).toBe(bar.start);
+        }
+      }
+      expect(seen?.bars.flat()).toHaveLength(data.length);
+    });
+
     it("throws outside a chart", () => {
       expect(() => render(<Marker minute={5} period={1} />)).toThrow(
         /must be rendered inside <MomentumChart>/,
@@ -700,8 +807,9 @@ describe("<MomentumChart>", () => {
     it("paints children above the bars and the events", () => {
       const { container } = render(
         <MomentumChart<Sample, Incident>
-          periods={[FIRST, SECOND]}
+          data={halves(FIRST, SECOND)}
           time={(s) => s.minute}
+          period={(s) => s.period}
           value={(s) => s.value}
           events={[{ minute: 10, side: "home", kind: "goal" }]}
           eventTime={(e) => e.minute}
@@ -765,12 +873,14 @@ describe("icon colour rules", () => {
   });
 
   describe("uneven sampling", () => {
-    const at = (minutes: number[], start: number) => minutes.map((m) => ({ t: start + m, v: 1 }));
+    const at = (minutes: number[], start: number, p: number) =>
+      minutes.map((m) => ({ t: start + m, p, v: 1 }));
     const renderHalves = (first: number[], second: number[]) =>
       render(
         <MomentumChart
-          periods={[at(first, 0), at(second, 45)]}
+          data={[...at(first, 0, 1), ...at(second, 45, 2)]}
           time={(d) => d.t}
+          period={(d) => d.p}
           value={(d) => d.v}
           width={600}
           height={200}

@@ -39,7 +39,7 @@ export interface MomentumAppearance {
 /** What a readout is about: the minute under the pointer and what is there. */
 export interface MomentumHover<T, E> {
   readonly minute: number;
-  /** The hovered period's number: 1 for the first half, so `periods[period - 1]`. */
+  /** The hovered period's number: 1 for the first half. */
   readonly period: number;
   /** The bar under the pointer, or `undefined` in a stretch with no data. */
   readonly bar: MomentumBar | undefined;
@@ -51,21 +51,30 @@ export interface MomentumHover<T, E> {
 
 interface MomentumBaseProps<T, E> {
   /**
-   * One array of samples per period: `[firstHalf, secondHalf]`, with extra
-   * time as two more. Samples can be at any interval, and a period's width is
-   * set by its own minutes, so stoppage time widens a half.
+   * Every sample, in one list, each tagged with its period by `period`: the
+   * shape a feed gives. Samples can be at any interval and in any order, and
+   * a period's width is set by its own minutes, so stoppage time widens a half.
    */
-  readonly periods: readonly (readonly T[])[];
-  /** Match minute the sample starts at. Fractional is fine. */
+  readonly data: readonly T[];
+  /** Match minute the sample starts at, as the feed numbers it. Fractional is fine. */
   readonly time: Accessor<T, number>;
+  /**
+   * The period the sample is in: 1 for the first half, 2 for the second, 3
+   * and 4 for extra time. StatsBomb's `period` is already this.
+   *
+   * Each period is its own panel. Every period from 1 to the highest one in
+   * the data gets one, at least two, so an empty period keeps its place. A
+   * sample without a whole-number period from 1 is dropped.
+   */
+  readonly period: Accessor<T, number>;
   /** Signed: positive is the home side's pressure, negative the away side's. */
   readonly value: Accessor<T, number>;
   /**
-   * Overrides a period's start or end, in match minutes. By default a period
-   * starts at its nominal minute and ends at the later of its nominal end and
-   * its last sample.
+   * Overrides a period's start or end, in match minutes, keyed by period
+   * number: `{ 2: { end: 95 } }`. By default a period starts at its nominal
+   * minute and ends at the later of its nominal end and its last sample.
    */
-  readonly periodRanges?: readonly (Partial<MomentumRange> | undefined)[];
+  readonly periodRanges?: Readonly<Record<number, Partial<MomentumRange>>>;
   /** Half the value axis. Defaults to the largest magnitude, rounded up. */
   readonly maxValue?: number;
 
@@ -91,13 +100,12 @@ interface MomentumEventProps<E> {
   /** Match minute of the event, as the feed numbers it. */
   readonly eventTime: Accessor<E, number>;
   /**
-   * The period the event happened in: 1 for the first half, 2 for the
-   * second, 3 and 4 for extra time, so period *n* is drawn in
-   * `periods[n - 1]`. StatsBomb's `period` is already this.
+   * The period the event happened in, numbered like the samples' `period`:
+   * 1 for the first half. StatsBomb's `period` is already this.
    *
    * Required because minutes restart at 45 for the second half: a minute
    * like 46' is in both halves when the first had stoppage time. An event
-   * whose period has no entry in `periods` is not drawn.
+   * in a period the chart has no panel for is not drawn.
    */
   readonly eventPeriod: Accessor<E, number>;
   readonly eventSide: Accessor<E, MomentumSide>;
@@ -129,5 +137,6 @@ export interface MomentumChartContextValue {
    * minute outside that period is clamped to its edge.
    */
   readonly scaleX: (minute: number, period: number) => number;
+  /** One list per period, `bars[period - 1]`. A bar's `index` points into `data`. */
   readonly bars: readonly (readonly MomentumBar[])[];
 }

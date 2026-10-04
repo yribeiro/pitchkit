@@ -123,14 +123,13 @@ describe("SSR (renderToString)", () => {
   it("renders a MomentumChart to a string, events included", () => {
     const html = renderToString(
       <MomentumChart
-        periods={[
-          [
-            { minute: 0, v: 2 },
-            { minute: 7, v: -4 },
-          ],
-          [{ minute: 45, v: 1 }],
+        data={[
+          { minute: 0, period: 1, v: 2 },
+          { minute: 7, period: 1, v: -4 },
+          { minute: 45, period: 2, v: 1 },
         ]}
         time={(d) => d.minute}
+        period={(d) => d.period}
         value={(d) => d.v}
         events={[{ minute: 12, period: 1, side: "home" as const, kind: "goal" as const }]}
         eventTime={(e) => e.minute}
@@ -150,7 +149,12 @@ describe("SSR (renderToString)", () => {
 
   it("renders a MomentumChart at its responsive fallback size without a DOM", () => {
     const html = renderToString(
-      <MomentumChart periods={[[{ minute: 0, v: 1 }]]} time={(d) => d.minute} value={(d) => d.v} />,
+      <MomentumChart
+        data={[{ minute: 0, period: 1, v: 1 }]}
+        time={(d) => d.minute}
+        period={(d) => d.period}
+        value={(d) => d.v}
+      />,
     );
 
     expect(html).toContain('viewBox="0 0 720 240"');
