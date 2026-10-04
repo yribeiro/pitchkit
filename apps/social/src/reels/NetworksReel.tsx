@@ -47,11 +47,19 @@ const HEADLINE_AT = 4;
 const COUNT_END = 56;
 /** A title card between scenes. */
 const CARD = 66;
-const SECTION = 300;
+/**
+ * Each chapter first builds the starting formation unit by unit (back line,
+ * holding midfield, attacking midfield, striker), FORMATION_UNIT frames
+ * apart, and holds it a moment.
+ */
+const FORMATION_AT = 12;
+const FORMATION_UNIT = 15;
+const SECTION = 366;
 /** The half replays over these frames of a chapter (7 s), then holds. */
-const BUILD_START = 16;
-const BUILD_END = 226;
-const OUTRO = 120;
+const BUILD_START = 82;
+const BUILD_END = 292;
+/** The measured shapes, held 0.2 s longer before the end card. */
+const OUTRO = 126;
 /** The closing card every reel ends on. */
 const END = 90;
 // The reel opens on the "Let's check out pass networks" card, then the hook.
@@ -271,8 +279,18 @@ function Chapter({
 }) {
   const frame = useCurrentFrame();
   const minute = interpolate(frame, [BUILD_START, BUILD_END], [0, END_MINUTE], clamp);
+  const reveal = interpolate(
+    frame,
+    [FORMATION_AT, FORMATION_AT + 4 * FORMATION_UNIT],
+    [0, 4],
+    clamp,
+  );
+  // The unit lines stay up while the formation stands, then fade as play starts.
+  const unitLines = interpolate(frame, [BUILD_START, BUILD_START + 12], [1, 0], clamp);
   const pace = END_MINUTE / (BUILD_END - BUILD_START);
   const state = networkAt(net, minute, pace);
+  // Nothing counts until play starts (England's first pass is logged at 0:00).
+  const passes = frame < BUILD_START ? 0 : state.landed;
   const highlight =
     interpolate(frame, [BUILD_END + 4, BUILD_END + 16], [0, 1], clamp) *
     (0.75 + 0.25 * Math.sin((frame - BUILD_END) / 4));
@@ -317,7 +335,7 @@ function Chapter({
             First half · started <span style={{ color: C.text }}>{net.formation}</span>
           </div>
           <div style={{ fontFamily: FONT.display, fontSize: 40, letterSpacing: "0.03em", color }}>
-            {state.landed} {state.landed === 1 ? "PASS" : "PASSES"}
+            {passes} {passes === 1 ? "PASS" : "PASSES"}
           </div>
         </div>
       </div>
@@ -335,6 +353,8 @@ function Chapter({
           width={CHAPTER_W}
           minute={minute}
           pace={pace}
+          reveal={reveal}
+          unitLines={unitLines}
           highlight={highlight}
         />
       </div>

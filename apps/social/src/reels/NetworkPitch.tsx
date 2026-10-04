@@ -22,6 +22,20 @@ const PAD = { top: 6, right: 6, bottom: 6, left: 6 };
 export const uprightHeight = (width: number) =>
   Math.round(((width - PAD.top - PAD.bottom) * 120) / 80 + PAD.left + PAD.right);
 
+/**
+ * The units of a 4-2-3-1 team sheet, back to front, by StatsBomb position
+ * name. The keeper comes on with the back line.
+ */
+const UNITS = [
+  ["Goalkeeper", "Back"],
+  ["Defensive Midfield"],
+  ["Wing", "Attacking Midfield"],
+  ["Forward"],
+] as const;
+
+const unitOf = (position: string) =>
+  UNITS.findIndex((words) => words.some((w) => position.includes(w)));
+
 /** A minute after every pass: the finished network. */
 export const FULL_TIME = Infinity;
 
@@ -193,6 +207,8 @@ export function NetworkPitch({
   showNames = true,
   highlight = 0,
   measure = 0,
+  reveal = UNITS.length,
+  unitLines = 0,
 }: {
   net: TeamNetwork;
   color: string;
@@ -206,6 +222,14 @@ export function NetworkPitch({
   highlight?: number;
   /** 0..1: draw the shape's height and width on the finished network. */
   measure?: number;
+  /**
+   * 0..4: how much of the starting formation is on the pitch, unit by unit
+   * (back line with the keeper, holding midfield, attacking midfield,
+   * striker). Fractions pop the next unit in.
+   */
+  reveal?: number;
+  /** 0..1: draw each unit's line across the formation with its count. */
+  unitLines?: number;
 }) {
   const height = uprightHeight(width);
   const s = width / 720;
@@ -252,9 +276,20 @@ export function NetworkPitch({
             />
           )}
           {measure > 0 && <Shape net={net} positions={state.positions} s={s} t={measure} />}
+          {unitLines > 0 && (
+            <UnitLines
+              net={net}
+              positions={state.positions}
+              s={s}
+              reveal={reveal}
+              opacity={unitLines}
+              color={color}
+            />
+          )}
           <Discs
             net={net}
             state={state}
+            reveal={reveal}
             color={color}
             s={s}
             showNames={showNames}
@@ -375,10 +410,85 @@ function Shape({
   );
 }
 
+/**
+ * A line through each outfield unit of the starting formation, drawn out
+ * left to right as the unit appears, with its head count by the left
+ * touchline.
+ */
+function UnitLines({
+  net,
+  positions,
+  s,
+  reveal,
+  opacity,
+  color,
+}: {
+  net: TeamNetwork;
+  positions: Map<number, Point>;
+  s: number;
+  reveal: number;
+  opacity: number;
+  color: string;
+}) {
+  const { transform } = usePitch();
+  return (
+    <g data-pitchkit-mark="units" opacity={opacity}>
+      {UNITS.map((_, u) => {
+        const members = net.nodes
+          .filter((n) => unitOf(n.position) === u && n.position !== "Goalkeeper")
+          .map((n) => positions.get(n.id)!)
+          .sort((a, b) => a.y - b.y);
+        const t = Math.max(0, Math.min(reveal - u, 1));
+        if (t <= 0 || members.length === 0) return null;
+        const first = members[0]!;
+        const last = members.at(-1)!;
+        // Pitch y runs left to right on screen. The count sits in a clear column
+        // by the left touchline; the line runs from beside it past the last player.
+        const pad = 6;
+        const y0 = Math.max(first.y - pad, 9);
+        const y1 = Math.min(last.y + pad, 78);
+        const x = members.reduce((sum, p) => sum + p.x, 0) / members.length;
+        const draw = Math.min(t / 0.7, 1);
+        const [ax, ay] = transform.toPixel([x, y0]);
+        const [bx, by] = transform.toPixel([x, y0 + (y1 - y0) * draw]);
+        const [lx, ly] = transform.toPixel([x, 3]);
+        const tag = Math.max(0, Math.min((t - 0.4) / 0.4, 1));
+        return (
+          <g key={u}>
+            <line
+              x1={ax}
+              y1={ay}
+              x2={bx}
+              y2={by}
+              stroke={color}
+              strokeOpacity={0.7}
+              strokeWidth={4 * s}
+              strokeLinecap="round"
+              strokeDasharray={`${10 * s} ${8 * s}`}
+            />
+            <text
+              transform={`translate(${lx} ${ly}) rotate(90)`}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontFamily={FONT.display}
+              fontSize={52 * s}
+              fill={color}
+              opacity={tag}
+            >
+              {members.length}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 /** The players as discs with their squad numbers, kept upright against the pitch's rotation. */
 function Discs({
   net,
   state,
+  reveal,
   color,
   s,
   showNames,
@@ -387,6 +497,7 @@ function Discs({
 }: {
   net: TeamNetwork;
   state: NetworkState;
+  reveal: number;
   color: string;
   s: number;
   showNames: boolean;
@@ -396,13 +507,16 @@ function Discs({
   const { transform } = usePitch();
   const labels = placeLabels(net, finalNetwork(net).positions, transform.toPixel, s);
   const discs = net.nodes.map((n) => {
+    // Pop in with the player's unit, with a small overshoot.
+    const age = Math.max(0, Math.min(reveal - unitOf(n.position), 1));
+    const pop = age >= 1 ? 1 : Math.sin(age * Math.PI * 0.5) * (1 + 0.25 * Math.sin(age * Math.PI));
     const grow = growth(state.involved.get(n.id) ?? 0);
     const boost = emphasis.includes(n.id) ? 1 + 0.18 * highlight : 1;
-    const k = 1.15 * s * grow * boost;
+    const k = 1.15 * s * grow * boost * pop;
     const p = state.positions.get(n.id)!;
     const [px, py] = transform.toPixel([p.x, p.y]);
     // Screen position: the pitch is turned -90°.
-    return { n, k, px, py, cx: py, cy: -px };
+    return { n, k, pop, px, py, cx: py, cy: -px };
   });
   // While discs are still moving a name can end up under another disc or
   // name; fade it by how covered it is rather than letting it jump sides.
@@ -459,7 +573,7 @@ function Discs({
                 stroke="rgba(4,10,7,0.9)"
                 strokeWidth={4 * s}
                 paintOrder="stroke"
-                opacity={visibility[i]!}
+                opacity={visibility[i]! * Math.max(0, (discs[i]!.pop - 0.6) / 0.4)}
               >
                 {surname(n.name).toUpperCase()}
               </text>
