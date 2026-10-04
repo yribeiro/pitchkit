@@ -28,7 +28,6 @@ import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
 import { NetworkPitch, networkAt, shapeOf, uprightHeight } from "./NetworkPitch";
-import type { Link } from "./NetworkPitch";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.inOut(Easing.cubic);
@@ -318,7 +317,9 @@ function LinkKey() {
 
 /* Chapters ---------------------------------------------------------------- */
 
-const CHAPTER_W = 720;
+const CHAPTER_W = 760;
+/** Where the chapter pitch starts; it ends just past the safe zone's lower edge, on the goal line. */
+const CHAPTER_TOP = 382;
 
 function Chapter({
   net,
@@ -360,12 +361,12 @@ function Chapter({
       }}
     >
       <Backdrop />
-      <div style={{ position: "absolute", top: 222, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 214, left: 60, right: 60 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <div style={{ fontFamily: FONT.display, fontSize: 124, lineHeight: 1, color }}>
+          <div style={{ fontFamily: FONT.display, fontSize: 112, lineHeight: 1, color }}>
             {title.toUpperCase()}
           </div>
-          <div style={{ fontFamily: FONT.display, fontSize: 84, lineHeight: 1, color: C.text }}>
+          <div style={{ fontFamily: FONT.display, fontSize: 76, lineHeight: 1, color: C.text }}>
             {Math.min(45, Math.floor(minute))}’
           </div>
         </div>
@@ -374,17 +375,19 @@ function Chapter({
             display: "flex",
             alignItems: "baseline",
             justifyContent: "space-between",
-            marginTop: 6,
+            marginTop: 4,
           }}
         >
-          <TopLink net={net} link={state.top} color={color} />
+          <div style={{ fontSize: 30, fontWeight: 700, color: C.muted }}>
+            First half · started <span style={{ color: C.text }}>{net.formation}</span>
+          </div>
           <div style={{ fontFamily: FONT.display, fontSize: 40, letterSpacing: "0.03em", color }}>
             {state.landed} {state.landed === 1 ? "PASS" : "PASSES"}
           </div>
         </div>
       </div>
 
-      <div style={{ position: "absolute", top: 410, left: (1080 - CHAPTER_W) / 2 }}>
+      <div style={{ position: "absolute", top: CHAPTER_TOP, left: (1080 - CHAPTER_W) / 2 }}>
         <NetworkPitch
           net={net}
           color={color}
@@ -398,7 +401,7 @@ function Chapter({
       <div
         style={{
           position: "absolute",
-          top: 410 + 100,
+          top: CHAPTER_TOP + 100,
           left: 0,
           right: 0,
           display: "flex",
@@ -441,38 +444,9 @@ function Chapter({
   );
 }
 
-/** The partnership with the most passes so far, live. */
-function TopLink({
-  net,
-  link,
-  color,
-}: {
-  net: TeamNetwork;
-  link: Link | undefined;
-  color: string;
-}) {
-  return (
-    <div style={{ fontSize: 32, fontWeight: 700, color: C.muted }}>
-      {link ? (
-        <>
-          Top link{" "}
-          <span style={{ color: C.text }}>
-            {nameOf(net, link.a)} ↔ {nameOf(net, link.b)}
-          </span>{" "}
-          <span style={{ color }}>{link.count}</span>
-        </>
-      ) : (
-        <>
-          Kick-off <span style={{ color: C.text }}>{net.formation}</span>
-        </>
-      )}
-    </div>
-  );
-}
-
 /* Outro ------------------------------------------------------------------- */
 
-const OUTRO_W = 470;
+const OUTRO_W = 490;
 
 function Outro() {
   const frame = useCurrentFrame();
@@ -494,8 +468,8 @@ function Outro() {
         </div>
       </div>
       {[
-        { net: SPAIN, color: C.sky, left: 50 },
-        { net: ENGLAND, color: C.orange, left: 560 },
+        { net: SPAIN, color: C.sky, left: 40 },
+        { net: ENGLAND, color: C.orange, left: 550 },
       ].map(({ net, color, left }) => (
         <div key={net.team} style={{ position: "absolute", top: 470, left }}>
           <NetworkPitch

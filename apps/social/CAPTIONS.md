@@ -335,9 +335,8 @@ completed-pass counters rolling up underneath; at 1.7 s they lock and the
 ("Check out the pass networks / Thicker = more passes", with a link
 thickening as its pass count climbs). Each chapter replays the half over
 7 s: every player starts in their 4-2-3-1 team-sheet slot and drifts smoothly
-to where they actually played, partnerships fade in and thicken, the pass
-counter climbs and "Top link" tracks the leading pair; it holds on the
-strongest link. A second card ("Measure the shape / Front to back. Side to side.") leads into the
+to where they actually played, partnerships fade in and thicken, and the pass
+counter climbs; it holds on the strongest link. A second card ("Measure the shape / Front to back. Side to side.") leads into the
 outro, which measures both finished shapes. For the grid cover, pick the
 banner frame (~2 s).
 
