@@ -1,4 +1,4 @@
 {
   "title": "Charts",
-  "pages": ["index", "race-chart", "momentum-chart"]
+  "pages": ["index", "race-chart", "momentum-chart", "radar-chart", "pizza-chart"]
 }

@@ -122,11 +122,18 @@ The tooling assumes a Linux-native checkout. On Windows, use WSL for everything,
 Maintainers only. Publishing is manual until npm Trusted Publishing is set up
 ([issue #36](https://github.com/yribeiro/pitchkit/issues/36)):
 
+`main` is protected: changes must go through a pull request, so the version commit does too.
+Merge it **before** publishing. `changeset publish` tags the checked-out commit, and a squash
+merge rewrites that commit.
+
 ```bash
+git switch -c release/<summary>
 npm run version-packages   # apply pending changesets: bump versions, write changelogs
 git commit -am "chore: version packages"
+git push -u origin HEAD    # open a PR, squash-merge it
+git switch main && git pull
 npm run release            # build and publish; needs an npm one-time password
-git push origin main --follow-tags
+git push origin --follow-tags
 ```
 
 Then record the release in [docs/roadmap.md](./docs/roadmap.md#release-history), and check

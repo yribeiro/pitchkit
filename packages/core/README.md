@@ -4,7 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yribeiro/pitchkit/blob/main/LICENSE)
 
 The zero-dependency, framework-agnostic engine behind PitchKit: pitch dimensions, coordinate
-transforms, the scene/layer model, geometry algorithms, and heatmap binning.
+transforms, the scene/layer model, geometry algorithms, heatmap binning, and the maths behind
+its non-pitch charts.
 
 **Docs: [pitchkitjs.com](https://www.pitchkitjs.com)**
 
@@ -25,8 +26,9 @@ Zero runtime dependencies. ESM, tree-shakeable, ships its own types.
 
 ## What's inside
 
-**Pitch dimensions** — `statsbomb`, `opta`, `uefa`, each in the provider's real coordinate
-space, sourced from mplsoccer's published constants so real event data aligns exactly.
+**Pitch dimensions** — `statsbomb`, `opta`, `uefa`, `skillcorner` and `wyscout`, each in the
+provider's real coordinate space, sourced from mplsoccer's published constants so real event data
+aligns exactly.
 
 ```ts
 import { getPitchDimensions, cropForHalf } from "@pitchkit/core";
@@ -53,6 +55,11 @@ const transform = createPixelTransform({ dimensions, viewport, orientation: "ver
 zones), `computeHexBins` (hexagonal lattice) and `computeKdeGrid` (Gaussian KDE) for binning
 (count or weighted), `createColorScale` for a dependency-free colour ramp, and
 `renderDensityLayersToCanvas` for painting to a `devicePixelRatio`-aware canvas.
+
+**Chart maths** — the numbers behind `<RaceChart>`, `<MomentumChart>`, `<RadarChart>` and
+`<PizzaChart>`, none of which touch a pitch: `createLinearScale` and `niceTicks`,
+`computeCumulativeSeries` and `stepPath`, `computeMomentumBars`, and the polar helpers
+`axisAngle`, `polarPoint`, `wedgeAngles` and `annularSectorPath`.
 
 **Theming** — `pitchTokens` (CSS variable names, for autocomplete) and `partStyle`.
 

@@ -66,13 +66,13 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 
 ### Non-pitch charts
 
-| Feature                                                 | Phase | Status                                                                    |
-| ------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
-| Radar (range bands, lower-is-better flip)               | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21)                  |
-| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ⬜ [#21](https://github.com/yribeiro/pitchkit/issues/21)                  |
-| Bumpy chart (rank over time)                            | L     | ⬜                                                                        |
-| Race chart: cumulative step lines over match minutes    | 1     | ✅ `<RaceChart>` ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)) |
-| Match momentum: signed bars per half, with event icons  | 1     | ✅ `<MomentumChart>` (unreleased)                                         |
+| Feature                                                 | Phase | Status                                                                           |
+| ------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
+| Radar (range bands, lower-is-better flip)               | 1     | ✅ `<RadarChart>` (0.6.0)                                                        |
+| Pizza / percentile (Nightingale), incl. comparison mode | 1     | ✅ `<PizzaChart>` (0.6.0)                                                        |
+| Bumpy chart (rank over time)                            | L     | ⬜                                                                               |
+| Race chart: cumulative step lines over match minutes    | 1     | ✅ `<RaceChart>` (0.6.0, [PR #78](https://github.com/yribeiro/pitchkit/pull/78)) |
+| Match momentum: signed bars per half, with event icons  | 1     | ✅ `<MomentumChart>` (0.6.0)                                                     |
 
 `<RaceChart>` is the chart usually called an xG race chart or xG timeline, and it is **not
 mplsoccer parity**: mplsoccer's non-pitch charts are `Radar`, `PyPizza` and `Bumpy`, with nothing
@@ -87,6 +87,19 @@ signed values at any interval, one array per period, and a separate list of even
 PitchKit draws momentum and does not compute it. Follow-ups, none started: a `<MomentumEvents>`-style
 helper for substitutions, which crowd the icon row, and the same keyboard and table-view gaps as the
 race chart.
+
+`<RadarChart>` is mplsoccer parity for `Radar`
+([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)):
+per-axis ranges, lower-is-better flips, range rings with values, and up to three overlaid series.
+It adds what mplsoccer can't: rotated labels as a prop, a hover and touch readout, and axis labels
+that open the caller's detail view in place of the chart.
+
+`<PizzaChart>` is mplsoccer parity for `PyPizza`
+([D27](./decisions.md#d27-pizzachart-slices-coloured-by-group-series-side-by-side-or-overlaid)):
+slices coloured by group, value boxes, and a comparison mode. `seriesLayout` chooses side by side
+(up to three players) or overlaid (two, as mplsoccer does), and slices open the caller's detail view.
+Follow-ups, none started: keyboard focus giving the readout on the radar's axis labels the way slices
+do, and a table view of the values for both.
 
 Follow-ups, none started: keyboard focus giving the crosshair readout, a table view of the values,
 a `<RaceEvents>` child as sugar over the annotation slot once the manual version has been written
@@ -142,9 +155,8 @@ Complete as of 2026-09-06.
 - [x] Density overlays: Positional Heatmap, Hexbin, KDE
       ([PR #39](https://github.com/yribeiro/pitchkit/pull/39)), and `appearance.linesOnTop`.
 - [x] `<RaceChart>`, the first non-pitch chart and the first with no mplsoccer equivalent
-      ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)). Unreleased, so the release history
-      below doesn't list it yet.
-- [x] `<MomentumChart>`, match momentum bars with an event icon row. Unreleased.
+      ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)).
+- [x] `<MomentumChart>`, match momentum bars with an event icon row.
 - [x] Open-data loaders: StatsBomb events ([PR #50](https://github.com/yribeiro/pitchkit/pull/50))
       and 360 ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), SkillCorner
       ([PR #58](https://github.com/yribeiro/pitchkit/pull/58)), Wyscout
@@ -154,7 +166,8 @@ Complete as of 2026-09-06.
       fixed square rendering of normalised grids
       ([#2](https://github.com/yribeiro/pitchkit/issues/2)). Remaining: Tracab,
       SecondSpectrum, Metrica, custom; a public `Standardizer`.
-- [ ] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)).
+- [x] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)):
+      `<RadarChart>` and `<PizzaChart>`.
 - [ ] Goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)).
 - [ ] shadcn registry infrastructure and the first recipes: attack/territory
       ([#23](https://github.com/yribeiro/pitchkit/issues/23)), pass map
@@ -206,15 +219,16 @@ Pulled forward ahead of Milestone 2 to claim the namespace and make the library 
 All three packages are published under the `pitchkit` npm org. Each package's own
 `CHANGELOG.md` has the details.
 
-| Date       | `core` | `react` | `data-providers` | What shipped                                                                                                                        |
-| ---------- | ------ | ------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-08 | 0.1.0  | 0.1.0   | —                | First publish.                                                                                                                      |
-| 2026-09-09 | 0.2.0  | 0.2.0   | —                | Density overlays, `appearance.linesOnTop`. First tarballs with README and LICENSE.                                                  |
-| 2026-09-10 | —      | 0.3.0   | 0.1.0            | Bundled Agent Skill. `data-providers` first publish: StatsBomb events.                                                              |
-| 2026-09-12 | —      | 0.3.1   | 0.2.0            | Fix: empty tooltip on a falsy accessor. StatsBomb 360 tracking.                                                                     |
-| 2026-09-13 | —      | —       | 0.3.0            | SkillCorner provider (adds `csv-parse`).                                                                                            |
-| 2026-09-13 | 0.3.0  | 0.4.0   | —                | `skillcorner` pitch type and centre-origin support.                                                                                 |
-| 2026-09-13 | —      | 0.4.1   | —                | Skill fix: SkillCorner listed as both supported and nonexistent. Shipped without a changeset at first.                              |
-| 2026-09-22 | 0.3.1  | 0.4.2   | 0.3.1            | npm metadata; package links point at the `www` host.                                                                                |
-| 2026-09-27 | 0.4.0  | 0.5.0   | 0.4.0            | Wyscout provider and pitch type; normalised grids render at real proportions ([#2](https://github.com/yribeiro/pitchkit/issues/2)). |
-| 2026-09-27 | —      | 0.5.1   | —                | Skill lists `--pitch-marker-goal`.                                                                                                  |
+| Date       | `core` | `react` | `data-providers` | What shipped                                                                                                                                                |
+| ---------- | ------ | ------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-09-08 | 0.1.0  | 0.1.0   | —                | First publish.                                                                                                                                              |
+| 2026-09-09 | 0.2.0  | 0.2.0   | —                | Density overlays, `appearance.linesOnTop`. First tarballs with README and LICENSE.                                                                          |
+| 2026-09-10 | —      | 0.3.0   | 0.1.0            | Bundled Agent Skill. `data-providers` first publish: StatsBomb events.                                                                                      |
+| 2026-09-12 | —      | 0.3.1   | 0.2.0            | Fix: empty tooltip on a falsy accessor. StatsBomb 360 tracking.                                                                                             |
+| 2026-09-13 | —      | —       | 0.3.0            | SkillCorner provider (adds `csv-parse`).                                                                                                                    |
+| 2026-09-13 | 0.3.0  | 0.4.0   | —                | `skillcorner` pitch type and centre-origin support.                                                                                                         |
+| 2026-09-13 | —      | 0.4.1   | —                | Skill fix: SkillCorner listed as both supported and nonexistent. Shipped without a changeset at first.                                                      |
+| 2026-09-22 | 0.3.1  | 0.4.2   | 0.3.1            | npm metadata; package links point at the `www` host.                                                                                                        |
+| 2026-09-27 | 0.4.0  | 0.5.0   | 0.4.0            | Wyscout provider and pitch type; normalised grids render at real proportions ([#2](https://github.com/yribeiro/pitchkit/issues/2)).                         |
+| 2026-09-27 | —      | 0.5.1   | —                | Skill lists `--pitch-marker-goal`.                                                                                                                          |
+| 2026-10-03 | 0.5.0  | 0.6.0   | —                | `RaceChart`, `MomentumChart`, `RadarChart`, `PizzaChart`: the first non-pitch charts, with the cartesian and polar maths and chart theme tokens they share. |

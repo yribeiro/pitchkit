@@ -35,20 +35,15 @@ import type {
   MomentumSide,
   MomentumTeams,
 } from "./momentum-types.js";
-import { useResizeObserver } from "./use-resize-observer.js";
+import { AXIS, CHART_MUTED, CHART_SURFACE, CHART_TEXT, GRID } from "./chart-tokens.js";
+import { useChartBox } from "./use-chart-box.js";
+import { warnInDevelopment } from "./dev-warn.js";
 
-const CHART_TEXT = "var(--pitch-chart-text, #12170f)";
-const CHART_MUTED = "var(--pitch-chart-muted, #7b8474)";
-const AXIS = "var(--pitch-axis, #c6cebc)";
-const GRID = "var(--pitch-grid, #e5eade)";
-
-const NOMINAL_WIDTH = 720;
 const DEFAULT_ASPECT_RATIO = 3;
 /**
  * Below this width a 3:1 box leaves a plot too short to read a bar's height
  * in, so the chart gets a taller one. Phone-width only.
  */
-const NARROW_WIDTH = 420;
 const NARROW_ASPECT_RATIO = 1.8;
 
 /** The gap between periods, in pixels. */
@@ -58,8 +53,6 @@ const ICON_SIZE = 13;
 const NARROW_ICON_SIZE = 11;
 /** Height of the minute-label row under the plot. */
 const AXIS_HEIGHT = 18;
-
-declare const process: { env: { NODE_ENV?: string } };
 
 /** Whole numbers as they are, everything else to one decimal place. */
 function formatValue(value: number): string {
@@ -106,19 +99,18 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
     children,
   } = props;
 
-  const [containerRef, measuredSize] = useResizeObserver<HTMLDivElement>();
   const [hover, setHover] = useState<{ panel: number; minute: number } | null>(null);
 
   const resolved = resolveAppearance(appearance, teams !== undefined);
 
-  const isExplicitSize = explicitWidth !== undefined && explicitHeight !== undefined;
-  const isNarrow =
-    (isExplicitSize ? explicitWidth : (measuredSize?.width ?? NOMINAL_WIDTH)) < NARROW_WIDTH;
-  const aspectRatio =
-    explicitAspectRatio ?? (isNarrow ? NARROW_ASPECT_RATIO : DEFAULT_ASPECT_RATIO);
-  const size = isExplicitSize
-    ? { width: explicitWidth, height: explicitHeight }
-    : (measuredSize ?? { width: NOMINAL_WIDTH, height: Math.round(NOMINAL_WIDTH / aspectRatio) });
+  const box = useChartBox({
+    width: explicitWidth,
+    height: explicitHeight,
+    aspectRatio: explicitAspectRatio,
+    wideRatio: DEFAULT_ASPECT_RATIO,
+    narrowRatio: NARROW_ASPECT_RATIO,
+  });
+  const { containerRef, size, isNarrow } = box;
 
   // Accessors are resolved here and core is handed plain numbers. Each
   // period's bars are built once, unclipped, to find where its data really
@@ -150,11 +142,10 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
   // be at any interval — but it is nearly always a data-prep slip, so say so
   // in development.
   useEffect(() => {
-    if (typeof process !== "undefined" && process.env.NODE_ENV === "production") return;
     const widths = unevenBarWidths(computed.bars);
     if (widths !== undefined) {
-      console.warn(
-        `@pitchkit/react: <MomentumChart> periods are sampled at different intervals ` +
+      warnInDevelopment(
+        `<MomentumChart> periods are sampled at different intervals ` +
           `(median bar widths ${widths.map((w) => `${+w.toFixed(2)}'`).join(", ")}), so the ` +
           `halves draw bars of different widths. Resample them to one interval unless that is intended.`,
       );
@@ -275,10 +266,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
       className={className}
       data-pitchkit-layer="momentum"
       style={{
-        position: "relative",
-        width: isExplicitSize ? explicitWidth : "100%",
-        height: isExplicitSize ? explicitHeight : undefined,
-        aspectRatio: isExplicitSize ? undefined : aspectRatio,
+        ...box.style,
         // A horizontal drag scrubs the readout; a vertical one still scrolls
         // the page. Without this the browser claims both axes.
         touchAction: "pan-y",
@@ -374,12 +362,7 @@ export function MomentumChart<T, E = never>(props: MomentumChartProps<T, E>) {
                 <title>{`${name}, ${Math.floor(event.minute)}'`}</title>
                 {/* A surface backing, so an icon stacked over another reads as
                     sitting on top of it rather than tangled with it. */}
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={iconSize / 2 + 1}
-                  style={{ fill: "var(--pitch-chart-surface, #ffffff)" }}
-                />
+                <circle cx={x} cy={y} r={iconSize / 2 + 1} style={{ fill: CHART_SURFACE }} />
                 <MomentumIcon
                   kind={event.kind}
                   x={x}

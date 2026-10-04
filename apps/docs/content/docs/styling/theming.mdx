@@ -26,18 +26,20 @@ The [charts](/docs/charts) read a second set. They are not the pitch's colours: 
 pitch, so these are meant to match the surface behind it, and most apps will set a light and a dark
 value.
 
-| Variable                  | Controls                                                                                     | Default                                                          |
-| ------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `--pitch-series-1` … `-6` | Series lines and bars, by position. `<MomentumChart>` uses 1 (home) and 2 (away)             | `#3b82f6`, `#eb6834`, `#1baf7a`, `#eda100`, `#e87ba4`, `#008300` |
-| `--pitch-chart-surface`   | The ring around markers and the backing behind icons; set it to whatever is behind the chart | `#ffffff`                                                        |
-| `--pitch-chart-text`      | Values, labels, legends                                                                      | `#12170f`                                                        |
-| `--pitch-chart-muted`     | Tick labels                                                                                  | `#7b8474`                                                        |
-| `--pitch-axis`            | Baselines, period rules, the zero line                                                       | `#c6cebc`                                                        |
-| `--pitch-grid`            | Gridlines and panel backgrounds                                                              | `#e5eade`                                                        |
-| `--pitch-card-yellow`     | Yellow cards on a chart                                                                      | `#facc15`                                                        |
-| `--pitch-card-red`        | Red cards and own goals on a chart                                                           | `#ef4444`                                                        |
+| Variable                    | Controls                                                                                     | Default                                                          |
+| --------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `--pitch-series-1` … `-6`   | Series lines and bars, by position. `<MomentumChart>` uses 1 (home) and 2 (away)             | `#3b82f6`, `#eb6834`, `#1baf7a`, `#eda100`, `#e87ba4`, `#008300` |
+| `--pitch-chart-surface`     | The ring around markers and the backing behind icons; set it to whatever is behind the chart | `#ffffff`                                                        |
+| `--pitch-chart-text`        | Values, labels, legends                                                                      | `#12170f`                                                        |
+| `--pitch-chart-muted`       | Tick labels                                                                                  | `#7b8474`                                                        |
+| `--pitch-chart-accent`      | Controls the chart draws, such as the radar's Back button                                    | `#15803d`                                                        |
+| `--pitch-chart-accent-text` | Text on those controls                                                                       | `#ffffff`                                                        |
+| `--pitch-axis`              | Baselines, period rules, the zero line                                                       | `#c6cebc`                                                        |
+| `--pitch-grid`              | Gridlines and panel backgrounds                                                              | `#e5eade`                                                        |
+| `--pitch-card-yellow`       | Yellow cards on a chart                                                                      | `#facc15`                                                        |
+| `--pitch-card-red`          | Red cards and own goals on a chart                                                           | `#ef4444`                                                        |
 
-A yellow card is under 1.5:1 against white, so on a light surface darken `--pitch-card-yellow`. Each
+Charts that overlay series, like the radar, read best with up to three: past that, no palette keeps every pair distinguishable. A yellow card is under 1.5:1 against white, so on a light surface darken `--pitch-card-yellow`. Each
 chart's page lists the variables it reads.
 
 ```css

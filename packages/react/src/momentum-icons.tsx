@@ -1,8 +1,9 @@
+import { CARD_RED, CARD_YELLOW, seriesColor } from "./chart-tokens.js";
 import type { MomentumEventKind, MomentumSide } from "./momentum-types.js";
 
 export const SIDE_COLOR: Record<MomentumSide, string> = {
-  home: "var(--pitch-series-1, #3b82f6)",
-  away: "var(--pitch-series-2, #eb6834)",
+  home: seriesColor(0),
+  away: seriesColor(1),
 };
 
 /**
@@ -10,9 +11,9 @@ export const SIDE_COLOR: Record<MomentumSide, string> = {
  * was booked, and an own goal is drawn in the card red.
  */
 const KIND_COLOR: Partial<Record<MomentumEventKind, string>> = {
-  "yellow-card": "var(--pitch-card-yellow, #facc15)",
-  "red-card": "var(--pitch-card-red, #ef4444)",
-  "own-goal": "var(--pitch-card-red, #ef4444)",
+  "yellow-card": CARD_YELLOW,
+  "red-card": CARD_RED,
+  "own-goal": CARD_RED,
 };
 
 const KIND_LABEL: Record<MomentumEventKind, string> = {

@@ -1,5 +1,54 @@
 # @pitchkit/core
 
+## 0.5.0
+
+### Minor Changes
+
+- 31c5279: Add the maths `<MomentumChart>` is built on, in a new `momentum/` module: `computeMomentumBars`,
+  `clipMomentumBars`, `barAtMinute`, `medianBarWidth`, `unevenBarWidths`, `nominalPeriodRange`, `resolvePeriodRange`, `layoutMomentumPanels`, `minuteToX`,
+  `momentumExtent` and `stackOffsets`, with the `MomentumSample`, `MomentumBar`, `MomentumRange`
+  and `MomentumPanel` types.
+
+  Like `chart/` and `race/`, it takes plain numbers and has no dependency on `dimensions/`,
+  `transform/` or `scene/`, and is held at 100% coverage.
+
+  Also adds `--pitch-card-yellow` and `--pitch-card-red` to `pitchTokens`.
+
+- 1ae311c: Add the wedge geometry `<PizzaChart>` is built on, to the `polar/` module: `wedgeAngles` (a slice's
+  span, inset by a gap), `splitWedge` (one sub-wedge per series), `annularSectorPath` (a slice with the
+  hole cut out; coordinates rounded to two decimals) and `overlayOrder` (largest first, so a smaller
+  overlaid slice stays visible), with the `Wedge` type.
+
+  Held at 100% coverage with the rest of `polar/`.
+
+- 0194e01: Add the cartesian chart scaffold and cumulative race maths that `<RaceChart>` is built on:
+  `createLinearScale`, `niceTicks`, `matchMinuteTicks`, `computeChartFrame`,
+  `computeCumulativeSeries`, `valueAtTime`, `resolveEndTime`, `stepPath` and `stepAreaPath`.
+
+  These are the first modules in `core` that do not reason about a pitch. They have no
+  dependency on `dimensions/`, `transform/` or `scene/`, and are held at 100% coverage like
+  the transform pipeline.
+
+  Also adds the chart theme tokens to `pitchTokens`: `--pitch-series-1` through
+  `--pitch-series-6`, `--pitch-axis`, `--pitch-grid`, `--pitch-chart-surface`,
+  `--pitch-chart-text` and `--pitch-chart-muted`.
+
+- ccbb12f: Add the polar maths `<RadarChart>` is built on, in a new `polar/` module: `axisAngle`,
+  `nearestAxis`, `polarPoint`, `normaliseMetric` (range, lower-is-better flip and clamp),
+  `ringSteps`, `ringValues`, `ringPath`, `labelPlacement`, `labelMargin`, `labelBox`, `textWidth`
+  and `wrapLabel`, with the `PolarRange`, `NormalisedValue`, `LabelRotation` and `LabelPlacement`
+  types and the `LABEL_LINE_HEIGHT` and `GLYPH_WIDTH` constants.
+
+  `pitchTokens` gains `tooltipBg` and `tooltipColor`, the two tooltip variables it was missing,
+  and `chartAccent` / `chartAccentText` for controls a chart draws, such as the radar's Back button.
+
+  Like `chart/`, `race/` and `momentum/`, it takes plain numbers, has no dependency on the pitch
+  modules, and is held at 100% coverage.
+
+### Patch Changes
+
+- d259d34: Link PitchKit's X and Instagram accounts from the package READMEs.
+
 ## 0.4.0
 
 ### Minor Changes

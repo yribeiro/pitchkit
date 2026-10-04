@@ -31,13 +31,17 @@
  * The series hues are not the pitch marker hues: those are tuned for grass,
  * and sit too light on a dark surface and too pale on a white one. Each
  * mode's pair was run through the dataviz validator against its own surface
- * (lightness band, 3:1 contrast, CVD separation above 22). The yellow card
+ * (lightness band, 3:1 contrast, and CVD separation across all pairs, since radar shapes overlap). The yellow card
  * is darkened on white, where #facc15 is under 1.5:1.
  */
 .pitchkit-docs-pitch,
 .pitchkit-chart-stage {
+  /* The radar's Back button: the site's own primary button colours. */
+  --pitch-chart-accent: var(--color-fd-primary);
+  --pitch-chart-accent-text: var(--color-fd-primary-foreground);
   --pitch-series-1: #0b7cc1;
   --pitch-series-2: #d9480f;
+  --pitch-series-3: #0f8a5f;
   --pitch-chart-text: rgba(10, 10, 10, 0.92);
   --pitch-chart-muted: rgba(10, 10, 10, 0.6);
   --pitch-grid: rgba(0, 0, 0, 0.07);
@@ -50,6 +54,7 @@
 .dark .pitchkit-chart-stage {
   --pitch-series-1: #1492d6;
   --pitch-series-2: #e8590c;
+  --pitch-series-3: #199e70;
   --pitch-chart-text: rgba(255, 255, 255, 0.95);
   --pitch-chart-muted: rgba(255, 255, 255, 0.6);
   --pitch-grid: rgba(255, 255, 255, 0.09);

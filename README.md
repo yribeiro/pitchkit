@@ -76,8 +76,11 @@ OG images, PDFs).
 Not everything draws on a pitch. `<RaceChart>` is a chart in its own right, a sibling of `<Pitch>`
 and not a layer inside one: a cumulative step chart over match minutes, the chart usually called
 an xG race chart or xG timeline. `useRaceChart()` is its counterpart to `usePitch()`.
-`<MomentumChart>` is the other: match momentum as signed bars per half, with goals and cards on
-a row of icons beneath, and `useMomentumChart()` for annotations.
+`<MomentumChart>` draws match momentum as signed bars per half, with goals and cards on a row of
+icons beneath. `<RadarChart>` is the player radar: one axis per metric on its own range, up to three
+players, and axis labels that can open your own detail view in the chart's place. `<PizzaChart>` is
+the percentile pizza: slices coloured by group, one to three players side by side or two overlaid, and
+slices that open your own detail view.
 
 Every visual prop takes either a static value or a function of the datum, so `fill="red"` and
 `fill={(d) => d.teamColor}` are the same prop.

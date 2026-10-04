@@ -155,6 +155,82 @@ called outside one.
   per period; `bars` — one `{ start, end, value, index }[]` per period. `index` points back into
   the period's input array.
 
+To derive momentum from StatsBomb events (it publishes none), count on-ball events with
+`x >= 80` per minute, home +1 and away −1 (every team attacks towards x = 120 in both halves),
+smooth over three minutes, and say the result is derived.
+
+### `<RadarChart>`
+
+The player radar: one axis per metric, each on its own range, one translucent shape per series. A
+root in its own right — **not** a child of `<Pitch>`, no `type` prop. It computes nothing: per-90s,
+percentiles and ranges are the caller's.
+
+| Prop                            | Type                                       | Notes                                                                               |
+| ------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `metrics`                       | `RadarMetric[]`                            | `{ id, label?, min?, max?, lowerIsBetter? }`, clockwise from the top. At least 3.   |
+| `series`                        | `RadarSeries[]`                            | `{ id, label?, values, color?, className? }`; `values` keyed by metric id. Up to 3. |
+| `rings`                         | `number`                                   | Range rings between the centre circle and the rim. Default `4`.                     |
+| `labelRotation`                 | `"tangent" \| "radial" \| "horizontal"`    | How labels and ring values sit round the rim. Default `"tangent"`.                  |
+| `format`                        | `(value, metric) => string`                | Ring values and readout text.                                                       |
+| `renderDetail`                  | `({ metric, values, close }) => ReactNode` | Makes axis labels buttons; activating one replaces the chart, with a Back button.   |
+| `selected` / `onSelectedChange` | `RadarSelection \| null`                   | `{ metricId }`. Optional control, e.g. to keep the selection in the URL.            |
+| `appearance`                    | `{ rangeLabels?, legend?, bands? }`        | Structure only, never colour.                                                       |
+| `width` / `height`              | `number`                                   | Both together are the fixed-size opt-out. Responsive and square by default.         |
+| `aspectRatio`                   | `number`                                   | Responsive box shape. Default `1`.                                                  |
+| `children`                      | `ReactNode`                                | Annotations; position them with `useRadarChart()`.                                  |
+
+`min`/`max` default to 0–100. `lowerIsBetter` flips the axis so outward is always better. A value
+beyond its range is pinned to the edge (the readout says "off scale"); a missing one goes to the centre. Ranges are
+commonly the 5th–95th percentile of the comparison population (StatsBomb's convention). Past three
+series, overlaid shapes can't be told apart, and a development warning says so.
+
+Colours come from `--pitch-series-1` … by position. Every part of a series paints with
+`currentColor`, so `className: "text-rose-500"` recolours all of it (and drops the default).
+
+The detail view's Back button is `--pitch-chart-accent` with `--pitch-chart-accent-text` on it.
+
+### `useRadarChart()`
+
+Returns `{ cx, cy, inner, outer, angleOf, pointAt }`. `pointAt(metricId, value)` applies the same
+range and flip as the shapes, clamped; `angleOf(metricId)` is radians clockwise from the top.
+Throws outside a `<RadarChart>`.
+
+### `<PizzaChart>`
+
+The percentile pizza: one slice per metric, as long as the value, around a hole. A root in its own
+right — **not** a child of `<Pitch>`, no `type` prop. It computes nothing: percentiles are the
+caller's, and the population they are ranked against is a choice.
+
+| Prop                            | Type                                               | Notes                                                                                                        |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `metrics`                       | `PizzaMetric[]`                                    | `{ id, label?, group?, min?, max?, lowerIsBetter? }`, clockwise from the top. At least 3.                    |
+| `series`                        | `PizzaSeries[]`                                    | `{ id, label?, values, color?, className? }`; `values` keyed by metric id.                                   |
+| `seriesLayout`                  | `"side-by-side" \| "overlay"`                      | How several series share a slice. Default `"side-by-side"` (up to 3); overlay is up to 2.                    |
+| `groups`                        | `Record<string, { color?, className? }>`           | Colours by group name. Default: `--pitch-series-1…` by first appearance, after the series' slots if several. |
+| `labelRotation`                 | `"tangent" \| "radial" \| "horizontal"`            | As for the radar. Default `"tangent"`.                                                                       |
+| `format`                        | `(value, metric) => string`                        | Value boxes and readout text.                                                                                |
+| `renderDetail`                  | `({ metric, series, values, close }) => ReactNode` | Makes slices buttons; activating one replaces the chart, with a Back button.                                 |
+| `selected` / `onSelectedChange` | `PizzaSelection \| null`                           | `{ metricId, seriesId }`. Optional control.                                                                  |
+| `appearance`                    | `{ values?, legend? }`                             | Structure only, never colour.                                                                                |
+| `width` / `height`              | `number`                                           | Both together are the fixed-size opt-out. Responsive and square by default.                                  |
+| `aspectRatio`                   | `number`                                           | Responsive box shape. Default `1`.                                                                           |
+| `children`                      | `ReactNode`                                        | Annotations; position them with `usePizzaChart()`.                                                           |
+
+`min`/`max` default to 0–100. With **one series** slices take their group's colour; with **several**
+they take their series' colour and the group shows as an arc on the rim, coloured from the slots after the series'. Value boxes print in every
+layout, and `appearance={{ values: false }}` hides them. `lowerIsBetter` flips a slice so a long one is always
+good. A value past its range is pinned and flagged "off scale" in the readout; a missing one draws
+no slice. Past the layout's series limit a development warning says so.
+
+Every part of a series or group paints with `currentColor`, so `className: "text-rose-500"` recolours
+all of it (and drops the default).
+
+### `usePizzaChart()`
+
+Returns `{ cx, cy, inner, outer, angleOf, pointAt }`. `pointAt(metricId, value)` applies the same range
+and flip as the slices, along the slice's middle; `angleOf(metricId)` is that middle in radians
+clockwise from the top. Throws outside a `<PizzaChart>`.
+
 ---
 
 ## SVG layers

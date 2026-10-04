@@ -190,6 +190,88 @@ without the caller resampling. Own icons keep the library's licence clean.
   `<RaceChart>` in `chart-readout.tsx`.
 - Like `<RaceChart>` it has no mplsoccer equivalent.
 
+### D26. `<RadarChart>`: caller's numbers, translucent shapes, click to replace
+
+**Decision:** `<RadarChart>` is a non-pitch root
+([D23](#d23-non-pitch-charts-are-roots-with-their-own-scales)) with its maths in `core/polar/`.
+
+- **`metrics` are the axes and `series` the shapes**: `{ id, label, min, max, lowerIsBetter }` per
+  metric, and `values` keyed by metric id per series. Its types are radar-only (`RadarMetric`,
+  `RadarSeries`, `RadarSelection`, `RadarDetailContext`); nothing is carried for charts that don't
+  exist yet.
+- **The chart computes nothing.** Per-90s, percentiles and ranges are the caller's. The only
+  arithmetic is placing a value between its metric's `min` and `max` (0–100 by default), with the
+  lower-is-better flip and a clamp. A clamped value sits at the rim and the readout marks it "off
+  scale"; a missing one takes the outline to the centre.
+- **Shapes are translucent, with no vertex markers.** The outline bends at each value. A single
+  series keeps mplsoccer's two-tone banding, as two light tints of the series colour so the grid
+  and ring values show through.
+- **Labels follow the axis angle**, set by `labelRotation`: `"tangent"` (default, mplsoccer's),
+  `"radial"`, or `"horizontal"`. Text that would read upside down turns 180°.
+- **Clicking replaces the chart.** With `renderDetail`, axis labels become buttons; activating one
+  swaps the chart for the caller's component in the same box, under a header with a Back button.
+  Escape and `close()` also return, and focus goes back to the label. `selected`/`onSelectedChange`
+  make it controllable. Without `renderDetail` nothing is clickable.
+- **A series paints with `currentColor`.** One class (`text-rose-500`) recolours every part of it,
+  outline and wash. This extends D9 to multi-part marks; a `className` with no `color` still drops
+  the themed default.
+
+**Why:** Computing nothing keeps the chart honest about where numbers come from, which matters for
+percentiles, whose population is a choice. Replacing the chart, rather than a popover, gives the
+detail the room it needs, which is usually another chart.
+
+**Consequences:**
+
+- **Three series is the readable limit.** Overlaid shapes are an all-pairs comparison: every shape
+  overlaps every other. The dataviz validator clears only the first three palette slots on all
+  pairs, so a fourth draws with a development warning. The docs theme defines a validated
+  `--pitch-series-3` for light and dark.
+- `polar/` is held at 100% coverage. Responsive sizing, the chart tokens, the readout row and the
+  chart contexts are shared by every non-pitch chart.
+- The gallery gains a **Profiles** category for player-profile charts.
+- `<RadarChart>` is mplsoccer parity for `Radar`; the click-to-detail swap is not in mplsoccer.
+
+### D27. `<PizzaChart>`: slices coloured by group, series side by side or overlaid
+
+**Decision:** `<PizzaChart>` is the second polar chart, built the way `<RadarChart>`
+([D26](#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)) is: a non-pitch root with
+its geometry in `core/polar/`, drawing the caller's numbers and computing nothing. Its types are its own
+(`PizzaMetric`, `PizzaSeries`, `PizzaSelection`, `PizzaDetailContext`), and `PizzaSelection` and the
+`renderDetail` context carry the series whose slice was clicked, which a radar axis doesn't have.
+
+- **One series colours by group; several colour by series.** A metric's `group` ("Attacking") sets the
+  slice colour for a single player, taking `--pitch-series-1`, `-2`, `-3`… in order of first appearance,
+  or the colour or class given in `groups`. With several series, colour identifies the player and the
+  group moves to an arc on the rim, coloured from the slots after the series' so no arc
+  repeats a player's colour.
+- **`seriesLayout` is the caller's choice**: `"side-by-side"` (default) splits each metric's wedge into
+  one thin wedge per series; `"overlay"` gives every series the full wedge, drawn largest first so a
+  smaller one stays visible. Side by side is readable to three series and overlay to two; past that a
+  series still draws, with a development warning.
+- **Slices are the buttons.** With `renderDetail`, each slice is focusable and opens the caller's
+  component in place of the chart, with the same Back button, Escape and focus return as the radar
+  (`selected`/`onSelectedChange` take `{ metricId, seriesId }`). A focused slice draws its own ring, since
+  the browser's box would wrap the bounding box of a curved slice.
+- **Value boxes are on by default**: at the tip for one series, in a lane per series for an overlay (so
+  close values never print on top of each other), centred on each wedge side by side, and dropped on a
+  slice too narrow to hold one. Boxes use the surface colour with a series-coloured
+  outline and chart text, never the series colour as text.
+- **Percentiles are the caller's.** Values default to 0–100, which is what a percentile is, with
+  `lowerIsBetter` flipping a slice so a long one is always the good one.
+
+**Why:** A pizza reads as categories first (what a player does), so a single player takes the group
+colours; comparing players needs colour to say who, so it takes that over. Both layouts exist because
+they trade off: side by side hides nothing, overlay compares the same metric directly but only for two.
+
+**Consequences:**
+
+- The radar's selection and detail view are now shared (`chart-detail.tsx`), as is the focus return
+  by `data-pitchkit-metric` and `data-pitchkit-series`.
+- `core/polar/` gains `wedgeAngles`, `splitWedge`, `annularSectorPath` and `overlayOrder`, at 100%
+  coverage. Path coordinates are rounded to two decimals so floating-point dust doesn't reach the markup.
+- `<PizzaChart>` is mplsoccer parity for `PyPizza`. mplsoccer only overlays two series and has no
+  click-to-detail.
+
 ---
 
 ## Styling and theming

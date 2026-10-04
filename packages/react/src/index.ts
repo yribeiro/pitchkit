@@ -43,8 +43,35 @@ export type {
   MomentumChartContextValue,
 } from "./momentum-types.js";
 
+export { PizzaChart } from "./PizzaChart.js";
+export { usePizzaChart } from "./pizza-context.js";
+export type {
+  PizzaChartProps,
+  PizzaChartContextValue,
+  PizzaMetric,
+  PizzaSeries,
+  PizzaGroup,
+  PizzaSeriesLayout,
+  PizzaAppearance,
+  PizzaSelection,
+  PizzaDetailContext,
+} from "./pizza-types.js";
+
+export { RadarChart } from "./RadarChart.js";
+export { useRadarChart } from "./radar-context.js";
+export type {
+  RadarChartProps,
+  RadarAppearance,
+  RadarChartContextValue,
+  RadarMetric,
+  RadarSeries,
+  RadarSelection,
+  RadarDetailContext,
+} from "./radar-types.js";
+export type { LabelRotation } from "@pitchkit/core";
+
 export { usePitch } from "./use-pitch.js";
-export { useRaceChart } from "./use-race-chart.js";
-export { useMomentumChart } from "./use-momentum-chart.js";
+export { useRaceChart } from "./race-context.js";
+export { useMomentumChart } from "./momentum-context.js";
 export type { RaceChartContextValue, ResolvedRaceSeries } from "./race-context.js";
 export type { TooltipState } from "./context.js";

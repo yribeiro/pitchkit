@@ -113,5 +113,32 @@ export {
 } from "./momentum/layout.js";
 export { stackOffsets } from "./momentum/stack.js";
 
+export { axisAngle, nearestAxis, polarPoint } from "./polar/angle.js";
+export { ringPath } from "./polar/paths.js";
+export type { Wedge } from "./polar/wedge.js";
+export {
+  annularSectorPath,
+  overlayOrder,
+  splitWedge,
+  valueBoxSpot,
+  wedgeAngles,
+  wedgeLane,
+  wedgeMid,
+} from "./polar/wedge.js";
+export type { PolarRange, NormalisedValue } from "./polar/metric.js";
+export { normaliseMetric, ringSteps, ringValues } from "./polar/metric.js";
+export type { LabelRotation, LabelPlacement } from "./polar/labels.js";
+export {
+  GLYPH_WIDTH,
+  LABEL_LINE_HEIGHT,
+  labelBox,
+  labelMargin,
+  labelPlacement,
+  metricLabelLines,
+  polarLayout,
+  textWidth,
+  wrapLabel,
+} from "./polar/labels.js";
+
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

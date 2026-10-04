@@ -149,6 +149,66 @@ MomentumChart (root)
   race chart.
 - **Below 420 px** the box is 1.8:1 rather than 3:1 and icons shrink from 16 to 14 px.
 
+### Player radar
+
+`<RadarChart>` ([D26](./decisions.md#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)) is the
+first polar chart.
+
+```
+RadarChart (root)
+ ├─ metrics   (the axes, clockwise from the top; each with its own min/max and flip)
+ ├─ geometry  (centre, inner radius = one ring, outer radius = what the labels leave)
+ ├─ bands, spokes, shapes (two-tone bands for one series), ring values, children
+ ├─ hit disc  (pointer picks the nearest axis by angle) and labels (buttons with renderDetail)
+ └─ detail    (DetailView replaces the SVG while a metric is selected)
+```
+
+- **`core/polar/` owns the maths.** `axisAngle` and its inverse `nearestAxis` (pointer to axis),
+  `polarPoint`, `normaliseMetric` (range, flip, clamp), `ringSteps`/`ringValues` (flip-aware),
+  `ringPath`, and for labels `labelPlacement` (rotation, anchor, first-line offset for each
+  `labelRotation`, with the 180° upright turn), `wrapLabel`, `labelMargin` and `labelBox` (the
+  24px hit target), plus `metricLabelLines` and `polarLayout` (label margin to centre and outer
+  radius). Text is estimated with `GLYPH_WIDTH`, since the charts render on the server. All take
+  plain numbers. Radar and pizza share their React glue in the internal `polar-parts.tsx`: legend,
+  label lines, readout body, `placer` and the hook context.
+- **The margin is what the labels need.** Tangent labels need their wrapped height round the rim,
+  radial ones their length, horizontal ones both. The centre circle is one ring wide, as in
+  mplsoccer, so a value at `min` still sits off the centre.
+- **Bands are rings, not stacked discs.** Each band is one even-odd path, so translucent grid
+  colours don't accumulate where circles overlap.
+- **The detail swap** is `chart-detail.tsx`: `useDetailSelection` (uncontrolled unless
+  `selected` is passed, and it returns focus to the element that opened the detail, found by its
+  `data-pitchkit-metric`) and `DetailView` (Back, Escape, focus on the heading, a 150ms fade
+  that respects reduced motion).
+- **Shared with the other charts:** `useChartBox()` (responsive sizing), `chart-tokens.ts`
+  (`--pitch-*` fallbacks), `ChartReadout` and `warnInDevelopment()`.
+- **Below 420 px** labels shrink a step and ring values are hidden by default.
+
+### Player pizza
+
+`<PizzaChart>` ([D27](./decisions.md#d27-pizzachart-slices-coloured-by-group-series-side-by-side-or-overlaid))
+is the second polar chart and reuses the radar's maths, margins, label rendering, selection and detail view.
+
+```
+PizzaChart (root)
+ ├─ metrics   (the slices, clockwise from the top; each with its own min/max, flip and group)
+ ├─ geometry  (centre, a hole one fifth of the radius, outer radius = what the labels and rim leave)
+ ├─ rings (dashed at each quarter, solid at the rim)
+ ├─ one wedge per metric: tinted blanks, then slices, then value boxes, rim arc and label
+ └─ detail    (DetailView replaces the SVG while a slice is selected)
+```
+
+- **`core/polar/` supplies the wedge geometry**: `wedgeAngles` (a slice's span), `splitWedge`
+  (one sub-wedge per series), `annularSectorPath` (the slice with the hole cut out, its edges pulled in
+  by a pixel inset so gaps keep one width from hole to rim), `overlayOrder` (largest first), and for
+  value boxes `wedgeMid`, `wedgeLane` and `valueBoxSpot`. The label, ring and normalisation maths is the radar's.
+- **Each (metric, series) is one cell** with its wedge, tip radius, value and paint. Side by side gives a
+  cell its own sub-wedge; overlay gives every cell the full wedge and draws them in `overlayOrder`.
+- **Paint is resolved per cell**: one series takes its metric's group paint, several take their series'
+  paint, and the group paint goes on the rim arc. Every part of a cell paints with `currentColor`.
+- **Interaction is on the slice.** Each slice carries `data-pitchkit-metric` and `data-pitchkit-series`
+  and, with `renderDetail`, is a focusable button; a hover over any part of a wedge opens the readout.
+
 ## Packages
 
 npm workspaces + Turborepo.
