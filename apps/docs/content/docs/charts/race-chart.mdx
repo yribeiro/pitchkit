@@ -86,8 +86,9 @@ own `minute` numbering, so the Euro 2024 final's first half runs to 47'. The sec
 Each period is drawn after the one before it, as wide as its own minutes. A half runs from its
 nominal start to the later of its nominal end and its last shot, so stoppage time widens its own
 half and the half-time rule falls where that half ends. Extra time adds two more periods, with
-rules of their own. `endTime` sets where the last period ends. A datum without a whole-number
-period from 1 is dropped.
+rules of their own. `endTime` sets where the last period ends; anything after it is dropped, from
+the line and from the total, so the end label always matches the line. A datum without a
+whole-number period from 1 is dropped.
 
 ## Reading a value at a minute
 

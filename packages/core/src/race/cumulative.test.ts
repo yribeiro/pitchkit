@@ -129,6 +129,33 @@ describe("computeCumulativeSeries", () => {
     expect(points.map((p) => p.cumulative)).toEqual([0.2, expect.closeTo(0.3, 10)]);
   });
 
+  it("drops events after `until`, keeping the caller's indices (#83)", () => {
+    const { points, total } = computeCumulativeSeries(
+      [
+        { period: 2, time: 60, value: 0.4 },
+        { period: 2, time: 110, value: 0.5 },
+        { period: 1, time: 20, value: 0.3 },
+      ],
+      { period: 2, time: 90 },
+    );
+
+    expect(points.map((p) => p.index)).toEqual([2, 0]);
+    expect(total).toBeCloseTo(0.7, 10);
+  });
+
+  it("keeps an event exactly at `until`, and every earlier period's", () => {
+    const { points } = computeCumulativeSeries(
+      [
+        { period: 1, time: 46, value: 0.1 },
+        { period: 2, time: 90, value: 0.1 },
+        { period: 3, time: 91, value: 0.1 },
+      ],
+      { period: 2, time: 90 },
+    );
+
+    expect(points.map((p) => p.period)).toEqual([1, 2]);
+  });
+
   it("drops events without a usable period", () => {
     const { points } = computeCumulativeSeries([
       { period: 1, time: 7, value: 0.06 },

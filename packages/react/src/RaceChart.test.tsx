@@ -268,6 +268,21 @@ describe("<RaceChart>", () => {
       expect(tooltip()).toContain("0.30");
     });
 
+    it("labels the minute it has counted, floored rather than rounded (#83)", () => {
+      // One shot at 45'. At 44.6' it hasn't happened, so the label must not say 45'.
+      const { container } = renderChart({
+        series: [{ id: "HOME", data: [{ minute: 45, xg: 0.4, period: 1 }] }],
+      });
+      const hit = hoverable(container);
+      // Halves 0-45 and 45-90 split the 668px plot evenly: 44.6' is x 369.0.
+      const clientX = ((369.0 - 38) / 668) * 720;
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX });
+      const tooltip = container.querySelector('[role="tooltip"]')?.textContent ?? "";
+
+      expect(tooltip).toContain("44'");
+      expect(tooltip).toContain("0.00");
+    });
+
     it("hands a custom tooltip the hovered period", () => {
       const { container } = renderChart({
         series: [{ id: "HOME", data: STOPPAGE }],
@@ -288,6 +303,39 @@ describe("<RaceChart>", () => {
     // A knockout match genuinely reaches 118'; a fixed 90 would clip it.
     expect(screen.getByText("105'")).toBeTruthy();
     expect(screen.getByText("120'")).toBeTruthy();
+  });
+
+  describe("an explicit endTime before the last shot (#83)", () => {
+    const LATE: Shot[] = [
+      { minute: 20, xg: 0.3, period: 1 },
+      { minute: 60, xg: 0.4, period: 2 },
+      { minute: 110, xg: 0.5, goal: true, period: 2 },
+    ];
+    const cut = () => renderChart({ series: [{ id: "HOME", data: LATE }], endTime: 90 });
+
+    it("keeps the line inside the plot", () => {
+      const { container } = cut();
+      const d =
+        container.querySelector('[data-pitchkit-part="race-line"]')?.getAttribute("d") ?? "";
+      const xs = [...d.matchAll(/[MH]([\d.]+)/g)].map((m) => Number(m[1]));
+
+      // Plot is 38-706 at 720 wide.
+      expect(Math.max(...xs)).toBeLessThanOrEqual(706);
+    });
+
+    it("drops the shots after it, marker and all", () => {
+      const { container } = cut();
+
+      expect(container.querySelectorAll('[data-pitchkit-part="race-emphasis"]')).toHaveLength(0);
+    });
+
+    it("totals only what it draws", () => {
+      const { container } = cut();
+
+      expect(container.querySelector('[data-pitchkit-part="race-end-label"]')?.textContent).toBe(
+        "0.70",
+      );
+    });
   });
 
   it("floors the axis at 90 for a match that ends early", () => {

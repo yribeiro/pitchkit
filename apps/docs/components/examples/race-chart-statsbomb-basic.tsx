@@ -79,7 +79,7 @@ export function RaceChartStatsbombBasic() {
         emphasise={isGoal}
         tooltip={(rows, minute) => (
           <>
-            <div className="font-semibold">{`${Math.round(minute)}'`}</div>
+            <div className="font-semibold">{`${Math.floor(minute)}'`}</div>
             {rows.map((row) => (
               <div key={row.id} className="flex items-center gap-1.5">
                 <span

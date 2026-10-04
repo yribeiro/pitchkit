@@ -10,7 +10,8 @@
  * A marker that is already at least `size` pixels from the last one is left
  * exactly where it is. A run that had to move is then re-centred on where
  * its markers really were, so a stack straddles its minute rather than
- * drifting off to one side of it.
+ * drifting off to one side of it — but never by so much that it comes back
+ * within `size` of the marker before it, which was clear of it to begin with.
  *
  * Returns an x per input, in the input's order, so the caller doesn't have
  * to sort to use it. Paint in ascending x to get the stacking the layout
@@ -35,11 +36,18 @@ export function stackOffsets(xs: readonly number[], size: number, step: number):
     last = at;
   }
 
+  // The last marker of the run before, where it finally ended up.
+  let previous = Number.NEGATIVE_INFINITY;
   for (const run of runs) {
-    if (run.length < 2) continue;
-    const drift = run.reduce((sum, { index, x }) => sum + (placed[index] as number) - x, 0);
-    const shift = drift / run.length;
-    for (const { index } of run) placed[index] = (placed[index] as number) - shift;
+    const first = run[0] as { index: number; x: number };
+    const last = run[run.length - 1] as { index: number; x: number };
+    if (run.length > 1) {
+      const drift = run.reduce((sum, { index, x }) => sum + (placed[index] as number) - x, 0);
+      const room = (placed[first.index] as number) - (previous + size);
+      const shift = Math.min(drift / run.length, room);
+      for (const { index } of run) placed[index] = (placed[index] as number) - shift;
+    }
+    previous = placed[last.index] as number;
   }
   return placed;
 }
