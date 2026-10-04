@@ -32,6 +32,7 @@ Instagram's grid shows the **newest post top-left**. Two ways to run it:
 | 9   | Post 04 — pass network    | Analyst audience staple.                           |
 | 11  | Post 05 — palettes        | Designers / theming crowd.                         |
 | 12  | Reel 03 — layer montage   | Breadth recap, loops well.                         |
+| —   | Reel 04 — 283 vs 112      | Euro 2024 follow-up; motion from frame 0.          |
 | 14  | Post 06 — layer catalogue | Closes the set; best "save for later" post.        |
 
 Reels: in the Instagram composer, leave "Also share to feed" on, and pick the
@@ -324,6 +325,58 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | Voronoi           | The 360 frame 6 s before Williams' goal (Carvajal's pass): Spain's cells cover 68% of the pitch                                        | 19 of 22 players tracked; space beyond the tracked players goes to the nearest one |
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
+
+## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 19.5 s)
+
+Hook (0–3.2 s): both first-half pass networks build side by side in fast-forward
+from the first frame while the completed-pass counters race; at 2.2 s the
+counters lock, the "Spain passed 2.5× more" chip slams in with a shake, and the
+camera punches into Spain. Spain then builds at readable speed (shirts with
+squad numbers pop in on each player's first touch and grow with every pass) and
+lands on its strongest link; a whip-pan to England does the same; the outro puts
+the two finished networks side by side again, so the loop lands back on the
+hook. For the grid cover, pick the slam frame (~2.3 s). If you add audio, a
+track with a drop around 2.2 s hits the slam.
+
+**Instagram**
+
+```
+283 vs 112. ⚽️
+
+Same final, same 45 minutes. Both pass networks from the Euro 2024 final's first half, built pass by pass: every ball you see in the air is a real completed pass.
+
+Spain's strongest link: Laporte ↔ Le Normand, 31 passes. England's: Walker ↔ Stones, 9.
+
+Which network would you rather play in? 👇
+
+StatsBomb open data. Drawn with PitchKit, the free React-first football chart library. Link in bio.
+
+#dataviz #footballanalytics #euro2024 #passnetwork #statsbomb #reactjs #opensource
+```
+
+**X**
+
+```
+Spain 283, England 112.
+
+Completed passes in the first half of the Euro 2024 final, each pass network built pass by pass. Strongest links: Laporte ↔ Le Normand (31) and Walker ↔ Stones (9).
+
+Open-source, React-first. Data: @StatsBomb open data.
+
+https://www.pitchkitjs.com
+```
+
+**Alt text:** Two football pitches side by side, Spain in blue and England in orange, with each starting player shown as a shirt with their squad number. White balls fly between the shirts and the connecting lines thicken as passes land; counters race to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5× more". Each network is then rebuilt full screen with player names: Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
+
+Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
+
+| Claim                       | Detail                                                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5×" |
+| Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                 |
+| Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                               |
+| Shirt positions             | Average of each player's pass and reception locations; shirts closer than 6.5 units are nudged apart       |
+| Ball timing                 | Each pass lands at its real match minute; the hook replays the half in ~2 s, each chapter in ~5 s          |
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 

@@ -8,6 +8,7 @@ import cornersJson from "./corners.json";
 import finalShotsJson from "./final-shots.json";
 import layersReelJson from "./layers-reel.json";
 import momentumJson from "./momentum.json";
+import passNetworksJson from "./pass-networks.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
 import spainNetworkJson from "./spain-pass-network.json";
@@ -228,3 +229,28 @@ export interface MomentumData {
   }[];
 }
 export const momentum = momentumJson as unknown as MomentumData;
+
+/** Spain's and England's first-half pass networks, pass by pass (see scripts/snapshot-networks.mjs). */
+export interface TeamNetwork {
+  team: string;
+  attempted: number;
+  completed: number;
+  nodes: {
+    id: number;
+    name: string;
+    jersey: number;
+    position: string;
+    x: number;
+    y: number;
+    touches: number;
+  }[];
+  /** Completed passes between starters in match order; `t` is the match minute. */
+  passes: { t: number; from: number; to: number }[];
+  topPair: { a: number; b: number; count: number };
+  busiest: { id: number; involvements: number };
+}
+export const passNetworks = passNetworksJson as unknown as {
+  matchId: number;
+  spain: TeamNetwork;
+  england: TeamNetwork;
+};

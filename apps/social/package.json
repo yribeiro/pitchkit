@@ -10,7 +10,8 @@
     "render": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
     "snapshot:layers": "node scripts/snapshot-layers.mjs",
-    "snapshot:corners": "node scripts/snapshot-corners.mjs"
+    "snapshot:corners": "node scripts/snapshot-corners.mjs",
+    "snapshot:networks": "node scripts/snapshot-networks.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.3.0",

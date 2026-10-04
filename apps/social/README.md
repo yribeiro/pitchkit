@@ -23,6 +23,7 @@ Private workspace (`"private": true`), never published.
 | `reel-01-quickstart`      | 1080×1920 MP4, 22 s | Palmer's equaliser built in 4 steps (mirrors the docs Quickstart)                                                                                                  |
 | `reel-02-tracking`        | 1080×1920 MP4, 24 s | SkillCorner tracking of a goal with a live Voronoi                                                                                                                 |
 | `reel-03-layers`          | 1080×1920 MP4, 20 s | 11 layers, each drawing a real finding from the final, with stat chips                                                                                             |
+| `reel-04-networks`        | 1080×1920 MP4, 20 s | Spain and England pass networks from the Euro 2024 final, built pass by pass with shirts and squad numbers                                                         |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
 

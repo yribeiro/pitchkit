@@ -46,6 +46,7 @@ const REELS = [
   "reel-01-quickstart",
   "reel-02-tracking",
   "reel-03-layers",
+  "reel-04-networks",
   "post-03-winner-animated",
 ];
 
