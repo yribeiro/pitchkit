@@ -32,7 +32,7 @@ Instagram's grid shows the **newest post top-left**. Two ways to run it:
 | 9   | Post 04 — pass network    | Analyst audience staple.                           |
 | 11  | Post 05 — palettes        | Designers / theming crowd.                         |
 | 12  | Reel 03 — layer montage   | Breadth recap, loops well.                         |
-| —   | Reel 04 — 283 vs 112      | Euro 2024 follow-up; motion from frame 0.          |
+| —   | Reel 04 — set-ups         | Euro 2024 follow-up; motion from frame 0.          |
 | 14  | Post 06 — layer catalogue | Closes the set; best "save for later" post.        |
 
 Reels: in the Instagram composer, leave "Also share to feed" on, and pick the
@@ -326,32 +326,33 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
-## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 20 s)
+## Reel 04 — How did Spain and England set up? (`reel-04-networks.mp4`, 32 s)
 
-Hook (0–2.8 s): both finished first-half pass networks side by side from the
-first frame, with the completed-pass counters rolling up underneath; at 1.3 s
-the counters lock, the "Spain passed 2.5X more" banner slams in with a shake,
-and the camera punches into Spain. There the half replays: at kick-off every
-player stands in their slot in the 4-2-3-1 team sheet, then morphs as their
-average position takes in each touch, settling into the shape the hook showed. A partnership's
-line draws in the first time two players connect, then thickens and briefly
-glows each time they combine again, while "Top link" in the header tracks the
-leading pair live. It lands on the strongest link; a whip-pan to England does
-the same; the outro puts the two finished networks side by side again and
-measures each shape (striker to last defender, and width), so the loop lands
-back on the hook. For the grid cover, pick the banner frame
-(~1.5 s). If you add audio, a track with a hit around 1.3 s lands on the banner.
+Hook (0–4 s): "How did Spain and England set up at Euro 2024?" over both
+finished first-half pass networks side by side from the first frame, with the
+completed-pass counters rolling up underneath; at 1.7 s they lock and the
+"Spain passed 2.5X more" banner slams in. A card then says what's coming
+("Let's see the pass networks", with a one-line key: circles are average
+positions, thicker lines mean more passes). Each chapter replays the half over
+7 s: every player starts in their 4-2-3-1 team-sheet slot and drifts smoothly
+to where they actually played, partnerships fade in and thicken, the pass
+counter climbs and "Top link" tracks the leading pair; it holds on the
+strongest link. A second card ("Let's measure the shape") leads into the
+outro, which measures both finished shapes. For the grid cover, pick the
+banner frame (~2 s).
 
 **Instagram**
 
 ```
-283 vs 112. ⚽️
+How did Spain and England set up in the Euro 2024 final? ⚽️
 
-Same final, same 45 minutes. Both pass networks from the Euro 2024 final's first half, built pass by pass: every ball you see in the air is a real completed pass.
+Both first-half pass networks, replayed from the 4-2-3-1 team sheet to where each player actually played.
 
-Spain's strongest link: Laporte ↔ Le Normand, 31 passes. England's: Walker ↔ Stones, 9.
+Spain completed 283 passes to England's 112. Their strongest link: Laporte ↔ Le Normand, 31 passes. England's: Walker ↔ Stones, 9.
 
-Which network would you rather play in? 👇
+And the shape: Spain's last defender sat 9 m higher up the pitch.
+
+Which setup would you rather play in? 👇
 
 StatsBomb open data. Drawn with PitchKit, the free React-first football chart library. Link in bio.
 
@@ -361,29 +362,31 @@ StatsBomb open data. Drawn with PitchKit, the free React-first football chart li
 **X**
 
 ```
-Spain 283, England 112.
+How did Spain and England set up in the Euro 2024 final?
 
-Completed passes in the first half of the Euro 2024 final, each pass network built pass by pass. Strongest links: Laporte ↔ Le Normand (31) and Walker ↔ Stones (9).
+First-half pass networks, replayed from the 4-2-3-1 team sheet. Spain 283 completed passes, England 112. Strongest links: Laporte ↔ Le Normand (31), Walker ↔ Stones (9). Spain's last defender sat 9 m higher.
 
 Open-source, React-first. Data: @StatsBomb open data.
 
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** Two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". Each half is then replayed full screen with player names: the circles start in both teams' 4-2-3-1 starting formation and morph as each player's average position builds up, settling into place, and lines appear and thicken as partnerships form. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side with each shape measured: 22 metres from Spain's striker to their last defender and 52 metres wide, against 29 metres and 50 metres for England. Then the PitchKit logo.
+**Alt text:** The video asks "How did Spain and England set up at Euro 2024?" over two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". A card explains how to read a pass network. Each half is then replayed full screen with player names: the circles start in both teams' 4-2-3-1 starting formation and drift into their average positions while the lines thicken. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. A second card introduces the measurements, and it ends on both networks side by side with each shape measured: 33 metres from Spain's furthest player forward to their last defender and 52 metres wide, against 30 metres and 50 metres for England, with Spain's last defender 9 metres higher up the pitch. Then the PitchKit logo.
 
 Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
 
-| Claim                       | Detail                                                                                                                                                                                                                                    |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5×"                                                                                                                                |
-| Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                                                                                                                                                |
-| Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                                                                                                                                                              |
-| Circle positions            | Average of each player's pass and reception locations; while it replays, a blend that starts at the 4-2-3-1 team-sheet slot (StatsBomb's starting formation) and ends on the true average; circles closer than 7.5 units are nudged apart |
-| Spain 22 m × 52 m           | Morata (70.5) to Le Normand (45.5) = 25.0 units; Cucurella to Carvajal = 60.6 units                                                                                                                                                       |
-| England 29 m × 50 m         | Kane (68.9) to Guehi (35.6) = 33.3 units; Shaw to Walker = 58.9 units                                                                                                                                                                     |
-| Metres                      | StatsBomb's 120 × 80 frame scaled to the Olympiastadion's 105 × 68 m pitch; average positions, goalkeepers excluded                                                                                                                       |
-| Timing                      | Each pass and touch counts at its real match minute; each chapter replays the half in ~5 s                                                                                                                                                |
+| Claim                       | Detail                                                                                                                                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5X"                                                                                       |
+| Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                                                                                                       |
+| Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                                                                                                                     |
+| 4-2-3-1                     | StatsBomb's starting formation for both teams; slot coordinates are a generic team sheet (`SLOTS` in the snapshot script)                                                                        |
+| Circle positions            | Average of each player's pass and reception locations; while it replays, a blend that starts at the team-sheet slot and ends on the true average; circles closer than 7.5 units are nudged apart |
+| Spain 33 m × 52 m           | Furthest forward Yamal (83.6) to last defender Le Normand (45.5) = 38.1 units; Cucurella to Carvajal = 60.6 units                                                                                |
+| England 30 m × 50 m         | Furthest forward Saka (69.8) to last defender Guehi (35.6) = 34.2 units; Shaw to Walker = 58.9 units                                                                                             |
+| Last defender 9 m higher    | Le Normand 39.8 m from Spain's goal line, Guehi 31.1 m from England's                                                                                                                            |
+| Metres                      | StatsBomb's 120 × 80 frame scaled to the Olympiastadion's 105 × 68 m pitch; average positions, goalkeepers excluded                                                                              |
+| Timing                      | Each pass and touch counts at its real match minute, easing in over ~0.8 s; each chapter replays the half in 7 s                                                                                 |
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 

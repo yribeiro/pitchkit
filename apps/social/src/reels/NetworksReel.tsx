@@ -39,19 +39,25 @@ const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p
 const RATIO = (SPAIN.completed / ENGLAND.completed).toFixed(1);
 const SPAIN_SHAPE = shapeOf(SPAIN);
 const ENGLAND_SHAPE = shapeOf(ENGLAND);
+const LINE_GAP = Math.round(SPAIN_SHAPE.lineHeight - ENGLAND_SHAPE.lineHeight);
 
-// Timeline (30 fps).
-const HOOK = 84;
-/** The counters roll up until here, then the gap slams in. */
-const COUNT_END = 36;
-const SECTION = 210;
-const BUILD_START = 12;
-const BUILD_END = 160;
+// Timeline (30 fps). Each scene overlaps the next by OVERLAP for the transition.
 const OVERLAP = 10;
-const SPAIN_AT = HOOK - 8;
+const HOOK = 120;
+/** The counters roll up until here, then the gap slams in. */
+const COUNT_END = 50;
+/** An explainer card between scenes. */
+const CARD = 78;
+const SECTION = 300;
+/** The half replays over these frames of a chapter (7 s), then holds. */
+const BUILD_START = 16;
+const BUILD_END = 226;
+const OUTRO = 150;
+const NETWORKS_CARD_AT = HOOK - OVERLAP;
+const SPAIN_AT = NETWORKS_CARD_AT + CARD - OVERLAP;
 const ENGLAND_AT = SPAIN_AT + SECTION - OVERLAP;
-const OUTRO_AT = ENGLAND_AT + SECTION - OVERLAP;
-const OUTRO = 126;
+const SHAPE_CARD_AT = ENGLAND_AT + SECTION - OVERLAP;
+const OUTRO_AT = SHAPE_CARD_AT + CARD - OVERLAP;
 export const NETWORKS_DURATION = OUTRO_AT + OUTRO;
 
 const surname = (name: string) => {
@@ -98,15 +104,14 @@ function Hook() {
 
   const slam = spring({ frame: frame - (COUNT_END + 2), fps, config: { damping: 9, mass: 0.5 } });
   const shake = frame > COUNT_END && frame < COUNT_END + 8 ? Math.sin(frame * 2.7) * 7 : 0;
-  // Punch-in on Spain, into the first chapter.
-  const push = interpolate(frame, [HOOK - 18, HOOK], [0, 1], { ...clamp, easing: ease });
+  // A gentle push in and fade, into the first explainer card.
+  const push = interpolate(frame, [HOOK - OVERLAP - 8, HOOK], [0, 1], { ...clamp, easing: ease });
   const glow = interpolate(frame, [COUNT_END, COUNT_END + 6, HOOK], [0, 1, 0.6], clamp);
 
   return (
     <AbsoluteFill
       style={{
-        transform: `translate(${shake}px, 0) scale(${1 + push * 0.9})`,
-        transformOrigin: `${40 + HOOK_W / 2}px 860px`,
+        transform: `translate(${shake}px, 0) scale(${1 + push * 0.15})`,
         opacity: 1 - push,
       }}
     >
@@ -119,7 +124,7 @@ function Hook() {
             letterSpacing: "0.06em",
           }}
         >
-          EURO 2024 FINAL · FIRST HALF
+          THE FINAL · FIRST HALF
         </div>
         <div
           style={{
@@ -129,9 +134,9 @@ function Hook() {
             lineHeight: 1,
           }}
         >
-          SAME FINAL.
+          HOW DID SPAIN AND ENGLAND
           <br />
-          SAME 45 MINUTES.
+          SET UP AT EURO 2024?
         </div>
       </div>
 
@@ -201,6 +206,113 @@ function Hook() {
         </div>
       )}
     </AbsoluteFill>
+  );
+}
+
+/* Explainer cards --------------------------------------------------------- */
+
+/**
+ * A pause between scenes that says what's coming, so the viewer has a moment
+ * to get their bearings: a kicker, a two-line headline that rises in line by
+ * line, a plain-language explainer, and an optional little diagram.
+ */
+function Card({
+  kicker,
+  lines,
+  body,
+  children,
+}: {
+  kicker: string;
+  lines: [string, string];
+  body: ReactNode;
+  children?: ReactNode;
+}) {
+  const frame = useCurrentFrame();
+  const fadeIn = interpolate(frame, [0, OVERLAP], [0, 1], clamp);
+  const rise = (from: number) => {
+    const t = interpolate(frame, [from, from + 14], [0, 1], {
+      ...clamp,
+      easing: Easing.out(Easing.cubic),
+    });
+    return { opacity: t, transform: `translateY(${(1 - t) * 40}px)` };
+  };
+  return (
+    <AbsoluteFill style={{ opacity: fadeIn }}>
+      <Backdrop />
+      <div style={{ position: "absolute", top: 560, left: 80, right: 80 }}>
+        <div
+          style={{
+            fontFamily: FONT.display,
+            fontSize: 38,
+            letterSpacing: "0.08em",
+            color: C.accent,
+            ...rise(4),
+          }}
+        >
+          {kicker}
+        </div>
+        <div style={{ fontFamily: FONT.display, fontSize: 118, lineHeight: 1, marginTop: 10 }}>
+          <div style={rise(8)}>{lines[0]}</div>
+          <div style={rise(14)}>{lines[1]}</div>
+        </div>
+        <div
+          style={{
+            fontSize: 38,
+            fontWeight: 600,
+            lineHeight: 1.35,
+            color: C.muted,
+            marginTop: 34,
+            ...rise(24),
+          }}
+        >
+          {body}
+        </div>
+        {children && <div style={{ marginTop: 50, ...rise(32) }}>{children}</div>}
+      </div>
+    </AbsoluteFill>
+  );
+}
+
+/** Two players and the line between them thickening: how to read a link. */
+function LinkKey() {
+  const frame = useCurrentFrame();
+  const t = interpolate(frame, [34, 70], [0, 1], { ...clamp, easing: ease });
+  const passes = Math.round(1 + 30 * t);
+  const disc = (cx: number, n: string) => (
+    <g>
+      <circle cx={cx} cy={40} r={34} fill={C.sky} stroke="rgba(4,10,7,0.95)" strokeWidth={3} />
+      <text
+        x={cx}
+        y={40}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontFamily={FONT.display}
+        fontSize={40}
+        fill="#04100a"
+      >
+        {n}
+      </text>
+    </g>
+  );
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
+      <svg width={360} height={80}>
+        <line
+          x1={40}
+          y1={40}
+          x2={320}
+          y2={40}
+          stroke={C.sky}
+          strokeWidth={3 + 15 * t}
+          strokeOpacity={0.4 + 0.5 * t}
+        />
+        {disc(40, "14")}
+        {disc(320, "3")}
+      </svg>
+      <div style={{ fontFamily: FONT.display, fontSize: 44, color: C.sky }}>
+        {passes} {passes === 1 ? "PASS" : "PASSES"}
+      </div>
+    </div>
   );
 }
 
@@ -365,9 +477,9 @@ const OUTRO_W = 470;
 function Outro() {
   const frame = useCurrentFrame();
   const fade = interpolate(frame, [0, 10], [0, 1], clamp);
-  const measure = interpolate(frame, [12, 40], [0, 1], clamp);
-  const takeaway = interpolate(frame, [36, 46], [0, 1], clamp);
-  const line = interpolate(frame, [50, 62], [0, 1], clamp);
+  const measure = interpolate(frame, [16, 60], [0, 1], clamp);
+  const takeaway = interpolate(frame, [56, 70], [0, 1], clamp);
+  const line = interpolate(frame, [84, 96], [0, 1], clamp);
   return (
     <AbsoluteFill style={{ opacity: fade }}>
       <Backdrop />
@@ -409,13 +521,17 @@ function Outro() {
           color: C.muted,
         }}
       >
-        Striker to last defender: <span style={{ color: C.sky }}>Spain {SPAIN_SHAPE.height} m</span>
-        , <span style={{ color: C.orange }}>England {ENGLAND_SHAPE.height} m</span>.
+        Front to back: <span style={{ color: C.sky }}>Spain {SPAIN_SHAPE.height} m</span>,{" "}
+        <span style={{ color: C.orange }}>England {ENGLAND_SHAPE.height} m</span>.
+        <br />
+        <span style={{ color: C.text }}>
+          Spain&apos;s last defender sat {LINE_GAP} m higher up the pitch.
+        </span>
       </div>
       <div
         style={{
           position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 110,
+          top: 470 + uprightHeight(OUTRO_W) + 150,
           left: 60,
           right: 60,
           opacity: line,
@@ -430,10 +546,10 @@ function Outro() {
       <div
         style={{
           position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 196,
+          top: 470 + uprightHeight(OUTRO_W) + 236,
           left: 60,
           right: 60,
-          opacity: interpolate(frame, [58, 70], [0, 1], clamp),
+          opacity: interpolate(frame, [92, 104], [0, 1], clamp),
           fontSize: 34,
           fontWeight: 700,
           lineHeight: 1.3,
@@ -473,11 +589,40 @@ export function NetworksReel() {
       <Layer from={0} duration={HOOK}>
         <Hook />
       </Layer>
+      <Layer from={NETWORKS_CARD_AT} duration={CARD}>
+        <Card
+          kicker="FIRST"
+          lines={["LET'S SEE THE", "PASS NETWORKS"]}
+          body={
+            <>
+              Each circle is a player at their average position.{" "}
+              <span style={{ color: C.text }}>
+                The thicker the line, the more two players passed to each other.
+              </span>
+            </>
+          }
+        >
+          <LinkKey />
+        </Card>
+      </Layer>
       <Layer from={SPAIN_AT} duration={SECTION}>
         <Chapter net={SPAIN} color={C.sky} title="Spain" enterFrom={0} exitTo={-1} />
       </Layer>
       <Layer from={ENGLAND_AT} duration={SECTION}>
         <Chapter net={ENGLAND} color={C.orange} title="England" enterFrom={1} exitTo={-1} />
+      </Layer>
+      <Layer from={SHAPE_CARD_AT} duration={CARD}>
+        <Card
+          kicker="THEN"
+          lines={["LET'S MEASURE", "THE SHAPE"]}
+          body={
+            <>
+              <span style={{ color: C.text }}>Height:</span> furthest player forward to the last
+              defender. <span style={{ color: C.text }}>Width:</span> between the two widest
+              players.
+            </>
+          }
+        />
       </Layer>
       <Layer from={OUTRO_AT} duration={OUTRO}>
         <Outro />

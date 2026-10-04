@@ -2,10 +2,10 @@
  * A team's pass network, replayed through the half. Every player's disc starts
  * at kick-off in their team-sheet slot (the starting formation) and morphs
  * towards their average position as it takes in each touch, settling exactly
- * where the finished network has it at full time. A
- * partnership's line draws in from the passer the first time two players
- * connect, then thickens and briefly glows each time they combine again. The
- * pitch is upright (attacking up the screen).
+ * where the finished network has it at full time. Partnerships fade in and
+ * thicken gradually as passes add up. Every pass eases in over most of a
+ * second, so the whole thing moves slowly and smoothly rather than ticking
+ * pass by pass. The pitch is upright (attacking up the screen).
  *
  * Everything is a pure function of `minute`, the match clock; pass `FULL_TIME`
  * for the finished network.
@@ -34,12 +34,8 @@ const LABEL = 21;
 const MIN_GAP = 7.5;
 
 // Animation timings, in frames; `pace` converts them to match minutes.
-/** A new pass eases into widths, sizes and positions over this long. */
-const EASE_IN = 5;
-/** A link's glow after a pass fades over about this long. */
-const GLOW = 6;
-/** A new link draws from passer to receiver over this long. */
-const DRAW = 7;
+/** A new pass or touch eases into widths, sizes and positions over this long. */
+const EASE_IN = 24;
 /**
  * How many touches' worth of weight the team-sheet slot carries at kick-off.
  * It fades to nothing by the end of the half, so the replay always lands on
@@ -82,17 +78,10 @@ const surname = (name: string) => {
 export interface Link {
   a: number;
   b: number;
-  /** Who passed first, so the line draws from them. */
-  from: number;
-  to: number;
-  /** Minute of the first pass between them. */
-  first: number;
   /** Passes so far, eased: grows smoothly as each one lands. */
   weight: number;
   /** Passes so far, whole. */
   count: number;
-  /** 0..1, how recently they last combined. */
-  glow: number;
 }
 
 export interface NetworkState {
@@ -100,8 +89,6 @@ export interface NetworkState {
   links: Map<string, Link>;
   /** Involvements so far (passes made + received), eased, per player. */
   involved: Map<number, number>;
-  /** 0..1, how recently each player was involved. */
-  pulse: Map<number, number>;
   /** Where each disc is drawn: the running average position, separated. */
   positions: Map<number, Point>;
   /** Completed passes so far. */
@@ -113,37 +100,23 @@ export interface NetworkState {
 /** Replays the half up to `minute`; `pace` is match minutes per video frame. */
 export function networkAt(net: TeamNetwork, minute: number, pace = 1): NetworkState {
   const ease = EASE_IN * pace;
-  const glowFor = GLOW * pace;
   const links = new Map<string, Link>();
   const involved = new Map<number, number>();
-  const pulse = new Map<number, number>();
   let landed = 0;
   for (const p of net.passes) {
     if (p.t > minute) break;
     const age = minute - p.t;
     const w = Math.min(age / ease, 1);
-    const g = Math.exp(-age / glowFor);
     const a = Math.min(p.from, p.to);
     const b = Math.max(p.from, p.to);
     const key = `${a}-${b}`;
-    const link = links.get(key) ?? {
-      a,
-      b,
-      from: p.from,
-      to: p.to,
-      first: p.t,
-      weight: 0,
-      count: 0,
-      glow: 0,
-    };
+    const link = links.get(key) ?? { a, b, weight: 0, count: 0 };
     link.weight += w;
     link.count += 1;
-    link.glow = Math.max(link.glow, g);
     links.set(key, link);
     landed += 1;
     for (const id of [p.from, p.to]) {
       involved.set(id, (involved.get(id) ?? 0) + w);
-      pulse.set(id, Math.max(pulse.get(id) ?? 0, g));
     }
   }
 
@@ -168,7 +141,7 @@ export function networkAt(net: TeamNetwork, minute: number, pace = 1): NetworkSt
 
   let top: Link | undefined;
   for (const l of links.values()) if (!top || l.count > top.count) top = l;
-  return { links, involved, pulse, positions: separate(averages), landed, top };
+  return { links, involved, positions: separate(averages), landed, top };
 }
 
 const finals = new WeakMap<TeamNetwork, NetworkState>();
@@ -186,24 +159,24 @@ export function finalNetwork(net: TeamNetwork) {
 const METRES_PER_UNIT = { x: 105 / 120, y: 68 / 80 };
 
 /**
- * A team's shape from its average positions: height from the striker to the
- * last outfield defender, width between the two widest outfield players, in
- * metres.
+ * A team's shape from its average positions: height from the furthest
+ * forward outfield player to the last outfield defender, width between the
+ * two widest outfield players, in metres.
  */
 export function shapeOf(net: TeamNetwork) {
   const outfield = net.nodes.filter((n) => n.position !== "Goalkeeper");
-  const striker = outfield.find((n) => n.position === "Center Forward")!;
+  const furthest = outfield.reduce((a, b) => (b.x > a.x ? b : a));
   const lastDefender = outfield.reduce((a, b) => (b.x < a.x ? b : a));
   const left = outfield.reduce((a, b) => (b.y < a.y ? b : a));
   const right = outfield.reduce((a, b) => (b.y > a.y ? b : a));
   return {
-    striker,
+    furthest,
     lastDefender,
     left,
     right,
-    /** The most advanced outfield player, so the width line can sit above everyone. */
-    front: Math.max(...outfield.map((n) => n.x)),
-    height: Math.round((striker.x - lastDefender.x) * METRES_PER_UNIT.x),
+    height: Math.round((furthest.x - lastDefender.x) * METRES_PER_UNIT.x),
+    /** How far up the pitch the last defender sat, from their own goal line. */
+    lineHeight: lastDefender.x * METRES_PER_UNIT.x,
     width: Math.round((right.y - left.y) * METRES_PER_UNIT.y),
   };
 }
@@ -242,12 +215,10 @@ export function NetworkPitch({
   const lines = [...state.links.values()]
     .sort((p, q) => p.weight - q.weight)
     .map((l) => {
-      const f = at(l.from);
-      const t = at(l.to);
-      const u = Math.min((minute - l.first) / (DRAW * pace), 1);
-      return { x: f.x, y: f.y, x2: f.x + (t.x - f.x) * u, y2: f.y + (t.y - f.y) * u, l };
+      const f = at(l.a);
+      const t = at(l.b);
+      return { x: f.x, y: f.y, x2: t.x, y2: t.y, l };
     });
-  const glowing = lines.filter((e) => e.l.glow > 0.04);
   const top = net.topPair;
   const topNow = state.links.get(`${top.a}-${top.b}`);
 
@@ -255,20 +226,6 @@ export function NetworkPitch({
     <PitchStage>
       <Upright width={width} height={height}>
         <Pitch type="statsbomb" width={height} height={width} padding={PAD} appearance={appearance}>
-          {/* A soft halo behind a link that just combined again. */}
-          {glowing.length > 0 && (
-            <Arrows
-              data={glowing}
-              x={(e) => e.x}
-              y={(e) => e.y}
-              x2={(e) => e.x2}
-              y2={(e) => e.y2}
-              stroke={color}
-              strokeWidth={(e) => (width_(e.l.weight) + 7) * s}
-              strokeOpacity={(e) => 0.3 * e.l.glow}
-              headSize={0}
-            />
-          )}
           <Arrows
             data={lines}
             x={(e) => e.x}
@@ -277,7 +234,8 @@ export function NetworkPitch({
             y2={(e) => e.y2}
             stroke={color}
             strokeWidth={(e) => width_(e.l.weight) * s}
-            strokeOpacity={(e) => Math.min(opacity_(e.l.weight) + 0.4 * e.l.glow, 1)}
+            // A new partnership fades in over its first pass.
+            strokeOpacity={(e) => opacity_(e.l.weight) * Math.min(e.l.weight, 1)}
             headSize={0}
           />
           {highlight > 0 && topNow && (
@@ -311,7 +269,7 @@ export function NetworkPitch({
 
 /**
  * Dimension lines for the team's shape: a vertical one beside the team from
- * the last defender up to the striker, a horizontal one above it between the
+ * the last defender up to the furthest player forward, a horizontal one above it between the
  * two widest players, each with dashed guides back to the players. Lines draw
  * out over the first half of `t`, labels pop in over the second.
  */
@@ -336,13 +294,13 @@ function Shape({
 
   // Height: a line in pitch-x just outside the widest player on the left of
   // the screen (the quieter flank for both teams), from the last defender to
-  // the striker.
+  // the furthest player forward.
   const yLine = Math.max(at(shape.left.id).y - 4.5, 2.5);
   const xBack = at(shape.lastDefender.id).x;
-  const xFront = at(shape.striker.id).x;
+  const xFront = at(shape.furthest.id).x;
   // Width: a line in pitch-y just ahead of the most advanced player (the top
   // of the screen), between the two widest players.
-  const xLine = Math.min(shape.front + 7, 116);
+  const xLine = Math.min(at(shape.furthest.id).x + 7, 116);
   const yLeft = at(shape.left.id).y;
   const yRight = at(shape.right.id).y;
 
@@ -393,7 +351,7 @@ function Shape({
         opacity={0.6 * draw}
       >
         <line {...seg([xBack, at(shape.lastDefender.id).y], [xBack, yLine])} />
-        <line {...seg([xFront, at(shape.striker.id).y], [xFront, yLine])} />
+        <line {...seg([xFront, at(shape.furthest.id).y], [xFront, yLine])} />
         <line {...seg([at(shape.left.id).x, yLeft], [xLine, yLeft])} />
         <line {...seg([at(shape.right.id).x, yRight], [xLine, yRight])} />
       </g>
@@ -439,9 +397,8 @@ function Discs({
   const labels = placeLabels(net, finalNetwork(net).positions, transform.toPixel, s);
   const discs = net.nodes.map((n) => {
     const grow = growth(state.involved.get(n.id) ?? 0);
-    const beat = 1 + 0.14 * (state.pulse.get(n.id) ?? 0);
     const boost = emphasis.includes(n.id) ? 1 + 0.18 * highlight : 1;
-    const k = 1.15 * s * grow * beat * boost;
+    const k = 1.15 * s * grow * boost;
     const p = state.positions.get(n.id)!;
     const [px, py] = transform.toPixel([p.x, p.y]);
     // Screen position: the pitch is turned -90°.
