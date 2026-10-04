@@ -72,7 +72,8 @@ not layers inside it ([D23](./decisions.md#d23-non-pitch-charts-are-roots-with-t
 ```
 RaceChart (root)
  ├─ series    (one per team or player; data stays on the root)
- ├─ scales    (createLinearScale: minute -> x, accumulated value -> y, y-flip in the range)
+ ├─ panels    (one per period, contiguous, width proportional to its minutes; per-panel x scale)
+ ├─ scaleY    (createLinearScale: accumulated value -> y, y-flip in the range)
  ├─ chrome    (axes, grid, period breaks, legend)
  ├─ lines, then marks and end labels, then children
  └─ crosshair (one hit area over the plot)
@@ -80,16 +81,22 @@ RaceChart (root)
 
 - **`core` owns the maths, with no pitch in it.** `chart/` (`createLinearScale`, `niceTicks`,
   `matchMinuteTicks`, `computeChartFrame`) and `race/` (`computeCumulativeSeries`, `valueAtTime`,
-  `resolveEndTime`, `stepPath`, `stepAreaPath`) take plain numbers. The React binding resolves
+  `racePeriodRanges`, `stepPath`, `stepAreaPath`) take plain numbers. The React binding resolves
   accessors before calling in, so `race/` never imports `scene/`.
 - **Every value reaches a pixel through a scale.** No component multiplies a minute or an xG by
   anything.
+- **Every datum has a period, and a race is ordered by period, then minute.** Minutes restart at 45,
+  so first-half stoppage time and the second half share minutes. Each period is its own panel,
+  laid out by `layoutMomentumPanels` with no gap so the line runs straight on; a period runs from
+  its nominal start to `max(nominal end, ceil(its last datum))` (`racePeriodRanges`), and `endTime`
+  sets where the last one ends ([D28](./decisions.md#d28-time-based-charts-require-a-period)).
 - **The step is step-after** (d3's `curveStepAfter`), the only correct interpolation for a running
   total: a slope would draw xG accruing in minutes when no shot was taken. There is no `curve`
   option. The line is anchored at kick-off and runs to full time.
 - **Things the chart doesn't draw are children.** Bookings and substitutions accumulate nothing, so
-  they are not series. `useRaceChart()` gives a child `scaleX`, `scaleY` and
-  `valueAt(seriesId, time)`, which puts a mark on a team's line rather than beside it.
+  they are not series. `useRaceChart()` gives a child `scaleX(minute, period)`,
+  `scaleY` and `valueAt(seriesId, time, period)`, which puts a mark on a team's line rather than
+  beside it.
 - **Paint order is lines, then marks and labels, then children.** Drawn per series, the second
   team's line runs over the first team's goal markers.
 - **The end label sits above the leader's line and below every other.** Labels move apart, not
@@ -122,7 +129,7 @@ follows the same pattern with a different shape of data.
 
 ```
 MomentumChart (root)
- ├─ periods   (one array of samples per period; data stays on the root)
+ ├─ data      (one flat list, grouped by its period accessor; data stays on the root)
  ├─ panels    (one per period, width proportional to its minutes; per-panel x scale)
  ├─ scaleY    (one symmetric value scale, -max..+max, so both halves are comparable)
  ├─ bars, zero line, minute ticks, then event icons, then children
@@ -137,7 +144,14 @@ MomentumChart (root)
   for a single sample). Bars are clipped to the period's range.
 - **Periods come from the data.** A period starts at its nominal minute (0, 45, 90, 105, then 15-
   minute blocks) and ends at `max(nominal end, ceil(latest sample end))`; `periodRanges` overrides
-  either end. A minute between panels resolves to the nearest one.
+  either end, keyed by period number.
+- **Samples and events are flat lists tagged with their period**, as feeds give them.
+  `groupByPeriod` (in `core/chart/`) groups the samples into one panel per period, from 1 to the
+  highest seen and at least two, so an empty period keeps its place; a bar's `index` is mapped back
+  into `data`. An event is drawn in its period's panel (`minuteToX(panels, minute, period)`,
+  clamped to that panel), and the readout lists only the hovered period's events. An event with
+  no panel for its period isn't drawn
+  ([D28](./decisions.md#d28-time-based-charts-require-a-period)).
 - **Events are icons in a strip under the bars**, kept to one row: icons that would touch
   fan out with an offset, later over earlier on a surface backing, and a run is re-centred on its
   true minutes. A card or own goal is drawn in its own
@@ -480,7 +494,8 @@ Re-verify against a fresh sample before "correcting" any of them.
   an axis fixed at 90 clips it.
 - **Halves don't end on 45.** Stoppage time is inside `minute`: the Euro 2024 final (`3943043`)
   has period 1 running to 47' and the match to 94'. A half-time rule drawn at 45 is in the wrong
-  place.
+  place. The second half's minutes restart at 45, so 45'–47' occur in both periods: Williams' goal
+  is at period 2, 46:09.
 - **A booking is `foul_committed.card`.** The final has four, all there. A booking without a foul
   would be under `bad_behaviour.card`, but none occurs in that match, so it is unverified.
 - **Every team attacks towards x = 120 in both halves.** Verified on the Euro 2024 final

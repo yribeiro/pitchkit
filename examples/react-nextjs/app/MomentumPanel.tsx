@@ -12,9 +12,9 @@ const toggleStyle = {
   color: "#bbb",
 } as const;
 
-const periods = [
-  FIRST_HALF.map((value, i) => ({ minute: i, value })),
-  SECOND_HALF.map((value, i) => ({ minute: 45 + i, value })),
+const samples = [
+  ...FIRST_HALF.map((value, i) => ({ minute: i, period: 1, value })),
+  ...SECOND_HALF.map((value, i) => ({ minute: 45 + i, period: 2, value })),
 ];
 
 /**
@@ -50,12 +50,14 @@ export function MomentumPanel() {
 
       <div className="race-stage">
         <MomentumChart
-          periods={periods}
+          data={samples}
           time={(d) => d.minute}
+          period={(d) => d.period}
           value={(d) => d.value}
           teams={{ home: "Spain", away: "England" }}
           events={events}
           eventTime={(e) => e.minute}
+          eventPeriod={(e) => e.period}
           eventSide={(e) => e.side}
           eventKind={(e) => e.kind}
         />

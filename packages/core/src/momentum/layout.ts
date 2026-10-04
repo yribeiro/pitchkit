@@ -117,17 +117,43 @@ export function momentumExtent(values: readonly number[]): number {
 }
 
 /**
- * The x of a match minute: in the panel that holds it, or the nearest panel
- * (clamped to its edge) for a minute that falls in a gap or outside every
- * period. 0 when there are no panels.
+ * The x of a match minute in a given period: `period` is the period's
+ * number, 1 for the first half, so it selects `panels[period - 1]`.
+ *
+ * The period is what tells overlapping minutes apart. Minutes restart at 45
+ * for the second half, so a first half with stoppage time and the second
+ * half both contain 45'-48', and the minute alone can't say which is meant.
+ *
+ * A minute outside its period is clamped to that period's edge. A period
+ * with no panel falls back to the panel nearest the minute, clamped the same
+ * way. 0 when there are no panels.
  */
-export function minuteToX(panels: readonly MomentumPanel[], minute: number): number {
+export function minuteToX(
+  panels: readonly MomentumPanel[],
+  minute: number,
+  period: number,
+): number {
+  const own = Number.isInteger(period) ? panels[period - 1] : undefined;
   const gapTo = (p: MomentumPanel) => Math.max(p.start - minute, minute - p.end, 0);
-  let nearest = panels[0];
-  for (const panel of panels) {
-    if (nearest === undefined || gapTo(panel) < gapTo(nearest)) nearest = panel;
+  let panel = own;
+  if (panel === undefined) {
+    for (const candidate of panels) {
+      if (panel === undefined || gapTo(candidate) < gapTo(panel)) panel = candidate;
+    }
   }
-  return nearest === undefined
-    ? 0
-    : nearest.scale(Math.min(Math.max(minute, nearest.start), nearest.end));
+  return panel === undefined ? 0 : panel.scale(Math.min(Math.max(minute, panel.start), panel.end));
+}
+
+/**
+ * The period and match minute under an x: the inverse of `minuteToX`.
+ * `undefined` in a gap between panels or outside all of them.
+ */
+export function xToMinute(
+  panels: readonly MomentumPanel[],
+  x: number,
+): { period: number; minute: number } | undefined {
+  const panel = panels.find((p) => x >= p.x0 && x <= p.x1);
+  if (panel === undefined) return undefined;
+  const minute = Math.min(Math.max(panel.scale.invert(x), panel.start), panel.end);
+  return { period: panel.index + 1, minute };
 }

@@ -34,19 +34,21 @@ const ON_BALL = new Set([
 
 interface Sample {
   minute: number;
+  period: number;
   value: number;
 }
 
 interface MatchEvent {
   minute: number;
+  period: number;
   side: "home" | "away";
   kind: MomentumEventKind;
   label: string;
 }
 
-/** One array of samples per period, the shape `<MomentumChart>` takes. */
-function derivePeriods(events: readonly StatsBombEvent[], home: string): Sample[][] {
-  const periods: Sample[][] = [];
+/** One flat list of samples, each tagged with its period, like the events it came from. */
+function deriveMomentum(events: readonly StatsBombEvent[], home: string): Sample[] {
+  const samples: Sample[] = [];
 
   // Period 5 is the penalty shootout; it has no place on a match clock.
   for (let period = 1; period <= 4; period++) {
@@ -64,15 +66,13 @@ function derivePeriods(events: readonly StatsBombEvent[], home: string): Sample[
     const last = Math.max(...counts.keys());
     const raw = Array.from({ length: last - first + 1 }, (_, i) => counts.get(first + i) ?? 0);
 
-    periods.push(
-      raw.map((_, i) => {
-        const window = raw.slice(Math.max(0, i - 1), i + 2);
-        const mean = window.reduce((sum, v) => sum + v, 0) / window.length;
-        return { minute: first + i, value: Math.round(mean * 10) / 10 };
-      }),
-    );
+    raw.forEach((_, i) => {
+      const window = raw.slice(Math.max(0, i - 1), i + 2);
+      const mean = window.reduce((sum, v) => sum + v, 0) / window.length;
+      samples.push({ minute: first + i, period, value: Math.round(mean * 10) / 10 });
+    });
   }
-  return periods;
+  return samples;
 }
 
 /** Goals and bookings. Bookings live at `foul_committed.card` in StatsBomb's feed. */
@@ -83,6 +83,7 @@ function pickEvents(events: readonly StatsBombEvent[], home: string): MatchEvent
     if (shot.period <= 4 && isGoal(shot)) {
       picked.push({
         minute: shot.minute + shot.second / 60,
+        period: shot.period,
         side: shot.team.name === home ? "home" : "away",
         kind: "goal",
         label: `Goal, ${shot.player?.name ?? shot.team.name}`,
@@ -95,6 +96,7 @@ function pickEvents(events: readonly StatsBombEvent[], home: string): MatchEvent
     if (!card || e.period > 4) continue;
     picked.push({
       minute: e.minute + e.second / 60,
+      period: e.period,
       side: e.team.name === home ? "home" : "away",
       kind: card === "Yellow Card" ? "yellow-card" : "red-card",
       label: `${card}, ${e.player?.name ?? e.team.name}`,
@@ -123,7 +125,7 @@ export function MomentumChartStatsbombBasic() {
   const home = match?.home_team.home_team_name ?? "";
   const away = match?.away_team.away_team_name ?? "";
 
-  const periods = loaded && home ? derivePeriods(loaded, home) : [];
+  const samples = loaded && home ? deriveMomentum(loaded, home) : [];
   const marks = loaded && home ? pickEvents(loaded, home) : [];
 
   return (
@@ -154,12 +156,14 @@ export function MomentumChartStatsbombBasic() {
       </p>
 
       <MomentumChart
-        periods={periods}
+        data={samples}
         time={(d) => d.minute}
+        period={(d) => d.period}
         value={(d) => d.value}
         teams={{ home, away }}
         events={marks}
         eventTime={(e) => e.minute}
+        eventPeriod={(e) => e.period}
         eventSide={(e) => e.side}
         eventKind={(e) => e.kind}
         eventLabel={(e) => e.label}

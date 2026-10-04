@@ -22,14 +22,14 @@ It is a root, not a layer. There is no `<Pitch>` involved and no `type` prop —
     { id: "England", data: englandShots },
   ]}
   time={(s) => s.minute}
+  period={(s) => s.period}
   value={(s) => s.xg}
   emphasise={(s) => s.goal}
-  period={(s) => s.period}
 />
 ```
 
-`series` carries the data; `time` and `value` are accessors like every other PitchKit prop. Nothing
-is pre-aggregated — the running total is computed for you, so you hand it the same flat list of
+`series` carries the data; `time`, `period` and `value` are accessors like every other PitchKit
+prop. Nothing is pre-aggregated — the running total is computed for you, so you hand it the same flat list of
 shots a provider gives you.
 
 ## Why it steps
@@ -70,27 +70,31 @@ property of a shot and a distinct colour reads well; here a goal already belongs
 carries "goal" and colour carries "whose" — which also means the chart never encodes meaning by
 colour alone.
 
-## Half time comes from the data
+## Every shot needs its period
 
-Pass `period` and the period breaks are derived rather than assumed:
+`period` is required: 1 for the first half, 2 for the second, 3 and 4 for extra time. StatsBomb's
+`period` field is already this.
 
 ```tsx
 <RaceChart ... period={(s) => s.period} />
 ```
 
-This matters more than it looks. **Halves do not end on 45.** Stoppage time is inside StatsBomb's
-own `minute` numbering, so the Euro 2024 final's first half runs to 47'. A rule drawn at a fixed 45
-sits in the wrong place in most matches. Without a `period` accessor no rules are drawn at all,
-which is better than drawing one somewhere wrong.
+A minute alone can't place a shot. **Halves do not end on 45**: stoppage time is inside the feed's
+own `minute` numbering, so the Euro 2024 final's first half runs to 47'. The second half restarts at
+45', so 45'–47' happen twice, and only the period says which half a shot at 46' was in.
 
-The same accessor gives you the extra-time breaks free. The x-axis ends at `max(90, ceil(latest))`,
-so a knockout match that reaches 121' is not clipped and a quiet one still shows a full 90.
+Each period is drawn after the one before it, as wide as its own minutes. A half runs from its
+nominal start to the later of its nominal end and its last shot, so stoppage time widens its own
+half and the half-time rule falls where that half ends. Extra time adds two more periods, with
+rules of their own. `endTime` sets where the last period ends. A datum without a whole-number
+period from 1 is dropped.
 
 ## Reading a value at a minute
 
 Hover or tap anywhere on the plot: a crosshair reports **every** series at that minute. That is the
 question a race chart exists to answer, and a per-mark tooltip cannot answer it — you would have to
-land on a line. Pass `tooltip` to replace the readout's body.
+land on a line. Pass `tooltip` to replace the readout's body; it gets the rows, the minute and the
+period, `(rows, minute, period) => ReactNode`.
 
 On a touch screen a horizontal drag scrubs the crosshair while a vertical one still scrolls the
 page.
@@ -101,21 +105,22 @@ Events that accumulate nothing — bookings, substitutions, a red card — are n
 children, positioned through `useRaceChart()`:
 
 ```tsx
-function Card({ minute, team }: { minute: number; team: string }) {
+function Card({ minute, period, team }: { minute: number; period: number; team: string }) {
   const { scaleX, scaleY, valueAt } = useRaceChart();
-  return (
-    <rect x={scaleX(minute) - 3} y={scaleY(valueAt(team, minute)) - 9} width={6} height={8} />
-  );
+  const x = scaleX(minute, period);
+  return <rect x={x - 3} y={scaleY(valueAt(team, minute, period)) - 9} width={6} height={8} />;
 }
 
 <RaceChart ...>
-  <Card minute={52} team="England" />
+  <Card minute={52} period={2} team="England" />
 </RaceChart>;
 ```
 
-`valueAt(seriesId, time)` is what anchors the mark **to** a line rather than leaving it floating: a
-52' booking sits at whatever that team's cumulative xG was at 52'. It uses the same step-after
-semantics as the line, so an event landing exactly on `time` is included.
+Both take a period as well as a minute, for the same reason the data does. `scaleX(minute, period)`
+is the x of that minute in that period. `valueAt(seriesId, time, period)` is what anchors the mark
+**to** a line rather than leaving it floating: a 52' booking sits at whatever that team's cumulative
+xG was at 52' of the second half. It uses the same step-after semantics as the line, so an event
+landing exactly on `time` is included.
 
 <PitchPreview name="race-chart-annotations-basic" />
 

@@ -74,9 +74,9 @@ export function RaceChartStatsbombBasic() {
           data: (loaded ?? []).filter((s) => s.team.name === team),
         }))}
         time={(s) => s.minute + s.second / 60}
+        period={(s) => s.period}
         value={(s) => s.shot.statsbomb_xg}
         emphasise={isGoal}
-        period={(s) => s.period}
         tooltip={(rows, minute) => (
           <>
             <div className="font-semibold">{`${Math.round(minute)}'`}</div>

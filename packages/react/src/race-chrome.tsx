@@ -18,12 +18,18 @@ import { AXIS, CHART_MUTED as MUTED, CHART_TEXT, GRID } from "./chart-tokens.js"
  * horizontal segments.
  */
 export function RaceGridAndAxes({ appearance }: { appearance: Required<RaceAppearance> }) {
-  const { frame, scaleX, scaleY, endTime } = useRaceChart();
+  const { frame, panels, scaleY } = useRaceChart();
   const showX = appearance.axis === "both" || appearance.axis === "x";
   const showY = appearance.axis === "both" || appearance.axis === "y";
 
   const valueTicks = niceTicks(scaleY.domain[0], scaleY.domain[1]);
-  const minuteTicks = matchMinuteTicks(endTime);
+  // Each period ticks its own minutes. The boundary minute is drawn once,
+  // at the end of the period before it, not again at the next one's start.
+  const minuteTicks = panels.flatMap((panel) =>
+    matchMinuteTicks(panel.end)
+      .filter((m) => m >= panel.start && m <= panel.end && (panel.index === 0 || m > panel.start))
+      .map((minute) => ({ minute, x: panel.scale(minute) })),
+  );
 
   return (
     <g data-pitchkit-part="race-axis">
@@ -67,11 +73,11 @@ export function RaceGridAndAxes({ appearance }: { appearance: Required<RaceAppea
       />
 
       {showX &&
-        minuteTicks.map((minute) => (
+        minuteTicks.map(({ minute, x }) => (
           <text
-            key={`xtick-${minute}`}
+            key={`xtick-${x}`}
             data-pitchkit-part="race-label"
-            x={scaleX(minute)}
+            x={x}
             y={frame.y1 + 18}
             textAnchor="middle"
             style={{ fill: MUTED, fontSize: 10 }}
@@ -84,31 +90,29 @@ export function RaceGridAndAxes({ appearance }: { appearance: Required<RaceAppea
 }
 
 /**
- * Vertical rules at each period boundary.
+ * Vertical rules where one period ends and the next starts.
  *
- * Derived from the data rather than drawn at a fixed 45, because halves do
- * not end on 45: stoppage time is inside StatsBomb's own `minute`
+ * Not at a fixed 45: stoppage time is inside the feed's own `minute`
  * numbering, so a real first half runs to 47' as readily as 45'
- * (docs/architecture.md, data provider facts). With no `period` accessor
- * there is nothing to derive from, so nothing is drawn — a rule in the
- * wrong place is worse than no rule.
+ * (docs/architecture.md, data provider facts), and each period's panel is
+ * as wide as its own minutes.
  */
-export function RacePeriodBreaks({ breaks }: { breaks: readonly number[] }) {
-  const { frame, scaleX } = useRaceChart();
+export function RacePeriodBreaks() {
+  const { frame, panels } = useRaceChart();
 
   return (
     <g data-pitchkit-part="race-period">
-      {breaks.map((minute, i) => (
-        <g key={minute}>
+      {panels.slice(1).map(({ x0 }, i) => (
+        <g key={x0}>
           <line
-            x1={scaleX(minute)}
+            x1={x0}
             y1={frame.y0}
-            x2={scaleX(minute)}
+            x2={x0}
             y2={frame.y1}
             style={{ stroke: AXIS, strokeWidth: 1 }}
           />
           <text
-            x={scaleX(minute)}
+            x={x0}
             y={frame.y0 - 6}
             textAnchor="middle"
             style={{ fill: MUTED, fontSize: 9.5, letterSpacing: "0.05em" }}

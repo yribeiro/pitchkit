@@ -19,8 +19,8 @@ function Cards({ cards }: { cards: FinalCard[] }) {
       {cards.map((card) => (
         <rect
           key={`${card.team}-${card.minute}`}
-          x={scaleX(card.minute) - 3}
-          y={scaleY(valueAt(card.team, card.minute)) - 10}
+          x={scaleX(card.minute, card.period) - 3}
+          y={scaleY(valueAt(card.team, card.minute, card.period)) - 10}
           width={6}
           height={8}
           rx={1}

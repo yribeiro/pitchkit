@@ -2,27 +2,30 @@
 
 import { MomentumChart, useMomentumChart } from "@pitchkit/react";
 
-const periods = [
-  Array.from({ length: 10 }, (_, i) => ({
+const samples = [
+  ...Array.from({ length: 10 }, (_, i) => ({
     minute: i * 5,
+    period: 1,
     value: Math.round(8 * Math.sin(i / 1.6)),
   })),
-  Array.from({ length: 10 }, (_, i) => ({
+  ...Array.from({ length: 10 }, (_, i) => ({
     minute: 45 + i * 5,
+    period: 2,
     value: Math.round(9 * Math.cos(i / 1.4)),
   })),
 ];
 
+// All three in the second half.
 const substitutions = [60, 70, 78];
 
 /**
  * A marker for something the built-in kinds don't cover. `scaleX` turns a
- * minute into a pixel in whichever half holds it, and `frame` gives the bars'
- * rectangle, so this line runs the full height of the plot.
+ * minute in a period (2 is the second half) into a pixel, and `frame` gives
+ * the bars' rectangle, so this line runs the full height of the plot.
  */
 function Change({ minute }: { minute: number }) {
   const { scaleX, frame } = useMomentumChart();
-  const x = scaleX(minute);
+  const x = scaleX(minute, 2);
 
   return (
     <line
@@ -40,7 +43,12 @@ function Change({ minute }: { minute: number }) {
 
 export function MomentumChartAnnotationsBasic() {
   return (
-    <MomentumChart periods={periods} time={(d) => d.minute} value={(d) => d.value}>
+    <MomentumChart
+      data={samples}
+      time={(d) => d.minute}
+      period={(d) => d.period}
+      value={(d) => d.value}
+    >
       {substitutions.map((minute) => (
         <Change key={minute} minute={minute} />
       ))}
