@@ -361,6 +361,19 @@ describe("<MomentumChart>", () => {
       expect(x("red-card")).toBeGreaterThan(secondStart);
     });
 
+    it("drops an event whose minute isn't a number, as the bars do (#83)", () => {
+      const { container } = renderChart({
+        ...eventProps,
+        events: [
+          { minute: 20, side: "home", kind: "goal" },
+          { minute: NaN, period: 1, side: "away", kind: "goal" },
+        ],
+      });
+
+      expect(parts(container, "momentum-event")).toHaveLength(1);
+      expect(container.innerHTML).not.toContain("NaN");
+    });
+
     it("drops an event whose period the chart has no panel for", () => {
       // Period 5 is StatsBomb's shootout; this chart has two halves.
       const { container } = renderChart({
