@@ -26,7 +26,7 @@ import { EndCard } from "../components/EndCard";
 import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
-import { NetworkPitch, networkAt, shapeOf, uprightHeight } from "./NetworkPitch";
+import { NetworkPitch, networkAt, shapeOf } from "./NetworkPitch";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.inOut(Easing.cubic);
@@ -41,12 +41,8 @@ const ENGLAND_SHAPE = shapeOf(ENGLAND);
 // Timeline (30 fps). Each scene overlaps the next by OVERLAP for the transition.
 const OVERLAP = 10;
 const HOOK = 120;
-/**
- * The pattern interrupt: the reel opens on an extreme close-up of Spain's
- * network (just a tangle of lines and circles), then snap-zooms out over
- * these frames to reveal both pitches.
- */
-const SNAP = [10, 20] as const;
+/** The headline rises in from here. */
+const HEADLINE_AT = 4;
 /** The counters roll up until here, then the gap slams in. */
 const COUNT_END = 56;
 /** An explainer card between scenes. */
@@ -82,7 +78,7 @@ function Counter({ value, color }: { value: number; color: string }) {
       <div
         style={{
           fontFamily: FONT.display,
-          fontSize: 92,
+          fontSize: 84,
           color,
           lineHeight: 1,
         }}
@@ -99,7 +95,7 @@ function Counter({ value, color }: { value: number; color: string }) {
 function Hook() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const roll = interpolate(frame, [SNAP[1], COUNT_END], [0, 1], {
+  const roll = interpolate(frame, [HEADLINE_AT, COUNT_END], [0, 1], {
     ...clamp,
     easing: Easing.out(Easing.cubic),
   });
@@ -107,15 +103,8 @@ function Hook() {
   const england = Math.round(ENGLAND.completed * roll);
   // A slow drift in on both pitches, so the first frame already moves.
   const drift = 1 + 0.05 * interpolate(frame, [0, HOOK], [0, 1], clamp);
-  // Close-up, creeping in, then the snap out with a motion smear.
-  const snap = interpolate(frame, [SNAP[0], SNAP[1]], [0, 1], {
-    ...clamp,
-    easing: Easing.out(Easing.exp),
-  });
-  const zoom = (3.2 + 0.25 * Math.min(frame / SNAP[0], 1)) * (1 - snap) + snap;
-  const smear = 14 * Math.sin(snap * Math.PI);
   const headline = (line: number) => {
-    const t = interpolate(frame, [SNAP[1] + 2 + line * 5, SNAP[1] + 14 + line * 5], [0, 1], {
+    const t = interpolate(frame, [HEADLINE_AT + line * 5, HEADLINE_AT + 12 + line * 5], [0, 1], {
       ...clamp,
       easing: Easing.out(Easing.cubic),
     });
@@ -124,36 +113,30 @@ function Hook() {
 
   const slam = spring({ frame: frame - (COUNT_END + 2), fps, config: { damping: 9, mass: 0.5 } });
   const shake = frame > COUNT_END && frame < COUNT_END + 8 ? Math.sin(frame * 2.7) * 7 : 0;
-  // A gentle push in and fade, into the first explainer card.
-  const push = interpolate(frame, [HOOK - OVERLAP - 8, HOOK], [0, 1], { ...clamp, easing: ease });
+  // Fade out into the first card.
+  const fadeOut = interpolate(frame, [HOOK - OVERLAP, HOOK], [0, 1], clamp);
   const glow = interpolate(frame, [COUNT_END, COUNT_END + 6, HOOK], [0, 1, 0.6], clamp);
 
   return (
     <AbsoluteFill
       style={{
-        transform: `translate(${shake}px, 0) scale(${1 + push * 0.15})`,
-        opacity: 1 - push,
+        transform: `translateX(${shake}px)`,
+        opacity: 1 - fadeOut,
       }}
     >
-      <div style={{ position: "absolute", top: 262, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 240, left: 60, right: 60 }}>
         <div style={{ fontFamily: FONT.display, fontSize: 84, lineHeight: 1 }}>
           <div style={headline(0)}>HOW DID SPAIN AND ENGLAND</div>
           <div style={headline(1)}>SET UP AT EURO 2024?</div>
         </div>
       </div>
 
-      <AbsoluteFill
-        style={{
-          transform: `scale(${zoom})`,
-          transformOrigin: `${HOOK_W / 2 + 22}px 880px`,
-          filter: smear > 0.5 ? `blur(${smear}px)` : undefined,
-        }}
-      >
+      <AbsoluteFill>
         {[
           { net: SPAIN, color: C.sky, label: "SPAIN", left: 40, count: spain },
           { net: ENGLAND, color: C.orange, label: "ENGLAND", left: 560, count: england },
         ].map(({ net, color, label, left, count }) => (
-          <div key={label} style={{ position: "absolute", top: 486, left, width: HOOK_W }}>
+          <div key={label} style={{ position: "absolute", top: 466, left, width: HOOK_W }}>
             <div
               style={{
                 fontFamily: FONT.display,
@@ -161,7 +144,7 @@ function Hook() {
                 color,
                 letterSpacing: "0.06em",
                 lineHeight: 1,
-                marginBottom: 10,
+                marginBottom: 16,
               }}
             >
               {label}
@@ -179,7 +162,7 @@ function Hook() {
                 <NetworkPitch net={net} color={color} width={HOOK_W} showNames={false} />
               </div>
             </div>
-            <div style={{ marginTop: 6 }}>
+            <div style={{ marginTop: 18 }}>
               <Counter value={count} color={color} />
             </div>
           </div>
@@ -190,7 +173,7 @@ function Hook() {
         <div
           style={{
             position: "absolute",
-            top: 1404,
+            top: 1400,
             left: 60,
             right: 60,
             textAlign: "center",
@@ -219,118 +202,50 @@ function Hook() {
   );
 }
 
-/* Explainer cards --------------------------------------------------------- */
+/* Title cards ------------------------------------------------------------ */
 
 /**
- * A short pause between scenes that says what's coming: a kicker, a two-line
- * headline that rises in line by line, one short line, and an optional little
- * diagram.
+ * A title between scenes: a few words in big block capitals, rising in one
+ * line at a time. The words that name the thing go PitchKit green.
  */
-function Card({
-  kicker,
-  lines,
-  body,
-  children,
-}: {
-  kicker: string;
-  lines: [string, string];
-  body: ReactNode;
-  children?: ReactNode;
-}) {
+function Card({ lines }: { lines: { text: string; accent?: boolean }[] }) {
   const frame = useCurrentFrame();
   const fadeIn = interpolate(frame, [0, OVERLAP], [0, 1], clamp);
-  const rise = (from: number) => {
-    const t = interpolate(frame, [from, from + 14], [0, 1], {
-      ...clamp,
-      easing: Easing.out(Easing.cubic),
-    });
-    return { opacity: t, transform: `translateY(${(1 - t) * 40}px)` };
-  };
+  const size = 176;
   return (
     <AbsoluteFill style={{ opacity: fadeIn }}>
       <Backdrop />
-      <div style={{ position: "absolute", top: 560, left: 80, right: 80 }}>
-        <div
-          style={{
-            fontFamily: FONT.display,
-            fontSize: 38,
-            letterSpacing: "0.08em",
-            color: C.accent,
-            ...rise(4),
-          }}
-        >
-          {kicker}
+      <AbsoluteFill style={{ justifyContent: "center", padding: "0 80px 120px" }}>
+        <div style={{ fontFamily: FONT.display, fontSize: size, lineHeight: 0.98 }}>
+          {lines.map((line, i) => {
+            const t = interpolate(frame, [4 + i * 6, 18 + i * 6], [0, 1], {
+              ...clamp,
+              easing: Easing.out(Easing.cubic),
+            });
+            return (
+              <div
+                key={line.text}
+                style={{
+                  color: line.accent ? C.accent : C.text,
+                  opacity: t,
+                  transform: `translateY(${(1 - t) * 60}px)`,
+                }}
+              >
+                {line.text}
+              </div>
+            );
+          })}
         </div>
-        <div style={{ fontFamily: FONT.display, fontSize: 118, lineHeight: 1, marginTop: 10 }}>
-          <div style={rise(8)}>{lines[0]}</div>
-          <div style={rise(14)}>{lines[1]}</div>
-        </div>
-        <div
-          style={{
-            fontFamily: FONT.display,
-            fontSize: 60,
-            letterSpacing: "0.02em",
-            color: C.sky,
-            marginTop: 28,
-            ...rise(22),
-          }}
-        >
-          {body}
-        </div>
-        {children && <div style={{ marginTop: 40, ...rise(26) }}>{children}</div>}
-      </div>
+      </AbsoluteFill>
     </AbsoluteFill>
-  );
-}
-
-/** Two players and the line between them thickening: how to read a link. */
-function LinkKey() {
-  const frame = useCurrentFrame();
-  const t = interpolate(frame, [28, 58], [0, 1], { ...clamp, easing: ease });
-  const passes = Math.round(1 + 30 * t);
-  const disc = (cx: number, n: string) => (
-    <g>
-      <circle cx={cx} cy={40} r={34} fill={C.sky} stroke="rgba(4,10,7,0.95)" strokeWidth={3} />
-      <text
-        x={cx}
-        y={40}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily={FONT.display}
-        fontSize={40}
-        fill="#04100a"
-      >
-        {n}
-      </text>
-    </g>
-  );
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
-      <svg width={360} height={80}>
-        <line
-          x1={40}
-          y1={40}
-          x2={320}
-          y2={40}
-          stroke={C.sky}
-          strokeWidth={3 + 15 * t}
-          strokeOpacity={0.4 + 0.5 * t}
-        />
-        {disc(40, "14")}
-        {disc(320, "3")}
-      </svg>
-      <div style={{ fontFamily: FONT.display, fontSize: 44, color: C.sky }}>
-        {passes} {passes === 1 ? "PASS" : "PASSES"}
-      </div>
-    </div>
   );
 }
 
 /* Chapters ---------------------------------------------------------------- */
 
-const CHAPTER_W = 760;
-/** Where the chapter pitch starts; it ends just past the safe zone's lower edge, on the goal line. */
-const CHAPTER_TOP = 382;
+const CHAPTER_W = 740;
+/** Where the chapter pitch starts: ~48 px clear of the header; it ends on the safe zone's lower edge. */
+const CHAPTER_TOP = 420;
 
 function Chapter({
   net,
@@ -353,14 +268,6 @@ function Chapter({
     interpolate(frame, [BUILD_END + 4, BUILD_END + 16], [0, 1], clamp) *
     (0.75 + 0.25 * Math.sin((frame - BUILD_END) / 4));
   const chip = interpolate(frame, [BUILD_END + 8, BUILD_END + 18], [0, 1], clamp);
-  // A quick punch-in as the strongest link lights up: a small pattern break.
-  const punch =
-    1 +
-    0.06 *
-      interpolate(frame, [BUILD_END + 2, BUILD_END + 7, BUILD_END + 22], [0, 1, 0.4], {
-        ...clamp,
-        easing: Easing.out(Easing.cubic),
-      });
 
   // Whip-pan in and out, with a horizontal smear while moving.
   const enter = interpolate(frame, [0, OVERLAP], [1, 0], { ...clamp, easing: ease });
@@ -368,24 +275,24 @@ function Chapter({
   const x = enter * enterFrom * 1080 + exit * exitTo * 1080;
   const whipIn = enterFrom !== 0 ? Math.sin(enter * Math.PI) : 0;
   const blur = 18 * Math.max(whipIn, Math.sin(exit * Math.PI));
-  // With nowhere to whip in from, settle out of the hook's punch-in instead.
-  const settle = enterFrom === 0 ? enter : 0;
+  // With nowhere to whip in from, fade in from the card instead.
+  const fadeIn = enterFrom === 0 ? enter : 0;
 
   return (
     <AbsoluteFill
       style={{
-        transform: `translateX(${x}px) scale(${1 + 0.12 * settle})`,
-        opacity: 1 - settle,
+        transform: `translateX(${x}px)`,
+        opacity: 1 - fadeIn,
         filter: blur > 0.5 ? `blur(${blur}px)` : undefined,
       }}
     >
       <Backdrop />
-      <div style={{ position: "absolute", top: 214, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 218, left: 60, right: 60 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <div style={{ fontFamily: FONT.display, fontSize: 112, lineHeight: 1, color }}>
+          <div style={{ fontFamily: FONT.display, fontSize: 104, lineHeight: 1, color }}>
             {title.toUpperCase()}
           </div>
-          <div style={{ fontFamily: FONT.display, fontSize: 76, lineHeight: 1, color: C.text }}>
+          <div style={{ fontFamily: FONT.display, fontSize: 72, lineHeight: 1, color: C.text }}>
             {Math.min(45, Math.floor(minute))}’
           </div>
         </div>
@@ -394,7 +301,7 @@ function Chapter({
             display: "flex",
             alignItems: "baseline",
             justifyContent: "space-between",
-            marginTop: 4,
+            marginTop: 10,
           }}
         >
           <div style={{ fontSize: 30, fontWeight: 700, color: C.muted }}>
@@ -411,8 +318,6 @@ function Chapter({
           position: "absolute",
           top: CHAPTER_TOP,
           left: (1080 - CHAPTER_W) / 2,
-          transform: `scale(${punch})`,
-          transformOrigin: "50% 60%",
         }}
       >
         <NetworkPitch
@@ -549,12 +454,13 @@ export function NetworksReel() {
       </Layer>
       <Layer from={NETWORKS_CARD_AT} duration={CARD}>
         <Card
-          kicker="FIRST"
-          lines={["CHECK OUT THE", "PASS NETWORKS"]}
-          body="THICKER = MORE PASSES"
-        >
-          <LinkKey />
-        </Card>
+          lines={[
+            { text: "LET'S" },
+            { text: "CHECK OUT" },
+            { text: "PASS", accent: true },
+            { text: "NETWORKS", accent: true },
+          ]}
+        />
       </Layer>
       <Layer from={SPAIN_AT} duration={SECTION}>
         <Chapter net={SPAIN} color={C.sky} title="Spain" enterFrom={0} exitTo={-1} />
@@ -563,7 +469,9 @@ export function NetworksReel() {
         <Chapter net={ENGLAND} color={C.orange} title="England" enterFrom={1} exitTo={-1} />
       </Layer>
       <Layer from={SHAPE_CARD_AT} duration={CARD}>
-        <Card kicker="THEN" lines={["MEASURE", "THE SHAPE"]} body="FRONT TO BACK. SIDE TO SIDE." />
+        <Card
+          lines={[{ text: "LET'S" }, { text: "MEASURE" }, { text: "THE SHAPE", accent: true }]}
+        />
       </Layer>
       <Layer from={OUTRO_AT} duration={OUTRO}>
         <Outro />

@@ -328,20 +328,18 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 
 ## Reel 04 — How did Spain and England set up? (`reel-04-networks.mp4`, 31 s)
 
-Hook (0–4 s): a pattern interrupt first: it opens on an extreme close-up of
-Spain's network (just circles and lines filling the screen) and snap-zooms out
-at 0.3 s to reveal both finished first-half pass networks side by side, as
-"How did Spain and England set up at Euro 2024?" rises in, with the
-completed-pass counters rolling up underneath; at 1.7 s they lock and the
-"Spain passed 2.5X more" banner slams in. A short card then says what's coming
-("Check out the pass networks / Thicker = more passes", with a link
-thickening as its pass count climbs). Each chapter replays the half over
-7 s: every player starts in their 4-2-3-1 team-sheet slot and drifts smoothly
-to where they actually played, partnerships fade in and thicken, and the pass
-counter climbs; it holds on the strongest link with a quick punch-in. A second card ("Measure the shape / Front to back. Side to side.") leads into the
-outro, which measures both finished shapes, then the same end card as
-reels 01–03. For the grid cover, pick the
-banner frame (~2 s).
+Hook (0–4 s): "How did Spain and England set up at Euro 2024?" rises in over
+both finished first-half pass networks side by side, with the completed-pass
+counters rolling up underneath; at 1.9 s they lock and the "Spain passed 2.5X
+more" banner slams in with a shake. A title card in big block capitals
+("Let's check out pass networks", the last two words in PitchKit green) leads
+into the chapters. Each chapter replays the half over 7 s: every player starts
+in their 4-2-3-1 team-sheet slot and drifts smoothly to where they actually
+played, partnerships fade in and thicken and the pass counter climbs; it holds
+on the strongest link, and a whip-pan carries Spain into England. A second
+title card ("Let's measure the shape") leads into the outro, which measures
+both finished shapes, then the same end card as reels 01–03. For the grid
+cover, pick the banner frame (~2 s).
 
 **Instagram**
 
@@ -373,7 +371,7 @@ Open-source, React-first. Data: @StatsBomb open data.
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** The video opens on a close-up of a tangle of blue circles and lines, then zooms out fast and asks "How did Spain and England set up at Euro 2024?" over two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". A card reads "Check out the pass networks: thicker = more passes". Each half is then replayed full screen with player names: the circles start in both teams' 4-2-3-1 starting formation and drift into their average positions while the lines thicken. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. A second card reads "Measure the shape: front to back, side to side", and it ends on both networks side by side with each shape measured: 33 metres from Spain's furthest player forward to their last defender and 52 metres wide, against 30 metres and 50 metres for England, labelled "Spain length 33m" and "England length 30m". It closes on the PitchKit end card: the logo, "Football visualised for the web.", the npm install command and pitchkitjs.com.
+**Alt text:** The video asks "How did Spain and England set up at Euro 2024?" over two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". A title card reads "Let's check out pass networks". Each half is then replayed full screen with player names: the circles start in both teams' 4-2-3-1 starting formation and drift into their average positions while the lines thicken. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. A second title card reads "Let's measure the shape", and it ends on both networks side by side with each shape measured: 33 metres from Spain's furthest player forward to their last defender and 52 metres wide, against 30 metres and 50 metres for England, labelled "Spain length 33m" and "England length 30m". It closes on the PitchKit end card: the logo, "Football visualised for the web.", the npm install command and pitchkitjs.com.
 
 Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
 
