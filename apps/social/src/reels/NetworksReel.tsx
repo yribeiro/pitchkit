@@ -1,16 +1,15 @@
 /**
- * Reel 04: "283 vs 112". Spain's and England's first-half pass networks in the
- * Euro 2024 final.
+ * Reel 04: how Spain and England set up in the Euro 2024 final, from their
+ * first-half pass networks.
  *
- * Hook (0-2.8 s): both finished networks side by side from the first frame,
- * pass counters rolling up underneath — the contrast is the hook. At ~1.3 s
- * the counters lock and the gap slams in, then a punch-in on Spain carries
- * into the first chapter. There the half replays: every disc starts in the
- * starting formation and morphs as each player's average position takes in
- * every touch, settling into the shape the hook showed, while partnerships
- * draw in and thicken. It holds on the
- * strongest link; a whip-pan to England does the same; the outro puts the two
- * finished networks side by side again, so the loop lands back on the hook.
+ * Hook (0-4 s): the question over both finished networks side by side, pass
+ * counters rolling up underneath, then the gap slams in. A short card
+ * explains how to read a network. Each chapter replays the half over 7 s:
+ * every disc starts in the 4-2-3-1 team sheet and drifts smoothly to the
+ * player's average position while partnerships fade in and thicken, then it
+ * holds on the strongest link; a whip-pan carries Spain into England. A
+ * second card leads into the outro, which measures both finished shapes,
+ * then the end card every reel shares.
  */
 import type { ReactNode } from "react";
 import {
@@ -23,7 +22,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { Backdrop } from "../components/Chrome";
-import { Lockup } from "../components/Logo";
+import { EndCard } from "../components/EndCard";
 import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
@@ -51,13 +50,16 @@ const SECTION = 300;
 /** The half replays over these frames of a chapter (7 s), then holds. */
 const BUILD_START = 16;
 const BUILD_END = 226;
-const OUTRO = 150;
+const OUTRO = 120;
+/** The closing card every reel ends on. */
+const END = 90;
 const NETWORKS_CARD_AT = HOOK - OVERLAP;
 const SPAIN_AT = NETWORKS_CARD_AT + CARD - OVERLAP;
 const ENGLAND_AT = SPAIN_AT + SECTION - OVERLAP;
 const SHAPE_CARD_AT = ENGLAND_AT + SECTION - OVERLAP;
 const OUTRO_AT = SHAPE_CARD_AT + CARD - OVERLAP;
-export const NETWORKS_DURATION = OUTRO_AT + OUTRO;
+const END_AT = OUTRO_AT + OUTRO - OVERLAP;
+export const NETWORKS_DURATION = END_AT + END;
 
 const surname = (name: string) => {
   const parts = name.split(" ");
@@ -453,7 +455,6 @@ function Outro() {
   const fade = interpolate(frame, [0, 10], [0, 1], clamp);
   const measure = interpolate(frame, [16, 60], [0, 1], clamp);
   const takeaway = interpolate(frame, [56, 70], [0, 1], clamp);
-  const line = interpolate(frame, [84, 96], [0, 1], clamp);
   return (
     <AbsoluteFill style={{ opacity: fade }}>
       <Backdrop />
@@ -501,38 +502,6 @@ function Outro() {
         <span style={{ color: C.text }}>
           Spain&apos;s last defender sat {LINE_GAP} m higher up the pitch.
         </span>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 150,
-          left: 60,
-          right: 60,
-          opacity: line,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Lockup size={48} />
-        <div style={{ fontFamily: FONT.mono, fontSize: 30, color: C.accent }}>pitchkitjs.com</div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 236,
-          left: 60,
-          right: 60,
-          opacity: interpolate(frame, [92, 104], [0, 1], clamp),
-          fontSize: 34,
-          fontWeight: 700,
-          lineHeight: 1.3,
-          color: C.muted,
-        }}
-      >
-        Both networks drawn with PitchKit.
-        <br />
-        <span style={{ color: C.text }}>React-first, free and open source.</span>
       </div>
     </AbsoluteFill>
   );
@@ -583,6 +552,9 @@ export function NetworksReel() {
       </Layer>
       <Layer from={OUTRO_AT} duration={OUTRO}>
         <Outro />
+      </Layer>
+      <Layer from={END_AT} duration={END}>
+        <EndCard />
       </Layer>
     </AbsoluteFill>
   );
