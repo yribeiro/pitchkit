@@ -26,7 +26,7 @@ import { EndCard } from "../components/EndCard";
 import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
-import { NetworkPitch, networkAt, shapeOf } from "./NetworkPitch";
+import { formationUnits, NetworkPitch, networkAt, shapeOf, uprightY } from "./NetworkPitch";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.inOut(Easing.cubic);
@@ -285,8 +285,10 @@ function Chapter({
     [0, 4],
     clamp,
   );
-  // The unit lines stay up while the formation stands, then fade as play starts.
-  const unitLines = interpolate(frame, [BUILD_START, BUILD_START + 12], [1, 0], clamp);
+  // The unit counts stay up while the formation stands, then fade as play
+  // starts, when the clock and pass counter come in.
+  const unitCounts = interpolate(frame, [BUILD_START, BUILD_START + 12], [1, 0], clamp);
+  const live = interpolate(frame, [BUILD_START, BUILD_START + 10], [0, 1], clamp);
   const pace = END_MINUTE / (BUILD_END - BUILD_START);
   const state = networkAt(net, minute, pace);
   // Nothing counts until play starts (England's first pass is logged at 0:00).
@@ -319,7 +321,15 @@ function Chapter({
           <div style={{ fontFamily: FONT.display, fontSize: 104, lineHeight: 1, color }}>
             {title.toUpperCase()}
           </div>
-          <div style={{ fontFamily: FONT.display, fontSize: 72, lineHeight: 1, color: C.text }}>
+          <div
+            style={{
+              fontFamily: FONT.display,
+              fontSize: 72,
+              lineHeight: 1,
+              color: C.text,
+              opacity: live,
+            }}
+          >
             {Math.min(45, Math.floor(minute))}’
           </div>
         </div>
@@ -334,7 +344,15 @@ function Chapter({
           <div style={{ fontSize: 30, fontWeight: 700, color: C.muted }}>
             First half · started <span style={{ color: C.text }}>{net.formation}</span>
           </div>
-          <div style={{ fontFamily: FONT.display, fontSize: 40, letterSpacing: "0.03em", color }}>
+          <div
+            style={{
+              fontFamily: FONT.display,
+              fontSize: 40,
+              letterSpacing: "0.03em",
+              color,
+              opacity: live,
+            }}
+          >
             {passes} {passes === 1 ? "PASS" : "PASSES"}
           </div>
         </div>
@@ -354,10 +372,34 @@ function Chapter({
           minute={minute}
           pace={pace}
           reveal={reveal}
-          unitLines={unitLines}
           highlight={highlight}
         />
       </div>
+
+      {/* Each unit's head count, in the gutter beside its line of the formation. */}
+      {formationUnits(net).map(({ count, x }, u) => {
+        const t = interpolate(reveal, [u + 0.3, u + 0.9], [0, 1], clamp);
+        return (
+          <div
+            key={u}
+            style={{
+              position: "absolute",
+              top: CHAPTER_TOP + uprightY(CHAPTER_W, x),
+              left: 0,
+              width: (1080 - CHAPTER_W) / 2,
+              textAlign: "center",
+              transform: `translateY(-50%) translateX(${(1 - t) * -24}px)`,
+              fontFamily: FONT.display,
+              fontSize: 84,
+              lineHeight: 1,
+              color,
+              opacity: t * unitCounts,
+            }}
+          >
+            {count}
+          </div>
+        );
+      })}
 
       <div
         style={{

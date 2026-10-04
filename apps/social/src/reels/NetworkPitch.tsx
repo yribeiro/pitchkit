@@ -36,6 +36,28 @@ const UNITS = [
 const unitOf = (position: string) =>
   UNITS.findIndex((words) => words.some((w) => position.includes(w)));
 
+/**
+ * The outfield units of the starting formation, back to front: how many
+ * players and how far up the pitch the unit stands on the team sheet.
+ */
+export function formationUnits(net: TeamNetwork) {
+  return UNITS.map((_, u) => {
+    const members = net.nodes.filter(
+      (n) => unitOf(n.position) === u && n.position !== "Goalkeeper",
+    );
+    return {
+      count: members.length,
+      x: members.reduce((sum, n) => sum + n.slot[0], 0) / members.length,
+    };
+  });
+}
+
+/** Screen y, from the top of an upright pitch of this width, of pitch x (StatsBomb units). */
+export const uprightY = (width: number, x: number) => {
+  const height = uprightHeight(width);
+  return height - PAD.left - (x / 120) * (height - PAD.left - PAD.right);
+};
+
 /** A minute after every pass: the finished network. */
 export const FULL_TIME = Infinity;
 
@@ -208,7 +230,6 @@ export function NetworkPitch({
   highlight = 0,
   measure = 0,
   reveal = UNITS.length,
-  unitLines = 0,
 }: {
   net: TeamNetwork;
   color: string;
@@ -228,8 +249,6 @@ export function NetworkPitch({
    * striker). Fractions pop the next unit in.
    */
   reveal?: number;
-  /** 0..1: draw each unit's line across the formation with its count. */
-  unitLines?: number;
 }) {
   const height = uprightHeight(width);
   const s = width / 720;
@@ -276,16 +295,6 @@ export function NetworkPitch({
             />
           )}
           {measure > 0 && <Shape net={net} positions={state.positions} s={s} t={measure} />}
-          {unitLines > 0 && (
-            <UnitLines
-              net={net}
-              positions={state.positions}
-              s={s}
-              reveal={reveal}
-              opacity={unitLines}
-              color={color}
-            />
-          )}
           <Discs
             net={net}
             state={state}
@@ -406,80 +415,6 @@ function Shape({
       </g>
       <Tag at={midH} text={`${shape.height} M`} />
       <Tag at={midW} text={`${shape.width} M`} />
-    </g>
-  );
-}
-
-/**
- * A line through each outfield unit of the starting formation, drawn out
- * left to right as the unit appears, with its head count by the left
- * touchline.
- */
-function UnitLines({
-  net,
-  positions,
-  s,
-  reveal,
-  opacity,
-  color,
-}: {
-  net: TeamNetwork;
-  positions: Map<number, Point>;
-  s: number;
-  reveal: number;
-  opacity: number;
-  color: string;
-}) {
-  const { transform } = usePitch();
-  return (
-    <g data-pitchkit-mark="units" opacity={opacity}>
-      {UNITS.map((_, u) => {
-        const members = net.nodes
-          .filter((n) => unitOf(n.position) === u && n.position !== "Goalkeeper")
-          .map((n) => positions.get(n.id)!)
-          .sort((a, b) => a.y - b.y);
-        const t = Math.max(0, Math.min(reveal - u, 1));
-        if (t <= 0 || members.length === 0) return null;
-        const first = members[0]!;
-        const last = members.at(-1)!;
-        // Pitch y runs left to right on screen. The count sits in a clear column
-        // by the left touchline; the line runs from beside it past the last player.
-        const pad = 6;
-        const y0 = Math.max(first.y - pad, 9);
-        const y1 = Math.min(last.y + pad, 78);
-        const x = members.reduce((sum, p) => sum + p.x, 0) / members.length;
-        const draw = Math.min(t / 0.7, 1);
-        const [ax, ay] = transform.toPixel([x, y0]);
-        const [bx, by] = transform.toPixel([x, y0 + (y1 - y0) * draw]);
-        const [lx, ly] = transform.toPixel([x, 3]);
-        const tag = Math.max(0, Math.min((t - 0.4) / 0.4, 1));
-        return (
-          <g key={u}>
-            <line
-              x1={ax}
-              y1={ay}
-              x2={bx}
-              y2={by}
-              stroke={color}
-              strokeOpacity={0.7}
-              strokeWidth={4 * s}
-              strokeLinecap="round"
-              strokeDasharray={`${10 * s} ${8 * s}`}
-            />
-            <text
-              transform={`translate(${lx} ${ly}) rotate(90)`}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontFamily={FONT.display}
-              fontSize={52 * s}
-              fill={color}
-              opacity={tag}
-            >
-              {members.length}
-            </text>
-          </g>
-        );
-      })}
     </g>
   );
 }
