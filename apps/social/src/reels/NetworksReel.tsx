@@ -41,8 +41,14 @@ const ENGLAND_SHAPE = shapeOf(ENGLAND);
 // Timeline (30 fps). Each scene overlaps the next by OVERLAP for the transition.
 const OVERLAP = 10;
 const HOOK = 120;
+/**
+ * The pattern interrupt: the reel opens on an extreme close-up of Spain's
+ * network (just a tangle of lines and circles), then snap-zooms out over
+ * these frames to reveal both pitches.
+ */
+const SNAP = [10, 20] as const;
 /** The counters roll up until here, then the gap slams in. */
-const COUNT_END = 50;
+const COUNT_END = 56;
 /** An explainer card between scenes. */
 const CARD = 66;
 const SECTION = 300;
@@ -93,7 +99,7 @@ function Counter({ value, color }: { value: number; color: string }) {
 function Hook() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const roll = interpolate(frame, [0, COUNT_END], [0, 1], {
+  const roll = interpolate(frame, [SNAP[1], COUNT_END], [0, 1], {
     ...clamp,
     easing: Easing.out(Easing.cubic),
   });
@@ -101,6 +107,20 @@ function Hook() {
   const england = Math.round(ENGLAND.completed * roll);
   // A slow drift in on both pitches, so the first frame already moves.
   const drift = 1 + 0.05 * interpolate(frame, [0, HOOK], [0, 1], clamp);
+  // Close-up, creeping in, then the snap out with a motion smear.
+  const snap = interpolate(frame, [SNAP[0], SNAP[1]], [0, 1], {
+    ...clamp,
+    easing: Easing.out(Easing.exp),
+  });
+  const zoom = (3.2 + 0.25 * Math.min(frame / SNAP[0], 1)) * (1 - snap) + snap;
+  const smear = 14 * Math.sin(snap * Math.PI);
+  const headline = (line: number) => {
+    const t = interpolate(frame, [SNAP[1] + 2 + line * 5, SNAP[1] + 14 + line * 5], [0, 1], {
+      ...clamp,
+      easing: Easing.out(Easing.cubic),
+    });
+    return { opacity: t, transform: `translateY(${(1 - t) * 30}px)` };
+  };
 
   const slam = spring({ frame: frame - (COUNT_END + 2), fps, config: { damping: 9, mass: 0.5 } });
   const shake = frame > COUNT_END && frame < COUNT_END + 8 ? Math.sin(frame * 2.7) * 7 : 0;
@@ -115,66 +135,56 @@ function Hook() {
         opacity: 1 - push,
       }}
     >
-      <div style={{ position: "absolute", top: 226, left: 60, right: 60 }}>
-        <div
-          style={{
-            fontFamily: FONT.display,
-            fontSize: 36,
-            color: C.accent,
-            letterSpacing: "0.06em",
-          }}
-        >
-          THE FINAL · FIRST HALF
-        </div>
-        <div
-          style={{
-            marginTop: 4,
-            fontFamily: FONT.display,
-            fontSize: 76,
-            lineHeight: 1,
-          }}
-        >
-          HOW DID SPAIN AND ENGLAND
-          <br />
-          SET UP AT EURO 2024?
+      <div style={{ position: "absolute", top: 262, left: 60, right: 60 }}>
+        <div style={{ fontFamily: FONT.display, fontSize: 84, lineHeight: 1 }}>
+          <div style={headline(0)}>HOW DID SPAIN AND ENGLAND</div>
+          <div style={headline(1)}>SET UP AT EURO 2024?</div>
         </div>
       </div>
 
-      {[
-        { net: SPAIN, color: C.sky, label: "SPAIN", left: 40, count: spain },
-        { net: ENGLAND, color: C.orange, label: "ENGLAND", left: 560, count: england },
-      ].map(({ net, color, label, left, count }) => (
-        <div key={label} style={{ position: "absolute", top: 486, left, width: HOOK_W }}>
-          <div
-            style={{
-              fontFamily: FONT.display,
-              fontSize: 40,
-              color,
-              letterSpacing: "0.06em",
-              lineHeight: 1,
-              marginBottom: 10,
-            }}
-          >
-            {label}
-          </div>
-          <div
-            style={{
-              borderRadius: 6,
-              boxShadow:
-                label === "SPAIN"
-                  ? `0 0 ${60 * glow}px ${12 * glow}px rgba(56,189,248,0.55)`
-                  : "none",
-            }}
-          >
-            <div style={{ transform: `scale(${drift})` }}>
-              <NetworkPitch net={net} color={color} width={HOOK_W} showNames={false} />
+      <AbsoluteFill
+        style={{
+          transform: `scale(${zoom})`,
+          transformOrigin: `${HOOK_W / 2 + 22}px 880px`,
+          filter: smear > 0.5 ? `blur(${smear}px)` : undefined,
+        }}
+      >
+        {[
+          { net: SPAIN, color: C.sky, label: "SPAIN", left: 40, count: spain },
+          { net: ENGLAND, color: C.orange, label: "ENGLAND", left: 560, count: england },
+        ].map(({ net, color, label, left, count }) => (
+          <div key={label} style={{ position: "absolute", top: 486, left, width: HOOK_W }}>
+            <div
+              style={{
+                fontFamily: FONT.display,
+                fontSize: 40,
+                color,
+                letterSpacing: "0.06em",
+                lineHeight: 1,
+                marginBottom: 10,
+              }}
+            >
+              {label}
+            </div>
+            <div
+              style={{
+                borderRadius: 6,
+                boxShadow:
+                  label === "SPAIN"
+                    ? `0 0 ${60 * glow}px ${12 * glow}px rgba(56,189,248,0.55)`
+                    : "none",
+              }}
+            >
+              <div style={{ transform: `scale(${drift})` }}>
+                <NetworkPitch net={net} color={color} width={HOOK_W} showNames={false} />
+              </div>
+            </div>
+            <div style={{ marginTop: 6 }}>
+              <Counter value={count} color={color} />
             </div>
           </div>
-          <div style={{ marginTop: 6 }}>
-            <Counter value={count} color={color} />
-          </div>
-        </div>
-      ))}
+        ))}
+      </AbsoluteFill>
 
       {frame >= COUNT_END + 2 && (
         <div
@@ -343,6 +353,14 @@ function Chapter({
     interpolate(frame, [BUILD_END + 4, BUILD_END + 16], [0, 1], clamp) *
     (0.75 + 0.25 * Math.sin((frame - BUILD_END) / 4));
   const chip = interpolate(frame, [BUILD_END + 8, BUILD_END + 18], [0, 1], clamp);
+  // A quick punch-in as the strongest link lights up: a small pattern break.
+  const punch =
+    1 +
+    0.06 *
+      interpolate(frame, [BUILD_END + 2, BUILD_END + 7, BUILD_END + 22], [0, 1, 0.4], {
+        ...clamp,
+        easing: Easing.out(Easing.cubic),
+      });
 
   // Whip-pan in and out, with a horizontal smear while moving.
   const enter = interpolate(frame, [0, OVERLAP], [1, 0], { ...clamp, easing: ease });
@@ -388,7 +406,15 @@ function Chapter({
         </div>
       </div>
 
-      <div style={{ position: "absolute", top: CHAPTER_TOP, left: (1080 - CHAPTER_W) / 2 }}>
+      <div
+        style={{
+          position: "absolute",
+          top: CHAPTER_TOP,
+          left: (1080 - CHAPTER_W) / 2,
+          transform: `scale(${punch})`,
+          transformOrigin: "50% 60%",
+        }}
+      >
         <NetworkPitch
           net={net}
           color={color}
