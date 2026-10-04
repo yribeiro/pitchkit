@@ -322,15 +322,9 @@ function Chapter({
             {title.toUpperCase()}
           </div>
           <div
-            style={{
-              fontFamily: FONT.display,
-              fontSize: 72,
-              lineHeight: 1,
-              color: C.text,
-              opacity: live,
-            }}
+            style={{ fontFamily: FONT.display, fontSize: 72, lineHeight: 1, color, opacity: live }}
           >
-            {Math.min(45, Math.floor(minute))}’
+            {passes}
           </div>
         </div>
         <div
@@ -353,7 +347,7 @@ function Chapter({
               opacity: live,
             }}
           >
-            {passes} {passes === 1 ? "PASS" : "PASSES"}
+            {passes === 1 ? "PASS" : "PASSES"}
           </div>
         </div>
       </div>

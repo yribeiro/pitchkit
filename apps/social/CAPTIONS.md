@@ -336,7 +336,8 @@ completed-pass counters rolling up underneath; at about 3.8 s they lock and
 the "Spain passed 2.5X more" banner slams in with a shake. Then the chapters. Each chapter first builds the starting 4-2-3-1 unit by
 unit (back four with the keeper, then 2, then 3, then 1, each count shown
 in the margin beside its line), then replays the half over 7 s: every player drifts smoothly to where they actually
-played, partnerships fade in and thicken and the pass counter climbs; it holds
+played, partnerships fade in and thicken and the pass counter (top right, no
+clock) climbs; it holds
 on the strongest link, and a whip-pan carries Spain into England. A second
 title card ("Let's measure the shape") leads into the outro, which measures
 both finished shapes, then the same end card as reels 01–03. For the grid
