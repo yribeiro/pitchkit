@@ -25,6 +25,7 @@ export interface FinalShot {
 
 export interface FinalCard {
   minute: number;
+  period: number;
   team: string;
   player: string;
 }
@@ -59,10 +60,10 @@ export const FINAL_SHOTS: FinalShot[] = [
 
 /** Bookings live at `foul_committed.card` (and `bad_behaviour.card`). */
 export const FINAL_CARDS: FinalCard[] = [
-  { minute: 24, team: "England", player: "Kane" },
-  { minute: 29, team: "Spain", player: "Carvajal" },
-  { minute: 52, team: "England", player: "Stones" },
-  { minute: 90, team: "England", player: "Watkins" },
+  { minute: 24, period: 1, team: "England", player: "Kane" },
+  { minute: 29, period: 1, team: "Spain", player: "Carvajal" },
+  { minute: 52, period: 2, team: "England", player: "Stones" },
+  { minute: 90, period: 2, team: "England", player: "Watkins" },
 ];
 
 export const HOME_TEAM = "Spain";

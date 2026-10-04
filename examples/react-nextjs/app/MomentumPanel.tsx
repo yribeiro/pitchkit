@@ -56,6 +56,7 @@ export function MomentumPanel() {
           teams={{ home: "Spain", away: "England" }}
           events={events}
           eventTime={(e) => e.minute}
+          eventPeriod={(e) => e.period}
           eventSide={(e) => e.side}
           eventKind={(e) => e.kind}
         />

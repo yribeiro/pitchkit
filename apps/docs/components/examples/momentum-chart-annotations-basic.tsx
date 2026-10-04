@@ -13,16 +13,17 @@ const periods = [
   })),
 ];
 
+// All three in the second half.
 const substitutions = [60, 70, 78];
 
 /**
  * A marker for something the built-in kinds don't cover. `scaleX` turns a
- * minute into a pixel in whichever half holds it, and `frame` gives the bars'
- * rectangle, so this line runs the full height of the plot.
+ * minute in a period (2 is the second half) into a pixel, and `frame` gives
+ * the bars' rectangle, so this line runs the full height of the plot.
  */
 function Change({ minute }: { minute: number }) {
   const { scaleX, frame } = useMomentumChart();
-  const x = scaleX(minute);
+  const x = scaleX(minute, 2);
 
   return (
     <line

@@ -659,8 +659,8 @@ describe("<MomentumChart>", () => {
           <Marker minute={46.5} period={2} />
         </MomentumChart>,
       );
-      const [first, second] = Array.from(container.querySelectorAll('[data-testid="m"]')).map(
-        (c) => Number(c.getAttribute("cx")),
+      const [first, second] = Array.from(container.querySelectorAll('[data-testid="m"]')).map((c) =>
+        Number(c.getAttribute("cx")),
       );
       const secondStart = Number(
         parts(container, "momentum-panel")[1]?.querySelector("rect")?.getAttribute("x"),

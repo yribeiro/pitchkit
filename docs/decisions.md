@@ -161,7 +161,8 @@ with its maths in `core/momentum/`. Five choices shape it:
   because halves do not end on 45. Extra time is two more arrays.
 - **Events are a separate list**, passed as `events` plus `eventTime`/`eventSide`/`eventKind`, the
   same list-plus-accessors shape as every other prop. The four props are a type-level set: passing
-  `events` alone is a compile error. Anything the built-in kinds don't cover is a child, positioned
+  `events` alone is a compile error. `eventPeriod` joined the set later
+  ([D28](#d28-time-based-charts-require-a-period)). Anything the built-in kinds don't cover is a child, positioned
   through `useMomentumChart()`.
 - **The icons are PitchKit's own.** SofaScore's artwork is what prompted the chart, but it is
   another site's work and a chart library is the wrong place to redistribute it. They are drawn
@@ -271,6 +272,35 @@ they trade off: side by side hides nothing, overlay compares the same metric dir
   coverage. Path coordinates are rounded to two decimals so floating-point dust doesn't reach the markup.
 - `<PizzaChart>` is mplsoccer parity for `PyPizza`. mplsoccer only overlays two series and has no
   click-to-detail.
+
+### D28. Time-based charts require a period
+
+**Decision:** Every event `<MomentumChart>` draws and every datum `<RaceChart>` accumulates carries
+its period: `eventPeriod` and `period` are required accessors, and the hooks' `scaleX(minute,
+period)` and `valueAt(seriesId, time, period)` take one too. A period is the feed's own number, 1
+for the first half, so StatsBomb's `period` field plugs straight in; period _n_ is
+`<MomentumChart>`'s `periods[n - 1]`. `<RaceChart>` draws each period after the one before, in its
+own panel (`layoutMomentumPanels` with no gap), instead of on one 0–90 axis.
+
+**Why:** Feeds restart the clock at 45 for the second half, so a first half with stoppage time and
+the second half share minutes 45'–48'. A minute alone can't place an event in that overlap, and it
+happens in most matches: in 5 of 8 Euro 2024 matches checked, a second-half goal, card or
+substitution fell inside the first half's stoppage minutes
+([issue #82](https://github.com/yribeiro/pitchkit/issues/82)). An optional period would have kept
+the wrong placement as the default for exactly the data these charts are for. The packages are
+pre-1.0, so the break was taken rather than carried.
+
+**Consequences:**
+
+- `core` sorts a race by period, then minute (`computeCumulativeSeries`), and `valueAtTime` counts
+  every earlier period. `racePeriodRanges` gives each period its nominal range extended to its own
+  last event, the rule `<MomentumChart>` already used.
+- `<RaceChart>`'s half-time rule now sits where the first half's panel ends, at least 45', rather
+  than at the first half's last shot.
+- An event or datum whose period isn't a whole number from 1, or that `<MomentumChart>` has no
+  panel for, is not drawn.
+- `MomentumHover.period` changed from a zero-based index to the 1-based period number, so one
+  chart doesn't use two conventions.
 
 ---
 

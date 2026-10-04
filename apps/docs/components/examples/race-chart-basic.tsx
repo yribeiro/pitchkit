@@ -33,9 +33,9 @@ export function RaceChartBasic() {
         { id: "England", data: shots.filter((s) => s.team === "England") },
       ]}
       time={(s) => s.minute}
+      period={(s) => s.period}
       value={(s) => s.xg}
       emphasise={(s) => s.goal}
-      period={(s) => s.period}
     />
   );
 }

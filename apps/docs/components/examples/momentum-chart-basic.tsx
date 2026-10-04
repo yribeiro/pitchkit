@@ -43,14 +43,16 @@ const periods = [
   ],
 ];
 
-// Events are a separate list, with accessors, like the samples.
+// Events are a separate list, with accessors, like the samples. Each one
+// says which half it's in: minutes restart at 45, so 46' alone could be
+// either half's.
 const events = [
-  { minute: 23, side: "away", kind: "goal" },
-  { minute: 38, side: "home", kind: "yellow-card" },
-  { minute: 56, side: "home", kind: "goal" },
-  { minute: 71, side: "away", kind: "red-card" },
-  { minute: 81, side: "away", kind: "missed-penalty" },
-  { minute: 88, side: "home", kind: "goal" },
+  { minute: 23, period: 1, side: "away", kind: "goal" },
+  { minute: 38, period: 1, side: "home", kind: "yellow-card" },
+  { minute: 56, period: 2, side: "home", kind: "goal" },
+  { minute: 71, period: 2, side: "away", kind: "red-card" },
+  { minute: 81, period: 2, side: "away", kind: "missed-penalty" },
+  { minute: 88, period: 2, side: "home", kind: "goal" },
 ] as const;
 
 export function MomentumChartBasic() {
@@ -62,6 +64,7 @@ export function MomentumChartBasic() {
       teams={{ home: "Home", away: "Away" }}
       events={events}
       eventTime={(e) => e.minute}
+      eventPeriod={(e) => e.period}
       eventSide={(e) => e.side}
       eventKind={(e) => e.kind}
     />

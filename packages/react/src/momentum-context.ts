@@ -11,8 +11,9 @@ export const MomentumChartContext = momentum.Context;
  *
  * This is how anything the chart doesn't draw itself gets drawn: a team
  * crest, a substitution annotated with a name, a shaded spell of pressure.
- * `scaleX(minute)` finds the right period for you, and `scaleY(value)`
- * is symmetric about the zero line.
+ * `scaleX(minute, period)` places a minute in its period, 1 for the first
+ * half (minutes restart at 45, so a minute alone is ambiguous), and
+ * `scaleY(value)` is symmetric about the zero line.
  *
  * ```tsx
  * function Crest({ side, src }: { side: "home" | "away"; src: string }) {

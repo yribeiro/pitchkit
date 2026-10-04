@@ -22,24 +22,26 @@ export const SECOND_HALF = [
 
 export interface FinalEvent {
   minute: number;
+  /** Minutes restart at 45, so the 45:00 substitution and the 46:09 goal need it. */
+  period: number;
   side: "home" | "away";
   kind: MomentumEventKind;
 }
 
 /** Goals, bookings and substitutions, so the icon row's stacking can be reviewed. */
 export const FINAL_EVENTS: FinalEvent[] = [
-  { minute: 24.63, side: "away", kind: "yellow-card" },
-  { minute: 29.95, side: "home", kind: "yellow-card" },
-  { minute: 45.0, side: "home", kind: "substitution" },
-  { minute: 46.15, side: "home", kind: "goal" },
-  { minute: 52.52, side: "away", kind: "yellow-card" },
-  { minute: 60.68, side: "away", kind: "substitution" },
-  { minute: 67.32, side: "home", kind: "substitution" },
-  { minute: 69.88, side: "away", kind: "substitution" },
-  { minute: 72.13, side: "away", kind: "goal" },
-  { minute: 82.63, side: "home", kind: "substitution" },
-  { minute: 85.93, side: "home", kind: "goal" },
-  { minute: 88.67, side: "home", kind: "substitution" },
-  { minute: 89.2, side: "away", kind: "substitution" },
-  { minute: 90.9, side: "away", kind: "yellow-card" },
+  { minute: 24.63, period: 1, side: "away", kind: "yellow-card" },
+  { minute: 29.95, period: 1, side: "home", kind: "yellow-card" },
+  { minute: 45.0, period: 2, side: "home", kind: "substitution" },
+  { minute: 46.15, period: 2, side: "home", kind: "goal" },
+  { minute: 52.52, period: 2, side: "away", kind: "yellow-card" },
+  { minute: 60.68, period: 2, side: "away", kind: "substitution" },
+  { minute: 67.32, period: 2, side: "home", kind: "substitution" },
+  { minute: 69.88, period: 2, side: "away", kind: "substitution" },
+  { minute: 72.13, period: 2, side: "away", kind: "goal" },
+  { minute: 82.63, period: 2, side: "home", kind: "substitution" },
+  { minute: 85.93, period: 2, side: "home", kind: "goal" },
+  { minute: 88.67, period: 2, side: "home", kind: "substitution" },
+  { minute: 89.2, period: 2, side: "away", kind: "substitution" },
+  { minute: 90.9, period: 2, side: "away", kind: "yellow-card" },
 ];

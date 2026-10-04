@@ -234,7 +234,10 @@ describe("xToMinute", () => {
   const [first, second] = panels as [(typeof panels)[number], (typeof panels)[number]];
 
   it("reads a pixel back as a period and a minute", () => {
-    expect(xToMinute(panels, first.scale(46.5))).toEqual({ period: 1, minute: expect.closeTo(46.5, 6) });
+    expect(xToMinute(panels, first.scale(46.5))).toEqual({
+      period: 1,
+      minute: expect.closeTo(46.5, 6),
+    });
     expect(xToMinute(panels, second.scale(46.5))).toEqual({
       period: 2,
       minute: expect.closeTo(46.5, 6),

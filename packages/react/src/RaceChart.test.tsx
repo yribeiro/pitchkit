@@ -143,6 +143,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "AWAY", data: AWAY }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -163,6 +164,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "HOME", data: HOME, className: "stroke-emerald-400" }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -184,6 +186,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "SOLO", data: HOME }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -235,25 +238,19 @@ describe("<RaceChart>", () => {
         y: Number(c.getAttribute("cy")),
       }));
     const halfTime = (container: HTMLElement) =>
-      Number(container.querySelector('[data-pitchkit-part="race-period"] line')?.getAttribute("x1"));
+      Number(
+        container.querySelector('[data-pitchkit-part="race-period"] line')?.getAttribute("x1"),
+      );
 
     it("draws each shot in its own half", () => {
       const { container } = overlap();
-      const [second, first] = markers(container) as [{ x: number }, { x: number }];
+      const xs = markers(container).map((m) => m.x);
 
-      expect(first.x).toBeLessThan(halfTime(container));
-      expect(second.x).toBeGreaterThan(halfTime(container));
+      expect(xs.filter((x) => x < halfTime(container))).toHaveLength(1);
+      expect(xs.filter((x) => x > halfTime(container))).toHaveLength(1);
     });
 
-    it("accumulates in match order, first half before second", () => {
-      const { container } = overlap();
-      const [second, first] = markers(container) as [{ y: number }, { y: number }];
-
-      // The second-half shot carries the running total of both, so it sits higher.
-      expect(second.y).toBeLessThan(first.y);
-    });
-
-    it("reads the same minute in each half as that half's total", () => {
+    it("accumulates in match order, reading each half's own minutes", () => {
       const { container } = overlap();
       const hit = hoverable(container);
       const tooltip = () => container.querySelector('[role="tooltip"]')?.textContent ?? "";
@@ -391,6 +388,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "HOME", data: HOME }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
       />,
     );
     const box = container.firstElementChild as HTMLElement;
@@ -494,6 +492,7 @@ describe("<RaceChart>", () => {
         ]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         emphasise={(s) => s.goal === true}
         width={720}
         height={380}

@@ -38,10 +38,10 @@ const shots = [
 
 /** Bookings live at `foul_committed.card` in StatsBomb's feed. */
 const cards = [
-  { minute: 24, team: "England", player: "Kane" },
-  { minute: 29, team: "Spain", player: "Olmo" },
-  { minute: 52, team: "England", player: "Stones" },
-  { minute: 90, team: "England", player: "Watkins" },
+  { minute: 24, period: 1, team: "England", player: "Kane" },
+  { minute: 29, period: 1, team: "Spain", player: "Olmo" },
+  { minute: 52, period: 2, team: "England", player: "Stones" },
+  { minute: 90, period: 2, team: "England", player: "Watkins" },
 ];
 
 /**
@@ -57,8 +57,8 @@ function Bookings() {
       {cards.map((card) => (
         <rect
           key={`${card.team}-${card.minute}`}
-          x={scaleX(card.minute) - 3}
-          y={scaleY(valueAt(card.team, card.minute)) - 10}
+          x={scaleX(card.minute, card.period) - 3}
+          y={scaleY(valueAt(card.team, card.minute, card.period)) - 10}
           width={6}
           height={8}
           rx={1}
@@ -89,9 +89,9 @@ export function XgRaceGallery() {
           { id: "England", data: shots.filter((s) => s.team === "England") },
         ]}
         time={(s) => s.minute}
+        period={(s) => s.period}
         value={(s) => s.xg}
         emphasise={(s) => s.goal}
-        period={(s) => s.period}
       >
         <Bookings />
       </RaceChart>

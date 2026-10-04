@@ -39,26 +39,34 @@ interface Sample {
 
 interface MatchEvent {
   minute: number;
+  period: number;
   side: "home" | "away";
   kind: MomentumEventKind;
   label: string;
 }
 
-/** One array of samples per period, the shape `<MomentumChart>` takes. */
+/**
+ * One array of samples per period, the shape `<MomentumChart>` takes:
+ * `periods[n - 1]` is period n, which is what lines events up with their half.
+ */
 function derivePeriods(events: readonly StatsBombEvent[], home: string): Sample[][] {
   const periods: Sample[][] = [];
 
   // Period 5 is the penalty shootout; it has no place on a match clock.
-  for (let period = 1; period <= 4; period++) {
+  const lastPeriod = Math.max(0, ...events.filter((e) => e.period <= 4).map((e) => e.period));
+  for (let period = 1; period <= lastPeriod; period++) {
     const inPeriod = events.filter((e) => e.period === period);
-    if (inPeriod.length === 0) continue;
 
     const counts = new Map<number, number>();
     for (const e of inPeriod) {
       if (!ON_BALL.has(e.type.name) || e.x === undefined || e.x < 80) continue;
       counts.set(e.minute, (counts.get(e.minute) ?? 0) + (e.team.name === home ? 1 : -1));
     }
-    if (counts.size === 0) continue;
+    // An empty period keeps its slot, so the ones after it stay in line.
+    if (counts.size === 0) {
+      periods.push([]);
+      continue;
+    }
 
     const first = Math.min(...inPeriod.map((e) => e.minute));
     const last = Math.max(...counts.keys());
@@ -83,6 +91,7 @@ function pickEvents(events: readonly StatsBombEvent[], home: string): MatchEvent
     if (shot.period <= 4 && isGoal(shot)) {
       picked.push({
         minute: shot.minute + shot.second / 60,
+        period: shot.period,
         side: shot.team.name === home ? "home" : "away",
         kind: "goal",
         label: `Goal, ${shot.player?.name ?? shot.team.name}`,
@@ -95,6 +104,7 @@ function pickEvents(events: readonly StatsBombEvent[], home: string): MatchEvent
     if (!card || e.period > 4) continue;
     picked.push({
       minute: e.minute + e.second / 60,
+      period: e.period,
       side: e.team.name === home ? "home" : "away",
       kind: card === "Yellow Card" ? "yellow-card" : "red-card",
       label: `${card}, ${e.player?.name ?? e.team.name}`,
@@ -160,6 +170,7 @@ export function MomentumChartStatsbombBasic() {
         teams={{ home, away }}
         events={marks}
         eventTime={(e) => e.minute}
+        eventPeriod={(e) => e.period}
         eventSide={(e) => e.side}
         eventKind={(e) => e.kind}
         eventLabel={(e) => e.label}

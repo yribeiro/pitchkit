@@ -86,10 +86,11 @@ describe("SSR (renderToString)", () => {
     const html = renderToString(
       <RaceChart
         series={[
-          { id: "ESP", data: [{ minute: 31, xg: 0.44, goal: true }] },
-          { id: "ENG", data: [{ minute: 73, xg: 0.35 }] },
+          { id: "ESP", data: [{ minute: 31, period: 1, xg: 0.44, goal: true }] },
+          { id: "ENG", data: [{ minute: 73, period: 2, xg: 0.35 }] },
         ]}
         time={(s) => s.minute}
+        period={(s) => s.period}
         value={(s) => s.xg}
         emphasise={(s) => s.goal === true}
         width={720}
@@ -108,8 +109,9 @@ describe("SSR (renderToString)", () => {
   it("renders a RaceChart at its responsive fallback size without a DOM", () => {
     const html = renderToString(
       <RaceChart
-        series={[{ id: "ESP", data: [{ minute: 31, xg: 0.44 }] }]}
+        series={[{ id: "ESP", data: [{ minute: 31, period: 1, xg: 0.44 }] }]}
         time={(s) => s.minute}
+        period={(s) => s.period}
         value={(s) => s.xg}
       />,
     );
@@ -130,8 +132,9 @@ describe("SSR (renderToString)", () => {
         ]}
         time={(d) => d.minute}
         value={(d) => d.v}
-        events={[{ minute: 12, side: "home" as const, kind: "goal" as const }]}
+        events={[{ minute: 12, period: 1, side: "home" as const, kind: "goal" as const }]}
         eventTime={(e) => e.minute}
+        eventPeriod={(e) => e.period}
         eventSide={(e) => e.side}
         eventKind={(e) => e.kind}
         width={720}

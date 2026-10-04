@@ -62,21 +62,21 @@ coordinates.
 A cumulative step chart over match minutes — the "xG race chart" / "xG timeline". A root
 in its own right: **not** a child of `<Pitch>`, and it takes no `type` prop.
 
-| Prop               | Type                        | Notes                                                                                       |
-| ------------------ | --------------------------- | ------------------------------------------------------------------------------------------- |
-| `series`           | `RaceSeries<T>[]`           | `{ id, label?, data, color?, className? }`. `id` is what `valueAt` takes.                   |
-| `time`             | `Accessor<T, number>`       | Match minute; fractional is fine.                                                           |
-| `value`            | `Accessor<T, number>`       | The quantity that accumulates.                                                              |
-| `emphasise`        | `Accessor<T, boolean>`      | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
-| `period`           | `Accessor<T, number>`       | Given, period breaks are derived from the data.                                             |
-| `endTime`          | `number`                    | Default `max(90, ceil(latest event))`.                                                      |
-| `maxValue`         | `number`                    | Default: the next round tick at or above the highest total.                                 |
-| `width` / `height` | `number`                    | Both together are the fixed-size opt-out.                                                   |
-| `aspectRatio`      | `number`                    | Responsive box shape. Default `2`.                                                          |
-| `padding`          | `ChartPadding`              | Defaults derive from what is drawn.                                                         |
-| `appearance`       | `RaceAppearance`            | `{ axis, grid, area, markers, periods, endLabels, legend }` — structure only, never colour. |
-| `tooltip`          | `(rows, time) => ReactNode` | Replaces the crosshair tooltip body.                                                        |
-| `children`         | `ReactNode`                 | Annotation slot; positions itself via `useRaceChart()`.                                     |
+| Prop               | Type                                | Notes                                                                                       |
+| ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `series`           | `RaceSeries<T>[]`                   | `{ id, label?, data, color?, className? }`. `id` is what `valueAt` takes.                   |
+| `time`             | `Accessor<T, number>`               | Match minute; fractional is fine.                                                           |
+| `value`            | `Accessor<T, number>`               | The quantity that accumulates.                                                              |
+| `emphasise`        | `Accessor<T, boolean>`              | Larger ringed marker. Pass `isGoal` for an xG race.                                         |
+| `period`           | `Accessor<T, number>`               | **Required.** 1 = first half, 2 = second, 3–4 extra time. Others dropped.                   |
+| `endTime`          | `number`                            | Where the last period ends. Default: its nominal end, or its last event if later.           |
+| `maxValue`         | `number`                            | Default: the next round tick at or above the highest total.                                 |
+| `width` / `height` | `number`                            | Both together are the fixed-size opt-out.                                                   |
+| `aspectRatio`      | `number`                            | Responsive box shape. Default `2`.                                                          |
+| `padding`          | `ChartPadding`                      | Defaults derive from what is drawn.                                                         |
+| `appearance`       | `RaceAppearance`                    | `{ axis, grid, area, markers, periods, endLabels, legend }` — structure only, never colour. |
+| `tooltip`          | `(rows, time, period) => ReactNode` | Replaces the crosshair tooltip body.                                                        |
+| `children`         | `ReactNode`                         | Annotation slot; positions itself via `useRaceChart()`.                                     |
 
 Each series' total is printed at its own line end, inside the plot, rather than in a right-hand
 gutter — so the lines use the full width. Only the value is printed; the legend names the series.
@@ -92,19 +92,24 @@ array, so removing a series never repaints the others. A series given a `classNa
 `color` drops its themed default, the same rule as every mark layer.
 
 Pitfalls with StatsBomb open data: `emphasise` is generic — pass `isGoal` for an xG race. Filter
-`period <= 4`: period 5 is the shootout and its penalties carry xG. Pass `period` rather than
-hardcoding half time, since halves do not end on 45. Events that don't accumulate (bookings,
-substitutions) are children positioned with `useRaceChart()`.
+`period <= 4`: period 5 is the shootout and its penalties carry xG. Each period is drawn after
+the one before, as wide as its own minutes. `period` is required because halves do not end on 45
+and minutes restart at 45: a first half with stoppage time and the second half both contain
+45'–47'. Events that don't accumulate (bookings, substitutions) are children positioned with
+`useRaceChart()`.
 
 ### `useRaceChart()`
 
-Returns `{ frame, scaleX, scaleY, series, endTime, valueAt }` from the enclosing
+Returns `{ frame, panels, scaleX, scaleY, series, endTime, valueAt }` from the enclosing
 `<RaceChart>`. Throws if called outside one.
 
-- `scaleX(minute) -> px`, `scaleY(value) -> px` (already flipped for SVG); both have `.invert`
-- `valueAt(seriesId, time) -> number` — that series' cumulative value at `time`, using
-  step-after semantics: an event landing exactly on `time` is included. Throws for an
-  unknown `seriesId`.
+- `scaleX(minute, period) -> px` (period 1 = first half); `scaleY(value) -> px` (already flipped
+  for SVG, has `.invert`)
+- `valueAt(seriesId, time, period) -> number` — that series' cumulative value at `time` in
+  `period`, using step-after semantics: an event landing exactly on `time` is included, and every
+  event in an earlier period counts. Throws for an unknown `seriesId`.
+- `panels` — one `{ index, start, end, x0, x1, scale }` per period, contiguous; `endTime` — where
+  the last period ends
 - `frame: ChartFrame` — `{ width, height, x0, y0, x1, y1, plotWidth, plotHeight }`
 
 ### `<MomentumChart>`
@@ -119,8 +124,9 @@ PitchKit draws momentum; it does not compute it, so the caller supplies the valu
 | `time`             | `Accessor<T, number>`               | Match minute the sample starts at. Fractional is fine.                                  |
 | `value`            | `Accessor<T, number>`               | Signed: positive is home pressure (bars up), negative away (bars down).                 |
 | `teams`            | `{ home: string; away: string }`    | Names for the legend and readout.                                                       |
-| `events`           | `E[]`                               | With all four accessors below, or none. Passing `events` alone is a type error.         |
+| `events`           | `E[]`                               | With the required accessors below, or none. Passing `events` alone is a type error.     |
 | `eventTime`        | `Accessor<E, number>`               | Match minute.                                                                           |
+| `eventPeriod`      | `Accessor<E, number>`               | **Required.** 1 = first half; drawn in `periods[period - 1]`, else not drawn.           |
 | `eventSide`        | `Accessor<E, "home" \| "away">`     | Which team.                                                                             |
 | `eventKind`        | `Accessor<E, MomentumEventKind>`    | `goal`, `own-goal`, `missed-penalty`, `yellow-card`, `red-card`, `substitution`, `var`. |
 | `eventLabel`       | `Accessor<E, string>`               | Optional readout / screen-reader text. Defaults to the kind.                            |
@@ -130,7 +136,7 @@ PitchKit draws momentum; it does not compute it, so the caller supplies the valu
 | `aspectRatio`      | `number`                            | Responsive box shape. Default `3`, or `1.8` below 420px wide.                           |
 | `padding`          | `ChartPadding`                      | Defaults derive from what is drawn.                                                     |
 | `appearance`       | `{ axis?, legend? }`                | Structure only, never colour.                                                           |
-| `tooltip`          | `(hover) => ReactNode`              | `hover` is `{ minute, period, bar, datum, events }`. Replaces the readout body.         |
+| `tooltip`          | `(hover) => ReactNode`              | `hover` is `{ minute, period, bar, datum, events }`; `period` is 1-based.               |
 | `children`         | `ReactNode`                         | Annotation slot; positions itself via `useMomentumChart()`.                             |
 
 Each sample's bar runs from its minute to the **next sample's** minute, so data at any interval
@@ -149,7 +155,8 @@ Colours: `--pitch-series-1` (home), `--pitch-series-2` (away), `--pitch-card-yel
 Returns `{ frame, panels, scaleX, scaleY, bars }` from the enclosing `<MomentumChart>`. Throws if
 called outside one.
 
-- `scaleX(minute) -> px`, in whichever period holds that minute (nearest one for a gap)
+- `scaleX(minute, period) -> px`, in that period (1 = first half), clamped to its edges. Minutes
+  restart at 45, so the minute alone can't say which half
 - `scaleY(value) -> px`, symmetric about zero and already flipped for SVG
 - `frame: ChartFrame` — the bars' rectangle; `panels` — one `{ index, start, end, x0, x1, scale }`
   per period; `bars` — one `{ start, end, value, index }[]` per period. `index` points back into

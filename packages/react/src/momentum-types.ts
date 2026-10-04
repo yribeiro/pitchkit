@@ -39,7 +39,7 @@ export interface MomentumAppearance {
 /** What a readout is about: the minute under the pointer and what is there. */
 export interface MomentumHover<T, E> {
   readonly minute: number;
-  /** Zero-based index into `periods`. */
+  /** The hovered period's number: 1 for the first half, so `periods[period - 1]`. */
   readonly period: number;
   /** The bar under the pointer, or `undefined` in a stretch with no data. */
   readonly bar: MomentumBar | undefined;
@@ -88,8 +88,18 @@ interface MomentumBaseProps<T, E> {
 
 interface MomentumEventProps<E> {
   readonly events: readonly E[];
-  /** Match minute of the event. */
+  /** Match minute of the event, as the feed numbers it. */
   readonly eventTime: Accessor<E, number>;
+  /**
+   * The period the event happened in: 1 for the first half, 2 for the
+   * second, 3 and 4 for extra time, so period *n* is drawn in
+   * `periods[n - 1]`. StatsBomb's `period` is already this.
+   *
+   * Required because minutes restart at 45 for the second half: a minute
+   * like 46' is in both halves when the first had stoppage time. An event
+   * whose period has no entry in `periods` is not drawn.
+   */
+  readonly eventPeriod: Accessor<E, number>;
   readonly eventSide: Accessor<E, MomentumSide>;
   readonly eventKind: Accessor<E, MomentumEventKind>;
   /** Text for the readout and for screen readers. Defaults to the kind. */
@@ -115,9 +125,9 @@ export interface MomentumChartContextValue {
   /** Value -> pixel, symmetric about the zero line, already flipped for SVG. */
   readonly scaleY: LinearScale;
   /**
-   * Match minute -> pixel, in whichever period contains it, or the nearest
-   * one for a minute that falls in a gap between periods.
+   * Match minute -> pixel, in the given period (1 for the first half). A
+   * minute outside that period is clamped to its edge.
    */
-  readonly scaleX: (minute: number) => number;
+  readonly scaleX: (minute: number, period: number) => number;
   readonly bars: readonly (readonly MomentumBar[])[];
 }

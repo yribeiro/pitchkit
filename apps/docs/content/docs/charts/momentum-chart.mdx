@@ -28,6 +28,7 @@ each publish their own and none of them is in an open feed — so you bring the 
   teams={{ home: "Roma", away: "Barcelona" }}
   events={events}
   eventTime={(e) => e.minute}
+  eventPeriod={(e) => e.period}
   eventSide={(e) => e.side}
   eventKind={(e) => e.kind}
 />
@@ -87,16 +88,23 @@ vanishes.
 
 Events are a separate list, passed like the race chart's annotations: a list plus accessors.
 
-| Prop         | What it is                                       |
-| ------------ | ------------------------------------------------ |
-| `events`     | The list                                         |
-| `eventTime`  | Match minute                                     |
-| `eventSide`  | `"home"` or `"away"`                             |
-| `eventKind`  | One of the kinds below                           |
-| `eventLabel` | Optional text for the readout and screen readers |
+| Prop          | What it is                                       |
+| ------------- | ------------------------------------------------ |
+| `events`      | The list                                         |
+| `eventTime`   | Match minute                                     |
+| `eventPeriod` | The period: 1 for the first half, 2 the second   |
+| `eventSide`   | `"home"` or `"away"`                             |
+| `eventKind`   | One of the kinds below                           |
+| `eventLabel`  | Optional text for the readout and screen readers |
 
-These come as a set: pass `events` and TypeScript requires the three accessors, so a missing one is
+These come as a set: pass `events` and TypeScript requires the four accessors, so a missing one is
 a compile error rather than an empty icon row.
+
+`eventPeriod` is required because a minute alone can't place an event. The second half restarts at
+45', so when the first half has stoppage time, 45'–48' happen twice. In the Euro 2024 final, Nico
+Williams scored at 46:09 of the second half, and the first half had run to 47:02. Period _n_ is drawn
+in `periods[n - 1]`, which matches StatsBomb's own `period` field. An event in a period the chart
+has no panel for, such as a shootout, isn't drawn.
 
 | Kind             | Icon                            | Colour                |
 | ---------------- | ------------------------------- | --------------------- |
@@ -128,29 +136,31 @@ leave them out, which is what the examples do.
 
 Hover or tap a panel. A crosshair marks the minute, and a readout gives the team and value of the
 bar under it, plus any events at that minute. On a touch screen a horizontal drag scrubs the
-crosshair and a vertical one still scrolls the page. Pass `tooltip` to replace the body:
+crosshair and a vertical one still scrolls the page. The readout lists only the hovered half's
+events, so a 46' goal in the second half doesn't also appear under first-half stoppage time. Pass
+`tooltip` to replace the body:
 
 ```tsx
 <MomentumChart ... tooltip={(h) => `${Math.round(h.minute)}' · ${h.datum?.value ?? "no data"}`} />
 ```
 
 `h.datum` is your own sample behind the bar, so a custom readout can show fields the chart never
-saw.
+saw. `h.period` is the hovered period, 1 for the first half.
 
 ## Annotations
 
 Anything the built-in kinds don't cover is a child, positioned through `useMomentumChart()`:
 
 ```tsx
-function Change({ minute }: { minute: number }) {
+function Change({ minute, period }: { minute: number; period: number }) {
   const { scaleX, frame } = useMomentumChart();
-  const x = scaleX(minute);
+  const x = scaleX(minute, period);
   return <line x1={x} x2={x} y1={frame.y0} y2={frame.y1} />;
 }
 ```
 
-It returns `frame` (the bars' rectangle), `panels`, `scaleX(minute)` (into whichever half holds that
-minute), `scaleY(value)`, and the computed `bars`. Children paint above the bars and below the
+It returns `frame` (the bars' rectangle), `panels`, `scaleX(minute, period)` (that minute in that
+period, 1 for the first half), `scaleY(value)`, and the computed `bars`. Children paint above the bars and below the
 crosshair.
 
 <PitchPreview name="momentum-chart-annotations-basic" />
