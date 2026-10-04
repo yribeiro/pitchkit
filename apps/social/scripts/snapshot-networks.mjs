@@ -34,6 +34,29 @@ const nickname = new Map(
   lineups.flatMap((t) => t.lineup.map((p) => [p.player_id, p.player_nickname ?? p.player_name])),
 );
 
+/**
+ * Where each StatsBomb position sits on a team sheet, in StatsBomb units
+ * attacking left to right (high y is the right flank). The reel starts each
+ * player here and morphs to where they actually played. Covers the positions
+ * a 4-2-3-1 uses; extend it for other shapes.
+ */
+const SLOTS = {
+  Goalkeeper: [8, 40],
+  "Right Back": [34, 70],
+  "Right Center Back": [28, 52],
+  "Left Center Back": [28, 28],
+  "Left Back": [34, 10],
+  "Right Defensive Midfield": [46, 50],
+  "Left Defensive Midfield": [46, 30],
+  "Right Wing": [70, 70],
+  "Center Attacking Midfield": [64, 40],
+  "Left Wing": [70, 10],
+  "Center Forward": [84, 40],
+};
+
+const fail = (message) => {
+  throw new Error(message);
+};
 const minuteOf = (e) => round(e.minute + e.second / 60, 2);
 
 function network(team) {
@@ -46,6 +69,7 @@ function network(team) {
         name: nickname.get(l.player.id) ?? l.player.name,
         jersey: l.jersey_number,
         position: l.position.name,
+        slot: SLOTS[l.position.name] ?? fail(`No team-sheet slot for ${l.position.name}`),
         sx: 0,
         sy: 0,
         n: 0,
@@ -87,6 +111,8 @@ function network(team) {
   const busiest = [...nodes.values()].sort((x, y) => y.n - x.n)[0];
   return {
     team,
+    // StatsBomb writes 4-2-3-1 as 4231.
+    formation: String(xi.tactics.formation).split("").join("-"),
     attempted: all.length,
     completed: all.filter(isComplete).length,
     nodes: [...nodes.values()].map(({ sx, sy, n, track, ...rest }) => ({

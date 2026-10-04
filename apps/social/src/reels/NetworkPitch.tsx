@@ -1,7 +1,8 @@
 /**
- * A team's pass network, replayed through the half. Each player's disc
- * appears at their first touch and drifts as their average position takes in
- * every later touch, settling where the finished network has it. A
+ * A team's pass network, replayed through the half. Every player's disc starts
+ * at kick-off in their team-sheet slot (the starting formation) and morphs
+ * towards their average position as it takes in each touch, settling exactly
+ * where the finished network has it at full time. A
  * partnership's line draws in from the passer the first time two players
  * connect, then thickens and briefly glows each time they combine again. The
  * pitch is upright (attacking up the screen).
@@ -39,8 +40,12 @@ const EASE_IN = 5;
 const GLOW = 6;
 /** A new link draws from passer to receiver over this long. */
 const DRAW = 7;
-/** A disc pops in over this long. */
-const POP = 6;
+/**
+ * How many touches' worth of weight the team-sheet slot carries at kick-off.
+ * It fades to nothing by the end of the half, so the replay always lands on
+ * the true average positions.
+ */
+const SLOT_WEIGHT = 6;
 
 type Point = { x: number; y: number };
 
@@ -97,8 +102,6 @@ export interface NetworkState {
   involved: Map<number, number>;
   /** 0..1, how recently each player was involved. */
   pulse: Map<number, number>;
-  /** Minute of each player's first touch. */
-  firstSeen: Map<number, number>;
   /** Where each disc is drawn: the running average position, separated. */
   positions: Map<number, Point>;
   /** Completed passes so far. */
@@ -144,13 +147,15 @@ export function networkAt(net: TeamNetwork, minute: number, pace = 1): NetworkSt
     }
   }
 
-  // Running average position over every touch so far, each easing in.
-  const firstSeen = new Map<number, number>();
+  // Each position blends the team-sheet slot with every touch so far (each
+  // easing in); the slot's weight fades out over the half.
+  const lastTouch = Math.max(...net.nodes.map((n) => n.track.at(-1)?.[0] ?? 0));
+  const slotWeight = SLOT_WEIGHT * Math.max(0, 1 - minute / lastTouch);
   const averages = new Map<number, Point>();
   for (const n of net.nodes) {
-    let sw = 0;
-    let sx = 0;
-    let sy = 0;
+    let sw = slotWeight;
+    let sx = slotWeight * n.slot[0];
+    let sy = slotWeight * n.slot[1];
     for (const [t, x, y] of n.track) {
       if (t > minute) break;
       const w = Math.max(Math.min((minute - t) / ease, 1), 1e-3);
@@ -158,14 +163,12 @@ export function networkAt(net: TeamNetwork, minute: number, pace = 1): NetworkSt
       sx += w * x;
       sy += w * y;
     }
-    if (sw === 0) continue;
-    firstSeen.set(n.id, n.track[0]![0]);
     averages.set(n.id, { x: sx / sw, y: sy / sw });
   }
 
   let top: Link | undefined;
   for (const l of links.values()) if (!top || l.count > top.count) top = l;
-  return { links, involved, pulse, firstSeen, positions: separate(averages), landed, top };
+  return { links, involved, pulse, positions: separate(averages), landed, top };
 }
 
 const finals = new WeakMap<TeamNetwork, NetworkState>();
@@ -294,8 +297,6 @@ export function NetworkPitch({
           <Discs
             net={net}
             state={state}
-            minute={minute}
-            pace={pace}
             color={color}
             s={s}
             showNames={showNames}
@@ -420,8 +421,6 @@ function Shape({
 function Discs({
   net,
   state,
-  minute,
-  pace,
   color,
   s,
   showNames,
@@ -430,8 +429,6 @@ function Discs({
 }: {
   net: TeamNetwork;
   state: NetworkState;
-  minute: number;
-  pace: number;
   color: string;
   s: number;
   showNames: boolean;
@@ -440,20 +437,15 @@ function Discs({
 }) {
   const { transform } = usePitch();
   const labels = placeLabels(net, finalNetwork(net).positions, transform.toPixel, s);
-  const discs = net.nodes.flatMap((n) => {
-    const seen = state.firstSeen.get(n.id);
-    if (seen === undefined) return [];
-    // Pop in with a small overshoot.
-    const age = Math.min((minute - seen) / (POP * pace), 1);
-    const pop = age >= 1 ? 1 : Math.sin(age * Math.PI * 0.5) * (1 + 0.25 * Math.sin(age * Math.PI));
+  const discs = net.nodes.map((n) => {
     const grow = growth(state.involved.get(n.id) ?? 0);
     const beat = 1 + 0.14 * (state.pulse.get(n.id) ?? 0);
     const boost = emphasis.includes(n.id) ? 1 + 0.18 * highlight : 1;
-    const k = 1.15 * s * pop * grow * beat * boost;
+    const k = 1.15 * s * grow * beat * boost;
     const p = state.positions.get(n.id)!;
     const [px, py] = transform.toPixel([p.x, p.y]);
     // Screen position: the pitch is turned -90°.
-    return [{ n, pop, k, px, py, cx: py, cy: -px }];
+    return { n, k, px, py, cx: py, cy: -px };
   });
   // While discs are still moving a name can end up under another disc or
   // name; fade it by how covered it is rather than letting it jump sides.
@@ -476,7 +468,7 @@ function Discs({
   });
   return (
     <g data-pitchkit-mark="discs">
-      {discs.map(({ n, pop, k, px, py }, i) => {
+      {discs.map(({ n, k, px, py }, i) => {
         const label = labels.get(n.id)!;
         return (
           // The pitch is turned -90° on screen, so +90° here keeps numbers upright.
@@ -498,7 +490,7 @@ function Discs({
                 {n.jersey}
               </text>
             </g>
-            {showNames && pop > 0.6 && (
+            {showNames && (
               <text
                 x={label.dx(k)}
                 y={label.dy(k)}
@@ -510,7 +502,7 @@ function Discs({
                 stroke="rgba(4,10,7,0.9)"
                 strokeWidth={4 * s}
                 paintOrder="stroke"
-                opacity={Math.min((pop - 0.6) / 0.4, 1) * visibility[i]!}
+                opacity={visibility[i]!}
               >
                 {surname(n.name).toUpperCase()}
               </text>

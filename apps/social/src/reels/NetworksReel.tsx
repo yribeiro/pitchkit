@@ -5,9 +5,10 @@
  * Hook (0-2.8 s): both finished networks side by side from the first frame,
  * pass counters rolling up underneath — the contrast is the hook. At ~1.3 s
  * the counters lock and the gap slams in, then a punch-in on Spain carries
- * into the first chapter. There the half replays: discs drift as each
- * player's average position takes in every touch and settle into the shape
- * the hook showed, while partnerships draw in and thicken. It holds on the
+ * into the first chapter. There the half replays: every disc starts in the
+ * starting formation and morphs as each player's average position takes in
+ * every touch, settling into the shape the hook showed, while partnerships
+ * draw in and thicken. It holds on the
  * strongest link; a whip-pan to England does the same; the outro puts the two
  * finished networks side by side again, so the loop lands back on the hook.
  */
@@ -349,7 +350,9 @@ function TopLink({
           <span style={{ color }}>{link.count}</span>
         </>
       ) : (
-        "Kick-off"
+        <>
+          Kick-off <span style={{ color: C.text }}>{net.formation}</span>
+        </>
       )}
     </div>
   );

@@ -233,6 +233,8 @@ export const momentum = momentumJson as unknown as MomentumData;
 /** Spain's and England's first-half pass networks, pass by pass (see scripts/snapshot-networks.mjs). */
 export interface TeamNetwork {
   team: string;
+  /** Starting formation, e.g. "4-2-3-1". */
+  formation: string;
   attempted: number;
   completed: number;
   nodes: {
@@ -240,6 +242,8 @@ export interface TeamNetwork {
     name: string;
     jersey: number;
     position: string;
+    /** Where the position sits on a team sheet, in StatsBomb units. */
+    slot: [number, number];
     x: number;
     y: number;
     touches: number;
