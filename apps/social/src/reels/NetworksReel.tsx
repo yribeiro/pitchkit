@@ -37,7 +37,6 @@ const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p
 const RATIO = (SPAIN.completed / ENGLAND.completed).toFixed(1);
 const SPAIN_SHAPE = shapeOf(SPAIN);
 const ENGLAND_SHAPE = shapeOf(ENGLAND);
-const LINE_GAP = Math.round(SPAIN_SHAPE.lineHeight - ENGLAND_SHAPE.lineHeight);
 
 // Timeline (30 fps). Each scene overlaps the next by OVERLAP for the transition.
 const OVERLAP = 10;
@@ -464,14 +463,11 @@ function Outro() {
           <span style={{ color: C.muted }}> VS </span>
           <span style={{ color: C.orange }}>{ENGLAND.completed}</span>
         </div>
-        <div style={{ fontSize: 34, fontWeight: 700, color: C.muted, marginTop: 10 }}>
-          Completed passes, first half. Spain won 2–1.
-        </div>
       </div>
       {[
-        { net: SPAIN, color: C.sky, left: 40 },
-        { net: ENGLAND, color: C.orange, left: 550 },
-      ].map(({ net, color, left }) => (
+        { net: SPAIN, color: C.sky, left: 40, shape: SPAIN_SHAPE },
+        { net: ENGLAND, color: C.orange, left: 550, shape: ENGLAND_SHAPE },
+      ].map(({ net, color, left, shape }) => (
         <div key={net.team} style={{ position: "absolute", top: 470, left }}>
           <NetworkPitch
             net={net}
@@ -480,29 +476,22 @@ function Outro() {
             showNames={false}
             measure={measure}
           />
+          <div
+            style={{
+              marginTop: 22,
+              textAlign: "center",
+              fontFamily: FONT.display,
+              fontSize: 56,
+              letterSpacing: "0.02em",
+              color,
+              opacity: takeaway,
+              transform: `translateY(${(1 - takeaway) * 20}px)`,
+            }}
+          >
+            {net.team.toUpperCase()} LENGTH {shape.height}M
+          </div>
         </div>
       ))}
-      <div
-        style={{
-          position: "absolute",
-          top: 470 + uprightHeight(OUTRO_W) + 26,
-          left: 60,
-          right: 60,
-          opacity: takeaway,
-          transform: `translateY(${(1 - takeaway) * 20}px)`,
-          fontSize: 34,
-          fontWeight: 700,
-          lineHeight: 1.3,
-          color: C.muted,
-        }}
-      >
-        Front to back: <span style={{ color: C.sky }}>Spain {SPAIN_SHAPE.height} m</span>,{" "}
-        <span style={{ color: C.orange }}>England {ENGLAND_SHAPE.height} m</span>.
-        <br />
-        <span style={{ color: C.text }}>
-          Spain&apos;s last defender sat {LINE_GAP} m higher up the pitch.
-        </span>
-      </div>
     </AbsoluteFill>
   );
 }
