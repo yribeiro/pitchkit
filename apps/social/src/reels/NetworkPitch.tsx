@@ -1,12 +1,15 @@
 /**
- * A team's pass network, built pass by pass: each completed pass is a ball
- * travelling from passer to receiver, the link between them thickens when it
- * lands, and a player's disc appears with their first involvement and grows
- * with every touch. The pitch is upright (attacking up the screen).
+ * A team's pass network, replayed through the half. Each player's disc
+ * appears at their first touch and drifts as their average position takes in
+ * every later touch, settling where the finished network has it. A
+ * partnership's line draws in from the passer the first time two players
+ * connect, then thickens and briefly glows each time they combine again. The
+ * pitch is upright (attacking up the screen).
  *
- * Everything is a pure function of `minute`, the match clock.
+ * Everything is a pure function of `minute`, the match clock; pass `FULL_TIME`
+ * for the finished network.
  */
-import { Arrows, Comet, Pitch, Scatter, usePitch } from "@pitchkit/react";
+import { Arrows, Pitch, usePitch } from "@pitchkit/react";
 import { Upright } from "../charts";
 import { PitchStage } from "../components/Chrome";
 import type { TeamNetwork } from "../data";
@@ -18,25 +21,33 @@ const PAD = { top: 6, right: 6, bottom: 6, left: 6 };
 export const uprightHeight = (width: number) =>
   Math.round(((width - PAD.top - PAD.bottom) * 120) / 80 + PAD.left + PAD.right);
 
+/** A minute after every pass: the finished network. */
+export const FULL_TIME = Infinity;
+
 /** Radius of a player's disc before scaling. */
 const DISC = 19;
 /** Name label size before scaling. */
 const LABEL = 21;
 
 /** Closest two discs may sit, in pitch units, before they are nudged apart. */
-const MIN_GAP = 6.5;
+const MIN_GAP = 7.5;
 
-const layouts = new WeakMap<TeamNetwork, Map<number, { x: number; y: number }>>();
+// Animation timings, in frames; `pace` converts them to match minutes.
+/** A new pass eases into widths, sizes and positions over this long. */
+const EASE_IN = 5;
+/** A link's glow after a pass fades over about this long. */
+const GLOW = 6;
+/** A new link draws from passer to receiver over this long. */
+const DRAW = 7;
+/** A disc pops in over this long. */
+const POP = 6;
 
-/**
- * Where each disc is drawn: the player's average position, nudged apart
- * where two would overlap (Mainoo and Foden average 3 yards apart).
- */
-export function discPositions(net: TeamNetwork) {
-  const cached = layouts.get(net);
-  if (cached) return cached;
-  const pos = net.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y }));
-  for (let iter = 0; iter < 60; iter++) {
+type Point = { x: number; y: number };
+
+/** Nudges discs apart where two would overlap (Mainoo and Foden average 3 yards apart). */
+function separate(positions: Map<number, Point>) {
+  const pos = [...positions].map(([id, p]) => ({ id, x: p.x, y: p.y }));
+  for (let iter = 0; iter < 40; iter++) {
     for (let i = 0; i < pos.length; i++) {
       for (let j = i + 1; j < pos.length; j++) {
         const a = pos[i]!;
@@ -53,19 +64,7 @@ export function discPositions(net: TeamNetwork) {
       }
     }
   }
-  const map = new Map(pos.map((p) => [p.id, { x: p.x, y: p.y }]));
-  layouts.set(net, map);
-  return map;
-}
-
-/** Total involvements per player over the whole half. */
-function finalInvolvements(net: TeamNetwork) {
-  const inv = new Map<number, number>();
-  for (const p of net.passes) {
-    inv.set(p.from, (inv.get(p.from) ?? 0) + 1);
-    inv.set(p.to, (inv.get(p.to) ?? 0) + 1);
-  }
-  return inv;
+  return new Map(pos.map((p) => [p.id, { x: p.x, y: p.y }]));
 }
 
 const growth = (involvements: number) => 0.95 + Math.sqrt(involvements / 90) * 0.75;
@@ -75,50 +74,120 @@ const surname = (name: string) => {
   return parts.length > 1 ? parts.slice(1).join(" ") : name;
 };
 
-export interface NetworkState {
-  /** Passes landed so far per pair, keyed "a-b" with a < b. */
-  pairs: Map<string, { a: number; b: number; count: number }>;
-  /** Involvements so far (passes made + received) per player. */
-  involved: Map<number, number>;
-  /** Minute of each player's first involvement. */
-  firstSeen: Map<number, number>;
-  landed: number;
-  inFlight: { from: number; to: number; u: number }[];
+export interface Link {
+  a: number;
+  b: number;
+  /** Who passed first, so the line draws from them. */
+  from: number;
+  to: number;
+  /** Minute of the first pass between them. */
+  first: number;
+  /** Passes so far, eased: grows smoothly as each one lands. */
+  weight: number;
+  /** Passes so far, whole. */
+  count: number;
+  /** 0..1, how recently they last combined. */
+  glow: number;
 }
 
-/** Replays the passes up to `minute`; `flight` is how long a ball is in the air, in match minutes. */
-export function networkAt(net: TeamNetwork, minute: number, flight: number): NetworkState {
-  const pairs = new Map<string, { a: number; b: number; count: number }>();
+export interface NetworkState {
+  /** Partnerships so far, keyed "a-b" with a < b. */
+  links: Map<string, Link>;
+  /** Involvements so far (passes made + received), eased, per player. */
+  involved: Map<number, number>;
+  /** 0..1, how recently each player was involved. */
+  pulse: Map<number, number>;
+  /** Minute of each player's first touch. */
+  firstSeen: Map<number, number>;
+  /** Where each disc is drawn: the running average position, separated. */
+  positions: Map<number, Point>;
+  /** Completed passes so far. */
+  landed: number;
+  /** The partnership with the most passes so far. */
+  top: Link | undefined;
+}
+
+/** Replays the half up to `minute`; `pace` is match minutes per video frame. */
+export function networkAt(net: TeamNetwork, minute: number, pace = 1): NetworkState {
+  const ease = EASE_IN * pace;
+  const glowFor = GLOW * pace;
+  const links = new Map<string, Link>();
   const involved = new Map<number, number>();
-  const firstSeen = new Map<number, number>();
-  const inFlight: NetworkState["inFlight"] = [];
+  const pulse = new Map<number, number>();
   let landed = 0;
   for (const p of net.passes) {
-    const depart = p.t - flight;
-    if (depart > minute) break;
-    if (!firstSeen.has(p.from)) firstSeen.set(p.from, depart);
-    if (p.t > minute) {
-      inFlight.push({ from: p.from, to: p.to, u: (minute - depart) / flight });
-      continue;
-    }
-    if (!firstSeen.has(p.to)) firstSeen.set(p.to, p.t);
-    landed += 1;
+    if (p.t > minute) break;
+    const age = minute - p.t;
+    const w = Math.min(age / ease, 1);
+    const g = Math.exp(-age / glowFor);
     const a = Math.min(p.from, p.to);
     const b = Math.max(p.from, p.to);
     const key = `${a}-${b}`;
-    pairs.set(key, { a, b, count: (pairs.get(key)?.count ?? 0) + 1 });
-    involved.set(p.from, (involved.get(p.from) ?? 0) + 1);
-    involved.set(p.to, (involved.get(p.to) ?? 0) + 1);
+    const link = links.get(key) ?? {
+      a,
+      b,
+      from: p.from,
+      to: p.to,
+      first: p.t,
+      weight: 0,
+      count: 0,
+      glow: 0,
+    };
+    link.weight += w;
+    link.count += 1;
+    link.glow = Math.max(link.glow, g);
+    links.set(key, link);
+    landed += 1;
+    for (const id of [p.from, p.to]) {
+      involved.set(id, (involved.get(id) ?? 0) + w);
+      pulse.set(id, Math.max(pulse.get(id) ?? 0, g));
+    }
   }
-  return { pairs, involved, firstSeen, landed, inFlight };
+
+  // Running average position over every touch so far, each easing in.
+  const firstSeen = new Map<number, number>();
+  const averages = new Map<number, Point>();
+  for (const n of net.nodes) {
+    let sw = 0;
+    let sx = 0;
+    let sy = 0;
+    for (const [t, x, y] of n.track) {
+      if (t > minute) break;
+      const w = Math.max(Math.min((minute - t) / ease, 1), 1e-3);
+      sw += w;
+      sx += w * x;
+      sy += w * y;
+    }
+    if (sw === 0) continue;
+    firstSeen.set(n.id, n.track[0]![0]);
+    averages.set(n.id, { x: sx / sw, y: sy / sw });
+  }
+
+  let top: Link | undefined;
+  for (const l of links.values()) if (!top || l.count > top.count) top = l;
+  return { links, involved, pulse, firstSeen, positions: separate(averages), landed, top };
 }
+
+const finals = new WeakMap<TeamNetwork, NetworkState>();
+/** The finished network, worked out once. */
+export function finalNetwork(net: TeamNetwork) {
+  let state = finals.get(net);
+  if (!state) {
+    state = networkAt(net, FULL_TIME);
+    finals.set(net, state);
+  }
+  return state;
+}
+
+const width_ = (weight: number) => Math.min(1.5 + weight * 0.5, 17);
+const opacity_ = (weight: number) => Math.min(0.28 + weight * 0.05, 0.92);
 
 export function NetworkPitch({
   net,
   color,
   width,
-  minute,
-  flight,
+  minute = FULL_TIME,
+  pace = 1,
   showNames = true,
   highlight = 0,
 }: {
@@ -126,79 +195,77 @@ export function NetworkPitch({
   color: string;
   /** Screen width; the pitch is upright, so it is the pitch's width. */
   width: number;
-  minute: number;
-  flight: number;
+  minute?: number;
+  /** Match minutes per video frame. */
+  pace?: number;
   showNames?: boolean;
-  /** 0..1: pulse the team's strongest link. */
+  /** 0..1: pick out the team's strongest link. */
   highlight?: number;
 }) {
   const height = uprightHeight(width);
   const s = width / 720;
-  const state = networkAt(net, minute, flight);
-  const positions = discPositions(net);
-  const node = (id: number) => positions.get(id)!;
-  const edges = [...state.pairs.values()];
-  const balls = state.inFlight.map((b) => {
-    const f = node(b.from);
-    const t = node(b.to);
-    const at = (u: number) => [f.x + (t.x - f.x) * u, f.y + (t.y - f.y) * u] as const;
-    return { head: at(b.u), tail: at(Math.max(0, b.u - 0.45)) };
-  });
+  const state = minute === FULL_TIME ? finalNetwork(net) : networkAt(net, minute, pace);
+  const at = (id: number) => state.positions.get(id)!;
+  // Weakest first, so the strong partnerships draw on top.
+  const lines = [...state.links.values()]
+    .sort((p, q) => p.weight - q.weight)
+    .map((l) => {
+      const f = at(l.from);
+      const t = at(l.to);
+      const u = Math.min((minute - l.first) / (DRAW * pace), 1);
+      return { x: f.x, y: f.y, x2: f.x + (t.x - f.x) * u, y2: f.y + (t.y - f.y) * u, l };
+    });
+  const glowing = lines.filter((e) => e.l.glow > 0.04);
   const top = net.topPair;
-  const topNow = state.pairs.get(`${top.a}-${top.b}`);
+  const topNow = state.links.get(`${top.a}-${top.b}`);
 
   return (
     <PitchStage>
       <Upright width={width} height={height}>
         <Pitch type="statsbomb" width={height} height={width} padding={PAD} appearance={appearance}>
+          {/* A soft halo behind a link that just combined again. */}
+          {glowing.length > 0 && (
+            <Arrows
+              data={glowing}
+              x={(e) => e.x}
+              y={(e) => e.y}
+              x2={(e) => e.x2}
+              y2={(e) => e.y2}
+              stroke={color}
+              strokeWidth={(e) => (width_(e.l.weight) + 7) * s}
+              strokeOpacity={(e) => 0.3 * e.l.glow}
+              headSize={0}
+            />
+          )}
           <Arrows
-            data={edges}
-            x={(e) => node(e.a).x}
-            y={(e) => node(e.a).y}
-            x2={(e) => node(e.b).x}
-            y2={(e) => node(e.b).y}
+            data={lines}
+            x={(e) => e.x}
+            y={(e) => e.y}
+            x2={(e) => e.x2}
+            y2={(e) => e.y2}
             stroke={color}
-            strokeWidth={(e) => Math.min(1.5 + e.count * 0.5, 17) * s}
-            strokeOpacity={(e) => Math.min(0.28 + e.count * 0.05, 0.92)}
+            strokeWidth={(e) => width_(e.l.weight) * s}
+            strokeOpacity={(e) => Math.min(opacity_(e.l.weight) + 0.4 * e.l.glow, 1)}
             headSize={0}
           />
           {highlight > 0 && topNow && (
             <Arrows
               data={[topNow]}
-              x={(e) => node(e.a).x}
-              y={(e) => node(e.a).y}
-              x2={(e) => node(e.b).x}
-              y2={(e) => node(e.b).y}
+              x={(l) => at(l.a).x}
+              y={(l) => at(l.a).y}
+              x2={(l) => at(l.b).x}
+              y2={(l) => at(l.b).y}
               stroke="white"
-              strokeWidth={(Math.min(1.5 + topNow.count * 0.5, 17) + 6 * highlight) * s}
+              strokeWidth={(width_(topNow.weight) + 6 * highlight) * s}
               strokeOpacity={0.35 + 0.55 * highlight}
               headSize={0}
             />
           )}
-          <Comet
-            data={balls}
-            x={(b) => b.tail[0]}
-            y={(b) => b.tail[1]}
-            x2={(b) => b.head[0]}
-            y2={(b) => b.head[1]}
-            color="white"
-            gradient
-            endWidth={6 * s}
-          />
-          <Scatter
-            data={balls}
-            x={(b) => b.head[0]}
-            y={(b) => b.head[1]}
-            r={5.5 * s}
-            fill="white"
-            stroke="rgba(0,0,0,0.6)"
-            strokeWidth={1.5 * s}
-          />
           <Discs
             net={net}
             state={state}
             minute={minute}
-            flight={flight}
+            pace={pace}
             color={color}
             s={s}
             showNames={showNames}
@@ -216,7 +283,7 @@ function Discs({
   net,
   state,
   minute,
-  flight,
+  pace,
   color,
   s,
   showNames,
@@ -226,7 +293,7 @@ function Discs({
   net: TeamNetwork;
   state: NetworkState;
   minute: number;
-  flight: number;
+  pace: number;
   color: string;
   s: number;
   showNames: boolean;
@@ -234,23 +301,44 @@ function Discs({
   highlight: number;
 }) {
   const { transform } = usePitch();
-  const positions = discPositions(net);
-  const labels = placeLabels(net, positions, transform.toPixel, s);
+  const labels = placeLabels(net, finalNetwork(net).positions, transform.toPixel, s);
+  const discs = net.nodes.flatMap((n) => {
+    const seen = state.firstSeen.get(n.id);
+    if (seen === undefined) return [];
+    // Pop in with a small overshoot.
+    const age = Math.min((minute - seen) / (POP * pace), 1);
+    const pop = age >= 1 ? 1 : Math.sin(age * Math.PI * 0.5) * (1 + 0.25 * Math.sin(age * Math.PI));
+    const grow = growth(state.involved.get(n.id) ?? 0);
+    const beat = 1 + 0.14 * (state.pulse.get(n.id) ?? 0);
+    const boost = emphasis.includes(n.id) ? 1 + 0.18 * highlight : 1;
+    const k = 1.15 * s * pop * grow * beat * boost;
+    const p = state.positions.get(n.id)!;
+    const [px, py] = transform.toPixel([p.x, p.y]);
+    // Screen position: the pitch is turned -90°.
+    return [{ n, pop, k, px, py, cx: py, cy: -px }];
+  });
+  // While discs are still moving a name can end up under another disc or
+  // name; fade it by how covered it is rather than letting it jump sides.
+  const placed = discs.map((d) => {
+    const b = labels.get(d.n.id)!.box(d.k);
+    return { x0: d.cx + b.x0, x1: d.cx + b.x1, y0: d.cy + b.y0, y1: d.cy + b.y1 };
+  });
+  const visibility = discs.map((d, i) => {
+    const box = placed[i]!;
+    const area = (box.x1 - box.x0) * (box.y1 - box.y0);
+    let covered = 0;
+    discs.forEach((o, j) => {
+      if (j === i) return;
+      const r = DISC * o.k;
+      covered += overlap(box, { x0: o.cx - r, x1: o.cx + r, y0: o.cy - r, y1: o.cy + r });
+      // Between two names, the busier player's stays.
+      if (o.k > d.k) covered += overlap(box, placed[j]!);
+    });
+    return 1 - Math.min(covered / (0.3 * area), 1);
+  });
   return (
     <g data-pitchkit-mark="discs">
-      {net.nodes.map((n) => {
-        const seen = state.firstSeen.get(n.id);
-        if (seen === undefined) return null;
-        // Pop in over a little under one flight, with a small overshoot.
-        const age = Math.min((minute - seen) / (flight * 0.8), 1);
-        const pop =
-          age >= 1 ? 1 : Math.sin(age * Math.PI * 0.5) * (1 + 0.25 * Math.sin(age * Math.PI));
-        const inv = state.involved.get(n.id) ?? 0;
-        const grow = growth(inv);
-        const boost = emphasis.includes(n.id) ? 1 + 0.18 * highlight : 1;
-        const k = 1.15 * s * pop * grow * boost;
-        const at = positions.get(n.id)!;
-        const [px, py] = transform.toPixel([at.x, at.y]);
+      {discs.map(({ n, pop, k, px, py }, i) => {
         const label = labels.get(n.id)!;
         return (
           // The pitch is turned -90° on screen, so +90° here keeps numbers upright.
@@ -284,7 +372,7 @@ function Discs({
                 stroke="rgba(4,10,7,0.9)"
                 strokeWidth={4 * s}
                 paintOrder="stroke"
-                opacity={Math.min((pop - 0.6) / 0.4, 1)}
+                opacity={Math.min((pop - 0.6) / 0.4, 1) * visibility[i]!}
               >
                 {surname(n.name).toUpperCase()}
               </text>
@@ -297,6 +385,11 @@ function Discs({
 }
 
 type Side = "below" | "above" | "right" | "left";
+type Box = { x0: number; y0: number; x1: number; y1: number };
+
+const overlap = (a: Box, b: Box) =>
+  Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) *
+  Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
 
 /**
  * Picks a side for each surname so labels don't sit on other discs or each
@@ -314,8 +407,7 @@ function placeLabels(
   s: number,
 ) {
   const fs = LABEL * s;
-  const inv = finalInvolvements(net);
-  type Box = { x0: number; y0: number; x1: number; y1: number };
+  const inv = finalNetwork(net).involved;
   const discs = new Map<number, Box & { cx: number; cy: number }>();
   for (const n of net.nodes) {
     const p = positions.get(n.id)!;
@@ -332,14 +424,17 @@ function placeLabels(
       y1: cy + DISC * k,
     });
   }
-  const overlap = (a: Box, b: Box) =>
-    Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) *
-    Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
 
   const placed: Box[] = [];
   const result = new Map<
     number,
-    { anchor: "middle" | "start" | "end"; dx: (k: number) => number; dy: (k: number) => number }
+    {
+      anchor: "middle" | "start" | "end";
+      dx: (k: number) => number;
+      dy: (k: number) => number;
+      /** Label box relative to the disc centre, in screen axes, for a disc scale `k`. */
+      box: (k: number) => Box;
+    }
   >();
   const order = [...net.nodes].sort((a, b) => (inv.get(b.id) ?? 0) - (inv.get(a.id) ?? 0));
   for (const n of order) {
@@ -376,15 +471,46 @@ function placeLabels(
     });
     placed.push(best.box);
     const baseline = 0.36 * fs;
+    const r = (kk: number) => DISC * kk;
     result.set(
       n.id,
       best.side === "below"
-        ? { anchor: "middle", dx: () => 0, dy: (kk) => DISC * kk + 3 * s + fs * 0.85 }
+        ? {
+            anchor: "middle",
+            dx: () => 0,
+            dy: (kk) => r(kk) + 3 * s + fs * 0.85,
+            box: (kk) => ({ x0: -w / 2, x1: w / 2, y0: r(kk) + 3 * s, y1: r(kk) + 3 * s + fs }),
+          }
         : best.side === "above"
-          ? { anchor: "middle", dx: () => 0, dy: (kk) => -DISC * kk - 3 * s - fs * 0.15 }
+          ? {
+              anchor: "middle",
+              dx: () => 0,
+              dy: (kk) => -r(kk) - 3 * s - fs * 0.15,
+              box: (kk) => ({ x0: -w / 2, x1: w / 2, y0: -r(kk) - 3 * s - fs, y1: -r(kk) - 3 * s }),
+            }
           : best.side === "right"
-            ? { anchor: "start", dx: (kk) => DISC * kk + 4 * s, dy: () => baseline }
-            : { anchor: "end", dx: (kk) => -DISC * kk - 4 * s, dy: () => baseline },
+            ? {
+                anchor: "start",
+                dx: (kk) => r(kk) + 4 * s,
+                dy: () => baseline,
+                box: (kk) => ({
+                  x0: r(kk) + 4 * s,
+                  x1: r(kk) + 4 * s + w,
+                  y0: -fs / 2,
+                  y1: fs / 2,
+                }),
+              }
+            : {
+                anchor: "end",
+                dx: (kk) => -r(kk) - 4 * s,
+                dy: () => baseline,
+                box: (kk) => ({
+                  x0: -r(kk) - 4 * s - w,
+                  x1: -r(kk) - 4 * s,
+                  y0: -fs / 2,
+                  y1: fs / 2,
+                }),
+              },
     );
   }
   return result;

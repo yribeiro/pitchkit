@@ -8,7 +8,8 @@
  *
  * A node sits at the player's average position over their passes and
  * receptions (the usual pass-network convention). Coordinates are StatsBomb
- * units with each team attacking left to right. The window is the first half
+ * units with each team attacking left to right; each node also carries the
+ * locations behind its average, so the reel can show positions settling. The window is the first half
  * for both sides, so the two are like for like (Spain's first change came at
  * half time).
  */
@@ -33,6 +34,8 @@ const nickname = new Map(
   lineups.flatMap((t) => t.lineup.map((p) => [p.player_id, p.player_nickname ?? p.player_name])),
 );
 
+const minuteOf = (e) => round(e.minute + e.second / 60, 2);
+
 function network(team) {
   const xi = events.find((e) => e.type.name === "Starting XI" && e.team.name === team);
   const nodes = new Map(
@@ -46,6 +49,7 @@ function network(team) {
         sx: 0,
         sy: 0,
         n: 0,
+        track: [],
       },
     ]),
   );
@@ -59,12 +63,14 @@ function network(team) {
     n.sx += p.x;
     n.sy += p.y;
     n.n += 1;
+    n.track.push([minuteOf(p), round(p.x), round(p.y)]);
   }
   for (const p of done) {
     const n = nodes.get(p.pass.recipient.id);
     n.sx += p.endX;
     n.sy += p.endY;
     n.n += 1;
+    n.track.push([minuteOf(p), round(p.endX), round(p.endY)]);
   }
   const pairs = new Map();
   for (const p of done) {
@@ -83,15 +89,18 @@ function network(team) {
     team,
     attempted: all.length,
     completed: all.filter(isComplete).length,
-    nodes: [...nodes.values()].map(({ sx, sy, n, ...rest }) => ({
+    nodes: [...nodes.values()].map(({ sx, sy, n, track, ...rest }) => ({
       ...rest,
+      // Every location behind the average, [minute, x, y] in match order,
+      // so the reel can show the position settling.
+      track: track.sort((u, v) => u[0] - v[0]),
       x: round(sx / n),
       y: round(sy / n),
       touches: n,
     })),
     // Every completed pass between two starters, in match order.
     passes: done.map((p) => ({
-      t: round(p.minute + p.second / 60, 2),
+      t: minuteOf(p),
       from: p.player.id,
       to: p.pass.recipient.id,
     })),

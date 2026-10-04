@@ -326,17 +326,20 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
-## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 19.5 s)
+## Reel 04 — 283 vs 112 (`reel-04-networks.mp4`, 19 s)
 
-Hook (0–3.2 s): both first-half pass networks build side by side in fast-forward
-from the first frame while the completed-pass counters race; at 2.2 s the
-counters lock, the "Spain passed 2.5× more" chip slams in with a shake, and the
-camera punches into Spain. Spain then builds at readable speed (circles with
-squad numbers pop in on each player's first touch and grow with every pass) and
-lands on its strongest link; a whip-pan to England does the same; the outro puts
-the two finished networks side by side again, so the loop lands back on the
-hook. For the grid cover, pick the slam frame (~2.3 s). If you add audio, a
-track with a drop around 2.2 s hits the slam.
+Hook (0–2.8 s): both finished first-half pass networks side by side from the
+first frame, with the completed-pass counters rolling up underneath; at 1.3 s
+the counters lock, the "Spain passed 2.5X more" banner slams in with a shake,
+and the camera punches into Spain. There the half replays: each player's circle
+appears at their first touch and drifts as their average position takes in
+every later touch, settling into the shape the hook showed. A partnership's
+line draws in the first time two players connect, then thickens and briefly
+glows each time they combine again, while "Top link" in the header tracks the
+leading pair live. It lands on the strongest link; a whip-pan to England does
+the same; the outro puts the two finished networks side by side again, so the
+loop lands back on the hook. For the grid cover, pick the banner frame
+(~1.5 s). If you add audio, a track with a hit around 1.3 s lands on the banner.
 
 **Instagram**
 
@@ -366,17 +369,17 @@ Open-source, React-first. Data: @StatsBomb open data.
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** Two football pitches side by side, Spain in blue and England in orange, with each starting player shown as a circle with their squad number. White balls fly between the circles and the connecting lines thicken as passes land; counters race to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5× more". Each network is then rebuilt full screen with player names: Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
+**Alt text:** Two football pitches side by side, Spain in blue and England in orange, each showing the team's finished first-half pass network: every starting player is a numbered circle at their average position, joined by lines whose thickness shows how often each pair combined. Counters roll up to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5X more". Each half is then replayed full screen with player names: the circles drift as each player's average position builds up and settle into place, and lines appear and thicken as partnerships form. Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
 
 Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
 
-| Claim                       | Detail                                                                                                     |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5×" |
-| Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                 |
-| Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                               |
-| Circle positions            | Average of each player's pass and reception locations; circles closer than 6.5 units are nudged apart      |
-| Ball timing                 | Each pass lands at its real match minute; the hook replays the half in ~2 s, each chapter in ~5 s          |
+| Claim                       | Detail                                                                                                                                   |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5×"                               |
+| Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                                               |
+| Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                                                             |
+| Circle positions            | Average of each player's pass and reception locations (running average while it replays); circles closer than 7.5 units are nudged apart |
+| Timing                      | Each pass and touch counts at its real match minute; each chapter replays the half in ~5 s                                               |
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 

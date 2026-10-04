@@ -243,6 +243,8 @@ export interface TeamNetwork {
     x: number;
     y: number;
     touches: number;
+    /** The locations behind the average position: [minute, x, y], in match order. */
+    track: [number, number, number][];
   }[];
   /** Completed passes between starters in match order; `t` is the match minute. */
   passes: { t: number; from: number; to: number }[];

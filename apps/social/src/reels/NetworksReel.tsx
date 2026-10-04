@@ -1,14 +1,15 @@
 /**
  * Reel 04: "283 vs 112". Spain's and England's first-half pass networks in the
- * Euro 2024 final, built pass by pass.
+ * Euro 2024 final.
  *
- * Hook (0-3 s): both networks build side by side in fast-forward from the
- * very first frame, with pass counters racing — the contrast is the hook.
- * At ~2.2 s the counters lock and the gap slams in, then a punch-in on Spain
- * carries straight into the first chapter. Spain builds at readable speed and
- * holds on its strongest link; a whip-pan to England does the same; the outro
- * puts the two finished networks side by side again, so the loop lands back
- * where the hook started.
+ * Hook (0-2.8 s): both finished networks side by side from the first frame,
+ * pass counters rolling up underneath — the contrast is the hook. At ~1.3 s
+ * the counters lock and the gap slams in, then a punch-in on Spain carries
+ * into the first chapter. There the half replays: discs drift as each
+ * player's average position takes in every touch and settle into the shape
+ * the hook showed, while partnerships draw in and thicken. It holds on the
+ * strongest link; a whip-pan to England does the same; the outro puts the two
+ * finished networks side by side again, so the loop lands back on the hook.
  */
 import type { ReactNode } from "react";
 import {
@@ -26,6 +27,7 @@ import { passNetworks } from "../data";
 import type { TeamNetwork } from "../data";
 import { C, FONT } from "../theme";
 import { NetworkPitch, networkAt, uprightHeight } from "./NetworkPitch";
+import type { Link } from "./NetworkPitch";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.inOut(Easing.cubic);
@@ -36,8 +38,9 @@ const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p
 const RATIO = (SPAIN.completed / ENGLAND.completed).toFixed(1);
 
 // Timeline (30 fps).
-const HOOK = 96;
-const HOOK_BUILD = 64;
+const HOOK = 84;
+/** The counters roll up until here, then the gap slams in. */
+const COUNT_END = 36;
 const SECTION = 210;
 const BUILD_START = 12;
 const BUILD_END = 160;
@@ -81,17 +84,20 @@ function Counter({ value, color }: { value: number; color: string }) {
 function Hook() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const minute = interpolate(frame, [0, HOOK_BUILD], [0, END_MINUTE], clamp);
-  // In fast-forward a ball is in the air for ~6 frames.
-  const flight = (6 / HOOK_BUILD) * END_MINUTE;
-  const spain = networkAt(SPAIN, minute, flight).landed;
-  const england = networkAt(ENGLAND, minute, flight).landed;
+  const roll = interpolate(frame, [0, COUNT_END], [0, 1], {
+    ...clamp,
+    easing: Easing.out(Easing.cubic),
+  });
+  const spain = Math.round(SPAIN.completed * roll);
+  const england = Math.round(ENGLAND.completed * roll);
+  // A slow drift in on both pitches, so the first frame already moves.
+  const drift = 1 + 0.05 * interpolate(frame, [0, HOOK], [0, 1], clamp);
 
-  const slam = spring({ frame: frame - (HOOK_BUILD + 2), fps, config: { damping: 9, mass: 0.5 } });
-  const shake = frame > HOOK_BUILD && frame < HOOK_BUILD + 8 ? Math.sin(frame * 2.7) * 7 : 0;
+  const slam = spring({ frame: frame - (COUNT_END + 2), fps, config: { damping: 9, mass: 0.5 } });
+  const shake = frame > COUNT_END && frame < COUNT_END + 8 ? Math.sin(frame * 2.7) * 7 : 0;
   // Punch-in on Spain, into the first chapter.
   const push = interpolate(frame, [HOOK - 18, HOOK], [0, 1], { ...clamp, easing: ease });
-  const glow = interpolate(frame, [HOOK_BUILD, HOOK_BUILD + 6, HOOK], [0, 1, 0.6], clamp);
+  const glow = interpolate(frame, [COUNT_END, COUNT_END + 6, HOOK], [0, 1, 0.6], clamp);
 
   return (
     <AbsoluteFill
@@ -152,14 +158,9 @@ function Hook() {
                   : "none",
             }}
           >
-            <NetworkPitch
-              net={net}
-              color={color}
-              width={HOOK_W}
-              minute={minute}
-              flight={flight}
-              showNames={false}
-            />
+            <div style={{ transform: `scale(${drift})` }}>
+              <NetworkPitch net={net} color={color} width={HOOK_W} showNames={false} />
+            </div>
           </div>
           <div style={{ marginTop: 6 }}>
             <Counter value={count} color={color} />
@@ -167,7 +168,7 @@ function Hook() {
         </div>
       ))}
 
-      {frame >= HOOK_BUILD + 2 && (
+      {frame >= COUNT_END + 2 && (
         <div
           style={{
             position: "absolute",
@@ -219,9 +220,8 @@ function Chapter({
 }) {
   const frame = useCurrentFrame();
   const minute = interpolate(frame, [BUILD_START, BUILD_END], [0, END_MINUTE], clamp);
-  // ~7 frames in the air at chapter speed.
-  const flight = (7 / (BUILD_END - BUILD_START)) * END_MINUTE;
-  const state = networkAt(net, minute, flight);
+  const pace = END_MINUTE / (BUILD_END - BUILD_START);
+  const state = networkAt(net, minute, pace);
   const highlight =
     interpolate(frame, [BUILD_END + 4, BUILD_END + 16], [0, 1], clamp) *
     (0.75 + 0.25 * Math.sin((frame - BUILD_END) / 4));
@@ -262,9 +262,7 @@ function Chapter({
             marginTop: 6,
           }}
         >
-          <div style={{ fontSize: 32, fontWeight: 700, color: C.muted }}>
-            Built pass by pass · first half
-          </div>
+          <TopLink net={net} link={state.top} color={color} />
           <div style={{ fontFamily: FONT.display, fontSize: 40, letterSpacing: "0.03em", color }}>
             {state.landed} {state.landed === 1 ? "PASS" : "PASSES"}
           </div>
@@ -277,7 +275,7 @@ function Chapter({
           color={color}
           width={CHAPTER_W}
           minute={minute}
-          flight={flight}
+          pace={pace}
           highlight={highlight}
         />
       </div>
@@ -328,6 +326,33 @@ function Chapter({
   );
 }
 
+/** The partnership with the most passes so far, live. */
+function TopLink({
+  net,
+  link,
+  color,
+}: {
+  net: TeamNetwork;
+  link: Link | undefined;
+  color: string;
+}) {
+  return (
+    <div style={{ fontSize: 32, fontWeight: 700, color: C.muted }}>
+      {link ? (
+        <>
+          Top link{" "}
+          <span style={{ color: C.text }}>
+            {nameOf(net, link.a)} ↔ {nameOf(net, link.b)}
+          </span>{" "}
+          <span style={{ color }}>{link.count}</span>
+        </>
+      ) : (
+        "Kick-off"
+      )}
+    </div>
+  );
+}
+
 /* Outro ------------------------------------------------------------------- */
 
 const OUTRO_W = 470;
@@ -354,14 +379,7 @@ function Outro() {
         { net: ENGLAND, color: C.orange, left: 560 },
       ].map(({ net, color, left }) => (
         <div key={net.team} style={{ position: "absolute", top: 470, left }}>
-          <NetworkPitch
-            net={net}
-            color={color}
-            width={OUTRO_W}
-            minute={END_MINUTE + 5}
-            flight={1}
-            showNames={false}
-          />
+          <NetworkPitch net={net} color={color} width={OUTRO_W} showNames={false} />
         </div>
       ))}
       <div
