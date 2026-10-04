@@ -1,3 +1,4 @@
+import "@fontsource/anton/400.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -11,7 +12,7 @@ import { continueRender, delayRender } from "remotion";
  * Hold every frame until the webfonts have loaded — otherwise the first
  * frames of a render screenshot the system fallback and the text jumps.
  */
-const handle = delayRender("Loading Inter + JetBrains Mono");
+const handle = delayRender("Loading Inter, JetBrains Mono and Anton");
 Promise.all(
   [
     "400 16px Inter",
@@ -20,8 +21,8 @@ Promise.all(
     "800 16px Inter",
     "400 16px 'JetBrains Mono'",
     "600 16px 'JetBrains Mono'",
+    "400 16px Anton",
   ].map((font) => document.fonts.load(font)),
 )
   .then(() => continueRender(handle))
   .catch(() => continueRender(handle));
-import "@fontsource/anton/400.css";

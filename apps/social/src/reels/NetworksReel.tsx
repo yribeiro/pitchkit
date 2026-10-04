@@ -63,17 +63,15 @@ function Counter({ value, color }: { value: number; color: string }) {
     <div style={{ textAlign: "center" }}>
       <div
         style={{
-          fontFamily: FONT.mono,
-          fontSize: 84,
-          fontWeight: 700,
+          fontFamily: FONT.display,
+          fontSize: 92,
           color,
-          letterSpacing: "-0.04em",
           lineHeight: 1,
         }}
       >
         {value}
       </div>
-      <div style={{ fontSize: 26, fontWeight: 700, color: C.muted, marginTop: 2 }}>
+      <div style={{ fontSize: 26, fontWeight: 700, color: C.muted, marginTop: 0 }}>
         completed passes
       </div>
     </div>
@@ -103,30 +101,28 @@ function Hook() {
         opacity: 1 - push,
       }}
     >
-      <div style={{ position: "absolute", top: 236, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 226, left: 60, right: 60 }}>
         <div
           style={{
-            fontFamily: FONT.mono,
-            fontSize: 30,
-            fontWeight: 600,
+            fontFamily: FONT.display,
+            fontSize: 36,
             color: C.accent,
-            letterSpacing: "0.12em",
+            letterSpacing: "0.06em",
           }}
         >
           EURO 2024 FINAL · FIRST HALF
         </div>
         <div
           style={{
-            marginTop: 12,
-            fontSize: 74,
-            fontWeight: 800,
-            letterSpacing: "-0.04em",
-            lineHeight: 1.02,
+            marginTop: 4,
+            fontFamily: FONT.display,
+            fontSize: 76,
+            lineHeight: 1,
           }}
         >
-          Same final.
+          SAME FINAL.
           <br />
-          Same 45 minutes.
+          SAME 45 MINUTES.
         </div>
       </div>
 
@@ -137,12 +133,12 @@ function Hook() {
         <div key={label} style={{ position: "absolute", top: 486, left, width: HOOK_W }}>
           <div
             style={{
-              fontFamily: FONT.mono,
-              fontSize: 30,
-              fontWeight: 700,
+              fontFamily: FONT.display,
+              fontSize: 40,
               color,
-              letterSpacing: "0.1em",
-              marginBottom: 12,
+              letterSpacing: "0.06em",
+              lineHeight: 1,
+              marginBottom: 10,
             }}
           >
             {label}
@@ -165,7 +161,7 @@ function Hook() {
               showNames={false}
             />
           </div>
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 6 }}>
             <Counter value={count} color={color} />
           </div>
         </div>
@@ -175,7 +171,7 @@ function Hook() {
         <div
           style={{
             position: "absolute",
-            top: 1392,
+            top: 1404,
             left: 60,
             right: 60,
             textAlign: "center",
@@ -188,14 +184,15 @@ function Hook() {
               display: "inline-block",
               background: C.sky,
               color: "#04100a",
-              fontSize: 58,
-              fontWeight: 900,
-              letterSpacing: "-0.03em",
-              padding: "10px 26px 14px",
+              fontFamily: FONT.display,
+              fontSize: 68,
+              lineHeight: 1.1,
+              letterSpacing: "0.01em",
+              padding: "8px 30px 10px",
               borderRadius: 14,
             }}
           >
-            Spain passed {RATIO}× more
+            SPAIN PASSED {RATIO}X MORE
           </span>
         </div>
       )}
@@ -248,29 +245,28 @@ function Chapter({
       }}
     >
       <Backdrop />
-      <div style={{ position: "absolute", top: 230, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 222, left: 60, right: 60 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 104, fontWeight: 800, letterSpacing: "-0.045em", color }}>
-            {title}
+          <div style={{ fontFamily: FONT.display, fontSize: 124, lineHeight: 1, color }}>
+            {title.toUpperCase()}
           </div>
-          <div
-            style={{
-              fontSize: 60,
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              fontVariantNumeric: "tabular-nums",
-              color: C.text,
-            }}
-          >
+          <div style={{ fontFamily: FONT.display, fontSize: 84, lineHeight: 1, color: C.text }}>
             {Math.min(45, Math.floor(minute))}’
           </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginTop: 6,
+          }}
+        >
           <div style={{ fontSize: 32, fontWeight: 700, color: C.muted }}>
             Built pass by pass · first half
           </div>
-          <div style={{ fontFamily: FONT.mono, fontSize: 32, fontWeight: 700, color }}>
-            {state.landed} {state.landed === 1 ? "pass" : "passes"}
+          <div style={{ fontFamily: FONT.display, fontSize: 40, letterSpacing: "0.03em", color }}>
+            {state.landed} {state.landed === 1 ? "PASS" : "PASSES"}
           </div>
         </div>
       </div>
@@ -307,11 +303,24 @@ function Chapter({
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em" }}>
-            {nameOf(net, net.topPair.a)} ↔ {nameOf(net, net.topPair.b)}
+          <div style={{ fontFamily: FONT.display, fontSize: 52, lineHeight: 1.1 }}>
+            {nameOf(net, net.topPair.a).toUpperCase()}
+            {/* Anton has no arrows; borrow Inter's. */}
+            <span
+              style={{
+                fontFamily: FONT.sans,
+                fontWeight: 800,
+                fontSize: 44,
+                margin: "0 14px",
+                color,
+              }}
+            >
+              ↔
+            </span>
+            {nameOf(net, net.topPair.b).toUpperCase()}
           </div>
-          <div style={{ fontFamily: FONT.mono, fontSize: 28, fontWeight: 600, color }}>
-            {net.topPair.count} passes · strongest link
+          <div style={{ fontFamily: FONT.display, fontSize: 32, letterSpacing: "0.05em", color }}>
+            {net.topPair.count} PASSES · STRONGEST LINK
           </div>
         </div>
       </div>
@@ -331,9 +340,9 @@ function Outro() {
     <AbsoluteFill style={{ opacity: fade }}>
       <Backdrop />
       <div style={{ position: "absolute", top: 250, left: 60, right: 60 }}>
-        <div style={{ fontSize: 96, fontWeight: 800, letterSpacing: "-0.045em", lineHeight: 1 }}>
+        <div style={{ fontFamily: FONT.display, fontSize: 132, lineHeight: 1 }}>
           <span style={{ color: C.sky }}>{SPAIN.completed}</span>
-          <span style={{ color: C.muted }}> vs </span>
+          <span style={{ color: C.muted }}> VS </span>
           <span style={{ color: C.orange }}>{ENGLAND.completed}</span>
         </div>
         <div style={{ fontSize: 34, fontWeight: 700, color: C.muted, marginTop: 10 }}>

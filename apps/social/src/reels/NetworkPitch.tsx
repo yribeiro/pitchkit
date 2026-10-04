@@ -1,7 +1,7 @@
 /**
  * A team's pass network, built pass by pass: each completed pass is a ball
  * travelling from passer to receiver, the link between them thickens when it
- * lands, and a player's shirt appears with their first involvement and grows
+ * lands, and a player's disc appears with their first involvement and grows
  * with every touch. The pitch is upright (attacking up the screen).
  *
  * Everything is a pure function of `minute`, the match clock.
@@ -18,20 +18,21 @@ const PAD = { top: 6, right: 6, bottom: 6, left: 6 };
 export const uprightHeight = (width: number) =>
   Math.round(((width - PAD.top - PAD.bottom) * 120) / 80 + PAD.left + PAD.right);
 
-/** A football shirt, centred on the origin, about 40 units across. */
-const SHIRT =
-  "M -9 -19 L -4 -21 Q 0 -16.5 4 -21 L 9 -19 L 20 -11 L 15 -2 L 11 -5 L 11 19 Q 0 21 -11 19 L -11 -5 L -15 -2 L -20 -11 Z";
+/** Radius of a player's disc before scaling. */
+const DISC = 19;
+/** Name label size before scaling. */
+const LABEL = 21;
 
-/** Closest two shirts may sit, in pitch units, before they are nudged apart. */
+/** Closest two discs may sit, in pitch units, before they are nudged apart. */
 const MIN_GAP = 6.5;
 
 const layouts = new WeakMap<TeamNetwork, Map<number, { x: number; y: number }>>();
 
 /**
- * Where each shirt is drawn: the player's average position, nudged apart
+ * Where each disc is drawn: the player's average position, nudged apart
  * where two would overlap (Mainoo and Foden average 3 yards apart).
  */
-export function shirtPositions(net: TeamNetwork) {
+export function discPositions(net: TeamNetwork) {
   const cached = layouts.get(net);
   if (cached) return cached;
   const pos = net.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y }));
@@ -134,7 +135,7 @@ export function NetworkPitch({
   const height = uprightHeight(width);
   const s = width / 720;
   const state = networkAt(net, minute, flight);
-  const positions = shirtPositions(net);
+  const positions = discPositions(net);
   const node = (id: number) => positions.get(id)!;
   const edges = [...state.pairs.values()];
   const balls = state.inFlight.map((b) => {
@@ -193,7 +194,7 @@ export function NetworkPitch({
             stroke="rgba(0,0,0,0.6)"
             strokeWidth={1.5 * s}
           />
-          <Shirts
+          <Discs
             net={net}
             state={state}
             minute={minute}
@@ -210,8 +211,8 @@ export function NetworkPitch({
   );
 }
 
-/** The players as shirts with their numbers, kept upright against the pitch's rotation. */
-function Shirts({
+/** The players as discs with their squad numbers, kept upright against the pitch's rotation. */
+function Discs({
   net,
   state,
   minute,
@@ -233,10 +234,10 @@ function Shirts({
   highlight: number;
 }) {
   const { transform } = usePitch();
-  const positions = shirtPositions(net);
+  const positions = discPositions(net);
   const labels = placeLabels(net, positions, transform.toPixel, s);
   return (
-    <g data-pitchkit-mark="shirts">
+    <g data-pitchkit-mark="discs">
       {net.nodes.map((n) => {
         const seen = state.firstSeen.get(n.id);
         if (seen === undefined) return null;
@@ -252,16 +253,20 @@ function Shirts({
         const [px, py] = transform.toPixel([at.x, at.y]);
         const label = labels.get(n.id)!;
         return (
-          // The pitch is turned -90° on screen, so +90° here keeps shirts upright.
+          // The pitch is turned -90° on screen, so +90° here keeps numbers upright.
           <g key={n.id} transform={`translate(${px} ${py}) rotate(90)`}>
             <g transform={`scale(${k})`}>
-              <path d={SHIRT} fill={color} stroke="rgba(4,10,7,0.95)" strokeWidth={1.6} />
+              <circle
+                r={DISC}
+                fill={color}
+                stroke={emphasis.includes(n.id) ? "white" : "rgba(4,10,7,0.95)"}
+                strokeWidth={emphasis.includes(n.id) ? 2 + 2 * highlight : 2}
+              />
               <text
-                y={6.5}
                 textAnchor="middle"
-                fontFamily={FONT.sans}
-                fontWeight={900}
-                fontSize={15}
+                dominantBaseline="central"
+                fontFamily={FONT.display}
+                fontSize={22}
                 fill="#04100a"
               >
                 {n.jersey}
@@ -272,16 +277,16 @@ function Shirts({
                 x={label.dx(k)}
                 y={label.dy(k)}
                 textAnchor={label.anchor}
-                fontFamily={FONT.sans}
-                fontWeight={700}
-                fontSize={19 * s}
+                fontFamily={FONT.display}
+                fontSize={LABEL * s}
+                letterSpacing={0.6 * s}
                 fill="white"
                 stroke="rgba(4,10,7,0.9)"
                 strokeWidth={4 * s}
                 paintOrder="stroke"
                 opacity={Math.min((pop - 0.6) / 0.4, 1)}
               >
-                {surname(n.name)}
+                {surname(n.name).toUpperCase()}
               </text>
             )}
           </g>
@@ -294,12 +299,12 @@ function Shirts({
 type Side = "below" | "above" | "right" | "left";
 
 /**
- * Picks a side for each surname so labels don't sit on other shirts or each
+ * Picks a side for each surname so labels don't sit on other discs or each
  * other, placing the busiest players first. Worked out once at full size, so
  * a label never jumps sides while the network builds.
  *
  * The pitch is turned -90° on screen, so a pitch pixel (px, py) is at screen
- * (py, -px); the shirt groups are counter-rotated, so their local axes are
+ * (py, -px); the disc groups are counter-rotated, so their local axes are
  * screen axes.
  */
 function placeLabels(
@@ -308,23 +313,23 @@ function placeLabels(
   toPixel: (p: readonly [number, number]) => readonly [number, number],
   s: number,
 ) {
-  const fs = 19 * s;
+  const fs = LABEL * s;
   const inv = finalInvolvements(net);
   type Box = { x0: number; y0: number; x1: number; y1: number };
-  const shirts = new Map<number, Box & { cx: number; cy: number }>();
+  const discs = new Map<number, Box & { cx: number; cy: number }>();
   for (const n of net.nodes) {
     const p = positions.get(n.id)!;
     const [px, py] = toPixel([p.x, p.y]);
     const k = 1.15 * s * growth(inv.get(n.id) ?? 0);
     const cx = py;
     const cy = -px;
-    shirts.set(n.id, {
+    discs.set(n.id, {
       cx,
       cy,
-      x0: cx - 20 * k,
-      x1: cx + 20 * k,
-      y0: cy - 21 * k,
-      y1: cy + 21 * k,
+      x0: cx - DISC * k,
+      x1: cx + DISC * k,
+      y0: cy - DISC * k,
+      y1: cy + DISC * k,
     });
   }
   const overlap = (a: Box, b: Box) =>
@@ -338,7 +343,7 @@ function placeLabels(
   >();
   const order = [...net.nodes].sort((a, b) => (inv.get(b.id) ?? 0) - (inv.get(a.id) ?? 0));
   for (const n of order) {
-    const sh = shirts.get(n.id)!;
+    const sh = discs.get(n.id)!;
     const w = surname(n.name).length * fs * 0.56;
     const sides: { side: Side; box: Box }[] = [
       {
@@ -362,7 +367,7 @@ function placeLabels(
     let bestScore = Infinity;
     sides.forEach((c, i) => {
       let score = i * 4 * s * s;
-      for (const [id, other] of shirts) if (id !== n.id) score += overlap(c.box, other);
+      for (const [id, other] of discs) if (id !== n.id) score += overlap(c.box, other);
       for (const p of placed) score += overlap(c.box, p) * 2;
       if (score < bestScore) {
         bestScore = score;
@@ -374,12 +379,12 @@ function placeLabels(
     result.set(
       n.id,
       best.side === "below"
-        ? { anchor: "middle", dx: () => 0, dy: (kk) => 21 * kk + 2 * s + fs * 0.85 }
+        ? { anchor: "middle", dx: () => 0, dy: (kk) => DISC * kk + 3 * s + fs * 0.85 }
         : best.side === "above"
-          ? { anchor: "middle", dx: () => 0, dy: (kk) => -21 * kk - 2 * s - fs * 0.2 }
+          ? { anchor: "middle", dx: () => 0, dy: (kk) => -DISC * kk - 3 * s - fs * 0.15 }
           : best.side === "right"
-            ? { anchor: "start", dx: (kk) => 20 * kk + 3 * s, dy: () => baseline }
-            : { anchor: "end", dx: (kk) => -20 * kk - 3 * s, dy: () => baseline },
+            ? { anchor: "start", dx: (kk) => DISC * kk + 4 * s, dy: () => baseline }
+            : { anchor: "end", dx: (kk) => -DISC * kk - 4 * s, dy: () => baseline },
     );
   }
   return result;

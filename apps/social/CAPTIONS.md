@@ -331,7 +331,7 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 Hook (0–3.2 s): both first-half pass networks build side by side in fast-forward
 from the first frame while the completed-pass counters race; at 2.2 s the
 counters lock, the "Spain passed 2.5× more" chip slams in with a shake, and the
-camera punches into Spain. Spain then builds at readable speed (shirts with
+camera punches into Spain. Spain then builds at readable speed (circles with
 squad numbers pop in on each player's first touch and grow with every pass) and
 lands on its strongest link; a whip-pan to England does the same; the outro puts
 the two finished networks side by side again, so the loop lands back on the
@@ -366,7 +366,7 @@ Open-source, React-first. Data: @StatsBomb open data.
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** Two football pitches side by side, Spain in blue and England in orange, with each starting player shown as a shirt with their squad number. White balls fly between the shirts and the connecting lines thicken as passes land; counters race to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5× more". Each network is then rebuilt full screen with player names: Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
+**Alt text:** Two football pitches side by side, Spain in blue and England in orange, with each starting player shown as a circle with their squad number. White balls fly between the circles and the connecting lines thicken as passes land; counters race to 283 completed passes for Spain and 112 for England, and a banner reads "Spain passed 2.5× more". Each network is then rebuilt full screen with player names: Spain's thickest line is Laporte to Le Normand, 31 passes; England's is Walker to Stones, 9. It ends on both networks side by side and the PitchKit logo.
 
 Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:networks`):
 
@@ -375,7 +375,7 @@ Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:ne
 | 283 vs 112 completed passes | First half, completed passes between starting XI players (attempted: 327 v 149). 283 / 112 = 2.53 → "2.5×" |
 | Laporte ↔ Le Normand, 31    | Both directions combined; Spain's top pair                                                                 |
 | Walker ↔ Stones, 9          | Both directions combined; England's top pair                                                               |
-| Shirt positions             | Average of each player's pass and reception locations; shirts closer than 6.5 units are nudged apart       |
+| Circle positions            | Average of each player's pass and reception locations; circles closer than 6.5 units are nudged apart      |
 | Ball timing                 | Each pass lands at its real match minute; the hook replays the half in ~2 s, each chapter in ~5 s          |
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)

@@ -46,6 +46,8 @@ export const C = {
 export const FONT = {
   sans: "Inter, system-ui, sans-serif",
   mono: "'JetBrains Mono', ui-monospace, monospace",
+  /** Condensed block capitals for headlines and big numbers (one weight). */
+  display: "Anton, Impact, sans-serif",
 } as const;
 
 /** The docs site's pitch theme, with markings thickened for a phone screen. */
