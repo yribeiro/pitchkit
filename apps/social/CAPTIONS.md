@@ -523,10 +523,14 @@ Facts behind it (all in `src/data/wc-final.json`, from `npm run snapshot:wc-fina
 ## Reel 06 — The 2022 World Cup final, live in 360 (`reel-06-live-final.mp4`, 45 s)
 
 The final played back as a time-lapse of StatsBomb 360 data, in the style of a live
-broadcast graphic. On a tilted, upright pitch, the dark surface lights up only where the
-broadcast camera was looking: every visible player is a dot, the space each one controls
-is a Voronoi cell in their team's colour (light sky for Argentina, royal blue for France),
-and the ball is yellow. A fading wash trails where the camera has just been. Above it is a
+broadcast graphic. A 3D pitch (Three.js), seen diagonally from Argentina's end like a TV
+camera, lights up only where the broadcast camera was looking: every visible player
+stands on it as a lit sphere in their team's colour (light sky for Argentina, royal blue
+for France), the space each one controls is painted beneath them as a Voronoi cell, and
+the ball is a yellow sphere. The player on the ball carries their shirt number and a white
+ring, and so do the keepers (Martínez 23, Lloris 1): 360 players are otherwise anonymous,
+so no one else is numbered. The camera drifts after the ball and pushes in on the 123rd
+minute. Above it is a
 scoreboard with drawn flags (no federation crests), a broadcast clock with stoppage time,
 and a match progress bar. Below it, a PitchKit `MomentumChart` grows minute by minute
 behind a playhead. The clock races between moments and slows into each goal, with a
@@ -543,7 +547,7 @@ wash).
 ```
 The 2022 World Cup final, replayed through the eyes of the broadcast camera. 🎥⚽️
 
-Every dot is a player the camera could see. Every coloured shape is the space they controlled. Watch Argentina take the pitch, France take it back, and the whole thing go to penalties.
+Every sphere is a player the camera could see. Every coloured shape is the space they controlled. Watch Argentina take the pitch, France take it back, and the whole thing go to penalties.
 
 Argentina on top for 75 minutes, France for 63. Still 3–3.
 
@@ -566,7 +570,7 @@ Built with PitchKit, the open-source React-first football chart library. Data: @
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** A dark, tilted football pitch under a scoreboard reading ARG v FRA, World Cup final, Lusail, 18 December 2022, with a running clock. As the match time-lapses, a patch of the pitch lights up wherever the broadcast camera was looking, filled with coloured shapes showing the space each visible player controlled, light blue for Argentina and darker blue for France, with the ball as a yellow dot. A momentum chart grows along the bottom. Captions mark each goal: Messi's penalty and Di María for 2–0, France's first shot in the 67th minute, Mbappé twice in 95 seconds for 2–2, Messi in extra time, Mbappé's hat-trick for 3–3, and Martínez's save in the 123rd minute. In the shootout, dots fill in under the score until Argentina win 4–2 and the whole pitch turns light blue under the words "Argentina, World Champions". A panel then shows minutes on top, Argentina 75 and France 63, "and it still went to penalties", before asking which match to play back next and ending on the PitchKit end card.
+**Alt text:** A dark, tilted football pitch under a scoreboard reading ARG v FRA, World Cup final, Lusail, 18 December 2022, with a running clock. As the match time-lapses, a patch of the 3D pitch lights up wherever the broadcast camera was looking. Each visible player stands on it as a sphere, light blue for Argentina and darker blue for France, over coloured shapes showing the space they controlled, with the ball as a yellow sphere; the player on the ball and the keepers carry their shirt numbers. A momentum chart grows along the bottom. Captions mark each goal: Messi's penalty and Di María for 2–0, France's first shot in the 67th minute, Mbappé twice in 95 seconds for 2–2, Messi in extra time, Mbappé's hat-trick for 3–3, and Martínez's save in the 123rd minute. In the shootout, dots fill in under the score until Argentina win 4–2 and the whole pitch turns light blue under the words "Argentina, World Champions". A panel then shows minutes on top, Argentina 75 and France 63, "and it still went to penalties", before asking which match to play back next and ending on the PitchKit end card.
 
 Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc-final.json`):
 

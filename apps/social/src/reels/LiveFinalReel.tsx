@@ -30,7 +30,7 @@ import { FlagArgentina, FlagFrance } from "../components/Flags";
 import { Mark } from "../components/Logo";
 import { wcFinal as F } from "../data";
 import { C, FONT } from "../theme";
-import { ARG, FRA, Pitch360 } from "./live/Pitch360";
+import { ARG, FRA, Pitch3D } from "./live/Pitch3D";
 import {
   CHAMPIONS,
   clockLabel,
@@ -50,9 +50,6 @@ import {
 
 export { LIVE_DURATION };
 
-const PITCH_W = 1500;
-const PITCH_H = Math.round(((PITCH_W - 36) * 80) / 120 + 8);
-
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const pop = Easing.out(Easing.back(2));
 
@@ -71,14 +68,14 @@ const big = (size: number, color: string = C.text): CSSProperties => ({
 function Scoreboard({ frame }: { frame: number }) {
   const { fps } = useVideoConfig();
   const u = uAt(frame);
-  const scored = GOALS.filter((g) => frame >= g.frame + 4);
+  const scored = GOALS.filter((g) => frame >= g.frame);
   const pens = KICKS.filter((k) => frame >= k.frame + 7);
   const shootout = frame >= FRAME.whistle;
   const side = (team: string, flag: ReactNode, code: string) => {
     const goals = scored.filter((g) => g.team === team);
     const last = goals.at(-1);
     const bump = last
-      ? spring({ frame: frame - last.frame - 4, fps, config: { damping: 8, mass: 0.4 } })
+      ? spring({ frame: frame - last.frame, fps, config: { damping: 8, mass: 0.4 } })
       : 1;
     const kicks = pens.filter((k) => k.team === team);
     return (
@@ -393,7 +390,7 @@ function Hook({ frame }: { frame: number }) {
     <div
       style={{
         position: "absolute",
-        top: 440,
+        top: 880,
         left: 50,
         right: 50,
         textAlign: "center",
@@ -578,7 +575,8 @@ function LiveAudio() {
 export function LiveFinalReel() {
   const frame = useCurrentFrame();
   // The camera drifts round the pitch the whole time and leans in for the save.
-  const turn = interpolate(frame, [0, LIVE_DURATION], [-80, -70]);
+  // From Argentina's end and off to the side, so their attack runs to the top right.
+  const azimuth = interpolate(frame, [0, LIVE_DURATION], [-0.95, -0.75]);
   const lean = interpolate(
     frame,
     [FRAME.save - 50, FRAME.save, FRAME.save + 30, FRAME.save + 60],
@@ -597,39 +595,18 @@ export function LiveFinalReel() {
       }}
     >
       <LiveAudio />
-      <div
-        style={{
-          position: "absolute",
-          top: 400,
-          left: 0,
-          width: 1080,
-          height: 870,
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            transformOrigin: "0 0",
-            // Argentina's goal at the save sits at the near-left end.
-            transform: [
-              `translate(540px, ${400 + 30 * lean}px)`,
-              "perspective(1900px)",
-              `rotateX(${38 + 8 * lean}deg)`,
-              `rotateZ(${turn}deg)`,
-              `scale(${0.64 + 0.42 * lean})`,
-              `translate(${-PITCH_W / 2 + 430 * lean}px, ${-PITCH_H / 2}px)`,
-            ].join(" "),
-          }}
-        >
-          <Pitch360
-            u={frame >= FRAME.whistle ? uAt(FRAME.whistle) : uAt(frame)}
-            width={PITCH_W}
-            win={interpolate(frame, [CHAMPIONS, CHAMPIONS + 30], [0, 1], clamp)}
-          />
-        </div>
+      <div style={{ position: "absolute", top: 400, left: 0, width: 1080, height: 870 }}>
+        <Pitch3D
+          u={frame >= FRAME.whistle ? uAt(FRAME.whistle) : uAt(frame)}
+          width={1080}
+          height={870}
+          azimuth={azimuth}
+          elevation={0.8 - 0.18 * lean}
+          distance={262 - 100 * lean}
+          // Kolo Muani's chance is at Argentina's end.
+          target={[-46 * lean, 0, 0]}
+          win={interpolate(frame, [CHAMPIONS, CHAMPIONS + 30], [0, 1], clamp)}
+        />
       </div>
       <Scoreboard frame={frame} />
       <MomentumStrip frame={frame} />

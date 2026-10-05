@@ -325,9 +325,14 @@ export const wcFinal = wcFinalJson as unknown as WcFinal;
  */
 export interface Wc360Frame {
   p: number;
+  /** The actor's shirt number. */
+  n: number | null;
   m: number;
   b: [number, number];
   a: number[];
   f: number[];
 }
-export const wc360 = wc360Json as unknown as Wc360Frame[];
+export const wc360 = wc360Json as unknown as {
+  keepers: { argentina: number; france: number };
+  frames: Wc360Frame[];
+};

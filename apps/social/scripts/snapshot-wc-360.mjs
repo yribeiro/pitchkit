@@ -9,12 +9,14 @@
  * are flipped), and each player is tagged by team rather than "teammate of
  * the actor". To keep the file small it keeps every frame within a minute of
  * a goal or of Kolo Muani's late chance, and one frame per 6 seconds of play
- * otherwise. Coordinates are stored as integers in half-units.
+ * otherwise. Coordinates are stored as integers in half-units. `n` is the
+ * actor's shirt number; the keepers' numbers sit alongside the frames.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  fetchLineups,
   fetchMatchEvents,
   fetchMatchThreeSixty,
   isGoal,
@@ -29,6 +31,14 @@ const HOME = "Argentina";
 const events = await fetchMatchEvents(MATCH);
 const frames = await fetchMatchThreeSixty(MATCH);
 const byId = new Map(events.map((e) => [e.id, e]));
+const lineups = await fetchLineups(MATCH);
+const jersey = new Map(lineups.flatMap((t) => t.lineup.map((p) => [p.player_id, p.jersey_number])));
+// 360 players are anonymous; only the actor (from the event) and each side's
+// keeper (one each, all match) can be named, so only they carry a number.
+const keeperNumber = (team) =>
+  lineups
+    .find((t) => t.team_name === team)
+    .lineup.find((p) => p.positions?.some((pos) => pos.position === "Goalkeeper")).jersey_number;
 
 const half = (v) => Math.round(v * 2);
 /** The event's minute, as StatsBomb numbers it within its period. */
@@ -66,6 +76,7 @@ for (const f of frames) {
   }
   rows.push({
     p: e.period,
+    n: e.player ? jersey.get(e.player.id) : null,
     m: Math.round(minute * 100) / 100,
     b: [half(bx), half(by)],
     a: area,
@@ -74,7 +85,13 @@ for (const f of frames) {
 }
 
 rows.sort((a, b) => a.p - b.p || a.m - b.m);
-writeFileSync(join(OUT, "wc-360.json"), JSON.stringify(rows));
+writeFileSync(
+  join(OUT, "wc-360.json"),
+  JSON.stringify({
+    keepers: { argentina: keeperNumber(HOME), france: keeperNumber("France") },
+    frames: rows,
+  }),
+);
 console.log(
   `wrote wc-360.json: ${rows.length} of ${frames.length} frames, ${(JSON.stringify(rows).length / 1024).toFixed(0)} KB`,
 );
