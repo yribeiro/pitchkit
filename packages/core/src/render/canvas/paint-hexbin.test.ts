@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
-import type { PitchType } from "../../dimensions/types.js";
+import type { PitchTypeId } from "../../dimensions/types.js";
 import { fromExtentFrame } from "../../transform/canonical.js";
 import type { HexbinLayer } from "../../scene/types.js";
 import { createPixelTransform } from "../../transform/pixel-transform.js";
@@ -150,7 +150,7 @@ describe("paintHexbinLayer", () => {
 
 // Every pitch type, centre-origin SkillCorner included (D6, #90): the layer
 // is clipped to the whole pitch, wherever the provider puts its origin.
-describe.each(Object.keys(PITCH_DIMENSIONS) as PitchType[])("paintHexbinLayer on %s", (type) => {
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchTypeId[])("paintHexbinLayer on %s", (type) => {
   it("clips to the whole pitch", () => {
     const dims = PITCH_DIMENSIONS[type];
     const pixels = createPixelTransform(dims, viewport);

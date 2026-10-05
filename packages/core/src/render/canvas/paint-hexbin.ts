@@ -2,6 +2,7 @@ import { createColorScale } from "../../color/scale.js";
 import type { PitchDimensions } from "../../dimensions/types.js";
 import { computeHexBins, hexCorners } from "../../hexbin/bins.js";
 import type { HexbinLayer } from "../../scene/types.js";
+import { fromExtentFrame } from "../../transform/canonical.js";
 import type { PixelTransform } from "../../transform/types.js";
 
 const DEFAULT_COLOR_MIN = "#1e3a8a"; // deep blue — sparse
@@ -35,8 +36,12 @@ export function paintHexbinLayer<T>(
     layer.colorMax ?? DEFAULT_COLOR_MAX,
   );
 
-  const pitchCornerA = transform.toPixel([0, 0]);
-  const pitchCornerB = transform.toPixel([dimensions.length, dimensions.width]);
+  // The pitch's corners in provider coordinates: on a centre-origin pitch
+  // (0, 0) is the centre spot, so they go through fromExtentFrame (D5, #90).
+  const pitchCornerA = transform.toPixel(fromExtentFrame(dimensions, [0, 0]));
+  const pitchCornerB = transform.toPixel(
+    fromExtentFrame(dimensions, [dimensions.length, dimensions.width]),
+  );
 
   ctx.save();
   ctx.beginPath();

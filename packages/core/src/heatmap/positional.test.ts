@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
-import type { PitchType } from "../dimensions/types.js";
+import type { PitchTypeId } from "../dimensions/types.js";
 import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { PositionalHeatmapLayer } from "../scene/types.js";
 import { computePositionalBins, computePositionalZones } from "./positional.js";
@@ -144,7 +144,7 @@ describe("computePositionalBins", () => {
 // Every pitch type, centre-origin SkillCorner included (D6, #90). Zones are
 // documented as provider coordinates, so they must sit on the pitch in each
 // provider's own frame, and contain the points counted into them.
-describe.each(Object.keys(PITCH_DIMENSIONS) as PitchType[])("positional zones on %s", (type) => {
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchTypeId[])("positional zones on %s", (type) => {
   const dims = PITCH_DIMENSIONS[type];
 
   it.each(["full", "horizontal", "vertical"] as const)(

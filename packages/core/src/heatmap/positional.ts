@@ -1,7 +1,7 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import type { Rect } from "../scene/geometry.js";
 import { resolve } from "../scene/resolve.js";
-import { toExtentFrame } from "../transform/canonical.js";
+import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { PositionalHeatmapLayer, PositionalLayout } from "../scene/types.js";
 
 /**
@@ -83,11 +83,24 @@ function rect(x0: number, x1: number, y0: number, y1: number, name: string): Pos
  * "top" means the top of the pitch *as displayed*, so which band earns
  * that name depends on the provider's `yDirection` — matching mplsoccer's
  * own `invert_y` branch.
+ *
+ * The zones are returned in provider coordinates, ready for
+ * `transform.toPixel`: they're laid out in the extent frame and moved back
+ * through `fromExtentFrame` (D5), which is the identity for corner-origin
+ * providers and puts a centre-origin pitch's zones back on the pitch (#90).
  */
 export function computePositionalZones(
   dimensions: PitchDimensions,
   layout: PositionalLayout = "full",
 ): PositionalZone[] {
+  return extentZones(dimensions, layout).map((zone) => {
+    const [x, y] = fromExtentFrame(dimensions, [zone.x, zone.y]);
+    return { ...zone, x, y };
+  });
+}
+
+/** The zones in the extent frame (`0..length`, `0..width`), where containment is tested. */
+function extentZones(dimensions: PitchDimensions, layout: PositionalLayout): PositionalZone[] {
   const px = positionalX(dimensions);
   const py = positionalY(dimensions);
   const edge = (values: number[], i: number): number => values[i] as number;
@@ -161,7 +174,10 @@ export function computePositionalBins<T>(
   layer: PositionalHeatmapLayer<T>,
   dimensions: PitchDimensions,
 ): PositionalBin[] {
-  const zones = computePositionalZones(dimensions, layer.layout ?? "full");
+  const layout = layer.layout ?? "full";
+  // Points are tested in the extent frame, against zones in the same frame;
+  // the zones handed back are in provider coordinates.
+  const zones = extentZones(dimensions, layout);
   const values: number[] = new Array(zones.length).fill(0);
 
   layer.data.forEach((d, i) => {
@@ -182,5 +198,8 @@ export function computePositionalBins<T>(
     values[index] = (values[index] ?? 0) + amount;
   });
 
-  return zones.map((zone, i) => ({ ...zone, value: values[i] ?? 0 }));
+  return computePositionalZones(dimensions, layout).map((zone, i) => ({
+    ...zone,
+    value: values[i] ?? 0,
+  }));
 }

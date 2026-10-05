@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { computeFlowBins } from "./flow.js";
 import { PITCH_DIMENSIONS, getPitchDimensions } from "../dimensions/registry.js";
-import type { PitchType } from "../dimensions/types.js";
+import type { PitchTypeId } from "../dimensions/types.js";
 import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 
 const dimensions = getPitchDimensions("statsbomb");
@@ -58,7 +58,7 @@ describe("computeFlowBins", () => {
 // Every pitch type, centre-origin SkillCorner included (D6, #90). Points are
 // placed as fractions of the pitch in the extent frame and converted to each
 // provider's own coordinates, so the same physical pass is tested everywhere.
-describe.each(Object.keys(PITCH_DIMENSIONS) as PitchType[])("computeFlowBins on %s", (type) => {
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchTypeId[])("computeFlowBins on %s", (type) => {
   const dims = PITCH_DIMENSIONS[type];
   const at = (fx: number, fy: number) => fromExtentFrame(dims, [fx * dims.length, fy * dims.width]);
   const pass = (fx: number, fy: number) => {
