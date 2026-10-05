@@ -253,12 +253,14 @@ export function LinkedInMomentum() {
           <MomentumChart
             width={500}
             height={245}
-            periods={momentum.periods}
+            data={momentum.data}
+            period={(d) => d.period}
             time={(d) => d.minute}
             value={(d) => d.value}
             teams={{ home: momentum.home, away: momentum.away }}
             events={momentum.events}
             eventTime={(e) => e.minute}
+            eventPeriod={(e) => e.period}
             eventSide={(e) => e.side}
             eventKind={(e) => e.kind}
             eventLabel={(e) => e.label}
@@ -298,7 +300,7 @@ export function LinkedInMomentum() {
             overflow: "hidden",
           }}
         >
-          {"<MomentumChart periods={[firstHalf, secondHalf]} value={(d) => d.value} … />"}
+          {"<MomentumChart data={minutes} period={(d) => d.period} value={(d) => d.value} … />"}
         </div>
         <div
           style={{

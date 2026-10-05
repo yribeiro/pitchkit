@@ -96,6 +96,7 @@ function goalChain(goal) {
 const goals = inPlay.filter(isGoal).map((g) => ({
   team: g.team.name,
   scorer: nameOf(g.player),
+  period: g.period,
   clock: clockOf(g),
   penalty: g.shot.type.name === "Penalty",
   xg: round(g.shot.statsbomb_xg, 3),
@@ -175,12 +176,17 @@ for (let period = 1; period <= 4; period++) {
   periods.push(
     raw.map((_, i) => {
       const w = raw.slice(Math.max(0, i - 1), i + 2);
-      return { minute: first + i, value: round(w.reduce((a, b) => a + b, 0) / w.length, 1) };
+      return {
+        minute: first + i,
+        period,
+        value: round(w.reduce((a, b) => a + b, 0) / w.length, 1),
+      };
     }),
   );
 }
 const momentumEvents = goals.map((g) => ({
   minute: round(g.clock / 60, 2),
+  period: g.period,
   side: g.team === HOME ? "home" : "away",
   kind: "goal",
   label: `Goal, ${g.scorer}`,
@@ -216,7 +222,7 @@ const data = {
   goals,
   theSave,
   kicks,
-  momentum: { periods, events: momentumEvents },
+  momentum: { data: periods.flat(), events: momentumEvents },
 };
 writeFileSync(join(OUT, "wc-final.json"), JSON.stringify(data));
 console.log(JSON.stringify(data.stats, null, 1));

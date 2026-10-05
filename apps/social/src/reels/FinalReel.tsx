@@ -801,12 +801,14 @@ function Momentum() {
           <MomentumChart
             width={500}
             height={260}
-            periods={F.momentum.periods}
+            data={F.momentum.data}
+            period={(d) => d.period}
             time={(d) => d.minute}
             value={(d) => d.value}
             teams={{ home: F.home, away: F.away }}
             events={F.momentum.events}
             eventTime={(e) => e.minute}
+            eventPeriod={(e) => e.period}
             eventSide={(e) => e.side}
             eventKind={(e) => e.kind}
             eventLabel={(e) => e.label}

@@ -221,9 +221,11 @@ export const cornersData = cornersJson as unknown as CornersData;
 export interface MomentumData {
   home: string;
   away: string;
-  periods: { minute: number; value: number }[][];
+  /** One flat list; `period` is StatsBomb's (1, 2, then 3 and 4 for extra time). */
+  data: { minute: number; period: number; value: number }[];
   events: {
     minute: number;
+    period: number;
     side: "home" | "away";
     kind: "goal" | "yellow-card" | "red-card";
     label: string;
@@ -294,6 +296,7 @@ export interface WcFinal {
   goals: (Segment & {
     team: string;
     scorer: string;
+    period: number;
     clock: number;
     penalty: boolean;
     xg: number;
@@ -310,6 +313,6 @@ export interface WcFinal {
   };
   /** Shootout kicks in order; `y` and `z` place each in the goal mouth. */
   kicks: { team: string; player: string; scored: boolean; outcome: string; y: number; z: number }[];
-  momentum: Pick<MomentumData, "periods" | "events">;
+  momentum: Pick<MomentumData, "data" | "events">;
 }
 export const wcFinal = wcFinalJson as unknown as WcFinal;

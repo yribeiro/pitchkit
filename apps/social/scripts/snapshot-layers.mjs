@@ -345,7 +345,11 @@ for (let period = 1; period <= 4; period++) {
   momentumPeriods.push(
     raw.map((_, i) => {
       const w = raw.slice(Math.max(0, i - 1), i + 2);
-      return { minute: first + i, value: round(w.reduce((a, b) => a + b, 0) / w.length, 1) };
+      return {
+        minute: first + i,
+        period,
+        value: round(w.reduce((a, b) => a + b, 0) / w.length, 1),
+      };
     }),
   );
 }
@@ -354,6 +358,7 @@ for (const s of allShots) {
   if (s.period <= 4 && isGoal(s)) {
     momentumEvents.push({
       minute: round(s.minute + s.second / 60, 2),
+      period: s.period,
       side: s.team.name === HOME ? "home" : "away",
       kind: "goal",
       label: `Goal, ${nameOf(s.player)}`,
@@ -365,6 +370,7 @@ for (const e of events) {
   if (!card || e.period > 4) continue;
   momentumEvents.push({
     minute: round(e.minute + e.second / 60, 2),
+    period: e.period,
     side: e.team.name === HOME ? "home" : "away",
     kind: card === "Yellow Card" ? "yellow-card" : "red-card",
     label: `${card}, ${nameOf(e.player)}`,
@@ -372,7 +378,13 @@ for (const e of events) {
 }
 writeFileSync(
   join(OUT, "momentum.json"),
-  JSON.stringify({ home: HOME, away: "England", periods: momentumPeriods, events: momentumEvents }),
+  JSON.stringify({
+    home: HOME,
+    away: "England",
+    // One flat, period-tagged list, as <MomentumChart data period> takes it.
+    data: momentumPeriods.flat(),
+    events: momentumEvents,
+  }),
 );
 console.log(
   `wrote momentum.json (${momentumPeriods.map((p) => p.length).join("+")} minutes, ${momentumEvents.length} events)`,
