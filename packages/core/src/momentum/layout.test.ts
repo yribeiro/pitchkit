@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   minuteToX,
+  xToMinute,
   layoutMomentumPanels,
   momentumExtent,
   nominalPeriodRange,
@@ -179,34 +180,73 @@ describe("minuteToX", () => {
     200,
     20,
   );
+  const [first, second] = panels as [(typeof panels)[number], (typeof panels)[number]];
 
-  it("maps a minute through the panel that holds it", () => {
-    expect(minuteToX(panels, 10)).toBeCloseTo((panels[0] as (typeof panels)[number]).scale(10));
-    expect(minuteToX(panels, 60)).toBeCloseTo((panels[1] as (typeof panels)[number]).scale(60));
+  it("maps a minute through its period's panel", () => {
+    expect(minuteToX(panels, 10, 1)).toBeCloseTo(first.scale(10));
+    expect(minuteToX(panels, 60, 2)).toBeCloseTo(second.scale(60));
   });
 
-  it("clamps a minute outside every period to the nearest panel's edge", () => {
-    const [first, second] = panels as [(typeof panels)[number], (typeof panels)[number]];
-    expect(minuteToX(panels, -5)).toBeCloseTo(first.scale(0));
-    expect(minuteToX(panels, 120)).toBeCloseTo(second.scale(90));
-  });
-
-  it("picks the nearer panel for a minute in a gap between periods", () => {
-    const gapped = layoutMomentumPanels(
+  it("places a minute in the period it is given, where the periods' minutes overlap", () => {
+    // First-half stoppage time runs to 48', and the second half restarts at 45'.
+    const overlapping = layoutMomentumPanels(
       [
-        { start: 0, end: 45 },
-        { start: 60, end: 90 },
+        { start: 0, end: 48 },
+        { start: 45, end: 94 },
       ],
       0,
       200,
       20,
     );
-    const [first, second] = gapped as [(typeof gapped)[number], (typeof gapped)[number]];
-    expect(minuteToX(gapped, 47)).toBeCloseTo(first.scale(45));
-    expect(minuteToX(gapped, 58)).toBeCloseTo(second.scale(60));
+    const [one, two] = overlapping as [(typeof overlapping)[number], (typeof overlapping)[number]];
+
+    expect(minuteToX(overlapping, 46.5, 1)).toBeCloseTo(one.scale(46.5));
+    expect(minuteToX(overlapping, 46.5, 2)).toBeCloseTo(two.scale(46.5));
+    expect(minuteToX(overlapping, 46.5, 2)).toBeGreaterThan(one.x1);
+  });
+
+  it("clamps a minute to its own period's edges", () => {
+    expect(minuteToX(panels, -5, 1)).toBeCloseTo(first.scale(0));
+    expect(minuteToX(panels, 50, 1)).toBeCloseTo(first.scale(45));
+    expect(minuteToX(panels, 120, 2)).toBeCloseTo(second.scale(90));
+  });
+
+  it("falls back to the nearest panel by minute for a period it has no panel for", () => {
+    expect(minuteToX(panels, 120, 5)).toBeCloseTo(second.scale(90));
+    expect(minuteToX(panels, 10, NaN)).toBeCloseTo(first.scale(10));
   });
 
   it("is 0 with no panels", () => {
-    expect(minuteToX([], 10)).toBe(0);
+    expect(minuteToX([], 10, 1)).toBe(0);
+  });
+});
+
+describe("xToMinute", () => {
+  const panels = layoutMomentumPanels(
+    [
+      { start: 0, end: 48 },
+      { start: 45, end: 94 },
+    ],
+    0,
+    200,
+    20,
+  );
+  const [first, second] = panels as [(typeof panels)[number], (typeof panels)[number]];
+
+  it("reads a pixel back as a period and a minute", () => {
+    expect(xToMinute(panels, first.scale(46.5))).toEqual({
+      period: 1,
+      minute: expect.closeTo(46.5, 6),
+    });
+    expect(xToMinute(panels, second.scale(46.5))).toEqual({
+      period: 2,
+      minute: expect.closeTo(46.5, 6),
+    });
+  });
+
+  it("is undefined in the gap between periods and outside every panel", () => {
+    expect(xToMinute(panels, (first.x1 + second.x0) / 2)).toBeUndefined();
+    expect(xToMinute(panels, -10)).toBeUndefined();
+    expect(xToMinute(panels, 210)).toBeUndefined();
   });
 });

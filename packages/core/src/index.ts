@@ -90,9 +90,15 @@ export type { ChartPadding, ChartFrame, LinearScale } from "./chart/types.js";
 export { createLinearScale } from "./chart/linear-scale.js";
 export { niceTicks, matchMinuteTicks } from "./chart/ticks.js";
 export { computeChartFrame } from "./chart/frame.js";
+export { isPeriod, groupByPeriod } from "./chart/periods.js";
 
 export type { RaceEvent, RacePoint, RaceSeriesData } from "./race/cumulative.js";
-export { computeCumulativeSeries, valueAtTime, resolveEndTime } from "./race/cumulative.js";
+export {
+  computeCumulativeSeries,
+  valueAtTime,
+  resolveEndTime,
+  racePeriodRanges,
+} from "./race/cumulative.js";
 export { stepPath, stepAreaPath } from "./race/step-path.js";
 
 export type { MomentumSample, MomentumBar, MomentumRange } from "./momentum/bars.js";
@@ -110,6 +116,7 @@ export {
   layoutMomentumPanels,
   momentumExtent,
   minuteToX,
+  xToMinute,
 } from "./momentum/layout.js";
 export { stackOffsets } from "./momentum/stack.js";
 

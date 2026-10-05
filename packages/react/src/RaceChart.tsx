@@ -4,14 +4,17 @@ import {
   computeChartFrame,
   computeCumulativeSeries,
   createLinearScale,
+  layoutMomentumPanels,
+  minuteToX,
   niceTicks,
+  racePeriodRanges,
   resolve,
-  resolveEndTime,
   stepAreaPath,
   stepPath,
   valueAtTime,
+  xToMinute,
 } from "@pitchkit/core";
-import type { ChartPadding, Point, RaceEvent } from "@pitchkit/core";
+import type { ChartPadding, MomentumRange, Point, RaceEvent } from "@pitchkit/core";
 import { RaceChartContext } from "./race-context.js";
 import type { ResolvedRaceSeries } from "./race-context.js";
 import { RaceGridAndAxes, RaceLegend, RacePeriodBreaks } from "./race-chrome.js";
@@ -140,6 +143,10 @@ function resolveMaxValue(highestTotal: number, headroom: number): number {
  * events and jumping at each one. The canonical case is an xG race, where
  * each step is a shot sized by its expected goals.
  *
+ * Periods are drawn one after another, each as wide as its own minutes,
+ * because minutes restart at 45 for the second half: a first half with
+ * stoppage time and the second half both contain 45'-48'.
+ *
  * A sibling of `<Pitch>`, not a child of it. There is no pitch and no
  * provider coordinate system here, so it owns its own scales rather than
  * going through `createPixelTransform`
@@ -163,7 +170,7 @@ export function RaceChart<T>({
   className,
   children,
 }: RaceChartProps<T>) {
-  const [hoverTime, setHoverTime] = useState<number | null>(null);
+  const [hover, setHover] = useState<{ period: number; minute: number } | null>(null);
 
   const resolved = resolveAppearance(appearance, series.length);
   const padding = explicitPadding ?? defaultPadding(resolved);
@@ -181,54 +188,53 @@ export function RaceChart<T>({
   // what keeps `@pitchkit/core`'s race module free of any dependency on
   // the pitch-shaped `scene/` types.
   const computed = useMemo(() => {
-    const accumulated = series.map((s) => {
-      const events: RaceEvent[] = s.data.map((d, i) => ({
+    const resolved = series.map((s) =>
+      s.data.map((d, i): RaceEvent => ({
+        period: resolve(period, d, i),
         time: resolve(time, d, i),
         value: resolve(value, d, i),
         emphasis: emphasise === undefined ? false : resolve(emphasise, d, i),
-      }));
-      return { series: s, ...computeCumulativeSeries(events) };
-    });
+      })),
+    );
 
-    const latest = accumulated.reduce((max, entry) => {
-      const last = entry.points[entry.points.length - 1];
-      return last === undefined ? max : Math.max(max, last.time);
-    }, Number.NEGATIVE_INFINITY);
+    // Each period runs to its own last event, floored at its nominal end,
+    // so stoppage time widens its own half. An explicit `endTime` sets the
+    // last period's end.
+    const ranges = racePeriodRanges(
+      resolved.flat().filter((event) => Number.isFinite(event.value)),
+      explicitEndTime,
+    );
+
+    // The chart ends where the last period does, and so does the running
+    // total: anything after an explicit `endTime` is dropped rather than
+    // drawn off the plot.
+    const last = ranges[ranges.length - 1] as MomentumRange;
+    const until = { period: ranges.length, time: last.end };
+    const accumulated = series.map((s, i) => ({
+      series: s,
+      ...computeCumulativeSeries(resolved[i] as RaceEvent[], until),
+    }));
 
     const highestTotal = accumulated.reduce((max, entry) => Math.max(max, entry.total), 0);
 
-    // Period breaks are the *last* event minute of each period but the
-    // last, which is where the whistle actually went — not a fixed 45.
-    const breaks: number[] = [];
-    if (period !== undefined) {
-      const lastByPeriod = new Map<number, number>();
-      series.forEach((s) => {
-        s.data.forEach((d, i) => {
-          const p = resolve(period, d, i);
-          const t = resolve(time, d, i);
-          if (!Number.isFinite(p) || !Number.isFinite(t)) return;
-          lastByPeriod.set(p, Math.max(lastByPeriod.get(p) ?? t, t));
-        });
-      });
-      const periods = [...lastByPeriod.keys()].sort((a, b) => a - b);
-      periods.slice(0, -1).forEach((p) => {
-        const end = lastByPeriod.get(p);
-        if (end !== undefined) breaks.push(Math.ceil(end));
-      });
-    }
+    return { accumulated, highestTotal, ranges };
+  }, [series, time, value, emphasise, period, explicitEndTime]);
 
-    return { accumulated, latest, highestTotal, breaks };
-  }, [series, time, value, emphasise, period]);
-
-  const endTime = explicitEndTime ?? resolveEndTime(computed.latest);
   const frame = computeChartFrame(size.width, size.height, padding);
+  // Contiguous: the line runs straight from one period into the next.
+  const panels = layoutMomentumPanels(computed.ranges, frame.x0, frame.x1, 0);
+  const endTime = computed.ranges[computed.ranges.length - 1]?.end ?? 90;
+  // Unclamped, so a point past an explicit `endTime` is drawn where it is.
+  const scaleX = (minute: number, at: number) =>
+    panels[at - 1]?.scale(minute) ?? minuteToX(panels, minute, at);
+  const pointerAt = (x: number) =>
+    xToMinute(panels, Math.min(Math.max(x, frame.x0), frame.x1)) ?? { period: 1, minute: 0 };
   // Clear the plot's top by enough for the leader's end label to sit above
   // its line. A caller who pins `maxValue` has asked for that exact axis,
   // so they get it and the label simply runs into the top padding.
   const labelHeadroom =
     resolved.endLabels && frame.plotHeight > 0 ? (END_LABEL_GAP * 2) / frame.plotHeight : 0;
   const maxValue = explicitMaxValue ?? resolveMaxValue(computed.highestTotal, labelHeadroom);
-  const scaleX = createLinearScale([0, endTime], [frame.x0, frame.x1]);
   // Range reversed: the SVG y-flip lives in the scale, never in a caller.
   const scaleY = createLinearScale([0, maxValue], [frame.y1, frame.y0]);
 
@@ -250,9 +256,9 @@ export function RaceChart<T>({
   const renderedSeries = resolvedSeries.map((s) => ({
     ...s,
     pixels: [
-      [scaleX(0), scaleY(0)],
-      ...s.points.map((p): Point => [scaleX(p.time), scaleY(p.cumulative)]),
-      [scaleX(endTime), scaleY(s.total)],
+      [frame.x0, scaleY(0)],
+      ...s.points.map((p): Point => [scaleX(p.time, p.period), scaleY(p.cumulative)]),
+      [frame.x1, scaleY(s.total)],
     ] as Point[],
   }));
 
@@ -265,11 +271,12 @@ export function RaceChart<T>({
 
   const contextValue = {
     frame,
+    panels,
     scaleX,
     scaleY,
     series: resolvedSeries,
     endTime,
-    valueAt: (seriesId: string, at: number): number => {
+    valueAt: (seriesId: string, at: number, inPeriod: number): number => {
       const found = resolvedSeries.find((s) => s.id === seriesId);
       if (found === undefined) {
         throw new Error(
@@ -277,18 +284,18 @@ export function RaceChart<T>({
             `Known ids: ${resolvedSeries.map((s) => s.id).join(", ") || "(none)"}.`,
         );
       }
-      return valueAtTime(found.points, at);
+      return valueAtTime(found.points, at, inPeriod);
     },
   };
 
   const hoverRows: RaceHoverRow[] =
-    hoverTime === null
+    hover === null
       ? []
       : resolvedSeries.map((s, i) => ({
           id: s.id,
           label: s.label,
           color: s.color ?? SERIES_COLORS[i] ?? CHART_TEXT,
-          value: valueAtTime(s.points, hoverTime),
+          value: valueAtTime(s.points, hover.minute, hover.period),
         }));
 
   /**
@@ -298,19 +305,20 @@ export function RaceChart<T>({
    * the next tap or until a scroll cancels the gesture, which is how a
    * phone chart is read. A mouse leaving the plot still clears.
    */
-  useDismissOnOutsidePress(containerRef, hoverTime !== null, () => setHoverTime(null));
+  useDismissOnOutsidePress(containerRef, hover !== null, () => setHover(null));
 
   function handlePointerLeave(event: ReactPointerEvent<SVGRectElement>) {
-    if (event.pointerType === "mouse") setHoverTime(null);
+    if (event.pointerType === "mouse") setHover(null);
   }
 
   function handlePointer(event: ReactPointerEvent<SVGRectElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
     if (bounds.width === 0) return;
     const ratio = (event.clientX - bounds.left) / bounds.width;
-    const minute = scaleX.invert(frame.x0 + ratio * frame.plotWidth);
-    setHoverTime(Math.min(Math.max(minute, 0), endTime));
+    setHover(pointerAt(frame.x0 + ratio * frame.plotWidth));
   }
+
+  const hoverX = hover === null ? undefined : scaleX(hover.minute, hover.period);
 
   return (
     <div
@@ -336,9 +344,7 @@ export function RaceChart<T>({
           {resolved.axis !== "none" || resolved.grid ? (
             <RaceGridAndAxes appearance={resolved} />
           ) : null}
-          {resolved.periods && computed.breaks.length > 0 && (
-            <RacePeriodBreaks breaks={computed.breaks} />
-          )}
+          {resolved.periods && panels.length > 1 && <RacePeriodBreaks />}
           {resolved.legend && <RaceLegend colors={SERIES_COLORS} />}
 
           {/*
@@ -387,7 +393,7 @@ export function RaceChart<T>({
                     .map((p) => (
                       <circle
                         key={p.index}
-                        cx={scaleX(p.time)}
+                        cx={scaleX(p.time, p.period)}
                         cy={scaleY(p.cumulative)}
                         r={p.emphasis ? 5 : 4}
                         data-pitchkit-part={p.emphasis ? "race-emphasis" : "race-marker"}
@@ -405,7 +411,7 @@ export function RaceChart<T>({
                     // lowest under it. Only the value is printed: the
                     // legend already names the series, and a name beside
                     // a number doubled the label's width for no gain.
-                    const leftTime = scaleX.invert(frame.x1 - text.length * END_LABEL_CHAR_WIDTH);
+                    const left = pointerAt(frame.x1 - text.length * END_LABEL_CHAR_WIDTH);
                     return (
                       <text
                         data-pitchkit-part="race-end-label"
@@ -413,7 +419,7 @@ export function RaceChart<T>({
                         y={endLabelY(
                           scaleY(rendered.total),
                           i === leaderIndex,
-                          scaleY(valueAtTime(rendered.points, leftTime)),
+                          scaleY(valueAtTime(rendered.points, left.minute, left.period)),
                           frame.y1,
                         )}
                         textAnchor="end"
@@ -439,12 +445,12 @@ export function RaceChart<T>({
             );
           })}
 
-          {hoverTime !== null && (
+          {hoverX !== undefined && (
             <line
               data-pitchkit-part="race-crosshair"
-              x1={scaleX(hoverTime)}
+              x1={hoverX}
               y1={frame.y0}
-              x2={scaleX(hoverTime)}
+              x2={hoverX}
               y2={frame.y1}
               style={{ stroke: AXIS, strokeWidth: 1, pointerEvents: "none" }}
             />
@@ -464,16 +470,17 @@ export function RaceChart<T>({
             onPointerDown={handlePointer}
             onPointerMove={handlePointer}
             onPointerLeave={handlePointerLeave}
-            onPointerCancel={() => setHoverTime(null)}
+            onPointerCancel={() => setHover(null)}
           />
         </RaceChartContext.Provider>
       </svg>
 
-      {hoverTime !== null && hoverRows.length > 0 && (
+      {hover !== null && hoverX !== undefined && hoverRows.length > 0 && (
         <RaceTooltip
           rows={hoverRows}
-          time={hoverTime}
-          left={(scaleX(hoverTime) / frame.width) * 100}
+          time={hover.minute}
+          period={hover.period}
+          left={(hoverX / frame.width) * 100}
           top={(frame.y0 / frame.height) * 100}
           render={tooltip}
         />
@@ -485,23 +492,27 @@ export function RaceChart<T>({
 function RaceTooltip({
   rows,
   time,
+  period,
   left,
   top,
   render,
 }: {
   rows: readonly RaceHoverRow[];
   time: number;
+  period: number;
   left: number;
   top: number;
-  render: ((rows: readonly RaceHoverRow[], time: number) => ReactNode) | undefined;
+  render: ((rows: readonly RaceHoverRow[], time: number, period: number) => ReactNode) | undefined;
 }) {
   return (
     <ChartReadout left={left} top={top}>
       {render ? (
-        render(rows, time)
+        render(rows, time, period)
       ) : (
         <>
-          <div style={{ fontWeight: 600 }}>{`${Math.round(time)}'`}</div>
+          {/* Floored, not rounded: the total is step-after, so at 44.6' a
+              45' shot hasn't counted yet and the label mustn't say 45'. */}
+          <div style={{ fontWeight: 600 }}>{`${Math.floor(time)}'`}</div>
           {rows.map((row) => (
             <ReadoutRow
               key={row.id}

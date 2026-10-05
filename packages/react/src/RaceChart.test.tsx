@@ -7,11 +7,11 @@ interface Shot {
   minute: number;
   xg: number;
   goal?: boolean;
-  period?: number;
+  period: number;
 }
 
 const HOME: Shot[] = [
-  { minute: 7, xg: 0.06 },
+  { minute: 7, xg: 0.06, period: 1 },
   { minute: 31, xg: 0.44, goal: true, period: 1 },
   { minute: 78, xg: 0.33, goal: true, period: 2 },
 ];
@@ -30,7 +30,7 @@ function renderChart(props: Partial<Parameters<typeof RaceChart<Shot>>[0]> = {})
       time={(s) => s.minute}
       value={(s) => s.xg}
       emphasise={(s) => s.goal === true}
-      period={(s) => s.period as number}
+      period={(s) => s.period}
       width={720}
       height={380}
       {...props}
@@ -143,6 +143,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "AWAY", data: AWAY }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -163,6 +164,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "HOME", data: HOME, className: "stroke-emerald-400" }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -184,6 +186,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "SOLO", data: HOME }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         width={720}
         height={380}
       />,
@@ -202,9 +205,7 @@ describe("<RaceChart>", () => {
     expect(screen.getByText("Rovers")).toBeTruthy();
   });
 
-  it("derives period breaks from the data rather than assuming 45", () => {
-    // The first half here really ends at 31', so that is where the rule
-    // belongs — a fixed 45 would be drawn in empty space.
+  it("rules off half-time", () => {
     const { container } = renderChart();
     const breaks = container.querySelectorAll('[data-pitchkit-part="race-period"] line');
 
@@ -212,34 +213,133 @@ describe("<RaceChart>", () => {
     expect(screen.getByText("HT")).toBeTruthy();
   });
 
-  it("draws no period rules without a period accessor", () => {
-    const { container } = render(
-      <RaceChart<Shot>
-        series={[{ id: "HOME", data: HOME }]}
-        time={(s) => s.minute}
-        value={(s) => s.xg}
-        width={720}
-        height={380}
-      />,
-    );
+  it("draws no period rules when they are turned off", () => {
+    const { container } = renderChart({ appearance: { periods: false } });
 
     expect(container.querySelectorAll('[data-pitchkit-part="race-period"] line')).toHaveLength(0);
   });
 
+  describe("periods whose minutes overlap", () => {
+    // A first-half shot in stoppage time at 46:30, and a second-half one
+    // at 45:30. Minutes restart at 45, so the first happened first.
+    // Plot 38-706; first half 0-47 is 38-379.3, second half 45-90 after it.
+    const STOPPAGE: Shot[] = [
+      { minute: 45.5, xg: 0.1, period: 2 },
+      { minute: 46.5, xg: 0.2, period: 1 },
+    ];
+    const overlap = () =>
+      renderChart({
+        series: [{ id: "HOME", data: STOPPAGE }],
+        appearance: { markers: "all" },
+      });
+    const markers = (container: HTMLElement) =>
+      Array.from(container.querySelectorAll('[data-pitchkit-part="race-marker"]')).map((c) => ({
+        x: Number(c.getAttribute("cx")),
+        y: Number(c.getAttribute("cy")),
+      }));
+    const halfTime = (container: HTMLElement) =>
+      Number(
+        container.querySelector('[data-pitchkit-part="race-period"] line')?.getAttribute("x1"),
+      );
+
+    it("draws each shot in its own half", () => {
+      const { container } = overlap();
+      const xs = markers(container).map((m) => m.x);
+
+      expect(xs.filter((x) => x < halfTime(container))).toHaveLength(1);
+      expect(xs.filter((x) => x > halfTime(container))).toHaveLength(1);
+    });
+
+    it("accumulates in match order, reading each half's own minutes", () => {
+      const { container } = overlap();
+      const hit = hoverable(container);
+      const tooltip = () => container.querySelector('[role="tooltip"]')?.textContent ?? "";
+
+      // 46' of the first half: the stoppage-time shot hasn't happened yet.
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX: 360 });
+      expect(tooltip()).toContain("0.00");
+
+      // 45:12 of the second half: only the first-half shot has.
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX: 369.4 });
+      expect(tooltip()).toContain("0.20");
+
+      // 46' of the second half: both shots have.
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX: 375.7 });
+      expect(tooltip()).toContain("0.30");
+    });
+
+    it("labels the minute it has counted, floored rather than rounded (#83)", () => {
+      // One shot at 45'. At 44.6' it hasn't happened, so the label must not say 45'.
+      const { container } = renderChart({
+        series: [{ id: "HOME", data: [{ minute: 45, xg: 0.4, period: 1 }] }],
+      });
+      const hit = hoverable(container);
+      // Halves 0-45 and 45-90 split the 668px plot evenly: 44.6' is x 369.0.
+      const clientX = ((369.0 - 38) / 668) * 720;
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX });
+      const tooltip = container.querySelector('[role="tooltip"]')?.textContent ?? "";
+
+      expect(tooltip).toContain("44'");
+      expect(tooltip).toContain("0.00");
+    });
+
+    it("hands a custom tooltip the hovered period", () => {
+      const { container } = renderChart({
+        series: [{ id: "HOME", data: STOPPAGE }],
+        tooltip: (_rows, minute, period) => <span>{`P${period} ${Math.floor(minute)}`}</span>,
+      });
+      const hit = hoverable(container);
+
+      fireEvent.pointerMove(hit, { pointerType: "mouse", clientX: 375.7 });
+      expect(container.querySelector('[role="tooltip"]')?.textContent).toBe("P2 46");
+    });
+  });
+
   it("runs the axis past 90 for extra time", () => {
     renderChart({
-      series: [{ id: "HOME", data: [{ minute: 118, xg: 0.2 }] }],
+      series: [{ id: "HOME", data: [{ minute: 118, xg: 0.2, period: 4 }] }],
     });
 
     // A knockout match genuinely reaches 118'; a fixed 90 would clip it.
-    // 120' is deliberately absent: the axis ends at the data's own
-    // extent, so a tick beyond it would sit off the plot.
     expect(screen.getByText("105'")).toBeTruthy();
-    expect(screen.queryByText("120'")).toBeNull();
+    expect(screen.getByText("120'")).toBeTruthy();
+  });
+
+  describe("an explicit endTime before the last shot (#83)", () => {
+    const LATE: Shot[] = [
+      { minute: 20, xg: 0.3, period: 1 },
+      { minute: 60, xg: 0.4, period: 2 },
+      { minute: 110, xg: 0.5, goal: true, period: 2 },
+    ];
+    const cut = () => renderChart({ series: [{ id: "HOME", data: LATE }], endTime: 90 });
+
+    it("keeps the line inside the plot", () => {
+      const { container } = cut();
+      const d =
+        container.querySelector('[data-pitchkit-part="race-line"]')?.getAttribute("d") ?? "";
+      const xs = [...d.matchAll(/[MH]([\d.]+)/g)].map((m) => Number(m[1]));
+
+      // Plot is 38-706 at 720 wide.
+      expect(Math.max(...xs)).toBeLessThanOrEqual(706);
+    });
+
+    it("drops the shots after it, marker and all", () => {
+      const { container } = cut();
+
+      expect(container.querySelectorAll('[data-pitchkit-part="race-emphasis"]')).toHaveLength(0);
+    });
+
+    it("totals only what it draws", () => {
+      const { container } = cut();
+
+      expect(container.querySelector('[data-pitchkit-part="race-end-label"]')?.textContent).toBe(
+        "0.70",
+      );
+    });
   });
 
   it("floors the axis at 90 for a match that ends early", () => {
-    renderChart({ series: [{ id: "HOME", data: [{ minute: 30, xg: 0.2 }] }] });
+    renderChart({ series: [{ id: "HOME", data: [{ minute: 30, xg: 0.2, period: 1 }] }] });
 
     expect(screen.getByText("90'")).toBeTruthy();
   });
@@ -281,12 +381,12 @@ describe("<RaceChart>", () => {
     // The ceiling now keeps room for the label instead.
     const { container } = renderChart({
       series: [
-        { id: "GEO", data: [{ minute: 60, xg: 1.35 }] },
+        { id: "GEO", data: [{ minute: 60, xg: 1.35, period: 2 }] },
         {
           id: "POR",
           data: [
-            { minute: 40, xg: 1.0 },
-            { minute: 92, xg: 1.36 },
+            { minute: 40, xg: 1.0, period: 1 },
+            { minute: 92, xg: 1.36, period: 2 },
           ],
         },
       ],
@@ -316,7 +416,7 @@ describe("<RaceChart>", () => {
   it("honours a pinned maxValue, letting the leader's label run into the padding", () => {
     // A caller who pins the axis has asked for that exact axis.
     const { container } = renderChart({
-      series: [{ id: "HOME", data: [{ minute: 20, xg: 1.5 }] }],
+      series: [{ id: "HOME", data: [{ minute: 20, xg: 1.5, period: 1 }] }],
       maxValue: 1.5,
       width: 720,
       height: 380,
@@ -336,6 +436,7 @@ describe("<RaceChart>", () => {
         series={[{ id: "HOME", data: HOME }]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
       />,
     );
     const box = container.firstElementChild as HTMLElement;
@@ -439,6 +540,7 @@ describe("<RaceChart>", () => {
         ]}
         time={(s) => s.minute}
         value={(s) => s.xg}
+        period={(s) => s.period}
         emphasise={(s) => s.goal === true}
         width={720}
         height={380}
@@ -459,8 +561,8 @@ describe("<RaceChart>", () => {
     // on top of the other. Heading in opposite directions, they can't.
     const { container } = renderChart({
       series: [
-        { id: "ESP", data: [{ minute: 80, xg: 1.53 }] },
-        { id: "GER", data: [{ minute: 85, xg: 1.63 }] },
+        { id: "ESP", data: [{ minute: 80, xg: 1.53, period: 2 }] },
+        { id: "GER", data: [{ minute: 85, xg: 1.63, period: 2 }] },
       ],
       width: 720,
       height: 380,
@@ -489,7 +591,7 @@ describe("<RaceChart>", () => {
   it("lifts a trailing label above its line when it would hit the axis", () => {
     const { container } = renderChart({
       series: [
-        { id: "HOME", data: [{ minute: 20, xg: 1.2 }] },
+        { id: "HOME", data: [{ minute: 20, xg: 1.2, period: 1 }] },
         { id: "AWAY", data: [] },
       ],
       width: 720,
@@ -510,12 +612,12 @@ describe("<RaceChart>", () => {
     // under the end, the label lands on that earlier step.
     const { container } = renderChart({
       series: [
-        { id: "LEAD", data: [{ minute: 40, xg: 1.5 }] },
+        { id: "LEAD", data: [{ minute: 40, xg: 1.5, period: 1 }] },
         {
           id: "TRAIL",
           data: [
-            { minute: 20, xg: 0.3 },
-            { minute: 89, xg: 0.2 },
+            { minute: 20, xg: 0.3, period: 1 },
+            { minute: 89, xg: 0.2, period: 2 },
           ],
         },
       ],
@@ -558,7 +660,7 @@ describe("<RaceChart>", () => {
     // Spain's real 1.79 should put the ceiling on 2.0, not on 1.79 —
     // otherwise the line is pinned to the top edge and the top gridline
     // carries no label.
-    renderChart({ series: [{ id: "HOME", data: [{ minute: 40, xg: 1.79 }] }] });
+    renderChart({ series: [{ id: "HOME", data: [{ minute: 40, xg: 1.79, period: 1 }] }] });
 
     expect(screen.getByText("2")).toBeTruthy();
   });
@@ -571,7 +673,7 @@ describe("<RaceChart>", () => {
 
   it("renders a scoreless chart flat on the baseline", () => {
     const { container } = renderChart({
-      series: [{ id: "HOME", data: [{ minute: 20, xg: 0 }] }],
+      series: [{ id: "HOME", data: [{ minute: 20, xg: 0, period: 1 }] }],
     });
     const d = container.querySelector('[data-pitchkit-part="race-line"]')?.getAttribute("d") ?? "";
 
@@ -586,8 +688,8 @@ describe("useRaceChart", () => {
     return (
       <rect
         data-testid="card"
-        x={scaleX(minute) - 3}
-        y={scaleY(valueAt(team, minute)) - 9}
+        x={scaleX(minute, 1) - 3}
+        y={scaleY(valueAt(team, minute, 1)) - 9}
         width={6}
         height={8}
       />

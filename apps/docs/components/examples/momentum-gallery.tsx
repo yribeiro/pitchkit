@@ -23,22 +23,23 @@ const secondHalf = [
   5.7, 16.3, 14.7, 22.7, 14.7, 14.0, 6.0, -0.3, -2.3, -4.7, -2.3, -2.0, -1.0, -0.7, -1.5,
 ];
 
-const periods = [
-  firstHalf.map((value, i) => ({ minute: i, value })),
-  secondHalf.map((value, i) => ({ minute: 45 + i, value })),
+const samples = [
+  ...firstHalf.map((value, i) => ({ minute: i, period: 1, value })),
+  ...secondHalf.map((value, i) => ({ minute: 45 + i, period: 2, value })),
 ];
 
 // Goals and bookings only. Substitutions are left out on purpose: eight of
 // them in one half would stack into a block, and they are not what this
-// chart is about.
+// chart is about. Williams' goal at 46:09 is in the second half, which the
+// first half's stoppage time also reaches, so every event names its period.
 const events = [
-  { minute: 24.63, side: "away", kind: "yellow-card" },
-  { minute: 29.95, side: "home", kind: "yellow-card" },
-  { minute: 46.15, side: "home", kind: "goal" },
-  { minute: 52.52, side: "away", kind: "yellow-card" },
-  { minute: 72.13, side: "away", kind: "goal" },
-  { minute: 85.93, side: "home", kind: "goal" },
-  { minute: 90.9, side: "away", kind: "yellow-card" },
+  { minute: 24.63, period: 1, side: "away", kind: "yellow-card" },
+  { minute: 29.95, period: 1, side: "home", kind: "yellow-card" },
+  { minute: 46.15, period: 2, side: "home", kind: "goal" },
+  { minute: 52.52, period: 2, side: "away", kind: "yellow-card" },
+  { minute: 72.13, period: 2, side: "away", kind: "goal" },
+  { minute: 85.93, period: 2, side: "home", kind: "goal" },
+  { minute: 90.9, period: 2, side: "away", kind: "yellow-card" },
 ] as const;
 
 export function MomentumGallery() {
@@ -48,12 +49,14 @@ export function MomentumGallery() {
     <div className="pitchkit-chart-stage rounded-md p-2">
       <MomentumChart
         aspectRatio={1.5}
-        periods={periods}
+        data={samples}
         time={(d) => d.minute}
+        period={(d) => d.period}
         value={(d) => d.value}
         teams={{ home: "Spain", away: "England" }}
         events={events}
         eventTime={(e) => e.minute}
+        eventPeriod={(e) => e.period}
         eventSide={(e) => e.side}
         eventKind={(e) => e.kind}
       />
