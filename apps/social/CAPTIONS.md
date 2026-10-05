@@ -341,22 +341,30 @@ clock) climbs; it holds
 on the strongest link, and a whip-pan carries Spain into England. A second
 title card ("Let's measure the shape") leads into the outro, which measures
 both finished shapes, then the same end card as reels 01–03. For the grid
-cover, pick the banner frame (~4 s).
+cover, use `out/reel-04-cover.png` (frame 130, the banner frame; render it with
+`npx remotion still src/index.ts reel-04-networks out/reel-04-cover.png --frame=130`).
+Post without a voiceover: music only, which is what the outlier football
+data reels use (see the music note below).
+
+Music: "DAI DAI - PHONK" (DRIFTMANE & PHXNTOM) from Instagram's audio picker,
+or the original "Dai Dai" (Shakira & Burna Boy, the official 2026 World Cup
+song). Start it so a beat lands on the banner at about 3.8 s.
 
 **Instagram**
 
 ```
 How did Spain and England set up in the Euro 2024 final? ⚽️
 
-Both first-half pass networks, replayed from the 4-2-3-1 team sheet to where each player actually played.
+Both first-half pass networks, built from the 4-2-3-1 team sheet to where each player actually played.
 
-Spain completed 283 passes to England's 112. Their strongest link: Laporte ↔ Le Normand, 31 passes. England's: Walker ↔ Stones, 9.
+🔵 Spain: 283 completed passes. Strongest link: Laporte ↔ Le Normand, 31.
+🟠 England: 112. Strongest link: Walker ↔ Stones, 9.
 
-And the shape: Spain's last defender sat 9 m higher up the pitch.
+And front to back, Spain's shape was 33 m to England's 30 m.
 
 Which setup would you rather play in? 👇
 
-StatsBomb open data. Drawn with PitchKit, the free React-first football chart library. Link in bio.
+Data: StatsBomb open data. Built with PitchKit, the free React-first football chart library. Link in bio.
 
 #dataviz #footballanalytics #euro2024 #passnetwork #statsbomb #reactjs #opensource
 ```
@@ -366,9 +374,28 @@ StatsBomb open data. Drawn with PitchKit, the free React-first football chart li
 ```
 How did Spain and England set up in the Euro 2024 final?
 
-First-half pass networks, replayed from the 4-2-3-1 team sheet. Spain 283 completed passes, England 112. Strongest links: Laporte ↔ Le Normand (31), Walker ↔ Stones (9). Spain's last defender sat 9 m higher.
+First-half pass networks, from the 4-2-3-1 team sheet to where they actually played.
+
+Spain 283 completed passes, England 112. Strongest links: Laporte ↔ Le Normand (31), Walker ↔ Stones (9). Front to back: 33 m v 30 m.
 
 Open-source, React-first. Data: @StatsBomb open data.
+
+https://www.pitchkitjs.com
+```
+
+**LinkedIn**
+
+```
+How did Spain and England set up in the Euro 2024 final?
+
+We replayed both first-half pass networks: every player starts in their 4-2-3-1 team-sheet slot, then drifts to their real average position as the touches add up, while partnerships thicken with every completed pass.
+
+What the data shows:
+• Spain completed 283 passes to England's 112, 2.5× as many.
+• Spain's busiest link was centre-back to centre-back: Laporte ↔ Le Normand, 31 passes. England's was Walker ↔ Stones, 9.
+• Measured from the furthest player forward to the last defender, Spain's shape was 33 m long, England's 30 m, with Spain's back line sitting about 9 m higher.
+
+Every chart is drawn with PitchKit, an open-source, React-first library for football visualisation, on StatsBomb open data.
 
 https://www.pitchkitjs.com
 ```
