@@ -214,7 +214,7 @@ PizzaChart (root)
 
 - **`core/polar/` supplies the wedge geometry**: `wedgeAngles` (a slice's span), `splitWedge`
   (one sub-wedge per series), `annularSectorPath` (the slice with the hole cut out, its edges pulled in
-  by a pixel inset so gaps keep one width from hole to rim), `overlayOrder` (largest first), and for
+  by a pixel inset so gaps keep one width from hole to rim), `overlayOrder` (longest drawn slice first, by tip radius, so a `lowerIsBetter` metric orders correctly), and for
   value boxes `wedgeMid`, `wedgeLane` and `valueBoxSpot`. The label, ring and normalisation maths is the radar's.
 - **Each (metric, series) is one cell** with its wedge, tip radius, value and paint. Side by side gives a
   cell its own sub-wedge; overlay gives every cell the full wedge and draws them in `overlayOrder`.

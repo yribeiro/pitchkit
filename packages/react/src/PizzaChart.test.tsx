@@ -227,6 +227,58 @@ describe("PizzaChart: several series", () => {
   });
 });
 
+describe("PizzaChart: overlay order follows the drawn length (#89)", () => {
+  /** Each wedge's slices in paint order, with their tip radii. */
+  const paintOrder = (container: HTMLElement) =>
+    parts(container, "pizza-wedge").map((wedge) =>
+      Array.from(wedge.querySelectorAll('[data-pitchkit-part="pizza-slice"]')).map((el) => ({
+        series: el.getAttribute("data-pitchkit-series"),
+        tip: tipOf(el),
+      })),
+    );
+
+  it("paints the longer slice first on a lower-is-better metric", () => {
+    const { container } = renderChart({ series: [winger, fullback], seriesLayout: "overlay" });
+    // Turnovers is lower-is-better: b's 20 is the longer slice, a's 80 the shorter.
+    const turnovers = paintOrder(container)[2] as { series: string | null; tip: number }[];
+
+    expect(turnovers.map((s) => s.series)).toEqual(["b", "a"]);
+  });
+
+  it("never paints a longer slice over a shorter one, whichever way the axis runs", () => {
+    // The issue's reproduction: two lower-is-better metrics among three.
+    const { container } = render(
+      <PizzaChart
+        seriesLayout="overlay"
+        metrics={[
+          { id: "goals", label: "Goals" },
+          { id: "turnovers", label: "Turnovers", lowerIsBetter: true },
+          { id: "passes", label: "Passes" },
+          { id: "fouls", label: "Fouls", lowerIsBetter: true },
+          { id: "tackles", label: "Tackles" },
+        ]}
+        series={[
+          {
+            id: "A",
+            values: { goals: 80, turnovers: 20, passes: 50, fouls: 15, tackles: 70 },
+          },
+          {
+            id: "B",
+            values: { goals: 40, turnovers: 70, passes: 75, fouls: 60, tackles: 35 },
+          },
+        ]}
+        width={420}
+        height={420}
+      />,
+    );
+
+    for (const wedge of paintOrder(container)) {
+      const tips = wedge.map((s) => s.tip);
+      expect(tips).toEqual([...tips].sort((x, y) => y - x));
+    }
+  });
+});
+
 describe("PizzaChart: value boxes", () => {
   it("prints each value in every layout", () => {
     expect(parts(renderChart().container, "pizza-value")).toHaveLength(4);

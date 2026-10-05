@@ -285,9 +285,10 @@ export function PizzaChart({
           ))}
 
           {rows.map(({ metric, wedge, cells, lines, placement, labelAt }, j) => {
-            const order = overlay
-              ? overlayOrder(cells.map((c) => c.value))
-              : cells.map((_, i) => i);
+            // Overlaid slices paint longest first, by drawn length rather than
+            // value: on a lower-is-better metric the lower value is the longer
+            // slice (#89).
+            const order = overlay ? overlayOrder(cells.map((c) => c.tip)) : cells.map((_, i) => i);
             return (
               <g
                 key={metric.id}

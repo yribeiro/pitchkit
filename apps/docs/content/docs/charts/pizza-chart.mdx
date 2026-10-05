@@ -82,10 +82,10 @@ moves to an arc on the rim. Each series gets its own slice within a metric:
 
 `seriesLayout` decides how they share it:
 
-| Value                      | Slices                                                                                                    |
-| -------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `"side-by-side"` (default) | Split the metric's wedge into one thin wedge per series. Nothing is hidden. Readable up to three.         |
-| `"overlay"`                | Use the full wedge for every series, largest drawn first so a smaller one stays visible on top. Two only. |
+| Value                      | Slices                                                                                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"side-by-side"` (default) | Split the metric's wedge into one thin wedge per series. Nothing is hidden. Readable up to three.                                              |
+| `"overlay"`                | Use the full wedge for every series, longest slice drawn first so a shorter one stays visible on top, whichever way the metric runs. Two only. |
 
 Past the limit a series still draws, with a development warning. Overlaying a third hides the middle
 value behind the other two, and a fourth side-by-side wedge is too thin to read.
