@@ -417,6 +417,34 @@ Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:ne
 | Metres                      | StatsBomb's 120 × 80 frame scaled to the Olympiastadion's 105 × 68 m pitch; average positions, goalkeepers excluded                                                                              |
 | Timing                      | Each pass and touch counts at its real match minute, easing in over ~0.8 s; each chapter replays the half in 7 s                                                                                 |
 
+## Reel 04 loop — Spain only (`reel-04-networks-loop.mp4`, 14 s)
+
+Tests rules 1, 2 and 5 in RULES-TO-TEST.md against the 38 s cut. No title
+card: it opens close in on Spain's 4-2-3-1 team sheet at a broadcast-camera
+angle, part of the pitch off screen, under "How did Spain set up at Euro
+2024?", with the camera slowly orbiting. At 1.2 s the pitch swings flat and
+upright as the pass counter starts and the players move. The half replays in
+8.5 s, holds on Laporte ↔ Le Normand (31) for about 2.5 s, then rewinds while
+the camera tilts back to the team sheet, so the last frame runs into the first
+(the orbit keeps moving through the join). No end card, since that would break
+the loop. Music only.
+
+**Instagram**
+
+```
+How did Spain set up in the Euro 2024 final? ⚽️
+
+283 completed passes in one half, and the busiest pair was the two centre-backs: Laporte ↔ Le Normand, 31.
+
+Watch it build from the 4-2-3-1 team sheet. 🔁
+
+Data: StatsBomb open data. Built with PitchKit, the free React-first football chart library. Link in bio.
+
+#dataviz #footballanalytics #euro2024 #passnetwork #statsbomb #spain
+```
+
+**Alt text:** A football pitch seen at an angle, close in, with Spain's starting 4-2-3-1 as numbered blue circles under the question "How did Spain set up at Euro 2024?". The pitch swings flat and upright as the circles drift to each player's average position from the first half, while lines between them thicken with every completed pass and a counter climbs to 283 passes. The thickest line, Laporte to Le Normand, lights up with the label "Laporte ↔ Le Normand, 31 passes, strongest link", then the network rewinds as the pitch tilts back to the team sheet and the loop starts again.
+
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a

@@ -33,7 +33,7 @@ const ease = Easing.inOut(Easing.cubic);
 
 const SPAIN = passNetworks.spain;
 const ENGLAND = passNetworks.england;
-const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p.t)) + 0.1;
+export const END_MINUTE = Math.max(...[...SPAIN.passes, ...ENGLAND.passes].map((p) => p.t)) + 0.1;
 const RATIO = (SPAIN.completed / ENGLAND.completed).toFixed(1);
 const SPAIN_SHAPE = shapeOf(SPAIN);
 const ENGLAND_SHAPE = shapeOf(ENGLAND);
@@ -260,9 +260,9 @@ function Card({
 
 /* Chapters ---------------------------------------------------------------- */
 
-const CHAPTER_W = 740;
+export const CHAPTER_W = 740;
 /** Where the chapter pitch starts: ~48 px clear of the header; it ends on the safe zone's lower edge. */
-const CHAPTER_TOP = 420;
+export const CHAPTER_TOP = 420;
 
 function Chapter({
   net,
@@ -370,7 +370,26 @@ function Chapter({
         />
       </div>
 
-      {/* Each unit's head count, in the gutter beside its line of the formation. */}
+      <UnitCounts net={net} color={color} reveal={reveal} opacity={unitCounts} />
+      <StrongestLink net={net} color={color} show={chip} />
+    </AbsoluteFill>
+  );
+}
+
+/** Each unit's head count, in the gutter beside its line of the formation. */
+export function UnitCounts({
+  net,
+  color,
+  reveal,
+  opacity,
+}: {
+  net: TeamNetwork;
+  color: string;
+  reveal: number;
+  opacity: number;
+}) {
+  return (
+    <>
       {formationUnits(net).map(({ count, x }, u) => {
         const t = interpolate(reveal, [u + 0.3, u + 0.9], [0, 1], clamp);
         return (
@@ -387,57 +406,70 @@ function Chapter({
               fontSize: 84,
               lineHeight: 1,
               color,
-              opacity: t * unitCounts,
+              opacity: t * opacity,
             }}
           >
             {count}
           </div>
         );
       })}
+    </>
+  );
+}
 
+/** The payoff chip: the strongest partnership and its pass count. */
+export function StrongestLink({
+  net,
+  color,
+  show,
+}: {
+  net: TeamNetwork;
+  color: string;
+  show: number;
+}) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: CHAPTER_TOP + 100,
+        left: 0,
+        right: 0,
+        display: "flex",
+        justifyContent: "center",
+        opacity: show,
+        transform: `translateY(${(1 - show) * 30}px)`,
+      }}
+    >
       <div
         style={{
-          position: "absolute",
-          top: CHAPTER_TOP + 100,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          opacity: chip,
-          transform: `translateY(${(1 - chip) * 30}px)`,
+          background: "rgba(4,10,7,0.88)",
+          border: `2px solid ${color}`,
+          borderRadius: 18,
+          padding: "14px 26px 16px",
+          textAlign: "center",
         }}
       >
-        <div
-          style={{
-            background: "rgba(4,10,7,0.88)",
-            border: `2px solid ${color}`,
-            borderRadius: 18,
-            padding: "14px 26px 16px",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontFamily: FONT.display, fontSize: 52, lineHeight: 1.1 }}>
-            {nameOf(net, net.topPair.a).toUpperCase()}
-            {/* Anton has no arrows; borrow Inter's. */}
-            <span
-              style={{
-                fontFamily: FONT.sans,
-                fontWeight: 800,
-                fontSize: 44,
-                margin: "0 14px",
-                color,
-              }}
-            >
-              ↔
-            </span>
-            {nameOf(net, net.topPair.b).toUpperCase()}
-          </div>
-          <div style={{ fontFamily: FONT.display, fontSize: 32, letterSpacing: "0.05em", color }}>
-            {net.topPair.count} PASSES · STRONGEST LINK
-          </div>
+        <div style={{ fontFamily: FONT.display, fontSize: 52, lineHeight: 1.1 }}>
+          {nameOf(net, net.topPair.a).toUpperCase()}
+          {/* Anton has no arrows; borrow Inter's. */}
+          <span
+            style={{
+              fontFamily: FONT.sans,
+              fontWeight: 800,
+              fontSize: 44,
+              margin: "0 14px",
+              color,
+            }}
+          >
+            ↔
+          </span>
+          {nameOf(net, net.topPair.b).toUpperCase()}
+        </div>
+        <div style={{ fontFamily: FONT.display, fontSize: 32, letterSpacing: "0.05em", color }}>
+          {net.topPair.count} PASSES · STRONGEST LINK
         </div>
       </div>
-    </AbsoluteFill>
+    </div>
   );
 }
 

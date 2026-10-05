@@ -20,6 +20,7 @@ import {
   SlideSave,
 } from "./carousel/CornerSlides";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
+import { NETWORKS_LOOP_DURATION, NetworksLoopReel } from "./reels/NetworksLoopReel";
 import { NETWORKS_DURATION, NetworksReel } from "./reels/NetworksReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
 import { TRACKING_DURATION, TrackingReel } from "./reels/TrackingReel";
@@ -104,6 +105,12 @@ export function Root() {
           id="reel-04-networks"
           component={NetworksReel}
           durationInFrames={NETWORKS_DURATION}
+          {...REEL}
+        />
+        <Composition
+          id="reel-04-networks-loop"
+          component={NetworksLoopReel}
+          durationInFrames={NETWORKS_LOOP_DURATION}
           {...REEL}
         />
       </Folder>

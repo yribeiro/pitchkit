@@ -47,6 +47,7 @@ const REELS = [
   "reel-02-tracking",
   "reel-03-layers",
   "reel-04-networks",
+  "reel-04-networks-loop",
   "post-03-winner-animated",
 ];
 
