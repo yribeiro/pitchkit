@@ -26,6 +26,7 @@ Private workspace (`"private": true`), never published.
 | `reel-04-networks`        | 1080×1920 MP4, 38 s | How Spain and England set up in the Euro 2024 final: finished pass networks, then each half replays from the 4-2-3-1 team sheet, then each shape is measured       |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
+What we think makes a reel travel, and how we test it, is in [RULES-TO-TEST.md](./RULES-TO-TEST.md).
 
 ## Usage
 
