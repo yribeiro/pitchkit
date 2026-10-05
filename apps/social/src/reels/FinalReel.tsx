@@ -465,6 +465,7 @@ function MatchScene() {
   const out = interpolate(frame, [SHOOTOUT - 12, SHOOTOUT], [1, 0], clamp);
 
   const franceShots = SHOTS.filter((s) => s.team === F.away && frame >= s.at).length;
+  const argentinaShots = SHOTS.filter((s) => s.team === F.home && frame >= s.at).length;
   const flip = interpolate(frame, [FIRST_SHOT, FIRST_SHOT + 5], [0, 1], clamp);
   const stopwatch = interpolate(frame, [MBAPPE_PEN, MBAPPE_VOLLEY], [0, F.stats.mbappeGap], clamp);
   const xgMeter = interpolate(frame, [SAVE_SHOT, SAVED - 6], [0, F.theSave.xg], clamp);
@@ -487,20 +488,28 @@ function MatchScene() {
       />
       <ScoreBug frame={frame} />
 
-      <Beat frame={frame} from={-20} to={MBAPPE_PEN - 48} top={1040}>
-        <div style={big(70)}>FRANCE SHOTS</div>
-        <div
-          style={{
-            ...big(300, FRA),
-            transform: `scale(${1 + 0.4 * Math.sin(flip * Math.PI)})`,
-          }}
-        >
-          {franceShots}
+      {/* Both teams' shot counts side by side: Argentina's climbs with every
+          dot on the pitch while France's sits on 0, so the 2–0 above reads
+          as Argentina's goals, not a stuck counter. */}
+      <Beat frame={frame} from={-20} to={MBAPPE_PEN - 48} top={1060}>
+        <div style={big(64)}>SHOTS</div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 70 }}>
+          {[
+            { label: "ARG", value: argentinaShots, color: ARG, pulse: 0 },
+            { label: "FRA", value: franceShots, color: FRA, pulse: Math.sin(flip * Math.PI) },
+          ].map(({ label, value, color, pulse }) => (
+            <div key={label} style={{ width: 300 }}>
+              <div style={{ ...big(250, color), transform: `scale(${1 + 0.4 * pulse})` }}>
+                {value}
+              </div>
+              <div style={{ ...big(56, color), marginTop: 6 }}>{label}</div>
+            </div>
+          ))}
         </div>
         <div style={small}>
           {frame < FIRST_SHOT
-            ? "in the first 66 minutes"
-            : `at ${mmss(F.stats.firstFranceShot.clock)}`}
+            ? "France: none in the first 66 minutes"
+            : `France's first shot, ${mmss(F.stats.firstFranceShot.clock)}`}
         </div>
       </Beat>
       <Beat frame={frame} from={MBAPPE_PEN - 46} to={MBAPPE_PEN + 4}>

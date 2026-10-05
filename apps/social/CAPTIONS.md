@@ -452,7 +452,7 @@ Data: StatsBomb open data. Built with PitchKit, the free React-first football ch
 ## Reel 05 — The 2022 World Cup final in 37 seconds (`reel-05-wc-final.mp4`, 38 s)
 
 Built from HOOKS.md. It opens in medias res, with the match clock already running, Messi's
-penalty already flying in and a giant **FRANCE SHOTS: 0** counter (the open loop). That
+penalty already flying in and giant shot counters side by side: Argentina's climbing to 9 while France's sits on **0** (the open loop). That
 counter flips to 1 at 67:15 as the camera spins 180° to France's end, then "THEN MBAPPÉ
 HAPPENED." The story runs on one tilted pitch, where every shot lands as it happens with
 a tick:
@@ -505,7 +505,7 @@ Every shot, rebuilt from @StatsBomb open data with PitchKit, the open-source Rea
 https://www.pitchkitjs.com
 ```
 
-**Alt text:** An animated football pitch seen at a broadcast-camera angle under a score bug reading "World Cup final 2022, ARG v FRA" with a running match clock. Argentina's shots land as blue dots while a giant red counter reads "France shots: 0 in the first 66 minutes". At 67:15 it flips to 1, the pitch spins to France's end, and the words "Then Mbappé happened" appear. A stopwatch counts the 95 seconds between Mbappé's penalty and his volley as the score goes 2–1, then 2–2. In extra time Messi scores one second after Lautaro's shot was saved, and Mbappé's penalty completes his hat-trick at 3–3. The camera pushes in on Kolo Muani's chance in the 123rd minute, with every player's position at the moment of the shot and an xG meter filling to 0.28, before "SAVED." fills the screen. The shootout plays out in a goal mouth, each kick landing where it went with the taker's name, ending "Argentina, World Champions". A momentum chart of the whole match draws in, with shots 20–10 and xG 2.76–2.27, and the words "France: no shot for 66 minutes. Still scored three." It ends by asking "Which final should we break down next?" and on the PitchKit end card.
+**Alt text:** An animated football pitch seen at a broadcast-camera angle under a score bug reading "World Cup final 2022, ARG v FRA" with a running match clock. Argentina's shots land as blue dots while two giant shot counters climb side by side: Argentina's reaches 9, France's stays at 0 ("France: none in the first 66 minutes"). At 67:15 France's flips to 1, the pitch spins to France's end, and the words "Then Mbappé happened" appear. A stopwatch counts the 95 seconds between Mbappé's penalty and his volley as the score goes 2–1, then 2–2. In extra time Messi scores one second after Lautaro's shot was saved, and Mbappé's penalty completes his hat-trick at 3–3. The camera pushes in on Kolo Muani's chance in the 123rd minute, with every player's position at the moment of the shot and an xG meter filling to 0.28, before "SAVED." fills the screen. The shootout plays out in a goal mouth, each kick landing where it went with the taker's name, ending "Argentina, World Champions". A momentum chart of the whole match draws in, with shots 20–10 and xG 2.76–2.27, and the words "France: no shot for 66 minutes. Still scored three." It ends by asking "Which final should we break down next?" and on the PitchKit end card.
 
 Facts behind it (all in `src/data/wc-final.json`, from `npm run snapshot:wc-final`, StatsBomb match 3869685):
 
