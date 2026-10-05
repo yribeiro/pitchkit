@@ -2,13 +2,27 @@
  * Reel 04, 14 s loop: Spain's first-half pass network only, built to replay
  * seamlessly.
  *
- * There's no title card: it opens close in on the 4-2-3-1 team sheet at a
- * broadcast-camera angle, part of the pitch off screen, and the pitch swings
- * flat and upright as the passes start counting and the players move. The
- * half replays over 8.5 s, holds on the strongest link, then rewinds while
- * the camera tilts back, so the last frame runs straight into the first.
+ * The timeline starts on the 4-2-3-1 team sheet at a broadcast-camera angle,
+ * part of the pitch off screen; the pitch swings flat and upright as the
+ * passes start counting and the players move. The half replays over 8.5 s,
+ * holds on the strongest link, then rewinds while the camera tilts back, so
+ * the last frame runs straight into the first.
+ *
+ * The video doesn't start at the top of that timeline: frame 0 is OPEN_AT,
+ * already mid-swing with passes counting, so the first frame a viewer sees
+ * is moving. The still moment on the team sheet sits just before the loop
+ * point instead. Sound effects follow the action: a tick every 10 passes, a
+ * whoosh on each camera move, a low pop on the payoff.
  */
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import {
+  AbsoluteFill,
+  Audio,
+  Easing,
+  interpolate,
+  Sequence,
+  staticFile,
+  useCurrentFrame,
+} from "remotion";
 import { Backdrop } from "../components/Chrome";
 import { passNetworks } from "../data";
 import { C, FONT } from "../theme";
@@ -21,7 +35,7 @@ const SPAIN = passNetworks.spain;
 
 // Timeline (30 fps).
 /** The tilted team sheet holds this long before play starts. */
-const KICK_OFF = 36;
+const KICK_OFF = 12;
 /** The camera swings flat over this long from kick-off. */
 const FLATTEN = 48;
 /** The half replays from KICK_OFF to here (8.5 s). */
@@ -32,13 +46,22 @@ const HOLD_END = 368;
 const REWIND_AT = 372;
 const REWIND_END = 410;
 export const NETWORKS_LOOP_DURATION = 420;
+/** Where frame 0 sits on the timeline: mid-swing, passes already counting. */
+const OPEN_AT = KICK_OFF + 8;
+
+/** The video frame at which timeline frame `t` plays. */
+const frameOf = (t: number) => (t - OPEN_AT + NETWORKS_LOOP_DURATION) % NETWORKS_LOOP_DURATION;
 
 const inOut = { ...clamp, easing: Easing.inOut(Easing.cubic) };
 
 /** How far the camera is tilted: 1 on the team sheet at both ends of the loop, 0 during play. */
 function tiltAt(frame: number) {
   return frame < BUILD_END
-    ? interpolate(frame, [KICK_OFF, KICK_OFF + FLATTEN], [1, 0], inOut)
+    ? interpolate(frame, [KICK_OFF, KICK_OFF + FLATTEN], [1, 0], {
+        ...clamp,
+        // Quadratic, so the swing is already moving by the opening frame.
+        easing: Easing.inOut(Easing.quad),
+      })
     : interpolate(frame, [REWIND_AT, REWIND_END], [0, 1], inOut);
 }
 
@@ -66,8 +89,52 @@ function minuteAt(frame: number) {
   return interpolate(frame, [REWIND_AT, REWIND_END], [END_MINUTE, 0], inOut);
 }
 
+/** Passes completed by timeline frame `t`. */
+function passesAt(t: number) {
+  const minute = minuteAt(t);
+  return SPAIN.passes.filter((p) => p.t <= minute).length;
+}
+
+/** Sound effects, placed on the timeline and wrapped to video frames. */
+function LoopAudio() {
+  const cues: { at: number; src: string; volume: number; length: number }[] = [];
+  // A tick for every 10th pass, louder as the count climbs.
+  let tens = 0;
+  for (let t = KICK_OFF; t <= BUILD_END; t++) {
+    const n = passesAt(t);
+    if (Math.floor(n / 10) > tens) {
+      tens = Math.floor(n / 10);
+      cues.push({
+        at: t,
+        src: "sfx/tick.wav",
+        volume: 0.35 + (0.45 * n) / SPAIN.completed,
+        length: 3,
+      });
+    }
+  }
+  cues.push({ at: KICK_OFF - 2, src: "sfx/whoosh.wav", volume: 0.7, length: 18 });
+  cues.push({ at: BUILD_END + 8, src: "sfx/pop.wav", volume: 0.9, length: 14 });
+  cues.push({ at: REWIND_AT, src: "sfx/whoosh.wav", volume: 0.5, length: 18 });
+
+  return (
+    <>
+      {cues.flatMap(({ at, src, volume, length }, i) => {
+        const from = frameOf(at);
+        // A cue that runs past the last frame also plays from the top.
+        const starts =
+          from + length > NETWORKS_LOOP_DURATION ? [from, from - NETWORKS_LOOP_DURATION] : [from];
+        return starts.map((start) => (
+          <Sequence key={`${i}-${start}`} from={start} durationInFrames={length} layout="none">
+            <Audio src={staticFile(src)} volume={volume} />
+          </Sequence>
+        ));
+      })}
+    </>
+  );
+}
+
 export function NetworksLoopReel() {
-  const frame = useCurrentFrame();
+  const frame = (useCurrentFrame() + OPEN_AT) % NETWORKS_LOOP_DURATION;
   const minute = minuteAt(frame);
   const pace = END_MINUTE / (BUILD_END - KICK_OFF);
   const state = networkAt(SPAIN, minute, pace);
@@ -90,6 +157,7 @@ export function NetworksLoopReel() {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT.sans, color: C.text }}>
+      <LoopAudio />
       <Backdrop />
       <div
         style={{

@@ -419,15 +419,19 @@ Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:ne
 
 ## Reel 04 loop — Spain only (`reel-04-networks-loop.mp4`, 14 s)
 
-Tests rules 1, 2 and 5 in RULES-TO-TEST.md against the 38 s cut. No title
-card: it opens close in on Spain's 4-2-3-1 team sheet at a broadcast-camera
-angle, part of the pitch off screen, under "How did Spain set up at Euro
-2024?", with the camera slowly orbiting. At 1.2 s the pitch swings flat and
-upright as the pass counter starts and the players move. The half replays in
-8.5 s, holds on Laporte ↔ Le Normand (31) for about 2.5 s, then rewinds while
-the camera tilts back to the team sheet, so the last frame runs into the first
-(the orbit keeps moving through the join). No end card, since that would break
-the loop. Music only.
+Tests rules 1, 2, 5, 15 and 16 in RULES-TO-TEST.md against the 38 s cut.
+There's no title card, and the first frame is already moving: the pitch is
+mid-swing from a broadcast-camera angle to flat, Spain are already on 13
+passes, and a whoosh and the first ticks are playing. The half replays in
+8.5 s with a tick every 10 passes, getting louder as the count climbs. It
+holds on Laporte ↔ Le Normand (31) with a low pop, then rewinds while the
+camera tilts back to the 4-2-3-1 team sheet. That still moment sits just
+before the loop point, so the replay runs straight back into the swing. No
+end card, since that would break the loop.
+
+The MP4 carries only the sound effects. Post it with a track from
+Instagram's audio picker and keep the original audio at about 30% under the
+music, so the ticks still land.
 
 **Instagram**
 

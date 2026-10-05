@@ -27,7 +27,7 @@ Private workspace (`"private": true`), never published.
 | `reel-04-networks-loop`   | 1080×1920 MP4, 14 s | Reel 04 as a seamless loop: Spain's tilted 4-2-3-1 team sheet swings flat as the half replays, holds on the strongest link, then rewinds and tilts back            |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
-What we think makes a reel travel, and how we test it, is in [RULES-TO-TEST.md](./RULES-TO-TEST.md).
+What we think makes a reel travel, and how we test it, is in [RULES-TO-TEST.md](./RULES-TO-TEST.md); the research behind the hooks is in [HOOKS.md](./HOOKS.md). `node scripts/make-sfx.mjs` regenerates the sound effects in `public/sfx/`.
 
 ## Usage
 
