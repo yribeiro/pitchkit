@@ -520,6 +520,64 @@ Facts behind it (all in `src/data/wc-final.json`, from `npm run snapshot:wc-fina
 | Shots 20–10, xG 2.76–2.27            | Open play and extra time, penalties included, shootout excluded                                                                                              |
 | Momentum                             | The docs recipe: on-ball events in the attacking third, Argentina +1 / France −1 per minute, smoothed over three minutes; a stand-in, not an official metric |
 
+## Reel 06 — The 2022 World Cup final, live in 360 (`reel-06-live-final.mp4`, 45 s)
+
+The final played back as a time-lapse of StatsBomb 360 data, in the style of a live
+broadcast graphic. On a tilted, upright pitch, the dark surface lights up only where the
+broadcast camera was looking: every visible player is a dot, the space each one controls
+is a Voronoi cell in their team's colour (light sky for Argentina, royal blue for France),
+and the ball is yellow. A fading wash trails where the camera has just been. Above it is a
+scoreboard with drawn flags (no federation crests), a broadcast clock with stoppage time,
+and a match progress bar. Below it, a PitchKit `MomentumChart` grows minute by minute
+behind a playhead. The clock races between moments and slows into each goal, with a
+caption for each one (placed away from the end the action is at), France's first shot at
+67', "Mbappé again, 95 seconds later", the save, and the shootout kick by kick, with dots
+under the score. Argentina's colour then floods the whole pitch under "ARGENTINA, WORLD
+CHAMPIONS", followed by minutes on top (75' v 63', "and it still went to penalties"), a
+comment CTA and the end card. A tick sounds for every match minute, plus pops, whooshes,
+a riser and thuds. For the cover, use `out/reel-06-cover.png` (frame 1040, the champions
+wash).
+
+**Instagram**
+
+```
+The 2022 World Cup final, replayed through the eyes of the broadcast camera. 🎥⚽️
+
+Every dot is a player the camera could see. Every coloured shape is the space they controlled. Watch Argentina take the pitch, France take it back, and the whole thing go to penalties.
+
+Argentina on top for 75 minutes, France for 63. Still 3–3.
+
+Which match should we play back next? 👇
+
+Data: StatsBomb 360 open data. Built with PitchKit, the free React-first football chart library. Link in bio.
+
+#worldcup #messi #mbappe #argentina #france #footballdata #dataviz #statsbomb
+```
+
+**X**
+
+```
+The 2022 World Cup final, replayed in StatsBomb 360: every player the broadcast camera could see, and the space each one controlled, with momentum building underneath.
+
+Argentina on top for 75 minutes, France for 63. It still went to penalties.
+
+Built with PitchKit, the open-source React-first football chart library. Data: @StatsBomb open data.
+
+https://www.pitchkitjs.com
+```
+
+**Alt text:** A dark, tilted football pitch under a scoreboard reading ARG v FRA, World Cup final, Lusail, 18 December 2022, with a running clock. As the match time-lapses, a patch of the pitch lights up wherever the broadcast camera was looking, filled with coloured shapes showing the space each visible player controlled, light blue for Argentina and darker blue for France, with the ball as a yellow dot. A momentum chart grows along the bottom. Captions mark each goal: Messi's penalty and Di María for 2–0, France's first shot in the 67th minute, Mbappé twice in 95 seconds for 2–2, Messi in extra time, Mbappé's hat-trick for 3–3, and Martínez's save in the 123rd minute. In the shootout, dots fill in under the score until Argentina win 4–2 and the whole pitch turns light blue under the words "Argentina, World Champions". A panel then shows minutes on top, Argentina 75 and France 63, "and it still went to penalties", before asking which match to play back next and ending on the PitchKit end card.
+
+Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc-final.json`):
+
+| Claim                         | Detail                                                                                                                                                               |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 360 frames                    | 754 of the match's 3,683 StatsBomb 360 frames: every one within a minute of a goal or a 0.25+ xG chance, one per 6 seconds of play otherwise                         |
+| Space controlled              | A Voronoi cell per visible player, clipped to the frame's visible area; players outside the camera's view aren't in 360 data, so cells near its edge are approximate |
+| Player movement               | 360 players are anonymous: frames under 8 seconds apart are paired by nearest team-mate and slid; frames further apart cut                                           |
+| Minutes on top, 75 v 63       | Minutes of the momentum series above and below zero (6 are level); the series is the docs recipe, a stand-in rather than an official metric                          |
+| Goals, the save, the shootout | As reel 05 (`wc-final.json`)                                                                                                                                         |
+
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a

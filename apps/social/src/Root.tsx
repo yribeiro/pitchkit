@@ -21,6 +21,7 @@ import {
 } from "./carousel/CornerSlides";
 import { FINAL_DURATION, FinalReel } from "./reels/FinalReel";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
+import { LIVE_DURATION, LiveFinalReel } from "./reels/LiveFinalReel";
 import { NETWORKS_LOOP_DURATION, NetworksLoopReel } from "./reels/NetworksLoopReel";
 import { NETWORKS_DURATION, NetworksReel } from "./reels/NetworksReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
@@ -118,6 +119,12 @@ export function Root() {
           id="reel-05-wc-final"
           component={FinalReel}
           durationInFrames={FINAL_DURATION}
+          {...REEL}
+        />
+        <Composition
+          id="reel-06-live-final"
+          component={LiveFinalReel}
+          durationInFrames={LIVE_DURATION}
           {...REEL}
         />
       </Folder>

@@ -26,6 +26,7 @@ Private workspace (`"private": true`), never published.
 | `reel-04-networks`        | 1080×1920 MP4, 38 s | How Spain and England set up in the Euro 2024 final: finished pass networks, then each half replays from the 4-2-3-1 team sheet, then each shape is measured       |
 | `reel-04-networks-loop`   | 1080×1920 MP4, 14 s | Reel 04 as a seamless loop: Spain's tilted 4-2-3-1 team sheet swings flat as the half replays, holds on the strongest link, then rewinds and tilts back            |
 | `reel-05-wc-final`        | 1080×1920 MP4, 38 s | The 2022 World Cup final as a story: France's 0 shots, Mbappé's 95 seconds, Messi, the save, the shootout, one momentum chart, a comment CTA                       |
+| `reel-06-live-final`      | 1080×1920 MP4, 45 s | The 2022 final as a live 360 time-lapse: visible players and the space they control, a scoreboard, and a MomentumChart growing below                               |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
 What we think makes a reel travel, and how we test it, is in [RULES-TO-TEST.md](./RULES-TO-TEST.md); the research behind the hooks is in [HOOKS.md](./HOOKS.md). `node scripts/make-sfx.mjs` regenerates the sound effects in `public/sfx/`.

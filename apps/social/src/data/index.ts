@@ -11,6 +11,7 @@ import momentumJson from "./momentum.json";
 import passNetworksJson from "./pass-networks.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
+import wc360Json from "./wc-360.json";
 import wcFinalJson from "./wc-final.json";
 import spainNetworkJson from "./spain-pass-network.json";
 import spainPassesJson from "./spain-passes.json";
@@ -316,3 +317,17 @@ export interface WcFinal {
   momentum: Pick<MomentumData, "data" | "events">;
 }
 export const wcFinal = wcFinalJson as unknown as WcFinal;
+
+/**
+ * StatsBomb 360 frames from the 2022 final, Argentina attacking left to right
+ * (see scripts/snapshot-wc-360.mjs). Coordinates are integers in half-units;
+ * `f` is flat [x, y, flags] per player, flags 1 = Argentina, 2 = actor, 4 = keeper.
+ */
+export interface Wc360Frame {
+  p: number;
+  m: number;
+  b: [number, number];
+  a: number[];
+  f: number[];
+}
+export const wc360 = wc360Json as unknown as Wc360Frame[];
