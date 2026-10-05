@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
+import type { PitchType } from "../../dimensions/types.js";
+import { fromExtentFrame } from "../../transform/canonical.js";
 import type { HexbinLayer } from "../../scene/types.js";
 import { createPixelTransform } from "../../transform/pixel-transform.js";
 import type { Viewport } from "../../transform/types.js";
@@ -143,5 +145,26 @@ describe("paintHexbinLayer", () => {
     expect(moveTo?.x).toBeLessThan(600);
     expect(moveTo?.y).toBeGreaterThan(0);
     expect(moveTo?.y).toBeLessThan(400);
+  });
+});
+
+// Every pitch type, centre-origin SkillCorner included (D6, #90): the layer
+// is clipped to the whole pitch, wherever the provider puts its origin.
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchType[])("paintHexbinLayer on %s", (type) => {
+  it("clips to the whole pitch", () => {
+    const dims = PITCH_DIMENSIONS[type];
+    const pixels = createPixelTransform(dims, viewport);
+    const [x, y] = fromExtentFrame(dims, [dims.length / 2, dims.width / 2]);
+    const { ctx, ops } = createMockContext();
+
+    paintHexbinLayer(ctx, layer({ data: [{ x, y }] }), dims, pixels);
+
+    const a = pixels.toPixel(fromExtentFrame(dims, [0, 0]));
+    const b = pixels.toPixel(fromExtentFrame(dims, [dims.length, dims.width]));
+    const clip = ops.find((o) => o.op === "rect") as Extract<Op, { op: "rect" }>;
+    expect(clip.x).toBeCloseTo(Math.min(a[0], b[0]), 6);
+    expect(clip.y).toBeCloseTo(Math.min(a[1], b[1]), 6);
+    expect(clip.width).toBeCloseTo(Math.abs(b[0] - a[0]), 6);
+    expect(clip.height).toBeCloseTo(Math.abs(b[1] - a[1]), 6);
   });
 });

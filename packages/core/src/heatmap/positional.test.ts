@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
+import type { PitchType } from "../dimensions/types.js";
+import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { PositionalHeatmapLayer } from "../scene/types.js";
 import { computePositionalBins, computePositionalZones } from "./positional.js";
 
@@ -136,5 +138,52 @@ describe("computePositionalBins", () => {
     const bins = computePositionalBins(layer({ data, layout: "vertical" }), statsbomb);
     expect(bins).toHaveLength(6);
     expect(bins[0]?.value).toBe(1);
+  });
+});
+
+// Every pitch type, centre-origin SkillCorner included (D6, #90). Zones are
+// documented as provider coordinates, so they must sit on the pitch in each
+// provider's own frame, and contain the points counted into them.
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchType[])("positional zones on %s", (type) => {
+  const dims = PITCH_DIMENSIONS[type];
+
+  it.each(["full", "horizontal", "vertical"] as const)(
+    "puts every %s zone on the pitch, in provider coordinates",
+    (layout) => {
+      for (const zone of computePositionalZones(dims, layout)) {
+        for (const corner of [
+          [zone.x, zone.y],
+          [zone.x + zone.width, zone.y + zone.height],
+        ] as const) {
+          const [ex, ey] = toExtentFrame(dims, corner);
+          expect(ex).toBeGreaterThanOrEqual(-1e-9);
+          expect(ex).toBeLessThanOrEqual(dims.length + 1e-9);
+          expect(ey).toBeGreaterThanOrEqual(-1e-9);
+          expect(ey).toBeLessThanOrEqual(dims.width + 1e-9);
+        }
+      }
+    },
+  );
+
+  it("counts each point into the zone that contains it", () => {
+    // Inside one penalty area, and near the far flank of the other half.
+    const points = [
+      fromExtentFrame(dims, [0.05 * dims.length, 0.5 * dims.width]),
+      fromExtentFrame(dims, [0.7 * dims.length, 0.03 * dims.width]),
+    ].map(([x, y]) => ({ x, y }));
+    const bins = computePositionalBins(layer({ data: points }), dims);
+
+    expect(bins.reduce((sum, b) => sum + b.value, 0)).toBe(2);
+    for (const point of points) {
+      const home = bins.filter(
+        (b) =>
+          b.value > 0 &&
+          point.x >= b.x &&
+          point.x <= b.x + b.width &&
+          point.y >= b.y &&
+          point.y <= b.y + b.height,
+      );
+      expect(home).toHaveLength(1);
+    }
   });
 });
