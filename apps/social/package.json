@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "snapshot:layers": "node scripts/snapshot-layers.mjs",
     "snapshot:corners": "node scripts/snapshot-corners.mjs",
-    "snapshot:networks": "node scripts/snapshot-networks.mjs"
+    "snapshot:networks": "node scripts/snapshot-networks.mjs",
+    "snapshot:wc-final": "node scripts/snapshot-wc-final.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.3.0",

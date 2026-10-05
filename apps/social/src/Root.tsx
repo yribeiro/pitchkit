@@ -19,6 +19,7 @@ import {
   SlideQuestions,
   SlideSave,
 } from "./carousel/CornerSlides";
+import { FINAL_DURATION, FinalReel } from "./reels/FinalReel";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { NETWORKS_LOOP_DURATION, NetworksLoopReel } from "./reels/NetworksLoopReel";
 import { NETWORKS_DURATION, NetworksReel } from "./reels/NetworksReel";
@@ -111,6 +112,12 @@ export function Root() {
           id="reel-04-networks-loop"
           component={NetworksLoopReel}
           durationInFrames={NETWORKS_LOOP_DURATION}
+          {...REEL}
+        />
+        <Composition
+          id="reel-05-wc-final"
+          component={FinalReel}
+          durationInFrames={FINAL_DURATION}
           {...REEL}
         />
       </Folder>

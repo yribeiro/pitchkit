@@ -74,4 +74,20 @@ wav("whoosh", WHOOSH, (t) => {
   return 1.6 * high * swell ** 2;
 });
 
+// A rising tone under noise, for slow-motion tension.
+let rise = 0;
+const RISER = 2;
+wav("riser", RISER, (t) => {
+  rise += (TAU * (180 + 520 * (t / RISER) ** 2)) / RATE;
+  const swell = (t / RISER) ** 2;
+  return swell * (0.35 * Math.sin(rise) + 0.12 * noise());
+});
+
+// A deep hit with a burst of air, for a save or a final whistle.
+let boom = 0;
+wav("thud", 0.9, (t) => {
+  boom += (TAU * (55 + 140 * Math.exp(-18 * t))) / RATE;
+  return 0.95 * Math.sin(boom) * Math.exp(-5 * t) + 0.25 * noise() * Math.exp(-30 * t);
+});
+
 console.log(`sfx written to ${out}`);

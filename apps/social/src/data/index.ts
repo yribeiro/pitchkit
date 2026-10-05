@@ -11,6 +11,7 @@ import momentumJson from "./momentum.json";
 import passNetworksJson from "./pass-networks.json";
 import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
+import wcFinalJson from "./wc-final.json";
 import spainNetworkJson from "./spain-pass-network.json";
 import spainPassesJson from "./spain-passes.json";
 import yamalTouchesJson from "./yamal-touches.json";
@@ -260,3 +261,55 @@ export const passNetworks = passNetworksJson as unknown as {
   spain: TeamNetwork;
   england: TeamNetwork;
 };
+
+/** The 2022 World Cup final, Argentina 3–3 France (see scripts/snapshot-wc-final.mjs). */
+export interface FinalMove extends Segment {
+  kind: "pass" | "carry";
+  player: string;
+  /** Match clock in seconds. */
+  clock: number;
+}
+export interface WcFinal {
+  matchId: number;
+  home: string;
+  away: string;
+  stats: {
+    xg: Record<string, number>;
+    shots: Record<string, number>;
+    firstFranceShot: { clock: number; player: string };
+    argentinaShotsBefore: number;
+    mbappeGap: number;
+    messiRebound: number;
+  };
+  shots: (Segment & {
+    team: string;
+    player: string;
+    period: number;
+    clock: number;
+    xg: number;
+    outcome: string;
+    penalty: boolean;
+    goal: boolean;
+  })[];
+  goals: (Segment & {
+    team: string;
+    scorer: string;
+    clock: number;
+    penalty: boolean;
+    xg: number;
+    moves: FinalMove[];
+  })[];
+  theSave: Segment & {
+    player: string;
+    keeper: string;
+    clock: number;
+    xg: number;
+    outcome: string;
+    freezeFrame: (Point & { teammate: boolean; keeper: boolean })[];
+    moves: FinalMove[];
+  };
+  /** Shootout kicks in order; `y` and `z` place each in the goal mouth. */
+  kicks: { team: string; player: string; scored: boolean; outcome: string; y: number; z: number }[];
+  momentum: Pick<MomentumData, "periods" | "events">;
+}
+export const wcFinal = wcFinalJson as unknown as WcFinal;
