@@ -2,6 +2,7 @@ import { createColorScale } from "../../color/scale.js";
 import type { PitchDimensions } from "../../dimensions/types.js";
 import { computeKdeGrid } from "../../kde/density.js";
 import type { KdeLayer } from "../../scene/types.js";
+import { fromExtentFrame } from "../../transform/canonical.js";
 import type { PixelTransform } from "../../transform/types.js";
 
 const DEFAULT_COLOR_MIN = "#22c55e"; // green — the low tail of the surface
@@ -47,8 +48,15 @@ export function paintKdeLayer<T>(
       const value = grid.values[row * grid.cols + col] ?? 0;
       if (value <= 0) continue;
 
-      const cornerA = transform.toPixel([col * grid.cellWidth, row * grid.cellHeight]);
-      const cornerB = transform.toPixel([(col + 1) * grid.cellWidth, (row + 1) * grid.cellHeight]);
+      // Grid cells are laid out in the extent frame; back to provider
+      // coordinates before toPixel, or a centre-origin pitch draws the
+      // surface half a pitch away from its data (D5, #90).
+      const cornerA = transform.toPixel(
+        fromExtentFrame(dimensions, [col * grid.cellWidth, row * grid.cellHeight]),
+      );
+      const cornerB = transform.toPixel(
+        fromExtentFrame(dimensions, [(col + 1) * grid.cellWidth, (row + 1) * grid.cellHeight]),
+      );
       const x0 = Math.round(Math.min(cornerA[0], cornerB[0]));
       const x1 = Math.round(Math.max(cornerA[0], cornerB[0]));
       const y0 = Math.round(Math.min(cornerA[1], cornerB[1]));

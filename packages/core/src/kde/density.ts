@@ -10,7 +10,13 @@ const KERNEL_CUTOFF = 3;
 /**
  * A kernel density estimate sampled on a regular grid over the pitch.
  * `values` is row-major (`row * cols + col`), each entry the estimated
- * density at that cell's *centre* in provider coordinates.
+ * density at that cell's *centre*.
+ *
+ * The grid is laid out in the extent frame: cell `(col, row)` spans
+ * `col * cellWidth` to `(col + 1) * cellWidth` across `0..length`, and the
+ * same down `0..width`. Pass a cell's corners through `fromExtentFrame`
+ * to get provider coordinates; for corner-origin providers that is the
+ * identity, for a centre-origin pitch it is not (D5, #90).
  */
 export interface KdeGrid {
   readonly cols: number;

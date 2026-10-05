@@ -430,8 +430,8 @@ transform, and each omission fails silently:
   discard a centre-origin pitch's whole defending half.
 - `geometry/flow`, which has the same bounds check and builds bin centres in the extent frame.
 - Anything that _returns_ geometry built in the extent frame converts it back:
-  `computePositionalZones`' rectangles, `computeFlowBins`' arrow starts, and the pitch rectangle
-  `paint-hexbin` clips to. Converting in but not out counts correctly and draws half a pitch away
+  `computePositionalZones`' rectangles, `computeFlowBins`' arrow starts, the pitch rectangle
+  `paint-hexbin` clips to, and the KDE grid cells `paint-kde` draws. Converting in but not out counts correctly and draws half a pitch away
   ([#90](https://github.com/yribeiro/pitchkit/issues/90)).
 
 Any new module that reasons about a `0..length` box must convert through the extent frame
