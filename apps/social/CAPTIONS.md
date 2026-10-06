@@ -602,9 +602,32 @@ mouth. At the champions moment Argentina's flag sweeps across the pitch, sun on 
 centre spot. PitchKit branding comes in three places: a "Built with PitchKit" chip under the
 hook, an `<Arrows /> <Comet />` chip on each goal view, and the value card's "Every
 chart in this reel is PitchKit" line. The scoreboard, momentum strip, champions
-caption, CTA and end card are shared with the 3D cut. Use the reel 06 captions with "player" for
-"sphere", and drop any mention of 360 data: this cut uses event data only. For the
+caption, CTA and end card are shared with the 3D cut. For the
 cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
+
+**Instagram**
+
+> The 2022 World Cup final in 39 seconds. ⚽️
+>
+> Every disc is a player, drifting to where they'd been on the ball. At every goal we swoop in for the build-up and the angle the scorer had to aim at.
+>
+> Argentina on top for 75 minutes, France for 63. Still 3–3.
+>
+> Which match should we play back next? 👇
+>
+> Data: StatsBomb open data. Built with PitchKit, the free React-first football chart library. Link in bio.
+>
+> #worldcup #messi #mbappe #argentina #france #footballdata #dataviz #statsbomb
+
+**X**
+
+> The 2022 World Cup final in 39 seconds: every player drifting to where they'd been on the ball, and a swoop into each goal for the build-up and the angle the scorer had to aim at.
+>
+> Argentina on top for 75 minutes, France for 63. It still went to penalties.
+>
+> Built with PitchKit, the open-source React-first football chart library. Data: @StatsBomb open data.
+>
+> https://www.pitchkitjs.com
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
