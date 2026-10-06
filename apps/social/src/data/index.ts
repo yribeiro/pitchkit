@@ -13,6 +13,7 @@ import skillcornerGoalJson from "./skillcorner-goal.json";
 import spainCarriesJson from "./spain-carries.json";
 import wc360Json from "./wc-360.json";
 import wcFinalJson from "./wc-final.json";
+import wcTouchesJson from "./wc-touches.json";
 import spainNetworkJson from "./spain-pass-network.json";
 import spainPassesJson from "./spain-passes.json";
 import yamalTouchesJson from "./yamal-touches.json";
@@ -336,4 +337,14 @@ export interface Wc360Frame {
 export const wc360 = wc360Json as unknown as {
   keepers: { argentina: number; france: number };
   frames: Wc360Frame[];
+};
+
+/**
+ * Every on-ball touch in the 2022 final, Argentina attacking left to right
+ * (see scripts/snapshot-wc-touches.mjs). `touches` is flat: [player index,
+ * period, minute x 10, x x 2, y x 2].
+ */
+export const wcTouches = wcTouchesJson as unknown as {
+  players: { team: "A" | "F"; n: number | null }[];
+  touches: number[];
 };

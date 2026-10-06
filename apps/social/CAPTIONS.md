@@ -582,21 +582,25 @@ Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc
 | Minutes on top, 75 v 63       | Minutes of the momentum series above and below zero (6 are level); the series is the docs recipe, a stand-in rather than an official metric                          |
 | Goals, the save, the shootout | As reel 05 (`wc-final.json`)                                                                                                                                         |
 
-## Reel 06, calm cut (`reel-06-calm-final.mp4`, 62 s)
+## Reel 06, network cut (`reel-06-network-final.mp4`, 37 s)
 
-The same final at the pace of watching a game. Instead of showing each 360 frame as it
-comes, players are stitched into tracks (each matched to the nearest team-mate seen in
-the last 30 seconds of play) and drawn at their recent average position, weighted over
-about a minute of play; each side shows its 11 best-supported tracks. The Voronoi is
-built on those averages, so the shapes drift instead of flickering. The clock eases into
-every goal and holds for about 3 seconds while the pitch turns flat onto the attacking
-half to replay the shot's own frame: every player StatsBomb placed at the strike, the
-space each controlled, the shot as a yellow arrow, and the scorer and keeper by name.
-The three penalties have no shot freeze frame, so they use the nearest 360 frame, and
-Kolo Muani's 123rd-minute chance gets the same replay. Scoreboard, momentum strip,
-champions, minutes on top, CTA and end card are shared with the 3D cut. There's no
-per-minute tick, so it's quieter. Use the reel 06 captions with "dot" for "sphere". For
-the cover, use `out/reel-06-calm-cover.png` (28 s: the averaged shapes at 88').
+The same final at the pace of watching a game, using the pass-network idea without the
+lines. Each of the 34 players who touched the ball is a numbered disc that drifts to
+their recent average position. Every on-ball event counts: passes, receipts, carries,
+shots, duels and so on (`npm run snapshot:wc-touches`). Touches from the last 20 minutes
+of play are weighted, with older ones fading exponentially (7-minute time constant).
+Each position is also anchored lightly to the player's average for the whole match, so
+a quiet spell doesn't send anyone wandering. Substitutes fade in at their first touch,
+and players fade out two minutes after their last. The tilted pitch sits fully in frame.
+At each goal, and at Kolo Muani's 123rd-minute chance, the clock holds for about 1.6
+seconds. The last five moves draw in white (`<Arrows />`, with `<Comet />` carries, as
+in reel 05) and the shot fires as a yellow comet. The shootout uses reel 05's goal
+mouth. PitchKit branding comes in three places: a "Built with PitchKit" chip under the
+hook, an `<Arrows /> <Comet />` chip on each goal view, and the value card's "Every
+chart in this reel is PitchKit" line. The scoreboard, momentum strip, champions card,
+CTA and end card are shared with the 3D cut. Use the reel 06 captions with "player" for
+"sphere", and drop any mention of 360 data: this cut uses event data only. For the
+cover, use `out/reel-06-network-cover.png` (6 s: Di María's goal at 36').
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 

@@ -380,8 +380,10 @@ export function createMatchReel(
 
   /* Overlays -------------------------------------------------------------------- */
 
+  // The hook clears before the first goal, however early that comes.
+  const HOOK_END = Math.min(84, FRAME.messi1 - 2);
   function Hook({ frame }: { frame: number }) {
-    if (frame > 84) return null;
+    if (frame > HOOK_END) return null;
     const line = (i: number) => {
       const t = interpolate(frame, [-6 + i * 5, 6 + i * 5], [0, 1], {
         ...clamp,
@@ -389,7 +391,7 @@ export function createMatchReel(
       });
       return { opacity: t, transform: `translateY(${(1 - t) * 40}px)` };
     };
-    const out = interpolate(frame, [70, 84], [1, 0], clamp);
+    const out = interpolate(frame, [HOOK_END - 14, HOOK_END], [1, 0], clamp);
     return (
       <div
         style={{
@@ -416,6 +418,25 @@ export function createMatchReel(
           }}
         >
           WATCH WHO OWNS THE PITCH
+        </div>
+        <div
+          style={{
+            ...line(3),
+            marginTop: 22,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            fontFamily: FONT.sans,
+            fontWeight: 800,
+            fontSize: 26,
+            color: C.text,
+            background: "rgba(4,6,12,0.75)",
+            border: "1px solid rgba(52,211,153,0.35)",
+            borderRadius: 999,
+            padding: "8px 18px",
+          }}
+        >
+          <Mark size={26} /> Built with PitchKit
         </div>
       </div>
     );
@@ -499,6 +520,18 @@ export function createMatchReel(
         {row("ARG", TOP_MINUTES.home, ARG, 0)}
         {row("FRA", TOP_MINUTES.away, FRA, 1)}
         <div style={{ ...big(64, "#fde047"), marginTop: 6 }}>AND IT STILL WENT TO PENALTIES.</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            fontFamily: FONT.mono,
+            fontSize: 22,
+            color: C.accent,
+          }}
+        >
+          <Mark size={24} /> Every chart in this reel is PitchKit · pitchkitjs.com
+        </div>
       </div>
     );
   }

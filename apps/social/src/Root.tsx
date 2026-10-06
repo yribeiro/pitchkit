@@ -19,10 +19,10 @@ import {
   SlideQuestions,
   SlideSave,
 } from "./carousel/CornerSlides";
-import { CALM_DURATION, CalmFinalReel } from "./reels/CalmFinalReel";
 import { FINAL_DURATION, FinalReel } from "./reels/FinalReel";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { LIVE_DURATION, LiveFinalReel } from "./reels/LiveFinalReel";
+import { NETS_DURATION, NetsFinalReel } from "./reels/NetsFinalReel";
 import { NETWORKS_LOOP_DURATION, NetworksLoopReel } from "./reels/NetworksLoopReel";
 import { NETWORKS_DURATION, NetworksReel } from "./reels/NetworksReel";
 import { QUICKSTART_DURATION, QuickstartReel } from "./reels/QuickstartReel";
@@ -129,9 +129,9 @@ export function Root() {
           {...REEL}
         />
         <Composition
-          id="reel-06-calm-final"
-          component={CalmFinalReel}
-          durationInFrames={CALM_DURATION}
+          id="reel-06-network-final"
+          component={NetsFinalReel}
+          durationInFrames={NETS_DURATION}
           {...REEL}
         />
       </Folder>
