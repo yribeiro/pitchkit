@@ -302,6 +302,7 @@ export interface WcFinal {
     penalty: boolean;
     xg: number;
     moves: FinalMove[];
+    freezeFrame: (Point & { teammate: boolean; keeper: boolean; player: string })[];
   })[];
   theSave: Segment & {
     player: string;

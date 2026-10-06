@@ -582,6 +582,22 @@ Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc
 | Minutes on top, 75 v 63       | Minutes of the momentum series above and below zero (6 are level); the series is the docs recipe, a stand-in rather than an official metric                          |
 | Goals, the save, the shootout | As reel 05 (`wc-final.json`)                                                                                                                                         |
 
+## Reel 06, calm cut (`reel-06-calm-final.mp4`, 62 s)
+
+The same final at the pace of watching a game. Instead of showing each 360 frame as it
+comes, players are stitched into tracks (each matched to the nearest team-mate seen in
+the last 30 seconds of play) and drawn at their recent average position, weighted over
+about a minute of play; each side shows its 11 best-supported tracks. The Voronoi is
+built on those averages, so the shapes drift instead of flickering. The clock eases into
+every goal and holds for about 3 seconds while the pitch turns flat onto the attacking
+half to replay the shot's own frame: every player StatsBomb placed at the strike, the
+space each controlled, the shot as a yellow arrow, and the scorer and keeper by name.
+The three penalties have no shot freeze frame, so they use the nearest 360 frame, and
+Kolo Muani's 123rd-minute chance gets the same replay. Scoreboard, momentum strip,
+champions, minutes on top, CTA and end card are shared with the 3D cut. There's no
+per-minute tick, so it's quieter. Use the reel 06 captions with "dot" for "sphere". For
+the cover, use `out/reel-06-calm-cover.png` (28 s: the averaged shapes at 88').
+
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a

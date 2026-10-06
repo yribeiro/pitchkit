@@ -50,6 +50,7 @@ const REELS = [
   "reel-04-networks-loop",
   "reel-05-wc-final",
   "reel-06-live-final",
+  "reel-06-calm-final",
   "post-03-winner-animated",
 ];
 

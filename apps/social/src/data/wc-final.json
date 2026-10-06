@@ -444,7 +444,8 @@
       "y": 40,
       "endX": 120,
       "endY": 41.8,
-      "moves": []
+      "moves": [],
+      "freezeFrame": []
     },
     {
       "team": "Argentina",
@@ -503,6 +504,16 @@
           "endY": 32.1,
           "clock": 2120
         }
+      ],
+      "freezeFrame": [
+        { "x": 91, "y": 50.1, "teammate": true, "keeper": false, "player": "Álvarez" },
+        { "x": 111.7, "y": 51.7, "teammate": false, "keeper": false, "player": "Koundé" },
+        { "x": 107.5, "y": 48.1, "teammate": false, "keeper": false, "player": "Upamecano" },
+        { "x": 110.4, "y": 37.7, "teammate": false, "keeper": false, "player": "Tchouaméni" },
+        { "x": 101.6, "y": 48, "teammate": false, "keeper": false, "player": "Varane" },
+        { "x": 93.8, "y": 59.2, "teammate": false, "keeper": false, "player": "Hernández" },
+        { "x": 114.6, "y": 35.1, "teammate": false, "keeper": true, "player": "Lloris" },
+        { "x": 109.2, "y": 53.3, "teammate": true, "keeper": false, "player": "Mac Allister" }
       ]
     },
     {
@@ -516,7 +527,8 @@
       "y": 40,
       "endX": 120,
       "endY": 37.3,
-      "moves": []
+      "moves": [],
+      "freezeFrame": []
     },
     {
       "team": "France",
@@ -656,6 +668,19 @@
           "endY": 30.1,
           "clock": 4857
         }
+      ],
+      "freezeFrame": [
+        { "x": 117.7, "y": 37.9, "teammate": false, "keeper": true, "player": "E. Martínez" },
+        { "x": 102.8, "y": 41.9, "teammate": false, "keeper": false, "player": "Tagliafico" },
+        { "x": 100.3, "y": 45.1, "teammate": false, "keeper": false, "player": "Mac Allister" },
+        { "x": 99.5, "y": 46.5, "teammate": false, "keeper": false, "player": "Acuña" },
+        { "x": 103.5, "y": 36, "teammate": false, "keeper": false, "player": "Otamendi" },
+        { "x": 99, "y": 35.3, "teammate": false, "keeper": false, "player": "Romero" },
+        { "x": 102.2, "y": 27, "teammate": false, "keeper": false, "player": "Molina" },
+        { "x": 94, "y": 37.7, "teammate": false, "keeper": false, "player": "Enzo" },
+        { "x": 98.1, "y": 65.9, "teammate": true, "keeper": false, "player": "Coman" },
+        { "x": 104.2, "y": 42.6, "teammate": true, "keeper": false, "player": "Kolo Muani" },
+        { "x": 101.1, "y": 37.1, "teammate": true, "keeper": false, "player": "Thuram" }
       ]
     },
     {
@@ -742,6 +767,18 @@
           "endY": 52,
           "clock": 6476
         }
+      ],
+      "freezeFrame": [
+        { "x": 118.3, "y": 43.7, "teammate": false, "keeper": true, "player": "Lloris" },
+        { "x": 103.5, "y": 42.2, "teammate": false, "keeper": false, "player": "Fofana" },
+        { "x": 108.9, "y": 48.5, "teammate": false, "keeper": false, "player": "Camavinga" },
+        { "x": 109.9, "y": 39.7, "teammate": false, "keeper": false, "player": "Tchouaméni" },
+        { "x": 112, "y": 42.1, "teammate": false, "keeper": false, "player": "Varane" },
+        { "x": 119, "y": 50.8, "teammate": false, "keeper": false, "player": "Upamecano" },
+        { "x": 120, "y": 40.6, "teammate": false, "keeper": false, "player": "Koundé" },
+        { "x": 93.5, "y": 28.4, "teammate": true, "keeper": false, "player": "Acuña" },
+        { "x": 115.5, "y": 34.6, "teammate": true, "keeper": false, "player": "Enzo" },
+        { "x": 115.6, "y": 50.8, "teammate": true, "keeper": false, "player": "Lautaro" }
       ]
     },
     {
@@ -755,7 +792,8 @@
       "y": 40,
       "endX": 120,
       "endY": 36.7,
-      "moves": []
+      "moves": [],
+      "freezeFrame": []
     }
   ],
   "theSave": {

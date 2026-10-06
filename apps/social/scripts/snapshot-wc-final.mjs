@@ -105,6 +105,15 @@ const goals = inPlay.filter(isGoal).map((g) => ({
   endX: round(g.endX),
   endY: round(g.endY),
   moves: g.shot.type.name === "Penalty" ? [] : goalChain(g),
+  // The shot's own freeze frame (from the event, not 360): every player
+  // StatsBomb placed at the moment of the strike, by name.
+  freezeFrame: (g.shot.freeze_frame ?? []).map((p) => ({
+    x: round(p.location[0]),
+    y: round(p.location[1]),
+    teammate: p.teammate,
+    keeper: p.position.name === "Goalkeeper",
+    player: nameOf(p.player),
+  })),
 }));
 if (goals.length !== 6) fail(`Expected 6 goals in play, found ${goals.length}`);
 

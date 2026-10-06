@@ -19,6 +19,7 @@ import {
   SlideQuestions,
   SlideSave,
 } from "./carousel/CornerSlides";
+import { CALM_DURATION, CalmFinalReel } from "./reels/CalmFinalReel";
 import { FINAL_DURATION, FinalReel } from "./reels/FinalReel";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { LIVE_DURATION, LiveFinalReel } from "./reels/LiveFinalReel";
@@ -125,6 +126,12 @@ export function Root() {
           id="reel-06-live-final"
           component={LiveFinalReel}
           durationInFrames={LIVE_DURATION}
+          {...REEL}
+        />
+        <Composition
+          id="reel-06-calm-final"
+          component={CalmFinalReel}
+          durationInFrames={CALM_DURATION}
           {...REEL}
         />
       </Folder>
