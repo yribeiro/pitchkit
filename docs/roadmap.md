@@ -105,7 +105,8 @@ do, and a table view of the values for both.
 `<GoalView>` is a coordinate root beside `<Pitch>`, not a chart
 ([D29](./decisions.md#d29-goalview-a-third-coordinate-root-with-the-providers-goal-mouth-frame)), and
 also **not mplsoccer parity**. Its frames are `statsbomb` and `metric`. Follow-ups, none started:
-frames for other providers once their goal-mouth data can be verified, and a gallery card.
+frames for other providers once their goal-mouth data can be verified. Its gallery card is the
+England–Switzerland shootout, under Shooting.
 
 Follow-ups, none started: keyboard focus giving the crosshair readout, a table view of the values,
 a `<RaceEvents>` child as sugar over the annotation slot once the manual version has been written
