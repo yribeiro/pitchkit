@@ -1,5 +1,61 @@
 # @pitchkit/react
 
+## 0.7.0
+
+### Minor Changes
+
+- f8cab70: **Breaking:** `<MomentumChart>` and `<RaceChart>` require a period on every event and datum
+  ([#82](https://github.com/yribeiro/pitchkit/issues/82)).
+
+  Minutes restart at 45 for the second half, so a first half with stoppage time and the second half
+  both contain 45'–48'. Second-half events in that overlap were drawn in first-half stoppage time,
+  and listed in both halves' readouts.
+
+  - `<MomentumChart>`: samples are one flat list. `periods` (an array of arrays, one per half) is
+    replaced by `data` plus a required `period` accessor, the same shape as the events and as
+    `<RaceChart>`; the chart groups the list itself, one panel per period. `periodRanges` is keyed by
+    period number (`{ 2: { end: 95 } }`), and a bar's `index` in `useMomentumChart().bars` points
+    into `data`. `eventPeriod` is required with `events`. The readout lists only the hovered half's
+    events. An event with no panel for its period isn't drawn. `MomentumHover.period` is now the
+    1-based period, not a zero-based index.
+  - `<RaceChart>`: `period` is required. Shots accumulate in match order, by period then minute, and
+    each period is drawn after the one before it, as wide as its own minutes. The half-time rule now
+    sits where the first half ends rather than at its last shot. `endTime` sets where the last period
+    ends. `tooltip` receives the period as a third argument.
+  - Hooks: `useMomentumChart().scaleX(minute, period)`, `useRaceChart().scaleX(minute, period)` and
+    `valueAt(seriesId, time, period)` take the period too. `useRaceChart()` also returns `panels`.
+
+  To migrate, tag samples with their period and flatten them, then pass `period={(d) => d.period}`
+  and `eventPeriod={(e) => e.period}`; StatsBomb's `period` field is already the right number.
+  The bundled Agent Skill documents both.
+
+### Patch Changes
+
+- 06bffbb: Fix four chart edge cases from [#83](https://github.com/yribeiro/pitchkit/issues/83):
+
+  - `<MomentumChart>`: a stack of event icons no longer slides back onto the icon before it.
+  - `<MomentumChart>`: an event whose minute isn't a finite number is dropped, as the bars drop such
+    samples, instead of being drawn at `NaN` (where browsers put it in the top-left corner, over the
+    legend).
+  - `<RaceChart>`: data after an explicit `endTime` is dropped, from the line and from the total, so
+    the line stays inside the plot and the end label matches it.
+  - `<RaceChart>`: the default readout floors the minute, as `<MomentumChart>` does, so at 44.6' it
+    says 44' rather than naming a 45' shot it hasn't counted yet.
+
+- 74eeb45: Fix `<PizzaChart seriesLayout="overlay">` hiding the shorter slice on a `lowerIsBetter` metric
+  ([#89](https://github.com/yribeiro/pitchkit/issues/89)). Overlaid slices were painted largest
+  _value_ first, but on a lower-is-better metric the lower value draws the longer slice, so the longer
+  one was painted last and covered the shorter one. They are now ordered by drawn length.
+
+  `overlayOrder` in `@pitchkit/core` is unchanged in behaviour; its parameter is renamed `lengths` and
+  its documentation says to pass each slice's tip radius rather than its value.
+
+- Updated dependencies [d564441]
+- Updated dependencies [06bffbb]
+- Updated dependencies [f8cab70]
+- Updated dependencies [74eeb45]
+  - @pitchkit/core@0.6.0
+
 ## 0.6.0
 
 ### Minor Changes
