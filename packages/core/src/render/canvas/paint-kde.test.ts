@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../../dimensions/registry.js";
+import type { PitchTypeId } from "../../dimensions/types.js";
+import { fromExtentFrame } from "../../transform/canonical.js";
 import type { KdeLayer } from "../../scene/types.js";
 import { createPixelTransform } from "../../transform/pixel-transform.js";
 import type { Viewport } from "../../transform/types.js";
@@ -127,6 +129,44 @@ describe("paintKdeLayer", () => {
     for (let i = 1; i < row.length; i += 1) {
       const previous = row[i - 1] as FillRectCall;
       expect(row[i]?.x).toBe(previous.x + previous.width);
+    }
+  });
+});
+
+// Every pitch type, centre-origin SkillCorner included (D6, #90): the
+// surface is drawn where its data is, wherever the provider puts its origin.
+describe.each(Object.keys(PITCH_DIMENSIONS) as PitchTypeId[])("paintKdeLayer on %s", (type) => {
+  const dims = PITCH_DIMENSIONS[type];
+  const pixels = createPixelTransform(dims, viewport);
+
+  it("peaks over the data and stays on the pitch", () => {
+    const at = fromExtentFrame(dims, [0.25 * dims.length, 0.3 * dims.width]);
+    const { ctx, calls } = createMockContext();
+    paintKdeLayer(
+      ctx,
+      layer({ data: [{ x: at[0], y: at[1] }], resolution: 40, bandwidth: dims.length / 20 }),
+      dims,
+      pixels,
+    );
+
+    const peak = calls.reduce((best, c) => (c.globalAlpha > best.globalAlpha ? c : best));
+    const [px, py] = pixels.toPixel(at);
+    // The densest cell is the one over the point (with a cell of slack either way).
+    expect(px).toBeGreaterThanOrEqual(peak.x - peak.width);
+    expect(px).toBeLessThanOrEqual(peak.x + 2 * peak.width);
+    expect(py).toBeGreaterThanOrEqual(peak.y - peak.height);
+    expect(py).toBeLessThanOrEqual(peak.y + 2 * peak.height);
+
+    // Every cell lies within the pitch rectangle.
+    const a = pixels.toPixel(fromExtentFrame(dims, [0, 0]));
+    const b = pixels.toPixel(fromExtentFrame(dims, [dims.length, dims.width]));
+    const [minX, maxX] = [Math.min(a[0], b[0]) - 1, Math.max(a[0], b[0]) + 1];
+    const [minY, maxY] = [Math.min(a[1], b[1]) - 1, Math.max(a[1], b[1]) + 1];
+    for (const c of calls) {
+      expect(c.x).toBeGreaterThanOrEqual(minX);
+      expect(c.x + c.width).toBeLessThanOrEqual(maxX);
+      expect(c.y).toBeGreaterThanOrEqual(minY);
+      expect(c.y + c.height).toBeLessThanOrEqual(maxY);
     }
   });
 });

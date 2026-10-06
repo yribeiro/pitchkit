@@ -428,9 +428,14 @@ transform, and each omission fails silently:
 - The four density modules (`heatmap/bins`, `heatmap/positional`, `hexbin/bins`,
   `kde/density`). Their `if (x < 0 || x > dimensions.length) return;` bounds checks would
   discard a centre-origin pitch's whole defending half.
+- `geometry/flow`, which has the same bounds check and builds bin centres in the extent frame.
+- Anything that _returns_ geometry built in the extent frame converts it back:
+  `computePositionalZones`' rectangles, `computeFlowBins`' arrow starts, the pitch rectangle
+  `paint-hexbin` clips to, and the KDE grid cells `paint-kde` draws. Converting in but not out counts correctly and draws half a pitch away
+  ([#90](https://github.com/yribeiro/pitchkit/issues/90)).
 
 Any new module that reasons about a `0..length` box must convert through the extent frame
-first. Tests that assumed the minimum corner is `(0, 0)` now derive it from
+first, and back out of it for anything it hands to `toPixel`. Tests that assumed the minimum corner is `(0, 0)` now derive it from
 `dimensions.origin`.
 
 ### Build and test gotchas
