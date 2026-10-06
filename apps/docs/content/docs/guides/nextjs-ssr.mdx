@@ -10,9 +10,9 @@ interactivity without re-drawing anything.
 
 ## The one rule: originate the tree in a client component
 
-Every layer takes accessor *functions* as props (`x={(p) => p.x}`), and React Server
+Every layer takes accessor _functions_ as props (`x={(p) => p.x}`), and React Server
 Components **cannot pass functions as props** across the server → client boundary. Compose
-your `<Pitch>` tree *inside* a `"use client"` component, and render that from your page:
+your `<Pitch>` tree _inside_ a `"use client"` component, and render that from your page:
 
 ```tsx
 // app/ShotMapPanel.tsx
@@ -40,17 +40,17 @@ export default function Page() {
 ```
 
 Putting the `<Pitch>` tree directly in a Server Component page fails `next build` with
-*"Functions cannot be passed directly to Client Components"* — that's this rule, not a
+_"Functions cannot be passed directly to Client Components"_ — that's this rule, not a
 PitchKit limitation.
 
 `"use client"` governs hydration and prop serialization, **not** whether SSR happens — the
 panel above is still fully server-rendered into the initial HTML.
 
-## Heatmaps are client-only by design
+## Density layers are client-only by design
 
-`<Heatmap>` paints to a `<canvas>`, which has no server-renderable content — it renders
-nothing on the server and paints after hydration. The pitch and any SVG layers around it
-still SSR normally.
+`<Heatmap>`, `<PositionalHeatmap>`, `<Hexbin>` and `<KDE>` paint to a `<canvas>`, which has no
+server-renderable content — they render nothing on the server and paint after hydration. The
+pitch and any SVG layers around them still SSR normally.
 
 ## Data fetching
 

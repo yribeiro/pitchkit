@@ -9,18 +9,18 @@ API.
 
 ## The files
 
-| URL | Contents | Size |
-| --- | --- | --- |
-| [`/llms.txt`](https://www.pitchkitjs.com/llms.txt) | An index of every page, one line each | ~600 tokens |
-| [`/llms-full.txt`](https://www.pitchkitjs.com/llms-full.txt) | Every guide, component, overlay and data page as one document, code examples inlined | ~14k tokens |
-| [`/llms-api.txt`](https://www.pitchkitjs.com/llms-api.txt) | The generated TypeDoc reference, every symbol | ~22k tokens |
+| URL                                                          | Contents                                                                                    | Size                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- | --------------------------- |
+| [`/llms.txt`](https://www.pitchkitjs.com/llms.txt)           | An index of every page, one line each                                                       | Small                       |
+| [`/llms-full.txt`](https://www.pitchkitjs.com/llms-full.txt) | Every guide, component, overlay, chart and data page as one document, code examples inlined | Tens of thousands of tokens |
+| [`/llms-api.txt`](https://www.pitchkitjs.com/llms-api.txt)   | The generated TypeDoc reference, every symbol                                               | Larger than the prose       |
 
 Start with `/llms.txt`. It's small enough to sit in a prompt without crowding anything out, and
 it links to everything else — most agents will fetch what they need from it.
 
 Reach for `/llms-full.txt` when you want the whole thing in context up front and can afford
-~14k tokens. The generated API reference is kept out of it deliberately: a symbol-per-page dump
-is 117 pages of signatures that crowd out the prose actually teaching the library. Pull
+the tokens. The generated API reference is kept out of it deliberately: a symbol-per-page dump
+is hundreds of pages of signatures that crowd out the prose actually teaching the library. Pull
 `/llms-api.txt` separately if you need an exact signature.
 
 ## Any page as Markdown

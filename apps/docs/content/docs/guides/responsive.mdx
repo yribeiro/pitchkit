@@ -29,12 +29,14 @@ Pass both `width` and `height` to pin exact pixels — for image export, fixed-l
 embeds, or canvas work:
 
 ```tsx
-<Pitch type="statsbomb" width={640} height={427}>…</Pitch>
+<Pitch type="statsbomb" width={640} height={427}>
+  …
+</Pitch>
 ```
 
-## The heatmap caveat
+## The density-layer caveat
 
-`<Heatmap>` paints to a `<canvas>`, which needs real pixel dimensions up front — it can't
+`<Heatmap>`, `<PositionalHeatmap>`, `<Hexbin>` and `<KDE>` paint to a `<canvas>`, which needs real pixel dimensions up front — it can't
 lean on the SVG's responsive viewBox. Use a fixed-size pitch, or measure your own container
 and pass the result down (the same technique `<Pitch>` uses internally):
 

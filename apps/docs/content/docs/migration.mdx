@@ -3,7 +3,7 @@ title: mplsoccer → PitchKit
 description: The cheatsheet — every common mplsoccer call and its PitchKit equivalent.
 ---
 
-PitchKit is deliberately "mplsoccer for the web": the concepts map one-to-one, so most of
+PitchKit is deliberately "mplsoccer for the web": the concepts map closely, so most of
 migrating is translating syntax, not relearning ideas. The real shifts are structural —
 and there are only three:
 
@@ -18,56 +18,68 @@ and there are only three:
 
 ## Pitch setup
 
-| mplsoccer | PitchKit |
-| --- | --- |
-| `Pitch(pitch_type="statsbomb")` | `<Pitch type="statsbomb">` |
-| `VerticalPitch(...)` | `<VerticalPitch type="...">` |
-| `Pitch(half=True)` | `crop={cropForHalf(getPitchDimensions("statsbomb"))}` |
-| `Pitch(pitch_color="grass", stripe=True)` | `--pitch-surface` variable + `appearance={{ stripes: true }}` |
-| `Pitch(line_color="white", linewidth=2)` | `--pitch-lines` / `--pitch-line-width` variables |
-| `Pitch(goal_type="box")` | `appearance={{ goalType: "box" }}` |
-| `Pitch(line_zorder=2)` | `appearance={{ linesOnTop: true }}` |
-| `Pitch(pad_left=10, ...)` | `padding={{ left: 10, ... }}` (pixels) |
-| `fig, ax = pitch.draw(figsize=(8, 5))` | Not needed — responsive by default; `width`/`height` props to fix pixels |
+| mplsoccer                                 | PitchKit                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------ |
+| `Pitch(pitch_type="statsbomb")`           | `<Pitch type="statsbomb">`                                               |
+| `VerticalPitch(...)`                      | `<VerticalPitch type="...">`                                             |
+| `Pitch(half=True)`                        | `crop={cropForHalf(getPitchDimensions("statsbomb"))}`                    |
+| `Pitch(pitch_color="grass", stripe=True)` | `--pitch-surface` variable + `appearance={{ stripes: true }}`            |
+| `Pitch(line_color="white", linewidth=2)`  | `--pitch-lines` / `--pitch-line-width` variables                         |
+| `Pitch(goal_type="box")`                  | `appearance={{ goalType: "box" }}`                                       |
+| `Pitch(line_zorder=2)`                    | `appearance={{ linesOnTop: true }}`                                      |
+| `Pitch(pad_left=10, ...)`                 | `padding={{ left: 10, ... }}` (pixels)                                   |
+| `fig, ax = pitch.draw(figsize=(8, 5))`    | Not needed — responsive by default; `width`/`height` props to fix pixels |
 
 ## Plotting
 
-| mplsoccer | PitchKit |
-| --- | --- |
-| `pitch.scatter(x, y, s=size, ax=ax)` | `<Scatter data={d} x={...} y={...} r={...} />` |
-| `pitch.arrows(xstart, ystart, xend, yend)` | `<Arrows data={d} x={...} y={...} x2={...} y2={...} />` |
-| `pitch.lines(..., comet=True, transparent=True)` | `<Comet data={d} ... gradient />` |
-| `pitch.annotate(text, xy=(x, y))` | `<Annotate data={d} x={...} y={...} label={...} />` |
-| `pitch.bin_statistic(...)` + `pitch.heatmap(...)` | `<Heatmap data={d} x={...} y={...} binsX={...} binsY={...} weight={...} />` |
-| `pitch.bin_statistic_positional(...)` + `pitch.heatmap_positional(...)` | `<PositionalHeatmap data={d} x={...} y={...} layout="full" />` |
-| `pitch.hexbin(x, y, gridsize=...)` | `<Hexbin data={d} x={...} y={...} binsX={...} />` |
-| `pitch.kdeplot(x, y, bw_adjust=...)` | `<KDE data={d} x={...} y={...} bandwidth={...} />` |
-| `pitch.flow(xstart, ystart, xend, yend, bins=...)` | `<Flow data={d} ... binsX={...} binsY={...} />` |
-| `pitch.polygon(verts)` | `<Polygon data={d} points={...} />` |
-| `pitch.convexhull(x, y)` + `pitch.polygon` | `<ConvexHull data={d} x={...} y={...} />` |
-| `pitch.voronoi(x, y, teams)` | `<Voronoi data={d} x={...} y={...} fill={(p) => teamColor(p)} />` |
-| `pitch.goal_angle(x, y)` | `<GoalAngle data={d} x={...} y={...} />` |
+| mplsoccer                                                               | PitchKit                                                                    |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `pitch.scatter(x, y, s=size, ax=ax)`                                    | `<Scatter data={d} x={...} y={...} r={...} />`                              |
+| `pitch.arrows(xstart, ystart, xend, yend)`                              | `<Arrows data={d} x={...} y={...} x2={...} y2={...} />`                     |
+| `pitch.lines(..., comet=True, transparent=True)`                        | `<Comet data={d} ... gradient />`                                           |
+| `pitch.annotate(text, xy=(x, y))`                                       | `<Annotate data={d} x={...} y={...} label={...} />`                         |
+| `pitch.bin_statistic(...)` + `pitch.heatmap(...)`                       | `<Heatmap data={d} x={...} y={...} binsX={...} binsY={...} weight={...} />` |
+| `pitch.bin_statistic_positional(...)` + `pitch.heatmap_positional(...)` | `<PositionalHeatmap data={d} x={...} y={...} layout="full" />`              |
+| `pitch.hexbin(x, y, gridsize=...)`                                      | `<Hexbin data={d} x={...} y={...} binsX={...} />`                           |
+| `pitch.kdeplot(x, y, bw_adjust=...)`                                    | `<KDE data={d} x={...} y={...} bandwidth={...} />`                          |
+| `pitch.flow(xstart, ystart, xend, yend, bins=...)`                      | `<Flow data={d} ... binsX={...} binsY={...} />`                             |
+| `pitch.polygon(verts)`                                                  | `<Polygon data={d} points={...} />`                                         |
+| `pitch.convexhull(x, y)` + `pitch.polygon`                              | `<ConvexHull data={d} x={...} y={...} />`                                   |
+| `pitch.voronoi(x, y, teams)`                                            | `<Voronoi data={d} x={...} y={...} fill={(p) => teamColor(p)} />`           |
+| `pitch.goal_angle(x, y)`                                                | `<GoalAngle data={d} x={...} y={...} />`                                    |
 
 Binning for `<Heatmap>`/`<Flow>` happens inside the component — there's no separate
 `bin_statistic` step to manage.
 
 ## Utilities
 
-| mplsoccer | PitchKit |
-| --- | --- |
+| mplsoccer                                               | PitchKit                                                                                  |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `Standardizer(pitch_from="opta", pitch_to="statsbomb")` | `createStandardizeTransform(getPitchDimensions("opta"), getPitchDimensions("statsbomb"))` |
-| Pitch dimension constants | `getPitchDimensions(type)` / `PITCH_DIMENSIONS` |
-| `FontManager`, custom fonts | Plain CSS — pitches inherit your page's fonts |
+| Pitch dimension constants                               | `getPitchDimensions(type)` / `PITCH_DIMENSIONS`                                           |
+| `FontManager`, custom fonts                             | Plain CSS — pitches inherit your page's fonts                                             |
 
 One caveat on standardizing: PitchKit's current transform is a uniform extent mapping.
-mplsoccer's `Standardizer` interpolates between pitch *markings* as control points, so
+mplsoccer's `Standardizer` interpolates between pitch _markings_ as control points, so
 marking-boundary alignment across providers can differ slightly — exact for corners and
 the centre spot, approximate at box edges.
 
+## Charts without a pitch
+
+| mplsoccer | PitchKit                                   |
+| --------- | ------------------------------------------ |
+| `Radar`   | [`<RadarChart>`](/docs/charts/radar-chart) |
+| `PyPizza` | [`<PizzaChart>`](/docs/charts/pizza-chart) |
+
+Like mplsoccer's, these draw the values you give them: percentiles and per-90s are yours to compute.
+They are roots rather than layers, so there is no `<Pitch>` and no `type` prop. PitchKit also has two
+charts mplsoccer doesn't: [`<RaceChart>`](/docs/charts/race-chart) and
+[`<MomentumChart>`](/docs/charts/momentum-chart).
+
 ## Not ported (yet)
 
-Radars, bumpy charts, and pizza charts are Milestone 2 scope — the
-[roadmap issues](https://github.com/yribeiro/pitchkit/issues) track each one. Everything in the tables above works today; see the
+Bumpy charts are the one mplsoccer chart without a PitchKit equivalent. The
+[roadmap issues](https://github.com/yribeiro/pitchkit/issues) track it. Everything in the tables above works today; see the
 [gallery](/gallery) for finished equivalents of mplsoccer's own example charts.
 
 ## A worked example

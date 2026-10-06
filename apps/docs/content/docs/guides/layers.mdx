@@ -24,21 +24,21 @@ Five things to hold in your head — that's the whole model:
 
 ## The overlay set
 
-| Overlay | Draws | Good for |
-| --- | --- | --- |
-| [`<Scatter>`](/docs/overlays/scatter) | One circle per datum | Shots, touches, positions |
-| [`<Arrows>`](/docs/overlays/arrows) | Directional line + head per datum | Pass maps |
-| [`<Comet>`](/docs/overlays/comet) | Tapered, optionally fading trail | Carries, runs |
-| [`<Annotate>`](/docs/overlays/annotate) | Text label per datum | Player names, callouts |
-| [`<Heatmap>`](/docs/overlays/heatmap) | Binned grid on canvas | Density, xG surfaces |
-| [`<PositionalHeatmap>`](/docs/overlays/positional-heatmap) | Juego de Posición zones on canvas | Positional play, zone comparisons |
-| [`<Hexbin>`](/docs/overlays/hexbin) | Hexagonal binned density on canvas | Dense touch/event maps |
-| [`<KDE>`](/docs/overlays/kde) | Smooth density surface on canvas | Pressure, territory |
-| [`<Flow>`](/docs/overlays/flow) | One aggregate arrow per zone | Pass direction by zone |
-| [`<Polygon>`](/docs/overlays/polygon) | Arbitrary closed shape | Zone highlights |
-| [`<ConvexHull>`](/docs/overlays/convex-hull) | Hull of a point set | Team/player shape |
-| [`<Voronoi>`](/docs/overlays/voronoi) | Nearest-player tessellation | Space control |
-| [`<GoalAngle>`](/docs/overlays/goal-angle) | Wedge to both posts | Shot quality context |
+| Overlay                                                    | Draws                              | Good for                          |
+| ---------------------------------------------------------- | ---------------------------------- | --------------------------------- |
+| [`<Scatter>`](/docs/overlays/scatter)                      | One circle per datum               | Shots, touches, positions         |
+| [`<Arrows>`](/docs/overlays/arrows)                        | Directional line + head per datum  | Pass maps                         |
+| [`<Comet>`](/docs/overlays/comet)                          | Tapered, optionally fading trail   | Carries, runs                     |
+| [`<Annotate>`](/docs/overlays/annotate)                    | Text label per datum               | Player names, callouts            |
+| [`<Heatmap>`](/docs/overlays/heatmap)                      | Binned grid on canvas              | Density, xG surfaces              |
+| [`<PositionalHeatmap>`](/docs/overlays/positional-heatmap) | Juego de Posición zones on canvas  | Positional play, zone comparisons |
+| [`<Hexbin>`](/docs/overlays/hexbin)                        | Hexagonal binned density on canvas | Dense touch/event maps            |
+| [`<KDE>`](/docs/overlays/kde)                              | Smooth density surface on canvas   | Pressure, territory               |
+| [`<Flow>`](/docs/overlays/flow)                            | One aggregate arrow per zone       | Pass direction by zone            |
+| [`<Polygon>`](/docs/overlays/polygon)                      | Arbitrary closed shape             | Zone highlights                   |
+| [`<ConvexHull>`](/docs/overlays/convex-hull)               | Hull of a point set                | Team/player shape                 |
+| [`<Voronoi>`](/docs/overlays/voronoi)                      | Nearest-player tessellation        | Space control                     |
+| [`<GoalAngle>`](/docs/overlays/goal-angle)                 | Wedge to both posts                | Shot quality context              |
 
 The accessor pattern is what keeps PitchKit shape-agnostic: there's no required data
 schema — `x={(shot) => shot.location[0]}` adapts any provider's records without a
@@ -55,5 +55,5 @@ kinds freely in one pitch.
 
 For custom marks the built-ins don't cover, call
 [`usePitch()`](/docs/api/react/functions/usePitch) from any child of `<Pitch>` to get the
-pitch dimensions, viewport, and pixel transform, then emit your own SVG. The landing page's interactive hero uses it to turn clicks back
-into provider coordinates.
+pitch dimensions, viewport, and pixel transform, then emit your own SVG. The returned `transform.toProvider` turns a pixel position back into provider
+coordinates, which is what you need for hover and click handlers.
