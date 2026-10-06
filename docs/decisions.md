@@ -315,6 +315,55 @@ an empty half had to keep its slot by hand or every later period shifted.
 - `MomentumHover.period` changed from a zero-based index to the 1-based period number, so one
   chart doesn't use two conventions.
 
+### D29. `<GoalView>`: a third coordinate root, with the provider's goal-mouth frame
+
+**Decision:** The goal-mouth view is `<GoalView type="…">`, a root beside `<Pitch>`, with its maths in
+`core/goal/`. Shots are a child layer, `<GoalShots>`, and custom marks use `useGoalView()`.
+
+- **It is a coordinate root like `<Pitch>`, not a chart.** It takes a `type`, because a shot's goal-mouth
+  coordinates are provider data in the provider's units, and its marks are children, because the frame
+  doesn't depend on the data. Its docs live under **Components** beside `<Pitch>`, not under Charts as
+  [D24](#d24-charts-get-a-top-level-docs-section-and-the-gallery-a-timeline-category) expected.
+- **Its frame is not `PitchDimensions`.** `core/goal/` imports nothing from `dimensions/` or
+  `transform/`, as [issue #22](https://github.com/yribeiro/pitchkit/issues/22) asked. A frame is the goal's
+  middle, width and height in the provider's units (`GOAL_FRAMES`), and `toGoalMetres` scales each axis
+  by the provider's own goal. That puts a value on the post or the bar exactly on the drawn post or bar:
+  StatsBomb's 8 yd is 7.315 m, not 7.32. The frames are `statsbomb` and `metric`. Others wait for open data
+  to verify against, which is why there is no Opta frame.
+- **The view is the shooter's**, level with the goal and looking at it, with `y` growing to the shooter's
+  right (StatsBomb's own direction). The goal line is the picture plane, so the goal mouth is to scale and
+  a shot's position is a straight linear map. Only the ground is in perspective, from a camera
+  30 m out and 1.2 m up (`GOAL_CAMERA_DISTANCE`, `GOAL_CAMERA_HEIGHT`). That keeps the six-yard line, the
+  penalty spot and the penalty-area line in a strip under the goal at honest relative depths, which is
+  what gives the distance.
+- **The window is fixed**: one goal width either side of the middle and 4 m up, so the aspect ratio is
+  fixed too (`GOAL_VIEW_ASPECT`). A shot outside is pinned just inside the edge and marked
+  `data-pitchkit-clamped`, as the radar pins an off-scale value
+  ([D26](#d26-radarchart-callers-numbers-translucent-shapes-click-to-replace)). In 20 Euro 2024 matches,
+  62 of 325 shots with a height landed outside it, mostly far wide or over. A window big enough for all
+  of them would shrink the goal to a fraction of the view.
+- **Both dimension markers are on by default and toggled separately** (`appearance.widthMarker`,
+  `heightMarker`), with `units` choosing metres or yards and feet for their labels. They are structure, so
+  they sit on `appearance` ([D8](#d8-theming-is-css-variables-only)).
+- **The artwork is PitchKit's own.** SofaScore's goal graphic prompted the look, as its icons prompted
+  `<MomentumChart>`'s ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)), and is
+  not copied.
+
+**Why:** A goal view plots provider data in a provider frame, the same job `<Pitch>` does in a different
+plane, so it has `<Pitch>`'s shape: a typed root, layer children, a hook. The picture plane at the goal line
+is the one choice that keeps placement exact while still drawing the ground in perspective.
+
+**Consequences:**
+
+- `core/goal/` is held at 100% coverage. Every static shape, including the ground markings, net, frame and
+  markers, comes from `computeGoalGeometry`, so no number is baked into the component.
+- New tokens: `--pitch-goal-backdrop`, `--pitch-goal-net`, `--pitch-goal-frame`. The ground and its
+  markings read `--pitch-surface`, `--pitch-lines` and `--pitch-line-width`, so a themed pitch and goal view
+  match.
+- The penalty spot's position is to scale and its size is not: from 1.2 m up, a real spot would be a dash.
+- `hasTooltipContent` moved to `TooltipOverlay.tsx`, shared by both roots.
+- Like `<RaceChart>` it has no mplsoccer equivalent.
+
 ---
 
 ## Styling and theming

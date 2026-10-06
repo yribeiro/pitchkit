@@ -13,6 +13,7 @@ export default defineConfig({
         "src/race/**",
         "src/momentum/**",
         "src/polar/**",
+        "src/goal/**",
       ],
       thresholds: {
         "src/dimensions/**": {
@@ -50,6 +51,12 @@ export default defineConfig({
           lines: 100,
         },
         "src/polar/**": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/goal/**": {
           statements: 100,
           branches: 100,
           functions: 100,
