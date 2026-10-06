@@ -582,7 +582,7 @@ Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc
 | Minutes on top, 75 v 63       | Minutes of the momentum series above and below zero (6 are level); the series is the docs recipe, a stand-in rather than an official metric                          |
 | Goals, the save, the shootout | As reel 05 (`wc-final.json`)                                                                                                                                         |
 
-## Reel 06, network cut (`reel-06-network-final.mp4`, 37 s)
+## Reel 06, network cut (`reel-06-network-final.mp4`, 39 s)
 
 The same final at the pace of watching a game, using the pass-network idea without the
 lines. Each of the 34 players who touched the ball is a numbered disc that drifts to
@@ -592,15 +592,19 @@ of play are weighted, with older ones fading exponentially (7-minute time consta
 Each position is also anchored lightly to the player's average for the whole match, so
 a quiet spell doesn't send anyone wandering. Substitutes fade in at their first touch,
 and players fade out two minutes after their last. The tilted pitch sits fully in frame.
-At each goal, and at Kolo Muani's 123rd-minute chance, the clock holds for about 1.6
-seconds. The last five moves draw in white (`<Arrows />`, with `<Comet />` carries, as
-in reel 05) and the shot fires as a yellow comet. The shootout uses reel 05's goal
-mouth. PitchKit branding comes in three places: a "Built with PitchKit" chip under the
+At each goal, and at Kolo Muani's 123rd-minute chance, the clock holds for about 2
+seconds. The camera swoops into the attacking half: its pivot follows a bezier arc
+while the turn, tilt and zoom ease in, leaving the goal standing at an angle at the top
+of the frame. The last five moves draw in white (`<Arrows />`, with `<Comet />` carries,
+as in reel 05). The goal angle opens from the shooter to the posts (`<GoalAngle />`),
+and the shot fires as a yellow comet. The shootout uses reel 05's goal
+mouth. At the champions moment Argentina's flag sweeps across the pitch, sun on the
+centre spot. PitchKit branding comes in three places: a "Built with PitchKit" chip under the
 hook, an `<Arrows /> <Comet />` chip on each goal view, and the value card's "Every
-chart in this reel is PitchKit" line. The scoreboard, momentum strip, champions card,
-CTA and end card are shared with the 3D cut. Use the reel 06 captions with "player" for
+chart in this reel is PitchKit" line. The scoreboard, momentum strip, champions
+caption, CTA and end card are shared with the 3D cut. Use the reel 06 captions with "player" for
 "sphere", and drop any mention of 360 data: this cut uses event data only. For the
-cover, use `out/reel-06-network-cover.png` (6 s: Di María's goal at 36').
+cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
 
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 

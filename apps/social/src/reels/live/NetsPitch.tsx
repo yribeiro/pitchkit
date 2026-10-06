@@ -9,13 +9,16 @@
  * touches, anchored lightly to their average for the match, so it moves
  * continuously. The ball slides from touch to touch.
  *
- * At each goal (and Kolo Muani's late chance) the build-up draws in as
- * arrows and the shot flies in as a comet, as in reel 05; during the
- * shootout the goal mouth shows where every kick went.
+ * At each goal (and Kolo Muani's late chance) the camera swoops along a
+ * bezier arc into the attacking half, turned so the goal sits at an angle at
+ * the top of the frame. The build-up draws in as arrows, the goal angle opens
+ * from the shooter to the posts, and the shot flies in as a comet, as in
+ * reel 05. During the shootout the goal mouth shows where every kick went,
+ * and the champions moment paints Argentina's flag across the pitch.
  */
-import { Arrows, Comet, Pitch, Scatter, usePitch } from "@pitchkit/react";
+import { Arrows, Comet, GoalAngle, Pitch, Scatter, usePitch } from "@pitchkit/react";
 import type { CSSProperties } from "react";
-import { interpolate } from "remotion";
+import { Easing, interpolate } from "remotion";
 import { PitchStage } from "../../components/Chrome";
 import { Mark } from "../../components/Logo";
 import { wcFinal as F, wcTouches } from "../../data";
@@ -138,6 +141,35 @@ function goalViews(T: Timeline): GoalView[] {
     })),
     { frame: T.FRAME.save, argentina: false, moves: F.theSave.moves, shot: F.theSave },
   ];
+}
+
+/* Camera ------------------------------------------------------------------- */
+
+const SWOOP = Easing.bezier(0.65, 0, 0.35, 1);
+const WIDE = { x: 60, y: 40, turn: -32, tilt: 52, scale: 0.55, top: 445 };
+/** The goal view for each side: the attacking half, turned so the goal is up and angled. */
+const CLOSE = {
+  argentina: { x: 110, y: 40, turn: -64, tilt: 56, scale: 1.2, top: 400 },
+  france: { x: 10, y: 40, turn: 64, tilt: 56, scale: 1.2, top: 400 },
+};
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+/** Camera at zoom `k` (0 wide, 1 in the goal view): the pivot follows a bezier arc. */
+function cameraAt(k: number, argentina: boolean, sway: number) {
+  const to = argentina ? CLOSE.argentina : CLOSE.france;
+  // Control point off to the touchline side, so the pivot curves in rather than sliding.
+  const cx = (WIDE.x + to.x) / 2;
+  const cy = 40 + (argentina ? 18 : -18);
+  const b = (p0: number, p1: number, p2: number) =>
+    (1 - k) * (1 - k) * p0 + 2 * (1 - k) * k * p1 + k * k * p2;
+  return {
+    x: b(WIDE.x, cx, to.x),
+    y: b(WIDE.y, cy, to.y),
+    turn: lerp(WIDE.turn + sway, to.turn, k),
+    tilt: lerp(WIDE.tilt, to.tilt, k),
+    scale: lerp(WIDE.scale, to.scale, k),
+    top: lerp(WIDE.top, to.top, k),
+  };
 }
 
 /** Numbers on the discs, kept upright against the camera's turn. */
@@ -294,14 +326,28 @@ export function NetsPitch({
   );
 
   // Tilted like a broadcast camera, the pitch running bottom-left to top-right.
-  const turn = -32 + 3 * Math.sin(frame / 140);
+  // In a goal view it swoops into the attacking half: the pivot travels a
+  // quadratic bezier arc while the turn, tilt and zoom ease on a cubic bezier.
+  const sway = 3 * Math.sin(frame / 140);
+  const zoomed = views.reduce<{ k: number; argentina: boolean }>(
+    (best, v) => {
+      const k = interpolate(frame - v.frame, [-2, 18, T.replay + 2, T.replay + 22], [0, 1, 1, 0], {
+        ...clamp,
+        easing: SWOOP,
+      });
+      return k > best.k ? { k, argentina: v.argentina } : best;
+    },
+    { k: 0, argentina: true },
+  );
+  const cam = cameraAt(zoomed.k, zoomed.argentina, sway);
+  const turn = cam.turn;
   const camera = [
-    "translate(540px, 445px)",
+    `translate(540px, ${cam.top}px)`,
     "perspective(2200px)",
-    "rotateX(52deg)",
+    `rotateX(${cam.tilt}deg)`,
     `rotateZ(${turn}deg)`,
-    "scale(0.55)",
-    `translate(${-(PAD.left + 60 * K)}px, ${-(PAD.top + 40 * K)}px)`,
+    `scale(${cam.scale})`,
+    `translate(${-(PAD.left + cam.x * K)}px, ${-(PAD.top + cam.y * K)}px)`,
   ].join(" ");
 
   const players = playersAt(u);
@@ -318,9 +364,11 @@ export function NetsPitch({
   let carries: typeof arrows = [];
   let shot: typeof arrows = [];
   let viewFade = 0;
+  let angle = 0;
+  let shooter: { x: number; y: number }[] = [];
   if (view) {
     const moves = view.moves.slice(-5);
-    const draw = interpolate(p, [0.05, 0.6], [0, moves.length], clamp);
+    const draw = interpolate(p, [0.28, 0.68], [0, moves.length], clamp);
     const drawn = moves
       .map((m, i) => ({ m, t: Math.min(Math.max(draw - i, 0), 1) }))
       .filter(({ t }) => t > 0)
@@ -337,9 +385,11 @@ export function NetsPitch({
       });
     arrows = drawn.filter((m) => m.kind === "pass");
     carries = drawn.filter((m) => m.kind === "carry");
-    const st = interpolate(p, [0.62, 0.82], [0, 1], { ...clamp, easing: (v) => v * v });
+    angle = interpolate(p, [0.6, 0.72], [0, 1], clamp);
+    const st = interpolate(p, [0.72, 0.88], [0, 1], { ...clamp, easing: (v) => v * v });
+    const a = toArg(view.argentina, view.shot.x, view.shot.y);
+    shooter = [a];
     if (st > 0) {
-      const a = toArg(view.argentina, view.shot.x, view.shot.y);
       const b = toArg(view.argentina, view.shot.endX, view.shot.endY);
       shot = [{ x: a.x, y: a.y, x2: a.x + (b.x - a.x) * st, y2: a.y + (b.y - a.y) * st }];
     }
@@ -361,11 +411,13 @@ export function NetsPitch({
             top: 0,
             transformOrigin: "0 0",
             transform: camera,
+            transformStyle: "preserve-3d",
           }}
         >
           <PitchStage style={NIGHT}>
             <Pitch type="statsbomb" width={PW} height={PH} padding={PAD} appearance={appearance}>
-              <g opacity={dim}>
+              {win > 0 && <FlagOnPitch amount={win} />}
+              <g opacity={dim * (1 - win)}>
                 <Scatter
                   data={players}
                   x={(d) => d.x}
@@ -378,7 +430,7 @@ export function NetsPitch({
                 />
                 <Numbers players={players} turn={turn} />
               </g>
-              {!view && (
+              {!view && win < 1 && (
                 <Scatter
                   data={[ball]}
                   x={(b) => b.x}
@@ -386,11 +438,24 @@ export function NetsPitch({
                   r={9 * S}
                   fill="#fde047"
                   stroke="#000000"
+                  fillOpacity={1 - win}
                   strokeWidth={2 * S}
                 />
               )}
               {view && (
                 <g opacity={viewFade}>
+                  <g opacity={angle}>
+                    <GoalAngle
+                      data={shooter}
+                      x={(d) => d.x}
+                      y={(d) => d.y}
+                      goal={view.argentina ? "right" : "left"}
+                      fill="#fde047"
+                      fillOpacity={0.22}
+                      stroke="#fde047"
+                      strokeWidth={2.5 * S}
+                    />
+                  </g>
                   <Comet
                     data={carries}
                     x={(m) => m.x}
@@ -423,9 +488,9 @@ export function NetsPitch({
                   />
                 </g>
               )}
-              {win > 0 && <WinWash amount={win} />}
             </Pitch>
           </PitchStage>
+          {zoomed.k > 0 && <StandingGoal argentina={zoomed.argentina} opacity={zoomed.k} />}
         </div>
       </div>
       {shootout > 0 && (
@@ -438,18 +503,101 @@ export function NetsPitch({
   );
 }
 
-function WinWash({ amount }: { amount: number }) {
+/**
+ * The goal being attacked, standing up off the line in the camera's 3D space:
+ * laid flat on the pitch from the goal line, then hinged up 90 degrees.
+ */
+function StandingGoal({ argentina, opacity }: { argentina: boolean; opacity: number }) {
+  const W = 8 * K;
+  const H = 2.67 * K;
+  const nets = 8;
+  return (
+    <svg
+      width={H}
+      height={W}
+      style={{
+        position: "absolute",
+        left: PAD.left + (argentina ? 120 : 0) * K,
+        top: PAD.top + 36 * K,
+        overflow: "visible",
+        opacity,
+        transformOrigin: "0 0",
+        transform: "rotateY(-90deg)",
+      }}
+    >
+      {Array.from({ length: nets + 1 }, (_, i) => (
+        <line
+          key={`n${i}`}
+          x1={0}
+          y1={(i * W) / nets}
+          x2={H}
+          y2={(i * W) / nets}
+          stroke="rgba(255,255,255,0.22)"
+          strokeWidth={1.5}
+        />
+      ))}
+      {[1, 2].map((i) => (
+        <line
+          key={`h${i}`}
+          x1={(i * H) / 3}
+          y1={0}
+          x2={(i * H) / 3}
+          y2={W}
+          stroke="rgba(255,255,255,0.22)"
+          strokeWidth={1.5}
+        />
+      ))}
+      <path
+        d={`M 0 0 H ${H} V ${W} H 0`}
+        fill="none"
+        stroke="white"
+        strokeWidth={5}
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Argentina's flag painted across the pitch: the bands sweep in, then the sun. */
+function FlagOnPitch({ amount }: { amount: number }) {
   const { transform } = usePitch();
   const [x0, y0] = transform.toPixel([0, 0]);
   const [x1, y1] = transform.toPixel([120, 80]);
+  const left = Math.min(x0, x1);
+  const top = Math.min(y0, y1);
+  const w = Math.abs(x1 - x0);
+  const h = Math.abs(y1 - y0);
+  const sweep = smooth(Math.min(amount / 0.7, 1));
+  const sun = smooth(Math.max((amount - 0.55) / 0.45, 0));
+  const [cx, cy] = transform.toPixel([60, 40]);
+  const R = (h / 3) * 0.42;
+  const rays = Array.from({ length: 16 }, (_, i) => (i * Math.PI) / 8);
   return (
-    <rect
-      x={Math.min(x0, x1)}
-      y={Math.min(y0, y1)}
-      width={Math.abs(x1 - x0)}
-      height={Math.abs(y1 - y0)}
-      fill={ARG}
-      fillOpacity={0.55 * amount}
-    />
+    <g opacity={0.9}>
+      <clipPath id="flag-sweep">
+        <rect x={left} y={top} width={w * sweep} height={h} />
+      </clipPath>
+      <g clipPath="url(#flag-sweep)">
+        <rect x={left} y={top} width={w} height={h} fill="#74acdf" />
+        <rect x={left} y={top + h / 3} width={w} height={h / 3} fill="#ffffff" />
+      </g>
+      <g
+        transform={`translate(${cx} ${cy}) scale(${sun}) rotate(${(1 - sun) * -90})`}
+        fill="#f6b40e"
+        stroke="#85340a"
+        strokeWidth={2 * S}
+      >
+        {rays.map((a, i) => {
+          const r = R * (i % 2 ? 0.9 : 1);
+          return (
+            <path
+              key={i}
+              d={`M ${Math.cos(a - 0.12) * R * 0.45} ${Math.sin(a - 0.12) * R * 0.45} L ${Math.cos(a) * r} ${Math.sin(a) * r} L ${Math.cos(a + 0.12) * R * 0.45} ${Math.sin(a + 0.12) * R * 0.45} Z`}
+            />
+          );
+        })}
+        <circle r={R * 0.48} />
+      </g>
+    </g>
   );
 }

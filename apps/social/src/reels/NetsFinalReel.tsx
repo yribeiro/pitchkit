@@ -1,5 +1,5 @@
 /**
- * Reel 06, network cut: the 2022 World Cup final in about 36 seconds. Every
+ * Reel 06, network cut: the 2022 World Cup final in about 39 seconds. Every
  * player is a numbered disc drifting to their recent average position (the
  * pass-network idea, without the lines) on a pitch tilted so all of it stays
  * in frame. The clock eases into each goal for reel 05's goal view, the

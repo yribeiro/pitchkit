@@ -172,22 +172,23 @@ export const LIVE = timeline(LIVE_FRAME, [
   [LIVE_FRAME.whistle, TOTAL_U],
 ]);
 
-// The network cut: about 36 seconds. The clock eases into each moment and
-// holds for a short goal view (the build-up and the shot).
-const GOAL_VIEW = 48;
+// The network cut: about 39 seconds. The clock eases into each moment and
+// holds while the camera swoops into the attacking half for the goal view
+// (the build-up, the goal angle and the shot).
+const GOAL_VIEW = 58;
 const NETS_FRAME: Frames = {
   messi1: 66,
-  diMaria: 150,
-  halfTime: 210,
-  franceFirst: 255,
-  mbappe1: 310,
-  mbappe2: 382,
-  extraTime: 445,
-  messi2: 500,
-  mbappe3: 572,
-  save: 640,
-  whistle: 702,
-  firstKick: 716,
+  diMaria: 160,
+  halfTime: 230,
+  franceFirst: 275,
+  mbappe1: 330,
+  mbappe2: 412,
+  extraTime: 485,
+  messi2: 540,
+  mbappe3: 622,
+  save: 700,
+  whistle: 782,
+  firstKick: 796,
   kickGap: 12,
 };
 const hold = (frame: number, u: number): [number, number][] => [
