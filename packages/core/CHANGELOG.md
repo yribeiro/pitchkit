@@ -1,5 +1,53 @@
 # @pitchkit/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 06bffbb: Fix two chart edge cases from [#83](https://github.com/yribeiro/pitchkit/issues/83):
+
+  - `stackOffsets` no longer re-centres a stack of markers back onto the marker before it. A run is
+    shifted towards its true positions only as far as it stays `size` clear of its left neighbour.
+  - `computeCumulativeSeries(events, until?)` takes an optional end point, `{ period, time }`.
+    Events after it are dropped while each point keeps its index into the caller's array.
+
+- f8cab70: **Breaking:** race and momentum helpers now take a period, because minutes restart at 45 for the
+  second half and a minute alone can't place anything in first-half stoppage time.
+
+  - `RaceEvent` and `RacePoint` carry a required `period` (1 for the first half).
+    `computeCumulativeSeries` sorts by period, then minute, and drops events whose period isn't a
+    whole number from 1.
+  - `valueAtTime(points, time, period)` counts every event in an earlier period.
+  - `minuteToX(panels, minute, period)` places the minute in `panels[period - 1]`, clamped to it.
+
+  New: `xToMinute(panels, x)` reads a pixel back as `{ period, minute }`,
+  `racePeriodRanges(events, endTime?)` gives each period its own range for a race chart, and
+  `groupByPeriod(periods, minimum?)` and `isPeriod(period)` group a flat, period-tagged list.
+
+### Patch Changes
+
+- d564441: Fix four layers on centre-origin pitches (`type="skillcorner"`), which skipped the extent-frame
+  conversion every other layer goes through ([#90](https://github.com/yribeiro/pitchkit/issues/90)):
+
+  - `<Flow>` / `computeFlowBins`: vectors starting at a negative `x` or `y` are no longer dropped,
+    and arrows start at their cell's centre instead of half a pitch away.
+  - `<PositionalHeatmap>` / `computePositionalZones`: zones are returned in provider coordinates,
+    as documented, so they are drawn on the pitch where their points are. Counts were already
+    right.
+  - `<Hexbin>`: the layer is clipped to the whole pitch instead of one quarter of it.
+  - `<KDE>`: the density surface is drawn over its data instead of half a pitch away. The `KdeGrid`
+    doc comment now says its cells are in the extent frame.
+
+  Corner-origin pitches (StatsBomb, Opta, UEFA, Wyscout) are unchanged.
+
+- 74eeb45: Fix `<PizzaChart seriesLayout="overlay">` hiding the shorter slice on a `lowerIsBetter` metric
+  ([#89](https://github.com/yribeiro/pitchkit/issues/89)). Overlaid slices were painted largest
+  _value_ first, but on a lower-is-better metric the lower value draws the longer slice, so the longer
+  one was painted last and covered the shorter one. They are now ordered by drawn length.
+
+  `overlayOrder` in `@pitchkit/core` is unchanged in behaviour; its parameter is renamed `lengths` and
+  its documentation says to pass each slice's tip radius rather than its value.
+
 ## 0.5.0
 
 ### Minor Changes
