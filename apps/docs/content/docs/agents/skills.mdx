@@ -33,7 +33,7 @@ npm update @pitchkit/react   # skill is already current — nothing else to run
 
 That matters more than it sounds. A copied skill is correct the day you extract it and
 silently wrong after the next breaking change — the same version ambiguity that makes
-training data unreliable, one layer down. It's also the one thing
+a model's memory of an API unreliable, one layer down. It's also the one thing
 [llms.txt](/docs/agents/llms-txt) can't give you, since those files describe whatever is
 deployed here rather than what you installed.
 
@@ -42,13 +42,13 @@ with `--force` after upgrading.
 
 ## What's in it
 
-| Part | Covers |
-| --- | --- |
-| The model | The core/react split, the three provider coordinate systems, accessors, responsive sizing, CSS-variable theming |
-| Anti-hallucinations | The plausible things that *don't* exist — `<ShotMap>`, a `theme` prop, `type="tracab"` |
-| Build-breakers | The `"use client"` boundary, density layers needing a fixed-pixel `<Pitch>`, `linesOnTop` |
-| Four recipes | Shot map, pass map, heatmap, pass network — tested against the real exports |
-| API reference | Every component's props, plus the `@pitchkit/core` helpers worth calling |
+| Part                | Covers                                                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| The model           | The core/react split, the five provider coordinate systems, accessors, responsive sizing, CSS-variable theming                |
+| Anti-hallucinations | The plausible things that _don't_ exist — `<ShotMap>`, a `theme` prop, `type="tracab"`                                        |
+| Build-breakers      | The `"use client"` boundary, density layers needing a fixed-pixel `<Pitch>`, `linesOnTop`                                     |
+| Six recipes         | Shot map, pass map, heatmap, pass network, the non-pitch charts, and loading real open data — tested against the real exports |
+| API reference       | Every component's props, plus the `@pitchkit/core` helpers worth calling                                                      |
 
 ## How it triggers
 

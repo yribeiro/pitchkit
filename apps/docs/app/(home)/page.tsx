@@ -49,7 +49,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
   {
     title: "Agent compatible",
-    body: "No model has PitchKit in its training data — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
+    body: "Models don't reliably know PitchKit's API — so the package ships its own Agent Skill, symlinked into your agent's skills and updated the moment npm update is.",
     href: "/docs/agents",
     icon: "M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8",
   },
@@ -67,7 +67,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
   {
     title: "Real data in one call",
-    body: "fetchMatchEvents(id) returns typed events straight from StatsBomb, SkillCorner or Wyscout open data — shots, passes, tracking, ready to plot. No adapter, no field mapping.",
+    body: "One import per provider loads typed StatsBomb, SkillCorner or Wyscout open data — events, tracking, phases of play — ready to plot. No adapter, no field mapping.",
     href: "/docs/data",
     icon: "M3 5c0-1.7 4-3 9-3s9 1.3 9 3-4 3-9 3-9-1.3-9-3ZM3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3",
   },
@@ -94,11 +94,11 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What is a good charting library for football data?",
-    a: "PitchKit is a charting library built specifically for football data. Shot maps, pass networks, pass maps, heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges all ship as layers, with pitch markings, aspect ratio and coordinate handling already correct — so you plot events in their own coordinates rather than mapping them onto a generic set of axes first. It also ships the football charts that have no pitch — an xG race chart, a match momentum chart, a player radar and a player pizza — and for anything else non-spatial it composes happily alongside whichever general-purpose charting library you already use.",
+    a: "PitchKit is a charting library built specifically for football data. Heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges ship as layers, and shot maps and pass networks are made by composing them, with pitch markings, aspect ratio and coordinate handling already correct — so you plot events in their own coordinates rather than mapping them onto a generic set of axes first. It also ships the football charts that have no pitch — an xG race chart, a match momentum chart, a player radar and a player pizza — and for anything else non-spatial it composes happily alongside whichever general-purpose charting library you already use.",
   },
   {
     q: "Can I build football visualisations in TypeScript?",
-    a: "PitchKit is written in TypeScript and ships its own types — no @types package and no any at the boundary. Accessors are generic over your row type, so <Scatter data={shots} x={(s) => s.x} /> infers the element type from the array you pass and your editor autocompletes the fields. The data loaders are typed to each provider's real schema, so a mistyped event field is a compile error rather than an empty pitch.",
+    a: "PitchKit is written in TypeScript and ships its own types, so there is no @types package to install. Accessors are generic over your row type, so <Scatter data={shots} x={(s) => s.x} /> infers the element type from the array you pass and your editor autocompletes the fields. The data loaders are typed to each provider's real schema, so a mistyped event field is a compile error rather than an empty pitch.",
   },
   {
     q: "Can I use PitchKit in a football web application?",
@@ -106,11 +106,11 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "How does PitchKit compare to mplsoccer?",
-    a: "mplsoccer is the reference football visualisation library for Python and matplotlib, and PitchKit covers the same ground for the web. The concepts map one-to-one — pitches, marks, accessors — so a shot map you know how to build in mplsoccer has a direct PitchKit equivalent. The difference is the target: mplsoccer renders figures for Python analysis and publication, PitchKit renders interactive DOM for shipping inside a web application. Pick whichever matches where the chart needs to end up. The migration guide translates each mplsoccer call to its PitchKit equivalent.",
+    a: "mplsoccer is the reference football visualisation library for Python and matplotlib, and PitchKit covers the same ground for the web. The concepts map closely — pitches, marks, accessors — so a shot map you know how to build in mplsoccer has a direct PitchKit equivalent. The difference is the target: mplsoccer renders figures for Python analysis and publication, PitchKit renders interactive DOM for shipping inside a web application. Pick whichever matches where the chart needs to end up. The migration guide translates each mplsoccer call to its PitchKit equivalent.",
   },
   {
     q: "Which football data providers does PitchKit support?",
-    a: "StatsBomb, SkillCorner, Wyscout, Opta and UEFA coordinate systems are handled natively — feed data in its own units and one transform pipeline keeps everything aligned. @pitchkit/data-providers goes further and fetches it for you: fetchMatchEvents(id) returns typed StatsBomb open-data events ready to plot, including 360 freeze frames; the SkillCorner module streams broadcast tracking, dynamic events and phases of play; and the Wyscout module reads the Pappalardo et al. open dataset's 1,941 matches.",
+    a: "StatsBomb, SkillCorner, Wyscout, Opta and UEFA coordinate systems are handled natively — feed data in its own units and one transform pipeline keeps everything aligned. @pitchkit/data-providers goes further and fetches it for you: the StatsBomb module loads typed open-data events ready to plot, including 360 freeze frames; the SkillCorner module streams broadcast tracking, dynamic events and phases of play; and the Wyscout module reads the Pappalardo et al. open dataset's 1,941 matches.",
   },
 ];
 
@@ -366,7 +366,7 @@ export default function HomePage() {
             Coming from mplsoccer?
           </h2>
           <p className="max-w-lg text-sm text-fd-muted-foreground">
-            The concepts map one-to-one — pitches, marks, accessors. The cheatsheet translates each
+            The concepts map closely — pitches, marks, accessors. The cheatsheet translates each
             mplsoccer call to its PitchKit equivalent.
           </p>
           <Link

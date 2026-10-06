@@ -3,8 +3,8 @@
  * which category tab, with display copy. Scoped deliberately to what's
  * buildable with today's mark set (issue #28) — new-mark entries get added
  * here incrementally as each Milestone 2 mark lands. Positional heatmap,
- * hexbin and KDE arrived with issue #19; radar/pizza and the goal view are
- * still to come.
+ * hexbin and KDE arrived with issue #19, and radar and pizza after them;
+ * the goal view is still to come.
  *
  * "Timeline" is the one category whose cards are not drawn on a pitch. It
  * exists for <RaceChart> and <MomentumChart>, and will take the bumpy chart later.
@@ -38,7 +38,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "shot-map-gallery",
     title: "Shot map",
     description:
-      "Attacking half, vertical framing — markers sized by xG, colored by outcome, goal angle on the best chance.",
+      "Attacking half, vertical framing — markers sized by xG, coloured by outcome, goal angle on the best chance.",
     category: "Shooting",
     docsHref: "/docs/overlays/scatter",
   },
@@ -62,7 +62,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "pass-flow-gallery",
     title: "Pass flow",
     description:
-      "Passes binned by start zone, one arrow per zone showing average direction, sized and colored by volume.",
+      "Passes binned by start zone, one arrow per zone showing average direction, sized and coloured by volume.",
     category: "Passing",
     docsHref: "/docs/overlays/flow",
   },
@@ -78,7 +78,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "zonal-control-gallery",
     title: "Zonal control",
     description:
-      "A Voronoi tessellation over all 22 players, cells colored by team — who controls which patch of grass.",
+      "A Voronoi tessellation over all 22 players, cells coloured by team — who controls which patch of grass.",
     category: "Structure",
     docsHref: "/docs/overlays/voronoi",
   },
@@ -94,7 +94,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "zone-occupation-gallery",
     title: "Zone occupation",
     description:
-      "Touches binned into the Juego de Posición zones — mplsoccer's positional heatmap, with each zone's share of possession on hover.",
+      "Touches binned into the Juego de Posición zones — mplsoccer's positional heatmap, with each zone's share of touches on hover.",
     category: "Density",
     docsHref: "/docs/overlays/positional-heatmap",
   },
@@ -118,7 +118,7 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
     name: "momentum-gallery",
     title: "Match momentum",
     description:
-      "Who had the ball in the attacking third, minute by minute, across the Euro 2024 final — goals and bookings on a row beneath.",
+      "Which side was on top in the attacking third, minute by minute, across the Euro 2024 final — goals and bookings on a row beneath.",
     category: "Timeline",
     docsHref: "/docs/charts/momentum-chart",
   },

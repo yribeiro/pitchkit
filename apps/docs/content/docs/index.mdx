@@ -5,9 +5,9 @@ description: What PitchKit is, and how the pieces fit together.
 
 PitchKit is a React-first football pitch visualisation library for the web — mplsoccer's
 surface, built for the browser. `@pitchkit/core` is a framework-agnostic engine (coordinate
-transforms, SVG + Canvas rendering); `@pitchkit/react` is the officially supported set of
-declarative bindings on top of it, split into two families: **components** (the pitch itself)
-and **overlays** (data plotted onto it).
+transforms, geometry and the scene model); `@pitchkit/react` is the officially supported
+renderer, a set of declarative bindings on top of it, in three families: **components** (the pitch
+itself), **overlays** (data plotted onto it) and **charts** (football data with no pitch under it).
 
 ## Install
 
@@ -56,9 +56,10 @@ finding the move that produced England's goal, and plotting it — start with th
 - **Overlays** — layers stacked inside a `<Pitch>`, one page per visual, each with a live
   example: [Scatter](/docs/overlays/scatter), [Arrows](/docs/overlays/arrows),
   [Comet](/docs/overlays/comet), [Annotate](/docs/overlays/annotate),
-  [Heatmap](/docs/overlays/heatmap), [Flow](/docs/overlays/flow),
-  [Polygon](/docs/overlays/polygon), [Convex Hull](/docs/overlays/convex-hull),
-  [Voronoi](/docs/overlays/voronoi), and [Goal Angle](/docs/overlays/goal-angle).
+  [Heatmap](/docs/overlays/heatmap), [Positional Heatmap](/docs/overlays/positional-heatmap),
+  [Hexbin](/docs/overlays/hexbin), [KDE](/docs/overlays/kde), [Polygon](/docs/overlays/polygon),
+  [Convex Hull](/docs/overlays/convex-hull), [Voronoi](/docs/overlays/voronoi),
+  [Goal Angle](/docs/overlays/goal-angle), and [Flow](/docs/overlays/flow).
 - **[Charts](/docs/charts)** — charts with no pitch under them, each a root in its own right:
   [RaceChart](/docs/charts/race-chart), the cumulative step chart usually called an xG race chart
   or xG timeline, [MomentumChart](/docs/charts/momentum-chart), match momentum as bars with goals
@@ -80,8 +81,8 @@ finding the move that produced England's goal, and plotting it — start with th
 
 ## Reading these docs with an AI agent
 
-No model has PitchKit in its training data, so anything an agent "remembers" about the API
-is invented. Three ways to give it the real thing, cheapest first:
+Models don't reliably know PitchKit's API, so anything an agent "remembers" about it may be
+invented. Three ways to give it the real thing, cheapest first:
 
 - **[`/llms.txt`](https://www.pitchkitjs.com/llms.txt)** — an index of every page on this site,
   in the [llms.txt](https://llmstxt.org) format. Paste the URL into a prompt.

@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Building with AI
 description: Build PitchKit charts with a coding agent — prompts to paste, a skill to install, and docs written for models.
 ---
 
@@ -15,8 +15,8 @@ Paste one of these. Each is self-contained — the agent fetches what it needs.
 Build me a football data visualisation app using PitchKit.
 
 First, read https://www.pitchkitjs.com/llms.txt and follow the links you need from it.
-PitchKit is not in your training data, so do not rely on what you remember about it —
-everything you need is in those docs.
+Do not rely on what you remember about PitchKit, which is new and may not be in your
+training data — everything you need is in those docs.
 
 Scaffold a Next.js app, install @pitchkit/core, @pitchkit/react and
 @pitchkit/data-providers, then build a shot map from a real StatsBomb match.
@@ -28,7 +28,7 @@ Scaffold a Next.js app, install @pitchkit/core, @pitchkit/react and
 Add PitchKit to this project to render football pitch visualisations.
 
 Read https://www.pitchkitjs.com/llms.txt first and follow the links from it — PitchKit is
-not in your training data, so anything you recall about its API is invented.
+new and may not be in your training data, so anything you recall about its API may be invented.
 
 Then install it, and after installing run `npx @pitchkit/react skills install` so you
 keep the API reference alongside the version we're on.
@@ -39,23 +39,23 @@ keep the API reference alongside the version we're on.
 ```text
 Using PitchKit, build a pass network for this data: <paste your data shape>
 
-Read https://www.pitchkitjs.com/llms-full.txt first for the real API — PitchKit post-dates
+Read https://www.pitchkitjs.com/llms-full.txt first for the real API — PitchKit may post-date
 your training data. Match the coordinate system to my data's provider rather than
 converting the numbers.
 ```
 
-The common thread is the first instruction. Telling a model *not* to trust its recollection is
-what stops it pattern-matching to mplsoccer, and it matters more than which of the three
+The common thread is the first instruction. Telling a model _not_ to trust its recollection steers it away from
+pattern-matching to mplsoccer, and it matters more than which of the three
 sources you point it at.
 
 ## What PitchKit gives an agent
 
-| | What it is | Best for |
-| --- | --- | --- |
-| **[Agent Skill](/docs/agents/skills)** | Ships inside `@pitchkit/react`; `npx @pitchkit/react skills install` symlinks it into your agent | Anything where you've already installed the package |
-| **[llms.txt](/docs/agents/llms-txt)** | This whole site as Markdown, at a URL | First contact, and tools that can't read `node_modules` |
-| **Per-page Markdown** | Append `.md` to any docs URL | Pointing an agent at one specific thing |
-| **Typed API** | Full TypeScript types on every export | Catching the mistakes that survive the above |
+|                                        | What it is                                                                                       | Best for                                                |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| **[Agent Skill](/docs/agents/skills)** | Ships inside `@pitchkit/react`; `npx @pitchkit/react skills install` symlinks it into your agent | Anything where you've already installed the package     |
+| **[llms.txt](/docs/agents/llms-txt)**  | This whole site as Markdown, at a URL                                                            | First contact, and tools that can't read `node_modules` |
+| **Per-page Markdown**                  | Append `.md` to any docs URL                                                                     | Pointing an agent at one specific thing                 |
+| **Typed API**                          | Full TypeScript types on every export                                                            | Catching the mistakes that survive the above            |
 
 ## Works with
 
@@ -81,7 +81,7 @@ plausible that doesn't compile, and what separates them is almost entirely the c
 model was handed.
 
 Context is the one lever you have over a process that isn't deterministic, and PitchKit needs
-it more than most: nothing about the library is in any model's training data, so an agent left
+it more than most: models have little or no PitchKit in their training data, so an agent left
 to guess reaches for mplsoccer's Python API and invents the JSX to match. That gap doesn't
 close with time either — once a breaking change ships, training data holds both versions
 forever with no way to tell which one you're on.

@@ -5,10 +5,25 @@ description: The root component — owns the coordinate system and is responsive
 
 `<Pitch>` renders the pitch surface and markings, and provides the coordinate transform every
 layer component reads from context. It's responsive by default (fills its container via
-`ResizeObserver`); pass explicit `width`/`height` to opt out — required for `<Heatmap>`, which
-paints to a `<canvas>` with no server-rendered content to size against.
+`ResizeObserver`); pass explicit `width` and `height` together to opt out. The four density
+layers (`<Heatmap>`, `<PositionalHeatmap>`, `<Hexbin>`, `<KDE>`) paint to a `<canvas>` with no
+server-rendered content to size against, so they need that opt-out; see
+[Responsive behaviour](/docs/guides/responsive#the-density-layer-caveat).
 
 <PitchPreview name="pitch-basic" />
+
+## Props
+
+| Prop                 | Type                           | Does                                                                                                                                                                                                                    |
+| -------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`               | pitch type id                  | Required. `"statsbomb"`, `"opta"`, `"uefa"`, `"skillcorner"` or `"wyscout"`. Sets the coordinate system your data is read in.                                                                                           |
+| `dimensions`         | overrides                      | The real extent of this particular pitch, for providers whose coordinates are metres, such as SkillCorner's `pitch_length` and `pitch_width`. Markings don't move. Overriding a normalised grid (Opta, Wyscout) throws. |
+| `orientation`        | `"horizontal"` \| `"vertical"` | Defaults to horizontal. `<VerticalPitch>` sets it for you.                                                                                                                                                              |
+| `width`, `height`    | number                         | Fixed pixel size. Provide both or neither.                                                                                                                                                                              |
+| `crop`               | `CropWindow`                   | Show part of the pitch, in the provider's own units. `cropForHalf(dimensions)` gives the attacking half.                                                                                                                |
+| `padding`            | `ViewportPadding`              | Space around the pitch, in pixels.                                                                                                                                                                                      |
+| `appearance`         | `PitchAppearance`              | Structural options only; see below.                                                                                                                                                                                     |
+| `className`, `style` | —                              | Applied to the wrapper `<div>`.                                                                                                                                                                                         |
 
 ## Vertical orientation
 
