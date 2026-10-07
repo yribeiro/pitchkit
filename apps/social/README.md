@@ -25,7 +25,7 @@ Private workspace (`"private": true`), never published.
 | `reel-03-layers`          | 1080×1920 MP4, 20 s | 11 layers, each drawing a real finding from the final, with stat chips                                                                                                |
 | `reel-04-networks`        | 1080×1920 MP4, 38 s | How Spain and England set up in the Euro 2024 final: finished pass networks, then each half replays from the 4-2-3-1 team sheet, then each shape is measured          |
 | `reel-04-networks-loop`   | 1080×1920 MP4, 14 s | Reel 04 as a seamless loop: Spain's tilted 4-2-3-1 team sheet swings flat as the half replays, holds on the strongest link, then rewinds and tilts back               |
-| `reel-05-wc-final`        | 1080×1920 MP4, 38 s | The 2022 World Cup final as a story: France's 0 shots, Mbappé's 95 seconds, Messi, the save, the shootout, one momentum chart, a comment CTA                          |
+| `reel-05-wc-final`        | 1080×1920 MP4, 34 s | The 2022 World Cup final as a story: France's 0 shots, Mbappé's 95 seconds, Messi, the hat-trick, the shootout, one momentum chart, a comment CTA                     |
 | `reel-06-live-final`      | 1080×1920 MP4, 45 s | The 2022 final as a live 3D 360 time-lapse: players as numbered spheres, the space they control, a scoreboard, and a MomentumChart growing below                      |
 | `reel-06-network-final`   | 1080×1920 MP4, 39 s | Reel 06 at the pace of a game: players drift to their recent average touch position, a camera swoop and goal angle at each goal, and the flag on the pitch at the end |
 

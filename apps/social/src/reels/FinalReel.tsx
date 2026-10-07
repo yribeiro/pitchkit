@@ -1,16 +1,16 @@
 /**
- * Reel 05: the 2022 World Cup final, Argentina 3–3 France, in 37 seconds.
+ * Reel 05: the 2022 World Cup final, Argentina 3–3 France, in 34 seconds.
  *
  * Story: France didn't have a shot for 66 minutes (the hook, with a counter
  * stuck on 0); then Mbappé scored twice in 95 seconds; Messi, then Mbappé's
- * hat-trick in extra time; Kolo Muani's 0.28 xG chance in the 123rd minute,
- * saved; the shootout, kick by kick, in the goal mouth; the whole final as
- * one momentum chart; a comment CTA; the end card.
+ * hat-trick in extra time; straight into the shootout, kick by kick, in the
+ * goal mouth; the whole final as one momentum chart; a comment CTA; the end
+ * card.
  *
  * One pitch carries the match. A virtual camera (CSS 3D on the pitch
  * wrapper) follows the story: tilted like a broadcast camera, it spins
  * 180° each time the attacking team changes, so whoever is attacking always
- * goes up the screen, and pushes in for the late chance. A match clock runs
+ * goes up the screen. A match clock runs
  * through it all, every shot lands on the pitch as it happens, and every
  * beat has a sound (see `cues`).
  */
@@ -57,15 +57,13 @@ const MBAPPE_PEN = 140;
 const MBAPPE_VOLLEY = 260;
 const MESSI = 360;
 const MBAPPE_HAT = 432;
-const SAVE_SHOT = 520;
-const SAVED = 560;
-const SHOOTOUT = 610;
-const KICK_AT = 650;
+const SHOOTOUT = 490;
+const KICK_AT = 530;
 const KICK_GAP = 17;
 const CHAMPIONS = KICK_AT + 7 * KICK_GAP + 14;
-const MOMENTUM = 820;
-const CTA = 950;
-const END_AT = 1040;
+const MOMENTUM = 700;
+const CTA = 830;
+const END_AT = 920;
 export const FINAL_DURATION = END_AT + 90;
 
 /** Match clock (seconds) at video frames; linear between keys. */
@@ -81,8 +79,7 @@ const CLOCK_KEYS: [number, number][] = [
   [400, F.goals[4]!.clock + 14],
   [MBAPPE_HAT, F.goals[5]!.clock],
   [462, F.goals[5]!.clock + 8],
-  [SAVE_SHOT, F.theSave.clock],
-  [SHOOTOUT, F.theSave.clock + 30],
+  [SHOOTOUT, F.goals[5]!.clock + 20],
 ];
 const clockAt = (frame: number) =>
   interpolate(
@@ -139,9 +136,7 @@ const CAMERA: Shot[] = [
   { f: 402, tilt: 46, rot: 270, zoom: 1.22 / S, x: 108, y: 40 },
   { f: MBAPPE_HAT - 6, tilt: 46, rot: 450, zoom: 1.18 / S, x: 16, y: 40 },
   { f: 466, tilt: 44, rot: 450, zoom: 1.12 / S, x: 20, y: 40 },
-  { f: SAVE_SHOT, tilt: 32, rot: 450, zoom: 1.7 / S, x: 13, y: 37 },
-  { f: SAVED, tilt: 26, rot: 450, zoom: 2.05 / S, x: 8, y: 37 },
-  { f: SHOOTOUT, tilt: 22, rot: 450, zoom: 2.4 / S, x: 6, y: 37 },
+  { f: SHOOTOUT, tilt: 40, rot: 450, zoom: 1.3 / S, x: 14, y: 40 },
 ];
 function cameraAt(frame: number): Shot {
   const i = CAMERA.findIndex((k) => k.f > frame);
@@ -162,7 +157,7 @@ function cameraAt(frame: number): Shot {
 }
 
 /** A few frames of shake after each big moment. */
-const IMPACTS = [...GOALS.map((g) => g.at + 6), SAVED, CHAMPIONS];
+const IMPACTS = [...GOALS.map((g) => g.at + 6), CHAMPIONS];
 function shakeAt(frame: number) {
   const hit = IMPACTS.find((at) => frame >= at && frame < at + 9);
   if (hit === undefined) return { x: 0, y: 0 };
@@ -209,21 +204,8 @@ function MatchPitch({ frame }: { frame: number }) {
     const fade = interpolate(frame, [goal.at + 40, goal.at + 56], [1, 0], clamp);
     return frame >= from ? drawn(moves, goal.team, progress).map((m) => ({ ...m, fade })) : [];
   });
-  const saveMoves = F.theSave.moves.slice(-2);
-  const saveChain =
-    frame >= SAVE_SHOT - 34
-      ? drawn(
-          saveMoves,
-          F.away,
-          interpolate(frame, [SAVE_SHOT - 34, SAVE_SHOT - 4], [0, saveMoves.length], clamp),
-        )
-      : [];
-
-  // The ball on its way in, for every goal and the saved chance.
-  const balls = [
-    ...GOALS.map((g) => ({ team: g.team, s: g, from: g.at - 2, len: g.penalty ? 6 : 8 })),
-    { team: F.away, s: F.theSave, from: SAVE_SHOT, len: SAVED - SAVE_SHOT },
-  ]
+  // The ball on its way in, for every goal.
+  const balls = GOALS.map((g) => ({ team: g.team, s: g, from: g.at - 2, len: g.penalty ? 6 : 8 }))
     .filter(({ from, len }) => frame >= from && frame < from + len + 30)
     .map(({ team, s, from, len }) => {
       const t = interpolate(frame, [from, from + len], [0, 1], {
@@ -236,11 +218,6 @@ function MatchPitch({ frame }: { frame: number }) {
       };
     });
 
-  const freeze = interpolate(frame, [SAVE_SHOT - 30, SAVE_SHOT - 10], [0, 1], clamp);
-  // Earlier shots step back while the late chance plays out.
-  const focusSave = freeze;
-  const keeperGlow = interpolate(frame, [SAVED, SAVED + 6], [0, 1], clamp);
-
   return (
     <PitchStage style={GRASS}>
       <Pitch type="statsbomb" width={PW} height={PH} padding={PAD} appearance={appearance}>
@@ -250,7 +227,7 @@ function MatchPitch({ frame }: { frame: number }) {
           y={(s) => onPitch(s.team, s.x, s.y).y}
           r={radius}
           fill={(s) => colorOf(s.team)}
-          fillOpacity={(s) => (s.goal ? 1 : 0.8) * (1 - 0.7 * focusSave)}
+          fillOpacity={(s) => (s.goal ? 1 : 0.8)}
           stroke={(s) => (s.goal ? "white" : "rgba(4,12,8,0.85)")}
           strokeWidth={(s) => (s.goal ? 5 : 2) * S}
         />
@@ -278,27 +255,6 @@ function MatchPitch({ frame }: { frame: number }) {
             />
           </g>
         )}
-        <g opacity={freeze}>
-          <Scatter
-            data={F.theSave.freezeFrame}
-            x={(p) => 120 - p.x}
-            y={(p) => 80 - p.y}
-            r={(p) => (p.keeper ? 15 + 8 * keeperGlow : 13) * S}
-            fill={(p) => (p.teammate ? FRA : ARG)}
-            stroke={(p) => (p.keeper ? "white" : "rgba(4,12,8,0.85)")}
-            strokeWidth={(p) => (p.keeper ? 5 : 2) * S}
-          />
-          <Arrows
-            data={saveChain}
-            x={(m) => m.x}
-            y={(m) => m.y}
-            x2={(m) => m.x2}
-            y2={(m) => m.y2}
-            stroke="white"
-            strokeWidth={6 * S}
-            headSize={20 * S}
-          />
-        </g>
         {balls.map((b, i) => (
           <g key={i} opacity={b.fade}>
             <Comet
@@ -397,7 +353,7 @@ function ScoreBug({ frame }: { frame: number }) {
       }}
     >
       <div
-        style={{ fontFamily: FONT.display, fontSize: 30, letterSpacing: "0.2em", color: "#fde047" }}
+        style={{ fontFamily: FONT.display, fontSize: 30, letterSpacing: "0.2em", color: C.accent }}
       >
         WORLD CUP FINAL 2022
       </div>
@@ -468,7 +424,6 @@ function MatchScene() {
   const argentinaShots = SHOTS.filter((s) => s.team === F.home && frame >= s.at).length;
   const flip = interpolate(frame, [FIRST_SHOT, FIRST_SHOT + 5], [0, 1], clamp);
   const stopwatch = interpolate(frame, [MBAPPE_PEN, MBAPPE_VOLLEY], [0, F.stats.mbappeGap], clamp);
-  const xgMeter = interpolate(frame, [SAVE_SHOT, SAVED - 6], [0, F.theSave.xg], clamp);
 
   return (
     <AbsoluteFill style={{ opacity: out }}>
@@ -538,32 +493,9 @@ function MatchScene() {
         <div style={big(150, ARG)}>MESSI.</div>
         <div style={small}>{F.stats.messiRebound} second after Lautaro&apos;s shot was saved</div>
       </Beat>
-      <Beat frame={frame} from={MBAPPE_HAT + 6} to={SAVE_SHOT - 36}>
+      <Beat frame={frame} from={MBAPPE_HAT + 6} to={SHOOTOUT - 4}>
         <div style={big(150, FRA)}>HAT-TRICK.</div>
         <div style={small}>Mbappé, 118th minute. 3–3.</div>
-      </Beat>
-      <Beat frame={frame} from={SAVE_SHOT - 34} to={SAVED - 2}>
-        <div style={big(110)}>123RD MINUTE</div>
-        <div style={{ ...big(84, FRA), marginTop: 10 }}>
-          {F.theSave.player.toUpperCase()}, THROUGH
-        </div>
-        <div
-          style={{
-            margin: "26px auto 0",
-            width: 620,
-            height: 26,
-            borderRadius: 13,
-            background: "rgba(255,255,255,0.15)",
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ width: `${(xgMeter / 0.5) * 100}%`, height: "100%", background: FRA }} />
-        </div>
-        <div style={small}>{xgMeter.toFixed(2)} xG</div>
-      </Beat>
-      <Beat frame={frame} from={SAVED} to={SHOOTOUT}>
-        <div style={big(230)}>SAVED.</div>
-        <div style={small}>{F.theSave.keeper}, with the World Cup on the line</div>
       </Beat>
     </AbsoluteFill>
   );
@@ -792,14 +724,14 @@ function Momentum() {
   );
   return (
     <AbsoluteFill style={{ opacity: fade, background: C.bg }}>
-      <div style={{ position: "absolute", top: 230, left: 60, right: 60 }}>
+      <div style={{ position: "absolute", top: 340, left: 60, right: 60 }}>
         <div style={big(104)}>THE WHOLE FINAL.</div>
-        <div style={big(104, "#fde047")}>ONE CHART.</div>
+        <div style={big(104, C.accent)}>ONE CHART.</div>
       </div>
       <div
         style={{
           position: "absolute",
-          top: 520,
+          top: 630,
           left: 40,
           width: 1000,
           height: 540,
@@ -827,7 +759,7 @@ function Momentum() {
       <div
         style={{
           position: "absolute",
-          top: 1100,
+          top: 1220,
           left: 60,
           right: 60,
           display: "flex",
@@ -838,20 +770,6 @@ function Momentum() {
       >
         {chip("SHOTS", F.stats.shots[F.home]!, F.stats.shots[F.away]!)}
         {chip("xG", F.stats.xg[F.home]!, F.stats.xg[F.away]!)}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 1300,
-          left: 60,
-          right: 60,
-          textAlign: "center",
-          opacity: callback,
-          transform: `translateY(${(1 - callback) * 30}px)`,
-        }}
-      >
-        <div style={big(64)}>FRANCE: NO SHOT FOR 66 MINUTES.</div>
-        <div style={big(64, FRA)}>STILL SCORED THREE.</div>
       </div>
     </AbsoluteFill>
   );
@@ -899,8 +817,6 @@ function cues(): Cue[] {
   for (let s = 5; s < F.stats.mbappeGap; s += 5) add(frameAt95(s), "tick", 0.35, 3);
   // The camera spins.
   for (const at of [FIRST_SHOT + 2, 300, 404]) add(at, "whoosh", 0.8, 18);
-  add(SAVE_SHOT - 60, "riser", 0.8, 60);
-  add(SAVED, "thud", 1, 27);
   F.kicks.forEach((k, i) => {
     const at = KICK_AT + i * KICK_GAP + 6;
     add(at, k.scored ? "pop" : "thud", k.scored ? 0.8 : 0.9, 14);
