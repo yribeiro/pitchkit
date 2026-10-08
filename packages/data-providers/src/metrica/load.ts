@@ -223,56 +223,138 @@ export interface TrackingWindowOptions extends MetricaLoadOptions {
  * the tests can exercise the correction path on a small fixture.
  */
 export interface WindowTuning {
+  /** Bytes read from the start of the file, for the layout and a first estimate. */
+  readonly headBytes: number;
   /** Bytes read before the estimated start and after the estimated end. */
   readonly padBytes: number;
-  /** Requests allowed for the window itself, after the two probes. */
+  /** Requests allowed for the window itself, after the head. */
   readonly maxAttempts: number;
 }
 
 const DEFAULT_TUNING: WindowTuning = {
-  // Measured: in a whole sample file, a frame's actual offset strays at most
-  // 80 KB from the uniform estimate, because a substitute's columns are
-  // `NaN,NaN` until they come on.
-  padBytes: 128 * 1024,
-  maxAttempts: 4,
+  // Room for the three header rows and about 70 data rows.
+  headBytes: 16 * 1024,
+  // Measured: estimating from the first rows alone lands up to 440 KB short
+  // late in a file, because a substitute's columns are `NaN,NaN` until they
+  // come on and rows grow. No affordable padding covers that, so the first
+  // read is allowed to miss: it measures where it landed, and the next read,
+  // interpolated from that, is within a few rows. The padding only has to
+  // cover those.
+  padBytes: 8 * 1024,
+  maxAttempts: 8,
 };
 
-const HEADER_PROBE_BYTES = 4096;
-const TAIL_PROBE_BYTES = 2048;
 const encoder = new TextEncoder();
 
 function byteLength(text: string): number {
   return encoder.encode(text).length;
 }
 
-function totalBytes(response: Response): number | null {
-  const match = /\/(\d+)\s*$/.exec(response.headers.get("Content-Range") ?? "");
-  return match ? Number(match[1]) : null;
+/** A row's frame number and the byte offset its line starts at. */
+interface Anchor {
+  readonly frame: number;
+  readonly offset: number;
 }
 
-function rowsInRange(
-  lines: readonly string[],
-  layout: TrackingLayout,
-  fromFrame: number,
-  toFrame: number,
-): TeamFrame[] {
-  const rows: TeamFrame[] = [];
-  for (const line of lines) {
-    const row = parseTrackingRow(line, layout);
-    if (row && row.Frame >= fromFrame && row.Frame <= toFrame) rows.push(row);
+interface RangeRead {
+  readonly text: string;
+  /** False when the host ignored `Range` and sent the whole file. */
+  readonly ranged: boolean;
+}
+
+/**
+ * GET one byte range, or `null` if it starts past the end of the file (416).
+ *
+ * Only the `bytes=start-end` form, and nothing read from the response but its
+ * status and body. Both are deliberate, for browsers: GitHub's raw host sends
+ * no `Access-Control-Expose-Headers`, so `Content-Range` reads as `null` from
+ * script, and a suffix range (`bytes=-2048`) is not CORS-safelisted, so it
+ * triggers a preflight that the host answers with a 403.
+ */
+async function readRange(
+  url: string,
+  start: number,
+  end: number,
+  options: LoadOptions,
+): Promise<RangeRead | null> {
+  try {
+    const response = await request(url, options, { headers: { Range: `bytes=${start}-${end}` } });
+    return { text: await response.text(), ranged: response.status === 206 };
+  } catch (error) {
+    if (error instanceof DataProviderError && error.status === 416) return null;
+    throw error;
   }
-  return rows;
+}
+
+/**
+ * The complete rows in a ranged read, with each row's byte offset.
+ *
+ * A read usually begins and ends mid-row. The leading fragment is dropped,
+ * and so is the trailing one unless the read stopped at the end of the file:
+ * a row cut inside its last number would otherwise parse, slightly wrong.
+ */
+function rowsOf(
+  text: string,
+  start: number,
+  requested: number,
+  layout: TrackingLayout,
+  dataStart: number,
+): { rows: TeamFrame[]; anchors: Anchor[]; atEnd: boolean } {
+  const lines = text.split("\n");
+  const atEnd = byteLength(text) < requested;
+  let offset = start;
+  const rows: TeamFrame[] = [];
+  const anchors: Anchor[] = [];
+  lines.forEach((line, i) => {
+    const lineStart = offset;
+    offset += byteLength(line) + 1;
+    if (i === 0 && start > dataStart) return;
+    if (i === lines.length - 1 && !atEnd) return;
+    const row = parseTrackingRow(line, layout);
+    if (row) {
+      rows.push(row);
+      anchors.push({ frame: row.Frame, offset: lineStart });
+    }
+  });
+  return { rows, anchors, atEnd };
+}
+
+/**
+ * Where a frame's row should start, from the anchors measured so far:
+ * interpolated between the two either side of it, or extrapolated from the
+ * last two before it.
+ */
+function estimateOffset(anchors: readonly Anchor[], frame: number): number {
+  let below: Anchor | undefined;
+  let above: Anchor | undefined;
+  for (const anchor of anchors) {
+    if (anchor.frame <= frame && (!below || anchor.frame > below.frame)) below = anchor;
+    if (anchor.frame >= frame && (!above || anchor.frame < above.frame)) above = anchor;
+  }
+  if (below && above && above.frame > below.frame) {
+    const rate = (above.offset - below.offset) / (above.frame - below.frame);
+    return below.offset + (frame - below.frame) * rate;
+  }
+  const near = below ?? above;
+  if (!near) return 0;
+  // Extrapolate at the rate between the anchor nearest the frame and the one
+  // furthest from it, the widest baseline available.
+  const far = anchors.reduce((a, b) =>
+    Math.abs(b.frame - near.frame) > Math.abs(a.frame - near.frame) ? b : a,
+  );
+  if (far.frame === near.frame) return near.offset;
+  const rate = (near.offset - far.offset) / (near.frame - far.frame);
+  return near.offset + (frame - near.frame) * rate;
 }
 
 /**
  * One team's rows for a window of frames, read with `Range` requests.
  *
- * A CSV has no index, so the start offset is estimated. Two small probes
- * first: the head, for the column layout and where the data starts, and the
- * tail, for the last frame number. Together with the file's size those give
- * the average bytes per frame, and an estimate that lands within the padding.
- * If a read still misses the window's edges, the next one is moved by what
- * the last one measured, which on a well-formed file converges at once.
+ * A CSV has no index, so the window's offset is estimated. The head of the
+ * file gives the column layout and a first rate in bytes per frame. Each read
+ * after that records where its rows actually start, and the next estimate
+ * interpolates between those measured points. On the sample files the second
+ * read lands; where it can't (a jump in frame numbering), bisection does.
  */
 async function readTeamWindow(
   url: string,
@@ -281,81 +363,68 @@ async function readTeamWindow(
   options: LoadOptions,
   tuning: WindowTuning,
 ): Promise<TeamFrame[]> {
-  const [head, tail] = await Promise.all([
-    request(url, options, { headers: { Range: `bytes=0-${HEADER_PROBE_BYTES - 1}` } }),
-    request(url, options, { headers: { Range: `bytes=-${TAIL_PROBE_BYTES}` } }),
-  ]);
-  const headText = await head.text();
-  const headLines = headText.split("\n");
+  const head = await readRange(url, 0, tuning.headBytes - 1, options);
+  if (!head) return [];
+  const headLines = head.text.split("\n");
   const layout = parseTrackingLayout(headLines.slice(0, TRACKING_HEADER_ROWS));
+  const inWindow = (row: TeamFrame) => row.Frame >= fromFrame && row.Frame <= toFrame;
 
   // A host that ignores `Range` sends the whole file back with a 200. That is
   // the answer already, so read it rather than failing.
-  const total = totalBytes(head);
-  if (head.status !== 206 || total === null) {
-    await tail.body?.cancel().catch(() => undefined);
-    return rowsInRange(headLines.slice(TRACKING_HEADER_ROWS), layout, fromFrame, toFrame);
+  if (!head.ranged) {
+    return headLines
+      .slice(TRACKING_HEADER_ROWS)
+      .map((line) => parseTrackingRow(line, layout))
+      .filter((row): row is TeamFrame => row !== null && inWindow(row));
   }
 
   const dataStart = byteLength(headLines.slice(0, TRACKING_HEADER_ROWS).join("\n")) + 1;
-  const tailLines = (await tail.text()).split("\n").slice(1);
-  let lastFrame = 0;
-  for (const line of tailLines) {
-    const row = parseTrackingRow(line, layout);
-    if (row) lastFrame = row.Frame;
+  const first = rowsOf(head.text, 0, tuning.headBytes, layout, dataStart);
+  const anchors = [...first.anchors];
+  const lastInHead = first.rows[first.rows.length - 1];
+  if (first.atEnd || (lastInHead && lastInHead.Frame >= toFrame)) {
+    return first.rows.filter(inWindow);
   }
-  if (lastFrame === 0 || fromFrame > lastFrame) return [];
 
-  const bytesPerFrame = (total - dataStart) / lastFrame;
-  let start = Math.max(
-    dataStart,
-    Math.floor(dataStart + (fromFrame - 1) * bytesPerFrame) - tuning.padBytes,
-  );
-  let end = Math.min(total - 1, Math.ceil(dataStart + toFrame * bytesPerFrame) + tuning.padBytes);
-
+  // The first byte offset known to be past the end of the file.
+  let pastEnd = Number.POSITIVE_INFINITY;
+  // Interpolation is right first time on a well-formed file, but a jump in
+  // frame numbering defeats it, so after a miss the next read bisects the
+  // bracket instead. Alternating keeps the speed of one and the guarantee of
+  // the other.
+  let bisect = false;
   let rows: TeamFrame[] = [];
   for (let attempt = 0; attempt < tuning.maxAttempts; attempt++) {
-    const response = await request(url, options, { headers: { Range: `bytes=${start}-${end}` } });
-    const text = await response.text();
-    const lines = text.split("\n");
-    // A ranged read usually begins and ends mid-row. Drop both fragments: a
-    // row cut inside its last number would otherwise parse, slightly wrong.
-    if (start > dataStart) lines.shift();
-    if (end < total - 1 && !text.endsWith("\n")) lines.pop();
-
-    const parsed: TeamFrame[] = [];
-    for (const line of lines) {
-      const row = parseTrackingRow(line, layout);
-      if (row) parsed.push(row);
+    let lo = dataStart;
+    let hi = pastEnd;
+    for (const anchor of anchors) {
+      if (anchor.frame < fromFrame) lo = Math.max(lo, anchor.offset);
+      if (anchor.frame > fromFrame) hi = Math.min(hi, anchor.offset);
     }
-    rows = parsed.filter((row) => row.Frame >= fromFrame && row.Frame <= toFrame);
+    const guess =
+      bisect && Number.isFinite(hi) ? (lo + hi) / 2 : estimateOffset(anchors, fromFrame);
+    const target = Math.min(Math.max(guess, lo), Number.isFinite(hi) ? hi - 1 : guess);
+    const start = Math.max(dataStart, Math.floor(target) - tuning.padBytes);
+    const span = Math.max(estimateOffset(anchors, toFrame + 1) - target, 0);
+    const end = start + Math.ceil(span) + 2 * tuning.padBytes;
 
-    const first = parsed[0];
-    const last = parsed[parsed.length - 1];
-    if (!first || !last) {
-      // Nothing usable at all: widen both ways and try again.
-      start = Math.max(dataStart, start - tuning.padBytes);
-      end = Math.min(total - 1, end + tuning.padBytes);
+    const read = await readRange(url, start, end, options);
+    if (!read) {
+      pastEnd = Math.min(pastEnd, start);
+      bisect = true;
       continue;
     }
-    const measured = parsed.length > 1 ? byteLength(text) / parsed.length : bytesPerFrame;
-    const missesStart = first.Frame > fromFrame && start > dataStart;
-    const missesEnd = last.Frame < toFrame && end < total - 1;
-    if (!missesStart && !missesEnd) break;
-    if (missesStart) {
-      start = Math.max(
-        dataStart,
-        Math.floor(start - (first.Frame - fromFrame) * measured) - tuning.padBytes,
-      );
-    }
-    if (missesEnd) {
-      end = Math.min(
-        total - 1,
-        Math.ceil(end + (toFrame - last.Frame) * measured) + tuning.padBytes,
-      );
-    }
-    // A start that overshot past the window entirely also lands here: the
-    // first frame read is after `toFrame`, so `missesStart` moves it back.
+    const got = rowsOf(read.text, start, end - start + 1, layout, dataStart);
+    anchors.push(...got.anchors);
+    rows = got.rows.filter(inWindow);
+
+    const firstRow = got.rows[0];
+    const lastRow = got.rows[got.rows.length - 1];
+    const coversStart =
+      start === dataStart || (firstRow !== undefined && firstRow.Frame <= fromFrame);
+    const coversEnd = got.atEnd || (lastRow !== undefined && lastRow.Frame >= toFrame);
+    if (coversStart && coversEnd) break;
+    bisect = !bisect;
   }
   return rows;
 }
@@ -364,8 +433,10 @@ async function readTeamWindow(
  * Read a window of a sample game's frames without downloading either whole
  * file, using HTTP `Range` requests.
  *
- * Ten seconds of play is 250 frames. Reading them costs a few hundred KB,
- * most of it padding around the estimate, against 65 MB for the whole game.
+ * Six seconds around a goal is 150 frames. Measured against GitHub, reading
+ * them takes about six requests and 220 KB, against 65 MB for the whole game.
+ * Only plain `bytes=start-end` ranges are sent and no response header is
+ * read, so it works cross-origin in a browser too.
  *
  * ```ts
  * const goal = shots(await fetchEvents(1)).find(isGoal)!;
@@ -389,7 +460,15 @@ export async function fetchTrackingWindow(
 export async function loadTrackingWindow(
   urls: MetricaTrackingUrls,
   options: TrackingWindowOptions,
-  tuning: WindowTuning = DEFAULT_TUNING,
+): Promise<MetricaFrame[]> {
+  return readTrackingWindow(urls, options, DEFAULT_TUNING);
+}
+
+/** `loadTrackingWindow` with its request sizing exposed. Internal; for the tests. */
+export async function readTrackingWindow(
+  urls: MetricaTrackingUrls,
+  options: TrackingWindowOptions,
+  tuning: WindowTuning,
 ): Promise<MetricaFrame[]> {
   const { fromFrame, toFrame } = options;
   if (!Number.isInteger(fromFrame) || !Number.isInteger(toFrame) || toFrame < fromFrame) {

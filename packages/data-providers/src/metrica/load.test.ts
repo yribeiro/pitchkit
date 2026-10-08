@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { DataProviderError } from "../errors.js";
-import { awayTrackingFixture, eventsFixture, homeTrackingFixture } from "./fixtures.js";
+import {
+  awayKickOffFixture,
+  awayTrackingFixture,
+  eventsFixture,
+  homeKickOffFixture,
+  homeTrackingFixture,
+} from "./fixtures.js";
 import {
   eventsUrl,
   fetchEvents,
@@ -8,22 +14,37 @@ import {
   fetchTrackingWindow,
   loadTrackingWindow,
   METRICA_SAMPLE_DATA_BASE_URL,
+  readTrackingWindow,
   streamTracking,
   streamTrackingFrom,
   trackingUrls,
 } from "./load.js";
 
 const URLS = trackingUrls(1);
+
+/**
+ * Real rows, joined: the kick-off (frames 1-3) and then frames 2250-2400 of
+ * the same file. The jump makes the head's bytes-per-frame useless for
+ * finding frame 2300, which is what the correction has to cope with.
+ */
+function withKickOff(kickOff: string, sample: string): string {
+  return `${kickOff.trimEnd()}\n${sample.split("\n").slice(3).join("\n")}`;
+}
+const GAPPED = trackingUrls(1, { baseUrl: "http://localhost/gapped" });
+
 const FILES: Record<string, string> = {
   [URLS.home]: homeTrackingFixture(),
   [URLS.away]: awayTrackingFixture(),
+  [GAPPED.home]: withKickOff(homeKickOffFixture(), homeTrackingFixture()),
+  [GAPPED.away]: withKickOff(awayKickOffFixture(), awayTrackingFixture()),
   [eventsUrl(1)]: eventsFixture(),
 };
 
 /**
- * A static host over the fixtures. With `ranges`, it honours `Range` the way
- * raw.githubusercontent.com does: a 206 with `Content-Range`, for both
- * `bytes=a-b` and the suffix form `bytes=-n`.
+ * A static host over the fixtures, as a browser sees raw.githubusercontent.com.
+ * With `ranges`, `bytes=a-b` gets a 206, and a start past the end a 416. No
+ * `Content-Range` is sent, because script can't read it cross-origin, and a
+ * suffix range fails the way its CORS preflight does there.
  */
 function host({ ranges = true } = {}) {
   const calls: { url: string; range: string | null }[] = [];
@@ -35,17 +56,13 @@ function host({ ranges = true } = {}) {
     if (file === undefined) return Promise.resolve(new Response("Not Found", { status: 404 }));
     if (!ranges || range === null) return Promise.resolve(new Response(file, { status: 200 }));
 
-    const bytes = new TextEncoder().encode(file);
-    const suffix = /^bytes=-(\d+)$/.exec(range);
     const span = /^bytes=(\d+)-(\d+)$/.exec(range);
-    const start = suffix ? Math.max(0, bytes.length - Number(suffix[1])) : Number(span?.[1]);
-    const end = suffix ? bytes.length - 1 : Math.min(bytes.length - 1, Number(span?.[2]));
-    return Promise.resolve(
-      new Response(bytes.slice(start, end + 1), {
-        status: 206,
-        headers: { "Content-Range": `bytes ${start}-${end}/${bytes.length}` },
-      }),
-    );
+    if (!span) return Promise.reject(new TypeError("Failed to fetch"));
+    const bytes = new TextEncoder().encode(file);
+    const start = Number(span[1]);
+    if (start >= bytes.length) return Promise.resolve(new Response("", { status: 416 }));
+    const end = Math.min(bytes.length - 1, Number(span[2]));
+    return Promise.resolve(new Response(bytes.slice(start, end + 1), { status: 206 }));
   }) as unknown as typeof globalThis.fetch;
   return { fetchImpl, calls };
 }
@@ -191,6 +208,9 @@ describe("streamTracking", () => {
   });
 });
 
+/** Small enough that the fixture needs more than its head read. */
+const SMALL = { headBytes: 2048, padBytes: 512, maxAttempts: 6 };
+
 describe("fetchTrackingWindow", () => {
   it("returns exactly the frames asked for, merged", async () => {
     const { fetchImpl } = host();
@@ -205,42 +225,42 @@ describe("fetchTrackingWindow", () => {
     expect(frames[0]?.players).toHaveLength(22);
   });
 
-  it("reads only byte ranges, never a whole file", async () => {
+  it("asks only for simple byte ranges, which browsers send without a preflight", async () => {
     const { fetchImpl, calls } = host();
-    await fetchTrackingWindow(1, { fromFrame: 2300, toFrame: 2310, fetch: fetchImpl });
-    expect(calls.every((call) => call.range !== null)).toBe(true);
+    await readTrackingWindow(URLS, { fromFrame: 2300, toFrame: 2310, fetch: fetchImpl }, SMALL);
+    expect(calls.length).toBeGreaterThan(2);
+    expect(calls.every((call) => /^bytes=\d+-\d+$/.test(call.range ?? ""))).toBe(true);
   });
 
   it("corrects an estimate that misses, with small reads", async () => {
-    // This fixture's frames start at 2250, not 1, so the uniform estimate
-    // is far off. With a little padding the first read misses, and the next
-    // one is moved by what it measured.
+    // The head holds frames 1-3, so it puts frame 2300 a few hundred KB into
+    // a 35 KB file. The read past the end draws a 416, and the reads after
+    // it home in on what they measured.
     const { fetchImpl, calls } = host();
-    const tuning = { padBytes: 512, maxAttempts: 6 };
     for (const [fromFrame, toFrame] of [
       [2250, 2255],
       [2330, 2340],
       [2395, 2400],
     ] as const) {
-      const frames = await loadTrackingWindow(
-        URLS,
+      const frames = await readTrackingWindow(
+        GAPPED,
         { fromFrame, toFrame, fetch: fetchImpl },
-        tuning,
+        { headBytes: 1024, padBytes: 512, maxAttempts: 16 },
       );
       expect(frames.map((frame) => frame.Frame)).toEqual(
         Array.from({ length: toFrame - fromFrame + 1 }, (_, i) => fromFrame + i),
       );
     }
-    // More than the two probes and one read per file: the correction ran.
-    expect(calls.length).toBeGreaterThan(3 * 2 * 3);
+    // More than the head and one read per file: the correction ran.
+    expect(calls.length).toBeGreaterThan(3 * 2 * 2);
   });
 
   it("returns fewer frames, never wrong ones, when out of attempts", async () => {
     const { fetchImpl } = host();
-    const frames = await loadTrackingWindow(
+    const frames = await readTrackingWindow(
       URLS,
       { fromFrame: 2330, toFrame: 2340, fetch: fetchImpl },
-      { padBytes: 16, maxAttempts: 1 },
+      { headBytes: 2048, padBytes: 16, maxAttempts: 1 },
     );
     for (const frame of frames) {
       expect(frame.Frame).toBeGreaterThanOrEqual(2330);
@@ -248,11 +268,54 @@ describe("fetchTrackingWindow", () => {
     }
   });
 
+  it("loadTrackingWindow takes any pair of URLs", async () => {
+    const { fetchImpl } = host();
+    const frames = await loadTrackingWindow(URLS, {
+      fromFrame: 2289,
+      toFrame: 2290,
+      fetch: fetchImpl,
+    });
+    expect(frames.map((frame) => frame.Frame)).toEqual([2289, 2290]);
+  });
+
   it("returns nothing for a window after the last frame", async () => {
     const { fetchImpl } = host();
     expect(
       await fetchTrackingWindow(1, { fromFrame: 9000, toFrame: 9010, fetch: fetchImpl }),
     ).toEqual([]);
+    // Past the end of the file: the estimate draws a 416, and the next read
+    // backs off rather than giving up.
+    expect(
+      await readTrackingWindow(URLS, { fromFrame: 9000, toFrame: 9010, fetch: fetchImpl }, SMALL),
+    ).toEqual([]);
+  });
+
+  it("reaches the last frame of the file", async () => {
+    const { fetchImpl } = host();
+    const frames = await readTrackingWindow(
+      URLS,
+      { fromFrame: 2398, toFrame: 2405, fetch: fetchImpl },
+      SMALL,
+    );
+    expect(frames.map((frame) => frame.Frame)).toEqual([2398, 2399, 2400]);
+  });
+
+  it("returns nothing if the head itself is past the end", async () => {
+    const fetchImpl = vi.fn(() =>
+      Promise.resolve(new Response("", { status: 416 })),
+    ) as unknown as typeof globalThis.fetch;
+    expect(await fetchTrackingWindow(1, { fromFrame: 1, toFrame: 2, fetch: fetchImpl })).toEqual(
+      [],
+    );
+  });
+
+  it("passes other HTTP errors through", async () => {
+    const fetchImpl = vi.fn(() =>
+      Promise.resolve(new Response("", { status: 500 })),
+    ) as unknown as typeof globalThis.fetch;
+    await expect(
+      fetchTrackingWindow(1, { fromFrame: 1, toFrame: 2, fetch: fetchImpl }),
+    ).rejects.toMatchObject({ kind: "http", status: 500 });
   });
 
   it("still works when the host ignores Range and returns the whole file", async () => {

@@ -253,7 +253,7 @@ and the ball, and the events that go with it. Plot both on
   `GOAL` by the player who put it in (`isOwnGoal`), so
   `shots(events).filter(isGoal)` misses Sample Game 1's only away goal.
 - **Tracking is two files of about 32 MB a game**, one per team. Prefer
-  `fetchTrackingWindow` (HTTP `Range` reads, a few hundred KB for a goal) or
+  `fetchTrackingWindow` (HTTP `Range` reads, about 220 KB for a goal) or
   `streamTracking` (an async generator; `break` cancels both downloads) over
   `fetchTracking`. The ball is `null` in about 40% of frames.
 - **Sample Game 3 isn't supported.** It is in a different format (FIFA EPTS

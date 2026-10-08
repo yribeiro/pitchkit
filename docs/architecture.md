@@ -571,7 +571,12 @@ Re-verify against a fresh sample before "correcting" any of them.
   by a Home kick-off, making it 3-1, not 3-0. `isGoal` reads shots only.
 - **A pass always reaches a teammate.** One that doesn't is `BALL LOST` or `BALL OUT`. A goal
   kick is a `PASS` (or `BALL LOST`) qualified `GOAL KICK`, never a `SET PIECE`.
-- **Ranged reads work.** `raw.githubusercontent.com` answers `Range` with a 206 and CORS. A
-  frame's real offset strays at most 80 KB from a uniform bytes-per-frame estimate, because a
-  substitute's columns are `NaN,NaN` until they come on. Measured live, a 6-second window
-  costs 6 requests and about 590 KB.
+- **Ranged reads work, within browser limits.** `raw.githubusercontent.com` answers
+  `bytes=start-end` with a 206 and `Access-Control-Allow-Origin: *`. It sends no
+  `Access-Control-Expose-Headers`, so script cannot read `Content-Range`, and it answers a CORS
+  preflight with a 403, so a suffix range (`bytes=-2048`, not CORS-safelisted) fails in a
+  browser. Node shows neither. `fetchTrackingWindow` therefore sends only simple ranges and
+  reads no headers. It locates rows by measured byte offsets, because an estimate from the
+  first rows lands up to 440 KB short late in a file: a substitute's columns are `NaN,NaN`
+  until they come on, so rows grow. Measured live, a 6-second goal window costs about 6
+  requests and 220 KB.
