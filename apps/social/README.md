@@ -28,6 +28,7 @@ Private workspace (`"private": true`), never published.
 | `reel-05-wc-final`        | 1080×1920 MP4, 34 s | The 2022 World Cup final as a story: France's 0 shots, Mbappé's 95 seconds, Messi, the hat-trick, the shootout, one momentum chart, a comment CTA                     |
 | `reel-06-live-final`      | 1080×1920 MP4, 45 s | The 2022 final as a live 3D 360 time-lapse: players as numbered spheres, the space they control, a scoreboard, and a MomentumChart growing below                      |
 | `reel-06-network-final`   | 1080×1920 MP4, 39 s | Reel 06 at the pace of a game: players drift to their recent average touch position, a camera swoop and goal angle at each goal, and the flag on the pitch at the end |
+| `reel-06-goals-final`     | 1080×1920 MP4, 39 s | Every goal of the 2022 final and the three moves before it on StatsBomb 360: bird's-eye build-ups with Voronoi and goal angles, a cold open on Di María's goal        |
 
 Captions, X copy, alt text and a posting schedule are in [CAPTIONS.md](./CAPTIONS.md).
 What we think makes a reel travel, and how we test it, is in [RULES-TO-TEST.md](./RULES-TO-TEST.md); the research behind the hooks is in [HOOKS.md](./HOOKS.md). `node scripts/make-sfx.mjs` regenerates the sound effects in `public/sfx/`.

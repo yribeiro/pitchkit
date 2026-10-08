@@ -29,14 +29,14 @@ import type { Timeline } from "./timeline";
 import { uOf } from "./timeline";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const smooth = (t: number) => t * t * (3 - 2 * t);
+export const smooth = (t: number) => t * t * (3 - 2 * t);
 
-const PW = 1500;
-const PH = Math.round(((PW - PAD.left - PAD.right) * 80) / 120 + PAD.top + PAD.bottom);
-const K = (PW - PAD.left - PAD.right) / 120;
-const S = PW / 1500;
+export const PW = 1500;
+export const PH = Math.round(((PW - PAD.left - PAD.right) * 80) / 120 + PAD.top + PAD.bottom);
+export const K = (PW - PAD.left - PAD.right) / 120;
+export const S = PW / 1500;
 
-const NIGHT = {
+export const NIGHT = {
   "--pitch-surface": "#0a2616",
   "--pitch-stripe": "rgba(255, 255, 255, 0.025)",
   "--pitch-lines": "rgba(255, 255, 255, 0.45)",
@@ -145,14 +145,14 @@ function goalViews(T: Timeline): GoalView[] {
 
 /* Camera ------------------------------------------------------------------- */
 
-const SWOOP = Easing.bezier(0.65, 0, 0.35, 1);
-const WIDE = { x: 60, y: 40, turn: -32, tilt: 52, scale: 0.55, top: 445 };
+export const SWOOP = Easing.bezier(0.65, 0, 0.35, 1);
+export const WIDE = { x: 60, y: 40, turn: -32, tilt: 52, scale: 0.55, top: 445 };
 /** The goal view for each side: the attacking half, turned so the goal is up and angled. */
 const CLOSE = {
   argentina: { x: 110, y: 40, turn: -64, tilt: 56, scale: 1.2, top: 400 },
   france: { x: 10, y: 40, turn: 64, tilt: 56, scale: 1.2, top: 400 },
 };
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /** Camera at zoom `k` (0 wide, 1 in the goal view): the pivot follows a bezier arc. */
 function cameraAt(k: number, argentina: boolean, sway: number) {
@@ -173,7 +173,13 @@ function cameraAt(k: number, argentina: boolean, sway: number) {
 }
 
 /** Numbers on the discs, kept upright against the camera's turn. */
-function Numbers({ players, turn }: { players: ReturnType<typeof playersAt>; turn: number }) {
+export function Numbers({
+  players,
+  turn,
+}: {
+  players: ReturnType<typeof playersAt>;
+  turn: number;
+}) {
   const { transform } = usePitch();
   return (
     <>
@@ -200,7 +206,7 @@ function Numbers({ players, turn }: { players: ReturnType<typeof playersAt>; tur
   );
 }
 
-function GoalMouth({ T, frame }: { T: Timeline; frame: number }) {
+export function GoalMouth({ T, frame }: { T: Timeline; frame: number }) {
   const GX = 140;
   const GW = 800;
   const U = GW / 8;
@@ -279,7 +285,7 @@ function GoalMouth({ T, frame }: { T: Timeline; frame: number }) {
 }
 
 /** A small "drawn with" chip, shown while PitchKit marks are doing the work. */
-function BrandChip({ label, opacity }: { label: string; opacity: number }) {
+export function BrandChip({ label, opacity }: { label: string; opacity: number }) {
   return (
     <div
       style={{
@@ -507,7 +513,7 @@ export function NetsPitch({
  * The goal being attacked, standing up off the line in the camera's 3D space:
  * laid flat on the pitch from the goal line, then hinged up 90 degrees.
  */
-function StandingGoal({ argentina, opacity }: { argentina: boolean; opacity: number }) {
+export function StandingGoal({ argentina, opacity }: { argentina: boolean; opacity: number }) {
   const W = 8 * K;
   const H = 2.67 * K;
   const nets = 8;
@@ -559,7 +565,7 @@ function StandingGoal({ argentina, opacity }: { argentina: boolean; opacity: num
 }
 
 /** Argentina's flag painted across the pitch: the bands sweep in, then the sun. */
-function FlagOnPitch({ amount }: { amount: number }) {
+export function FlagOnPitch({ amount }: { amount: number }) {
   const { transform } = usePitch();
   const [x0, y0] = transform.toPixel([0, 0]);
   const [x1, y1] = transform.toPixel([120, 80]);

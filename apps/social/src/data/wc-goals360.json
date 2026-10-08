@@ -1,0 +1,944 @@
+{
+  "goals": [
+    {
+      "team": "A",
+      "scorer": "Messi",
+      "n": 10,
+      "penalty": true,
+      "period": 1,
+      "clock": 1344,
+      "steps": [
+        {
+          "kind": "pass",
+          "team": "A",
+          "player": "Álvarez",
+          "n": 9,
+          "to": "Di María",
+          "outcome": null,
+          "clock": 1245,
+          "x": 94.2,
+          "y": 47,
+          "endX": 112.6,
+          "endY": 11.5,
+          "frame": {
+            "area": [
+              [95.4, 80],
+              [91.3, 80],
+              [70.8, 71],
+              [83.7, 0],
+              [120, 0],
+              [120, 44.5],
+              [95.4, 80]
+            ],
+            "players": [
+              { "x": 77.2, "y": 73.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 81.2, "y": 34.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 83.9, "y": 40.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 84.9, "y": 51, "team": "F", "actor": false, "keeper": false },
+              { "x": 87.1, "y": 45.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 89.2, "y": 57.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 89.5, "y": 31.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 90.5, "y": 45.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 90.5, "y": 15.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 91.4, "y": 48.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 94, "y": 60.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 94.2, "y": 43.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 94.2, "y": 47, "team": "A", "actor": true, "keeper": false },
+              { "x": 94.9, "y": 42.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 94.9, "y": 55.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 98.9, "y": 44.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 116.7, "y": 43.2, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "carry",
+          "team": "A",
+          "player": "Di María",
+          "n": 11,
+          "to": null,
+          "outcome": null,
+          "clock": 1249,
+          "x": 112.6,
+          "y": 11.5,
+          "endX": 112.6,
+          "endY": 20.9,
+          "frame": null
+        },
+        {
+          "kind": "foul",
+          "team": "F",
+          "player": "Dembélé",
+          "n": 11,
+          "to": null,
+          "outcome": null,
+          "clock": 1253,
+          "x": 112.5,
+          "y": 20.8,
+          "endX": 112.5,
+          "endY": 20.8,
+          "frame": {
+            "area": [
+              [120, 0],
+              [120, 49.8],
+              [107.6, 65],
+              [87.1, 53.2],
+              [107.9, 0],
+              [120, 0]
+            ],
+            "players": [
+              { "x": 117.9, "y": 34.7, "team": "F", "actor": false, "keeper": true },
+              { "x": 114.5, "y": 34.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 113.6, "y": 35, "team": "A", "actor": false, "keeper": false },
+              { "x": 112.6, "y": 33.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 112.5, "y": 20.8, "team": "F", "actor": true, "keeper": false },
+              { "x": 112.4, "y": 20.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 112.4, "y": 25, "team": "F", "actor": false, "keeper": false },
+              { "x": 112.1, "y": 29.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 112, "y": 32, "team": "A", "actor": false, "keeper": false },
+              { "x": 111.8, "y": 41.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 109.6, "y": 26.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 109.5, "y": 35.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 106.3, "y": 39.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 104.4, "y": 32.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 98.2, "y": 29, "team": "A", "actor": false, "keeper": false },
+              { "x": 96.7, "y": 51.1, "team": "A", "actor": false, "keeper": false }
+            ]
+          },
+          "foul": "foul"
+        },
+        {
+          "kind": "goal",
+          "team": "A",
+          "player": "Messi",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 1344,
+          "x": 108,
+          "y": 40,
+          "endX": 120,
+          "endY": 41.8,
+          "frame": {
+            "area": [
+              [111.1, 60.3],
+              [95.9, 51.4],
+              [119.6, 0],
+              [120, 0],
+              [120, 49.9],
+              [111.1, 60.3]
+            ],
+            "players": [
+              { "x": 100.8, "y": 47.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 101.4, "y": 48.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 101.7, "y": 50.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 108, "y": 40, "team": "A", "actor": true, "keeper": false },
+              { "x": 119.2, "y": 39.9, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "team": "A",
+      "scorer": "Di María",
+      "n": 11,
+      "penalty": false,
+      "period": 1,
+      "clock": 2122,
+      "steps": [
+        {
+          "kind": "pass",
+          "team": "A",
+          "player": "Messi",
+          "n": 10,
+          "to": "Álvarez",
+          "outcome": null,
+          "clock": 2115,
+          "x": 52.9,
+          "y": 61.8,
+          "endX": 62.5,
+          "endY": 68.2,
+          "frame": {
+            "area": [
+              [76.8, 0],
+              [65.5, 80],
+              [38.9, 80],
+              [7.7, 0],
+              [76.8, 0]
+            ],
+            "players": [
+              { "x": 26.5, "y": 34.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 27.5, "y": 31.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 27.5, "y": 43.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 27.6, "y": 43.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 32.2, "y": 54.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 37.3, "y": 68.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 43.5, "y": 57.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 45.7, "y": 71.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 46.4, "y": 65.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 48.6, "y": 52.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 48.7, "y": 54.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 51.1, "y": 76.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 52.4, "y": 64.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 52.6, "y": 27, "team": "A", "actor": false, "keeper": false },
+              { "x": 52.9, "y": 61.8, "team": "A", "actor": true, "keeper": false },
+              { "x": 55.4, "y": 61.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 57.6, "y": 32.5, "team": "F", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "pass",
+          "team": "A",
+          "player": "Álvarez",
+          "n": 9,
+          "to": "Mac Allister",
+          "outcome": null,
+          "clock": 2117,
+          "x": 63.2,
+          "y": 68.2,
+          "endX": 99.3,
+          "endY": 54.9,
+          "frame": {
+            "area": [
+              [72.8, 80],
+              [52.5, 80],
+              [33.2, 0],
+              [91.7, 0],
+              [72.8, 80]
+            ],
+            "players": [
+              { "x": 52.9, "y": 53.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 57.2, "y": 59.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 58.8, "y": 56.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 60.6, "y": 66.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 61.6, "y": 47.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 61.9, "y": 55.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 63.2, "y": 68.2, "team": "A", "actor": true, "keeper": false },
+              { "x": 63.8, "y": 18.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 64.5, "y": 47.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 65.2, "y": 61.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 67.3, "y": 32.6, "team": "F", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "pass",
+          "team": "A",
+          "player": "Mac Allister",
+          "n": 20,
+          "to": "Di María",
+          "outcome": null,
+          "clock": 2120,
+          "x": 99.3,
+          "y": 54.9,
+          "endX": 111.8,
+          "endY": 32.1,
+          "frame": {
+            "area": [
+              [102.2, 74.8],
+              [81.4, 62.8],
+              [103.3, 0],
+              [120, 0],
+              [120, 51.4],
+              [102.2, 74.8]
+            ],
+            "players": [
+              { "x": 83.7, "y": 63.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 90.5, "y": 58.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 92.8, "y": 56, "team": "F", "actor": false, "keeper": false },
+              { "x": 94.7, "y": 43.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 95.5, "y": 30.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 99.1, "y": 52.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 99.3, "y": 54.9, "team": "A", "actor": true, "keeper": false },
+              { "x": 117.3, "y": 43.9, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "goal",
+          "team": "A",
+          "player": "Di María",
+          "n": 11,
+          "to": null,
+          "outcome": null,
+          "clock": 2122,
+          "x": 111.8,
+          "y": 32.1,
+          "endX": 120,
+          "endY": 41.7,
+          "frame": {
+            "area": [
+              [105.9, 71.4],
+              [86.4, 59.4],
+              [110.5, 0],
+              [120, 0],
+              [120, 53.7],
+              [105.9, 71.4]
+            ],
+            "players": [
+              { "x": 90.7, "y": 50.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 93.8, "y": 59.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 101.9, "y": 48.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 107.7, "y": 48.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 109.7, "y": 53.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 110.5, "y": 38.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 111.8, "y": 32.1, "team": "A", "actor": true, "keeper": false },
+              { "x": 112.1, "y": 52.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 114.5, "y": 36.1, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "team": "F",
+      "scorer": "Mbappé",
+      "n": 10,
+      "penalty": true,
+      "period": 2,
+      "clock": 4764,
+      "steps": [
+        {
+          "kind": "pass",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": "Kolo Muani",
+          "outcome": null,
+          "clock": 4688,
+          "x": 59.8,
+          "y": 72.4,
+          "endX": 29.7,
+          "endY": 61.9,
+          "frame": {
+            "area": [
+              [79.2, 18.6],
+              [102.9, 80],
+              [42.1, 80],
+              [51.1, 21.4],
+              [79.2, 18.6]
+            ],
+            "players": [
+              { "x": 90.1, "y": 54.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 85.8, "y": 41.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 83.3, "y": 71.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 81.5, "y": 65.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 81.4, "y": 73.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 79.6, "y": 50.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 79.4, "y": 64.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 78.2, "y": 25.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 74.5, "y": 50.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 71.3, "y": 76.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 70.5, "y": 75.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 70.3, "y": 78.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 65.2, "y": 74.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 62.8, "y": 71, "team": "A", "actor": false, "keeper": false },
+              { "x": 61, "y": 46, "team": "A", "actor": false, "keeper": false },
+              { "x": 59.8, "y": 72.4, "team": "F", "actor": true, "keeper": false },
+              { "x": 55.5, "y": 54.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 52.7, "y": 54.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 50.1, "y": 68.1, "team": "A", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "carry",
+          "team": "F",
+          "player": "Kolo Muani",
+          "n": 12,
+          "to": null,
+          "outcome": null,
+          "clock": 4691,
+          "x": 29.7,
+          "y": 61.9,
+          "endX": 12.6,
+          "endY": 56.8,
+          "frame": {
+            "area": [
+              [27, 16.6],
+              [54.7, 23.8],
+              [52.6, 80],
+              [0, 80],
+              [0, 69.8],
+              [27, 16.6]
+            ],
+            "players": [
+              { "x": 49.6, "y": 73.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 47.9, "y": 63.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 41.8, "y": 46.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 38.3, "y": 65.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 35.4, "y": 67.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 29.7, "y": 61.9, "team": "F", "actor": true, "keeper": false },
+              { "x": 29.5, "y": 61.1, "team": "A", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "foul",
+          "team": "A",
+          "player": "Otamendi",
+          "n": 19,
+          "to": null,
+          "outcome": null,
+          "clock": 4693,
+          "x": 12.7,
+          "y": 56.9,
+          "endX": 12.7,
+          "endY": 56.9,
+          "frame": {
+            "area": [
+              [0, 80],
+              [0, 32.4],
+              [16.3, 10.7],
+              [41.4, 22.1],
+              [26.5, 80],
+              [0, 80]
+            ],
+            "players": [
+              { "x": 2.6, "y": 42.9, "team": "A", "actor": false, "keeper": true },
+              { "x": 12, "y": 57.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 12.7, "y": 56.9, "team": "A", "actor": true, "keeper": false },
+              { "x": 19.6, "y": 51.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 21.3, "y": 53, "team": "A", "actor": false, "keeper": false },
+              { "x": 24.9, "y": 40.8, "team": "A", "actor": false, "keeper": false }
+            ]
+          },
+          "foul": "foul"
+        },
+        {
+          "kind": "goal",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 4764,
+          "x": 12,
+          "y": 40,
+          "endX": 0,
+          "endY": 42.7,
+          "frame": {
+            "area": [
+              [9, 18.8],
+              [25, 28],
+              [1.7, 80],
+              [0, 80],
+              [0, 29.4],
+              [9, 18.8]
+            ],
+            "players": [
+              { "x": 20.9, "y": 34.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 20, "y": 33.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 19.4, "y": 31.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 18.7, "y": 30.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 12, "y": 40, "team": "F", "actor": true, "keeper": false },
+              { "x": 0.1, "y": 39.6, "team": "A", "actor": false, "keeper": true }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "team": "F",
+      "scorer": "Mbappé",
+      "n": 10,
+      "penalty": false,
+      "period": 2,
+      "clock": 4859,
+      "steps": [
+        {
+          "kind": "pass",
+          "team": "F",
+          "player": "Rabiot",
+          "n": 14,
+          "to": "Mbappé",
+          "outcome": null,
+          "clock": 4854,
+          "x": 40.8,
+          "y": 25.9,
+          "endX": 26.9,
+          "endY": 55.9,
+          "frame": {
+            "area": [
+              [29, 0],
+              [43, 0],
+              [56.2, 4.4],
+              [52.5, 80],
+              [0, 80],
+              [0, 50.2],
+              [29, 0]
+            ],
+            "players": [
+              { "x": 48.6, "y": 50, "team": "F", "actor": false, "keeper": false },
+              { "x": 47.5, "y": 4.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 41.2, "y": 15.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 40.8, "y": 25.9, "team": "F", "actor": true, "keeper": false },
+              { "x": 38.1, "y": 25.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 36.8, "y": 40.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 33.1, "y": 17.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 28.1, "y": 40.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 26.9, "y": 7.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 26.6, "y": 17.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 23.5, "y": 43.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 22.4, "y": 27.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 22.2, "y": 43.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 20.8, "y": 19.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 19.8, "y": 19.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 19.6, "y": 37.8, "team": "A", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "pass",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": "Thuram",
+          "outcome": null,
+          "clock": 4856,
+          "x": 26.9,
+          "y": 55.9,
+          "endX": 25.2,
+          "endY": 43.7,
+          "frame": {
+            "area": [
+              [28.9, 11.9],
+              [52.1, 20.4],
+              [45.3, 80],
+              [0, 80],
+              [0, 61.5],
+              [28.9, 11.9]
+            ],
+            "players": [
+              { "x": 46, "y": 18.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 43.4, "y": 61.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 42.2, "y": 33.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 41.6, "y": 27.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 36.6, "y": 39.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 32.6, "y": 51.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 30.3, "y": 30.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 29.5, "y": 44.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 26.9, "y": 55.9, "team": "F", "actor": true, "keeper": false },
+              { "x": 26.1, "y": 55.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 25.5, "y": 29.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 24.9, "y": 46.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 22.5, "y": 41.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 22, "y": 33.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 20.6, "y": 34.1, "team": "F", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "pass",
+          "team": "F",
+          "player": "Thuram",
+          "n": 26,
+          "to": "Mbappé",
+          "outcome": null,
+          "clock": 4857,
+          "x": 25.2,
+          "y": 43.7,
+          "endX": 15.2,
+          "endY": 49.9,
+          "frame": {
+            "area": [
+              [24.1, 8],
+              [48.4, 17.8],
+              [37.2, 80],
+              [0, 80],
+              [0, 45.7],
+              [24.1, 8]
+            ],
+            "players": [
+              { "x": 45.8, "y": 17.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 41.4, "y": 30.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 40.1, "y": 25.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 31.8, "y": 38.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 30.8, "y": 49.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 26.6, "y": 28.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 25.2, "y": 43.7, "team": "F", "actor": true, "keeper": false },
+              { "x": 25, "y": 53.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 23.3, "y": 9.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 23.2, "y": 28.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 22.9, "y": 43, "team": "A", "actor": false, "keeper": false },
+              { "x": 22.9, "y": 52.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 21.9, "y": 31.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 20.7, "y": 39.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 19.8, "y": 33.4, "team": "F", "actor": false, "keeper": false }
+            ]
+          }
+        },
+        {
+          "kind": "goal",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 4859,
+          "x": 15.2,
+          "y": 49.9,
+          "endX": 0,
+          "endY": 38.5,
+          "frame": {
+            "area": [
+              [16.6, 5.6],
+              [39.8, 18.5],
+              [20, 80],
+              [0, 80],
+              [0, 26.6],
+              [16.6, 5.6]
+            ],
+            "players": [
+              { "x": 26.5, "y": 40.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 21.8, "y": 12.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 21, "y": 43.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 20.7, "y": 31.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 19.6, "y": 33.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 19, "y": 41.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 17.8, "y": 52.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 17.2, "y": 36.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 16.4, "y": 42.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 15.8, "y": 36.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 15.2, "y": 49.9, "team": "F", "actor": true, "keeper": false },
+              { "x": 3.7, "y": 40.5, "team": "A", "actor": false, "keeper": true }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "team": "A",
+      "scorer": "Messi",
+      "n": 10,
+      "penalty": false,
+      "period": 4,
+      "clock": 6478,
+      "steps": [
+        {
+          "kind": "pass",
+          "team": "A",
+          "player": "Enzo",
+          "n": 24,
+          "to": "Lautaro",
+          "outcome": null,
+          "clock": 6474,
+          "x": 95.4,
+          "y": 49.4,
+          "endX": 109.3,
+          "endY": 56.9,
+          "frame": {
+            "area": [
+              [89.1, 80],
+              [75.6, 27.3],
+              [101.8, 14.3],
+              [120, 37.6],
+              [120, 80],
+              [89.1, 80]
+            ],
+            "players": [
+              { "x": 86.7, "y": 50.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 94.2, "y": 62.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 95.1, "y": 55.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 95.4, "y": 49.4, "team": "A", "actor": true, "keeper": false },
+              { "x": 96.3, "y": 55.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 96.7, "y": 57.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 97.1, "y": 43, "team": "F", "actor": false, "keeper": false },
+              { "x": 100.4, "y": 61.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 100.7, "y": 52.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 117.1, "y": 46.7, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "carry",
+          "team": "A",
+          "player": "Lautaro",
+          "n": 22,
+          "to": null,
+          "outcome": null,
+          "clock": 6476,
+          "x": 109.3,
+          "y": 56.9,
+          "endX": 114.4,
+          "endY": 52,
+          "frame": {
+            "area": [
+              [101.3, 80],
+              [83.5, 26.9],
+              [107.4, 14.1],
+              [120, 29.6],
+              [120, 80],
+              [101.3, 80]
+            ],
+            "players": [
+              { "x": 83.8, "y": 26.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 95.2, "y": 45.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 100.6, "y": 53.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 101.3, "y": 45.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 103.7, "y": 47.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 104.9, "y": 43.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 105.7, "y": 51.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 106.3, "y": 48.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 107.6, "y": 44, "team": "F", "actor": false, "keeper": false },
+              { "x": 109.3, "y": 56.9, "team": "A", "actor": true, "keeper": false },
+              { "x": 118.3, "y": 45.5, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "shot",
+          "team": "A",
+          "player": "Lautaro",
+          "n": 22,
+          "to": null,
+          "outcome": "Saved",
+          "clock": 6477,
+          "x": 114.4,
+          "y": 52,
+          "endX": 118.7,
+          "endY": 44.1,
+          "frame": {
+            "area": [
+              [109.2, 80],
+              [88.4, 25.7],
+              [110.8, 12.5],
+              [120, 23.3],
+              [120, 80],
+              [109.2, 80]
+            ],
+            "players": [
+              { "x": 89.3, "y": 25.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 100.6, "y": 43.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 105.8, "y": 49.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 106.7, "y": 41.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 109, "y": 44.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 111.4, "y": 38.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 113.2, "y": 44.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 114, "y": 50.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 114.4, "y": 52, "team": "A", "actor": true, "keeper": false },
+              { "x": 115.6, "y": 43.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 119.1, "y": 44.4, "team": "F", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "goal",
+          "team": "A",
+          "player": "Messi",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 6478,
+          "x": 116.6,
+          "y": 43,
+          "endX": 120,
+          "endY": 40.9,
+          "frame": {
+            "area": [
+              [110.2, 80],
+              [88.4, 24.8],
+              [110.9, 11],
+              [120, 21.7],
+              [120, 80],
+              [110.2, 80]
+            ],
+            "players": [
+              { "x": 92.9, "y": 25, "team": "A", "actor": false, "keeper": false },
+              { "x": 103.7, "y": 40.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 109.7, "y": 48.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 110.5, "y": 38.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 112.6, "y": 40.9, "team": "F", "actor": false, "keeper": false },
+              { "x": 115.8, "y": 33.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 116.6, "y": 43, "team": "A", "actor": true, "keeper": false },
+              { "x": 116.7, "y": 49.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 118.2, "y": 43.5, "team": "F", "actor": false, "keeper": true },
+              { "x": 118.4, "y": 48.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 119.7, "y": 39.3, "team": "F", "actor": false, "keeper": false }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "team": "F",
+      "scorer": "Mbappé",
+      "n": 10,
+      "penalty": true,
+      "period": 4,
+      "clock": 7025,
+      "steps": [
+        {
+          "kind": "carry",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 6937,
+          "x": 16.2,
+          "y": 54.4,
+          "endX": 18.6,
+          "endY": 53.4,
+          "frame": {
+            "area": [
+              [16, 4.1],
+              [41.4, 18.4],
+              [23.6, 80],
+              [0, 80],
+              [0, 24.1],
+              [16, 4.1]
+            ],
+            "players": [
+              { "x": 29.4, "y": 44.6, "team": "F", "actor": false, "keeper": false },
+              { "x": 28.6, "y": 28.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 18.6, "y": 30.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 18.4, "y": 24.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 16.2, "y": 54.4, "team": "F", "actor": true, "keeper": false },
+              { "x": 12.1, "y": 45, "team": "F", "actor": false, "keeper": false },
+              { "x": 11.8, "y": 35.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 11.1, "y": 41.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 9.9, "y": 36.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 9.7, "y": 45.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 9.2, "y": 36.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 8.9, "y": 37.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 7.9, "y": 46.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 7.6, "y": 37.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 7.4, "y": 44.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 7.1, "y": 47.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 5.3, "y": 36.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 4.3, "y": 34, "team": "A", "actor": false, "keeper": false },
+              { "x": 4, "y": 39.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 1.1, "y": 40.8, "team": "A", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "shot",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": null,
+          "outcome": "Blocked",
+          "clock": 6938,
+          "x": 18.6,
+          "y": 53.4,
+          "endX": 15.5,
+          "endY": 50.9,
+          "frame": {
+            "area": [
+              [16.2, 4.9],
+              [41.8, 19.3],
+              [24.6, 80],
+              [0, 80],
+              [0, 25],
+              [16.2, 4.9]
+            ],
+            "players": [
+              { "x": 30.5, "y": 47.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 29.2, "y": 31.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 19.1, "y": 34.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 18.6, "y": 53.4, "team": "F", "actor": true, "keeper": false },
+              { "x": 15.7, "y": 29.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 14.7, "y": 46.2, "team": "F", "actor": false, "keeper": false },
+              { "x": 14.4, "y": 50.6, "team": "A", "actor": false, "keeper": false },
+              { "x": 13.8, "y": 52.7, "team": "A", "actor": false, "keeper": false },
+              { "x": 13.1, "y": 38.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 12.8, "y": 46.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 11.4, "y": 39.1, "team": "F", "actor": false, "keeper": false },
+              { "x": 11, "y": 38.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 10.9, "y": 39.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 10.7, "y": 47.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 10.3, "y": 44.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 8.9, "y": 42.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 8.6, "y": 36, "team": "A", "actor": false, "keeper": false },
+              { "x": 6.4, "y": 39.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 6, "y": 42.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 2.6, "y": 42.3, "team": "A", "actor": false, "keeper": true }
+            ]
+          }
+        },
+        {
+          "kind": "foul",
+          "team": "A",
+          "player": "Montiel",
+          "n": 4,
+          "to": null,
+          "outcome": null,
+          "clock": 6939,
+          "x": 14.8,
+          "y": 52.1,
+          "endX": 14.8,
+          "endY": 52.1,
+          "frame": {
+            "area": [
+              [0, 80],
+              [0, 23.8],
+              [16.2, 3.9],
+              [41.9, 18.5],
+              [24, 80],
+              [0, 80]
+            ],
+            "players": [
+              { "x": 2.7, "y": 41.7, "team": "A", "actor": false, "keeper": true },
+              { "x": 6.5, "y": 41.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 7.4, "y": 37.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 9, "y": 35.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 9.6, "y": 41.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 11.3, "y": 46.5, "team": "A", "actor": false, "keeper": false },
+              { "x": 11.3, "y": 41.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 11.4, "y": 37.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 11.6, "y": 38.4, "team": "A", "actor": false, "keeper": false },
+              { "x": 11.7, "y": 38.7, "team": "F", "actor": false, "keeper": false },
+              { "x": 13, "y": 46.1, "team": "A", "actor": false, "keeper": false },
+              { "x": 13.4, "y": 38, "team": "F", "actor": false, "keeper": false },
+              { "x": 14.8, "y": 52.1, "team": "A", "actor": true, "keeper": false },
+              { "x": 14.9, "y": 45.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 15.6, "y": 28.3, "team": "F", "actor": false, "keeper": false },
+              { "x": 15.8, "y": 49.8, "team": "A", "actor": false, "keeper": false },
+              { "x": 18.4, "y": 53.4, "team": "F", "actor": false, "keeper": false },
+              { "x": 19.3, "y": 34.3, "team": "A", "actor": false, "keeper": false },
+              { "x": 29.9, "y": 30.8, "team": "F", "actor": false, "keeper": false },
+              { "x": 30.9, "y": 46.4, "team": "F", "actor": false, "keeper": false }
+            ]
+          },
+          "foul": "handball"
+        },
+        {
+          "kind": "goal",
+          "team": "F",
+          "player": "Mbappé",
+          "n": 10,
+          "to": null,
+          "outcome": null,
+          "clock": 7025,
+          "x": 12,
+          "y": 40,
+          "endX": 0,
+          "endY": 43.3,
+          "frame": {
+            "area": [
+              [9.1, 18.8],
+              [24.7, 27.9],
+              [1, 80],
+              [0, 80],
+              [0, 29.6],
+              [9.1, 18.8]
+            ],
+            "players": [
+              { "x": 20.9, "y": 35, "team": "A", "actor": false, "keeper": false },
+              { "x": 19, "y": 32.5, "team": "F", "actor": false, "keeper": false },
+              { "x": 18.5, "y": 29, "team": "F", "actor": false, "keeper": false },
+              { "x": 18.4, "y": 32.2, "team": "A", "actor": false, "keeper": false },
+              { "x": 18.3, "y": 30.9, "team": "A", "actor": false, "keeper": false },
+              { "x": 12, "y": 40, "team": "F", "actor": true, "keeper": false },
+              { "x": 0.1, "y": 39.5, "team": "A", "actor": false, "keeper": true }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

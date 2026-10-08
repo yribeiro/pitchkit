@@ -624,6 +624,61 @@ cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
 >
 > https://www.pitchkitjs.com
 
+## Reel 06, goals cut (`reel-06-goals-final.mp4`, 39 s)
+
+Every goal of the 2022 World Cup final and the three moves before it, on StatsBomb 360
+data (`npm run snapshot:wc-goals360`). It opens cold on Di María's goal mid-move, Messi →
+Álvarez → Mac Allister, under "3 PASSES. 1 WORLD CUP GOAL." and cuts away before the shot
+(the open loop). Then the clock runs on the tilted pitch, with the network cut's drifting
+discs. At each goal the camera curves in and flattens to a bird's-eye view of the attacking
+half. The three moves play one per beat, each labelled ("2 · ÁLVAREZ → MAC ALLISTER"), with a
+soft tick. The players the broadcast camera could see glide between 360 frames, and the
+space each controlled (`<Voronoi />`) morphs with them, fading out where the camera wasn't
+looking. The shot goes in with its `<GoalAngle />`, and the caption gives the chain of
+names or how the penalty was won. Penalties show the two moves before the foul (or
+Montiel's handball), the foul, then the kick from the spot. No save: straight from the
+hat-trick to penalties. Then the shootout, Argentina's flag on the pitch and a two-sided
+CTA (rule 23). Background is reel 05's penalty green. For the cover, use
+`out/reel-06-goals-cover.png` (the cold open, with the hook).
+
+**Instagram**
+
+```
+3 passes. 1 World Cup goal. ⚽️
+
+Every goal of the 2022 final, Argentina 3–3 France, and the three moves before it, rebuilt from StatsBomb 360 data: every player the broadcast camera could see, and the space each one controlled.
+
+Messi → Álvarez → Mac Allister → Di María is still the best goal of the final. Or was it Mbappé's volley? 👇
+
+Data: StatsBomb 360 open data. Built with PitchKit, the free React-first football chart library. Link in bio.
+
+#worldcup #messi #mbappe #dimaria #argentina #france #footballdata #dataviz #statsbomb
+```
+
+**X**
+
+```
+Every goal of the 2022 World Cup final and the 3 moves before it, rebuilt from @StatsBomb 360 data.
+
+Messi → Álvarez → Mac Allister → Di María, or Mbappé's volley 95 seconds after his penalty: which was the better goal?
+
+Built with PitchKit, the open-source React-first football chart library.
+
+https://www.pitchkitjs.com
+```
+
+**Alt text:** A dark green football pitch seen from above, opening mid-move under the words "3 passes. 1 World Cup goal." Light blue dots for Argentina and darker blue dots for France slide across it, each sitting in a coloured shape showing the space they controlled, while white arrows draw Messi's pass to Álvarez, Álvarez's to Mac Allister and Mac Allister's to Di María, labelled one by one. The view pulls back to a tilted pitch under a scoreboard reading ARG v FRA, World Cup final, with a running clock and a momentum chart growing along the bottom. At each goal the camera flattens over the attacking half and the three moves before it play out, ending with the shot flying in and a yellow wedge from the shooter to the posts: Messi's penalty after Dembélé fouls Di María, Di María's finish, Mbappé's penalty after Otamendi fouls Kolo Muani, Mbappé's volley from Thuram's pass, Messi's rebound after Lautaro's shot is saved, and Mbappé's penalty after Montiel's handball. The shootout plays out in a goal mouth until Argentina win 4–2 and Argentina's flag sweeps across the pitch under the words "Argentina, World Champions". It ends by asking "Di María's counter or Mbappé's volley?" and on the PitchKit end card.
+
+Facts behind it (`src/data/wc-goals360.json`, StatsBomb match 3869685):
+
+| Claim                             | Detail                                                                                                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 3 passes, 1 World Cup goal        | Di María's goal (35'): Messi → Álvarez, Álvarez → Mac Allister, Mac Allister → Di María, each with a 360 frame (8–17 players)                                                              |
+| The moves behind each goal        | Open play: the last three actions of the scoring possession. Penalties: the two actions before the foul, the foul, the kick                                                                |
+| Who's numbered                    | Only the player on the ball, from the event; other 360 players are anonymous                                                                                                               |
+| Player movement                   | 360 frames seconds apart, paired frame to frame by nearest team-mate and slid; anyone unpaired fades. Di María's run before the first penalty has no 360 frame, so players glide across it |
+| Mbappé's shot before the handball | Outcome Blocked (off Montiel's arm), not Saved                                                                                                                                             |
+
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a

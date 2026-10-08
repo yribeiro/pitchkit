@@ -39,11 +39,33 @@ const big = (size: number, color: string = C.text): CSSProperties => ({
   letterSpacing: "0.01em",
 });
 
+export interface MatchReelOptions {
+  /** A soft tick for every match minute (the fast cut). */
+  minuteTicks?: boolean;
+  /** Include Kolo Muani's 123rd-minute chance and Martínez's save. Default true. */
+  save?: boolean;
+  /** Half-time, France's first shot and extra time as captions. Default true. */
+  pauses?: boolean;
+  /** Frames of cold open before the scoreboard and momentum strip come in. */
+  intro?: number;
+  /** Replaces the default hook overlay. */
+  hook?: (frame: number) => ReactNode;
+  /** Replaces the subtitle under each goal's caption (one per goal). */
+  goalSubs?: string[];
+  /** The comment CTA: four lines, the middle two in PitchKit green. */
+  cta?: [string, string, string, string];
+  /** Extra sound cues on top of the shared ones. */
+  cues?: { at: number; name: string; volume: number; length: number }[];
+}
+
 export function createMatchReel(
   T: Timeline,
   pitch: (frame: number) => ReactNode,
-  options: { minuteTicks?: boolean } = {},
+  options: MatchReelOptions = {},
 ) {
+  const withSave = options.save ?? true;
+  const withPauses = options.pauses ?? true;
+  const INTRO = options.intro ?? 0;
   const { FRAME, GOALS, KICKS, CHAMPIONS, VALUE_AT, CTA_AT, END_AT, uAt } = T;
   const LIVE_DURATION = T.DURATION;
 
@@ -173,50 +195,58 @@ export function createMatchReel(
     return `GOAL · ${g.scorer.toUpperCase()}${g.penalty ? " (PEN)" : ""}`;
   };
   const goalHold = (fast: number) => (T.replay > 0 ? T.replay : fast);
-  const MOMENTS: Moment[] = [
+  const sub = (i: number, fallback: string) => options.goalSubs?.[i] ?? fallback;
+  const ALL_MOMENTS: (Moment & { kind?: "pause" | "save" })[] = [
     {
       at: FRAME.messi1,
       hold: goalHold(54),
       title: goalTitle(0),
-      sub: "Argentina push into France's half",
+      sub: sub(0, "Argentina push into France's half"),
       color: ARG,
     },
     {
       at: FRAME.diMaria,
       hold: goalHold(54),
       title: goalTitle(1),
-      sub: "2–0, and France haven't had a shot",
+      sub: sub(1, "2–0, and France haven't had a shot"),
       color: ARG,
     },
-    { at: FRAME.halfTime, hold: 36, title: "HALF-TIME", color: C.text },
+    { at: FRAME.halfTime, hold: 36, title: "HALF-TIME", color: C.text, kind: "pause" },
     {
       at: FRAME.franceFirst,
       hold: 50,
       title: "FRANCE'S FIRST SHOT",
       sub: "67th minute",
       color: FRA,
+      kind: "pause",
     },
-    { at: FRAME.mbappe1, hold: goalHold(50), title: goalTitle(2), sub: "2–1", color: FRA },
+    {
+      at: FRAME.mbappe1,
+      hold: goalHold(50),
+      title: goalTitle(2),
+      sub: sub(2, "2–1"),
+      color: FRA,
+    },
     {
       at: FRAME.mbappe2,
       hold: goalHold(62),
       title: "MBAPPÉ AGAIN",
-      sub: "95 seconds later. 2–2.",
+      sub: sub(3, "95 seconds later. 2–2."),
       color: FRA,
     },
-    { at: FRAME.extraTime, hold: 40, title: "EXTRA TIME", color: "#fde047" },
+    { at: FRAME.extraTime, hold: 40, title: "EXTRA TIME", color: "#fde047", kind: "pause" },
     {
       at: FRAME.messi2,
       hold: goalHold(54),
       title: goalTitle(4),
-      sub: "3–2, 108th minute",
+      sub: sub(4, "3–2, 108th minute"),
       color: ARG,
     },
     {
       at: FRAME.mbappe3,
       hold: goalHold(54),
       title: "HAT-TRICK · MBAPPÉ",
-      sub: "3–3, 118th minute",
+      sub: sub(5, "3–3, 118th minute"),
       color: FRA,
     },
     {
@@ -225,6 +255,7 @@ export function createMatchReel(
       title: "SAVED.",
       sub: `${F.theSave.keeper} denies ${F.theSave.player}, 123rd minute`,
       color: C.text,
+      kind: "save",
     },
     { at: FRAME.whistle, hold: 28, title: "PENALTIES", color: "#fde047" },
     ...KICKS.map((k) => ({
@@ -234,6 +265,9 @@ export function createMatchReel(
       color: k.scored ? colorOf(k.team) : "#ef4444",
     })),
   ];
+  const MOMENTS: Moment[] = ALL_MOMENTS.filter(
+    (m) => (m.kind !== "pause" || withPauses) && (m.kind !== "save" || withSave),
+  );
 
   function MomentCaption({ frame }: { frame: number }) {
     const m = MOMENTS.find((m) => frame >= m.at && frame < m.at + m.hold);
@@ -383,6 +417,7 @@ export function createMatchReel(
   // The hook clears before the first goal, however early that comes.
   const HOOK_END = Math.min(84, FRAME.messi1 - 2);
   function Hook({ frame }: { frame: number }) {
+    if (options.hook) return <>{options.hook(frame)}</>;
     if (frame > HOOK_END) return null;
     const line = (i: number) => {
       const t = interpolate(frame, [-6 + i * 5, 6 + i * 5], [0, 1], {
@@ -536,6 +571,7 @@ export function createMatchReel(
     );
   }
 
+  const cta = options.cta ?? ["WHICH MATCH", "SHOULD WE", "PLAY BACK", "NEXT?"];
   function Cta({ frame }: { frame: number }) {
     const { fps } = useVideoConfig();
     if (frame < CTA_AT || frame >= END_AT) return null;
@@ -551,10 +587,10 @@ export function createMatchReel(
       <AbsoluteFill
         style={{ background: "rgba(0,0,0,0.9)", justifyContent: "center", padding: "0 80px 120px" }}
       >
-        <div style={{ ...big(140), ...line(0) }}>WHICH MATCH</div>
-        <div style={{ ...big(140, C.accent), ...line(1) }}>SHOULD WE</div>
-        <div style={{ ...big(140, C.accent), ...line(2) }}>PLAY BACK</div>
-        <div style={{ ...big(140), ...line(3) }}>NEXT?</div>
+        <div style={{ ...big(140), ...line(0) }}>{cta[0]}</div>
+        <div style={{ ...big(140, C.accent), ...line(1) }}>{cta[1]}</div>
+        <div style={{ ...big(140, C.accent), ...line(2) }}>{cta[2]}</div>
+        <div style={{ ...big(140), ...line(3) }}>{cta[3]}</div>
         <div
           style={{
             fontFamily: FONT.sans,
@@ -589,8 +625,11 @@ export function createMatchReel(
       add(g.frame - 8, "whoosh", 0.5, 18);
       add(g.frame + 4, "pop", 1, 14);
     }
-    add(FRAME.save - 60, "riser", 0.8, 60);
-    add(FRAME.save, "thud", 1, 27);
+    if (withSave) {
+      add(FRAME.save - 60, "riser", 0.8, 60);
+      add(FRAME.save, "thud", 1, 27);
+    }
+    for (const cue of options.cues ?? []) c.push(cue);
     add(FRAME.whistle, "whoosh", 0.6, 18);
     for (const k of KICKS) add(k.frame + 6, k.scored ? "pop" : "thud", k.scored ? 0.75 : 0.9, 14);
     add(CHAMPIONS, "thud", 1, 27);
@@ -615,6 +654,13 @@ export function createMatchReel(
 
   return function MatchReel() {
     const frame = useCurrentFrame();
+    const hudIn = INTRO > 0 ? interpolate(frame, [INTRO, INTRO + 10], [0, 1], clamp) : 1;
+    const close = interpolate(frame, [INTRO - 14, INTRO], [0, 1], {
+      ...clamp,
+      easing: Easing.inOut(Easing.cubic),
+    });
+    const clipTop = 400 * close;
+    const clipBottom = (1920 - 1270) * close;
     return (
       <AbsoluteFill
         style={{
@@ -624,20 +670,39 @@ export function createMatchReel(
         }}
       >
         <LiveAudio />
-        <div
-          style={{
-            position: "absolute",
-            top: 400,
-            left: 0,
-            width: 1080,
-            height: 870,
-            overflow: "hidden",
-          }}
-        >
-          {pitch(frame)}
-        </div>
-        <Scoreboard frame={frame} />
-        <MomentumStrip frame={frame} />
+        {INTRO > 0 ? (
+          // The cold open bleeds to the full height, then closes into the pitch box.
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              clipPath: `inset(${clipTop}px 0 ${clipBottom}px 0)`,
+            }}
+          >
+            <div style={{ position: "absolute", top: 400, left: 0, width: 1080, height: 870 }}>
+              {pitch(frame)}
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              top: 400,
+              left: 0,
+              width: 1080,
+              height: 870,
+              overflow: "hidden",
+            }}
+          >
+            {pitch(frame)}
+          </div>
+        )}
+        {frame >= INTRO && (
+          <div style={{ position: "absolute", inset: 0, opacity: hudIn }}>
+            <Scoreboard frame={frame} />
+            <MomentumStrip frame={frame} />
+          </div>
+        )}
         <Hook frame={frame} />
         <MomentCaption frame={frame} />
         <Champions frame={frame} />

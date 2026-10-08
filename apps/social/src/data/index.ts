@@ -14,6 +14,7 @@ import spainCarriesJson from "./spain-carries.json";
 import wc360Json from "./wc-360.json";
 import wcFinalJson from "./wc-final.json";
 import wcTouchesJson from "./wc-touches.json";
+import wcGoals360Json from "./wc-goals360.json";
 import spainNetworkJson from "./spain-pass-network.json";
 import spainPassesJson from "./spain-passes.json";
 import yamalTouchesJson from "./yamal-touches.json";
@@ -347,4 +348,43 @@ export const wc360 = wc360Json as unknown as {
 export const wcTouches = wcTouchesJson as unknown as {
   players: { team: "A" | "F"; n: number | null }[];
   touches: number[];
+};
+
+/** One action in a goal's build-up, with the 360 frame captured for it (if any). */
+export interface GoalStep {
+  kind: "pass" | "carry" | "shot" | "foul" | "goal";
+  team: "A" | "F";
+  player: string | null;
+  n: number | null;
+  /** The pass's recipient. */
+  to: string | null;
+  /** A shot's outcome ("Saved", "Blocked", …); null for anything else. */
+  outcome: string | null;
+  /** "handball" or "foul", on the step that gave away a penalty. */
+  foul?: "handball" | "foul";
+  clock: number;
+  x: number;
+  y: number;
+  endX: number;
+  endY: number;
+  frame: {
+    area: [number, number][];
+    players: { x: number; y: number; team: "A" | "F"; actor: boolean; keeper: boolean }[];
+  } | null;
+}
+
+/**
+ * The moves behind every goal of the 2022 World Cup final, in Argentina's
+ * frame (see scripts/snapshot-wc-goals360.mjs).
+ */
+export const wcGoals360 = wcGoals360Json as unknown as {
+  goals: {
+    team: "A" | "F";
+    scorer: string;
+    n: number;
+    penalty: boolean;
+    period: number;
+    clock: number;
+    steps: GoalStep[];
+  }[];
 };

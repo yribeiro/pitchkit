@@ -219,3 +219,69 @@ export const TOP_MINUTES = {
   home: F.momentum.data.filter((d) => d.value > 0).length,
   away: F.momentum.data.filter((d) => d.value < 0).length,
 };
+
+// The goals cut: about 38 seconds. A cold open plays Di María's build-up, then
+// the clock runs on the tilted pitch between goals and holds for each goal's
+// build-up: the camera flattens to bird's-eye over the attacking half, the
+// three moves before the goal play one per beat, and the shot goes in at the
+// goal's frame. No save: straight from the hat-trick to penalties.
+export const GOALS_CUT_BEATS = {
+  /** Cold open, before the scoreboard comes in. */
+  intro: 66,
+  /** Camera flattening into bird's-eye. */
+  morph: 16,
+  /** One build-up move per beat. */
+  step: 14,
+  /** The shot travelling in. */
+  shot: 10,
+  /** After the goal: the angle, the caption, the camera pulling back out. */
+  tail: 38,
+} as const;
+const B = GOALS_CUT_BEATS;
+/** Frames from a goal view starting to the ball going in: morph, three moves, the shot. */
+export const GOAL_LEAD = B.morph + 3 * B.step + B.shot;
+const gap = (prevGoal: number, frames: number) => prevGoal + B.tail + frames + GOAL_LEAD;
+const messi1 = B.intro + 26 + GOAL_LEAD;
+const diMaria = gap(messi1, 22);
+const mbappe1 = gap(diMaria, 34);
+const mbappe2 = gap(mbappe1, 10);
+const messi2 = gap(mbappe2, 34);
+const mbappe3 = gap(messi2, 22);
+const whistle = mbappe3 + B.tail + 14;
+const GOALS_FRAME: Frames = {
+  messi1,
+  diMaria,
+  halfTime: diMaria + B.tail + 12,
+  franceFirst: diMaria + B.tail + 24,
+  mbappe1,
+  mbappe2,
+  extraTime: mbappe2 + B.tail + 16,
+  messi2,
+  mbappe3,
+  save: whistle,
+  whistle,
+  firstKick: whistle + 14,
+  kickGap: 12,
+};
+const goalHoldKeys = (frame: number, u: number): [number, number][] => [
+  [frame - GOAL_LEAD, u],
+  [frame + B.tail, u],
+];
+export const GOALS_CUT = timeline(
+  GOALS_FRAME,
+  [
+    [0, 0],
+    [B.intro, 0],
+    ...goalHoldKeys(messi1, goalU(0)),
+    ...goalHoldKeys(diMaria, goalU(1)),
+    [GOALS_FRAME.halfTime, uOf(1, PERIODS[0]!.end)],
+    [GOALS_FRAME.franceFirst, uOf(2, PERIODS[1]!.start)],
+    ...goalHoldKeys(mbappe1, goalU(2)),
+    ...goalHoldKeys(mbappe2, goalU(3)),
+    [GOALS_FRAME.extraTime, uOf(3, PERIODS[2]!.start)],
+    ...goalHoldKeys(messi2, goalU(4)),
+    ...goalHoldKeys(mbappe3, goalU(5)),
+    [whistle, TOTAL_U],
+  ],
+  { replay: B.tail, easing: Easing.inOut(Easing.sin), tail: [54, 0, 66, 72] },
+);
