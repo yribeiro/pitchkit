@@ -20,7 +20,7 @@ Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1*
 | Horizontal pitch                                | M     | ✅ `<Pitch>`                                                                                        |
 | Vertical pitch                                  | M     | ✅ `<VerticalPitch>`                                                                                |
 | Half-pitch, padding, crop                       | M     | ✅ `crop`, `padding`, `cropForHalf()`                                                               |
-| Pitch types                                     | M → 1 | 🟡 StatsBomb, Opta, Wyscout, UEFA, SkillCorner. Remaining: Tracab, SecondSpectrum, Metrica, custom. |
+| Pitch types                                     | M → 1 | 🟡 StatsBomb, Opta, Wyscout, UEFA, SkillCorner, Metrica. Remaining: Tracab, SecondSpectrum, custom. |
 | Styling: stripes, line colour/width, goal types | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                     |
 | Coordinate standardiser (provider → provider)   | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.       |
 
@@ -113,7 +113,7 @@ component.
 | Grid / jointgrid layout                    | 1     | ⬜                                                                                                                          |
 | Inset axes and images                      | L     | ⬜                                                                                                                          |
 | Fonts                                      | M     | Not needed: web fonts are CSS.                                                                                              |
-| Open-data loaders                          | 1     | ✅ StatsBomb (events + 360), SkillCorner, Wyscout. Metrica is open ([#30](https://github.com/yribeiro/pitchkit/issues/30)). |
+| Open-data loaders                          | 1     | ✅ StatsBomb (events + 360), SkillCorner, Wyscout, Metrica (sample games 1 and 2). Metrica's EPTS/JSON game 3 is not read. |
 | Authenticated StatsBomb API / local files  | —     | Out of scope                                                                                                                |
 | Image export (PNG/SVG) with logo/watermark | 1     | ⬜                                                                                                                          |
 
@@ -160,12 +160,13 @@ Complete as of 2026-09-06.
 - [x] Open-data loaders: StatsBomb events ([PR #50](https://github.com/yribeiro/pitchkit/pull/50))
       and 360 ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), SkillCorner
       ([PR #58](https://github.com/yribeiro/pitchkit/pull/58)), Wyscout
-      ([PR #72](https://github.com/yribeiro/pitchkit/pull/72)).
+      ([PR #72](https://github.com/yribeiro/pitchkit/pull/72)), Metrica tracking and events.
 - [ ] Remaining pitch types. Done: `skillcorner` with general centre-origin support
       ([PR #62](https://github.com/yribeiro/pitchkit/pull/62)), and `wyscout`, which also
       fixed square rendering of normalised grids
-      ([#2](https://github.com/yribeiro/pitchkit/issues/2)). Remaining: Tracab,
-      SecondSpectrum, Metrica, custom; a public `Standardizer`.
+      ([#2](https://github.com/yribeiro/pitchkit/issues/2)), and `metrica`, which also
+      fixed arcs and goal boxes on normalised grids. Remaining: Tracab, SecondSpectrum, custom;
+      a public `Standardizer`.
 - [x] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)):
       `<RadarChart>` and `<PizzaChart>`.
 - [ ] Goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)).

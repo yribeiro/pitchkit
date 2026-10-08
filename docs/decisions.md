@@ -95,7 +95,12 @@ drew them square ([issue #2](https://github.com/yribeiro/pitchkit/issues/2)). Th
 fields existed from the start, but nothing read them. Measured at 600×400: Opta went from
 aspect 1.0000 to 1.5441. Fixed via [PR #72](https://github.com/yribeiro/pitchkit/pull/72).
 
-**Consequences:** Overriding the dimensions of a normalised grid throws. Test files derive
+**Consequences:** Marking radii stay in metres on a normalised grid, because a circle has
+one radius and the two axes cover different amounts of grass. `computePitchGeometry`
+converts through `displayUnitScale` wherever a radius meets a grid coordinate (penalty-arc
+and corner-arc endpoints), and so does `pitchGoalBoxDepth`. On a `0..100` grid that was a
+small error; Metrica's `0..1` grid made it a corner arc three pitch lengths long.
+Overriding the dimensions of a normalised grid throws. Test files derive
 their pitch-type list from `Object.keys(PITCH_DIMENSIONS)` rather than hardcoding it. The
 hardcoded lists had silently left `skillcorner` uncovered in six files.
 
@@ -413,13 +418,13 @@ intentional.
 ### D13. One `@pitchkit/data-providers` package, one entry point per provider
 
 **Decision:** Loaders live in `@pitchkit/data-providers`, exported per provider
-(`/statsbomb`, `/skillcorner`, `/wyscout`).
+(`/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`).
 
 **Why:** More providers were planned ([#30](https://github.com/yribeiro/pitchkit/issues/30)),
 and one package per provider would multiply release overhead.
 
 **Consequences:** The package depends on neither `core` nor `react`. Its only runtime
-dependency is `csv-parse`, for SkillCorner's CSV files; that is the project's only
+dependency is `csv-parse`, for SkillCorner's and Metrica's CSV files; that is the project's only
 third-party runtime dependency anywhere.
 
 ### D14. The provider's data stays the provider's
@@ -432,7 +437,11 @@ predicate functions (`isGoal`, `hasTag`), not derived fields.
 **Why:** A user can read the provider's own specification alongside the types with no
 mapping table, and a predicate can be fixed without changing the data shape.
 
-**Consequences:** Third-party mirrors are acceptable only when they rename nothing. That is
+**Consequences:** Third-party mirrors are acceptable only when they rename nothing. Metrica's
+headers are kept verbatim, spaces and units included (`event["Start Frame"]`). Its tracking
+file is one wide row per frame, so the loader gathers each player's column pair into
+`players` and the ball's into `ball`; those, like every addition, are lowercase, and the
+player names stay the header's own spelling. That is
 what makes the Wyscout per-match mirror usable (see
 [architecture: data provider facts](./architecture.md#data-provider-facts)).
 

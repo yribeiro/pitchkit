@@ -2,7 +2,7 @@ import type { PitchDimensions } from "../../dimensions/types.js";
 import {
   computeGoalBox,
   computeStripeBands,
-  goalBoxDepth,
+  pitchGoalBoxDepth,
   resolveStripeCount,
 } from "../../scene/appearance.js";
 import type { Arc, Circle, Line, PitchGeometry, Rect } from "../../scene/geometry.js";
@@ -201,7 +201,7 @@ export function paintPitchGeometry(
     appendArc(group, doc, arc, transform, "corner-arc");
   }
 
-  const depth = goalBoxDepth(dimensions.markings.cornerArcRadius);
+  const depth = pitchGoalBoxDepth(dimensions);
   appendGoals(group, doc, geometry.goals, transform, appearance.goalType ?? "line", depth);
 
   // The stroke-only border paints last: SVG strokes are centered on the path,

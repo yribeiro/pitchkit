@@ -41,13 +41,14 @@ coordinates. One scale-and-transform pipeline (`transform/pixel-transform.ts`) m
 pixels for the current container size, orientation and crop, so every layer aligns and
 resizes together.
 
-Pitch types shipped: `statsbomb`, `opta`, `wyscout`, `uefa`, `skillcorner`. Two
+Pitch types shipped: `statsbomb`, `opta`, `wyscout`, `uefa`, `skillcorner`, `metrica`. Two
 non-obvious cases:
 
 - Centre-origin grids convert through an extent frame
   ([D5](./decisions.md#d5-centre-origin-coordinates-are-handled-in-core-never-in-callers);
   see [centre-origin pitches](#centre-origin-pitches)).
-- Normalised `0..100` grids derive their shape from real metres
+- Normalised grids (`0..100`, and Metrica's `0..1`) derive their shape from real metres,
+  and their marking radii stay in metres
   ([D6](./decisions.md#d6-normalised-grids-derive-their-shape-from-real-metres)).
 
 ## Scene and layers
@@ -231,7 +232,7 @@ npm workspaces + Turborepo.
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@pitchkit/core`           | Dimensions, transforms, scene model, geometry, Canvas painters. Zero runtime dependencies, no React.                                                  |
 | `@pitchkit/react`          | Declarative components (`<Pitch>`, `<Scatter>`, …), responsive sizing, tooltips, `usePitch()`. Depends only on `core`. Ships the bundled Agent Skill. |
-| `@pitchkit/data-providers` | Open-data loaders: `/statsbomb`, `/skillcorner`, `/wyscout`. Depends on neither `core` nor `react`; its one runtime dependency is `csv-parse`.        |
+| `@pitchkit/data-providers` | Open-data loaders: `/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`. Depends on neither `core` nor `react`; its one runtime dependency is `csv-parse`. |
 | `apps/docs`                | The docs and showcase site (Next.js App Router, Fumadocs, Tailwind v4).                                                                               |
 | `examples/react-vite`      | Vite app for eyeballing components.                                                                                                                   |
 | `examples/react-nextjs`    | Next.js app that verifies SSR under a real server.                                                                                                    |
@@ -544,3 +545,33 @@ Re-verify against a fresh sample before "correcting" any of them.
   `Interruption` and `Offside`; the goal-mouth tags (1201–1223) record where a shot went
   (`shotGoalZone`). The exclusion is keyed on event type, not value: `(100, 100)` is a
   placeholder on a goal kick but a genuine corner-flag position on a corner.
+
+### Metrica
+
+- **Only sample games 1 and 2 are read.** They are CSV: one events file and one tracking file
+  per team. Game 3 is FIFA EPTS (XML metadata, a text tracking format) with JSON events, and
+  would need its own parsers. The repository carries no licence file; its README asks that
+  public work acknowledge Metrica as the source.
+- **The grid is `0..1` on both axes, origin top-left, y down**, on a 105×68 m pitch for both
+  games. Event and tracking positions can stray just outside it: a goal ends at `x = 1.01`.
+- **Coordinates are absolute, and teams swap ends at half time.** Which end differs by game:
+  Home attack towards `x = 1` in game 1's first half and towards `x = 0` in game 2's.
+  `attackingDirection` takes the side's mean x on a kick-off frame. It agrees with every
+  side's shot positions in all four halves, and it is wrong mid-play: at frame 2250 of game 1
+  Home are camped in the Away half.
+- **The two tracking files are row-aligned.** Every frame appears in both, in order, and both
+  carry identical ball columns. The ball is `NaN` in 39% (game 1) and 41% (game 2) of frames.
+  At 25 fps a game is 141,000 to 145,000 frames, and 30 to 33 MB per file.
+- **Events share the tracking clock.** `Start Frame` is a tracking `Frame`: a pass's start
+  position sits a median 0.004 from the passer's tracked position on that frame. `From`/`To`
+  are tracking column headers, verbatim. Game 2's away file spells one `Player 26`, with a
+  space, and so do its events.
+- **An own goal is a `BALL OUT` qualified `GOAL`**, credited to the side that conceded.
+  Metrica's event definitions say so, and the next kick-off confirms it: game 1's is followed
+  by a Home kick-off, making it 3-1, not 3-0. `isGoal` reads shots only.
+- **A pass always reaches a teammate.** One that doesn't is `BALL LOST` or `BALL OUT`. A goal
+  kick is a `PASS` (or `BALL LOST`) qualified `GOAL KICK`, never a `SET PIECE`.
+- **Ranged reads work.** `raw.githubusercontent.com` answers `Range` with a 206 and CORS. A
+  frame's real offset strays at most 80 KB from a uniform bytes-per-frame estimate, because a
+  substitute's columns are `NaN,NaN` until they come on. Measured live, a 6-second window
+  costs 6 requests and about 590 KB.

@@ -3,7 +3,7 @@ import {
   arcSweepFlag,
   computeGoalBox,
   computeStripeBands,
-  goalBoxDepth,
+  pitchGoalBoxDepth,
   partStyle,
   resolveStripeCount,
 } from "@pitchkit/core";
@@ -113,7 +113,7 @@ function PitchMarkings({
   dimensions: PitchDimensions;
   appearance?: PitchAppearance;
 }) {
-  const depth = goalBoxDepth(dimensions.markings.cornerArcRadius);
+  const depth = pitchGoalBoxDepth(dimensions);
   const goalType = appearance.goalType ?? "line";
 
   return (

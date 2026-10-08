@@ -16,7 +16,7 @@ without the marker are plain static values.
 
 | Prop          | Type                                                            | Default        | Notes                                                                                                                              |
 | ------------- | --------------------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `type`        | `"statsbomb" \| "opta" \| "uefa" \| "skillcorner" \| "wyscout"` | —              | Required. The provider coordinate system.                                                                                          |
+| `type`        | `"statsbomb" \| "opta" \| "uefa" \| "skillcorner" \| "wyscout" \| "metrica"` | —              | Required. The provider coordinate system.                                                                                          |
 | `dimensions`  | `{ length?, width? }`                                           | —              | Real extent of this pitch, for real-unit providers (SkillCorner is 104-106 m). Markings do not scale. Throws for normalized grids. |
 | `orientation` | `"horizontal" \| "vertical"`                                    | `"horizontal"` | Display concern only; never changes the data's units.                                                                              |
 | `width`       | `number`                                                        | —              | Fixed pixel width. Pass with `height` or not at all.                                                                               |

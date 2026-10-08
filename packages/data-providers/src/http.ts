@@ -58,3 +58,47 @@ export async function fetchText(url: string, options: LoadOptions = {}): Promise
     throw new DataProviderError("network", `Could not read the body of ${url}.`, { url, cause });
   }
 }
+
+/**
+ * Yield a response body line by line as it arrives, without the trailing
+ * `\n`. Leaving the loop early cancels the reader, which aborts the download
+ * rather than letting the rest arrive unread.
+ *
+ * Falls back to reading the whole body when there is no stream (a mocked
+ * fetch, or a runtime without WHATWG streams).
+ */
+export async function* streamLines(response: Response): AsyncGenerator<string, void, undefined> {
+  const body = response.body;
+  if (!body) {
+    const text = await response.text();
+    yield* text.split("\n");
+    return;
+  }
+
+  const decoder = new TextDecoder();
+  const reader = body.getReader();
+  let buffered = "";
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffered += decoder.decode(value, { stream: true });
+      // Walk an index rather than re-slicing the buffer per line: a chunk
+      // can hold hundreds of short lines, and copying the remainder each
+      // time is quadratic in the chunk size.
+      let start = 0;
+      let newline = buffered.indexOf("\n", start);
+      while (newline !== -1) {
+        yield buffered.slice(start, newline);
+        start = newline + 1;
+        newline = buffered.indexOf("\n", start);
+      }
+      buffered = buffered.slice(start);
+    }
+    buffered += decoder.decode();
+    if (buffered !== "") yield buffered;
+  } finally {
+    // Runs on `break` too, which is what stops the download.
+    await reader.cancel().catch(() => undefined);
+  }
+}
