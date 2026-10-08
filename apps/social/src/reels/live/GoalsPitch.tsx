@@ -416,22 +416,27 @@ function Space360({ view }: { view: ViewState }) {
 }
 
 /**
- * The moves as snail trails: each line's tail chases its head, so a move is
- * gone a beat after it's made and the pitch is clear when the shot comes.
+ * The moves, drawn one per beat. Only the latest two stay on: when a third
+ * starts, the oldest fades, and as the shot is struck the last two fade too,
+ * so the shot and its goal angle have the pitch to themselves.
  */
 function Moves({ view }: { view: ViewState }) {
   const { build, s, after } = view;
   const { transform } = usePitch();
+  const shotFade = 1 - interpolate(s, [3, 3.35], [0, 1], clamp);
   const drawn = build.steps.slice(0, 3).flatMap((m, j) => {
     if (m.kind === "foul") return [];
     const head = glide(Math.min(Math.max(s - j, 0), 1));
-    const tail = glide(Math.min(Math.max((s - j - 0.35) / 0.65, 0), 1));
-    if (head - tail < 0.03) return [];
+    const old = 1 - interpolate(s, [j + 2, j + 2.3], [0, 1], clamp);
+    const opacity = Math.min(old, shotFade);
+    if (head <= 0 || opacity <= 0) return [];
     return [
       {
+        j,
         kind: m.kind,
-        x: lerp(m.x, m.endX, tail),
-        y: lerp(m.y, m.endY, tail),
+        opacity,
+        x: m.x,
+        y: m.y,
         x2: lerp(m.x, m.endX, head),
         y2: lerp(m.y, m.endY, head),
       },
@@ -453,26 +458,33 @@ function Moves({ view }: { view: ViewState }) {
   const [fx, fy] = foul ? transform.toPixel([foul.x, foul.y]) : [0, 0];
   return (
     <g>
-      <Comet
-        data={drawn.filter((m) => m.kind === "carry")}
-        x={(m) => m.x}
-        y={(m) => m.y}
-        x2={(m) => m.x2}
-        y2={(m) => m.y2}
-        color="white"
-        gradient
-        endWidth={11 * S}
-      />
-      <Arrows
-        data={drawn.filter((m) => m.kind === "pass" || m.kind === "shot")}
-        x={(m) => m.x}
-        y={(m) => m.y}
-        x2={(m) => m.x2}
-        y2={(m) => m.y2}
-        stroke="white"
-        strokeWidth={5 * S}
-        headSize={18 * S}
-      />
+      {drawn.map((m) => (
+        <g key={m.j} opacity={m.opacity}>
+          {m.kind === "carry" ? (
+            <Comet
+              data={[m]}
+              x={(d) => d.x}
+              y={(d) => d.y}
+              x2={(d) => d.x2}
+              y2={(d) => d.y2}
+              color="white"
+              gradient
+              endWidth={11 * S}
+            />
+          ) : (
+            <Arrows
+              data={[m]}
+              x={(d) => d.x}
+              y={(d) => d.y}
+              x2={(d) => d.x2}
+              y2={(d) => d.y2}
+              stroke="white"
+              strokeWidth={5 * S}
+              headSize={18 * S}
+            />
+          )}
+        </g>
+      ))}
       {foul && foulFade > 0 && (
         <g
           transform={`translate(${fx + buzz} ${fy - buzz * 0.4}) scale(${pop})`}
@@ -555,6 +567,17 @@ export function GoalsPitch({
     scale: lerp(WIDE.scale, to.scale, k),
     top: lerp(WIDE.top, view?.intro ? 1060 - 400 : 435, k),
   };
+  // The champions slide: the flag pitch turns level on screen and drops so the
+  // sun sits below "World Champions".
+  const level = SWOOP(win);
+  if (level > 0) {
+    cam.turn = lerp(cam.turn, 0, level);
+    cam.tilt = lerp(cam.tilt, 28, level);
+    cam.scale = lerp(cam.scale, 0.5, level);
+    cam.top = lerp(cam.top, 640, level);
+    cam.x = lerp(cam.x, 60, level);
+    cam.y = lerp(cam.y, 40, level);
+  }
   const camera = [
     `translate(540px, ${cam.top}px)`,
     "perspective(2200px)",
