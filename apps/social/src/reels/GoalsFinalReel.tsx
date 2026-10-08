@@ -8,7 +8,6 @@
  * with the other reel 06 cuts (see live/MatchShell.tsx).
  */
 import { Easing, interpolate } from "remotion";
-import { Mark } from "../components/Logo";
 import { wcGoals360 } from "../data";
 import { C, FONT } from "../theme";
 import { GoalsPitch, goalsCutStepCues } from "./live/GoalsPitch";
@@ -73,26 +72,7 @@ function Hook(frame: number) {
       }}
     >
       <div style={{ ...text(118), ...line(0) }}>3 PASSES.</div>
-      <div style={{ ...text(92, "#fde047"), ...line(1) }}>1 WORLD CUP GOAL.</div>
-      <div
-        style={{
-          ...line(2),
-          marginTop: 18,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 10,
-          fontFamily: FONT.sans,
-          fontWeight: 800,
-          fontSize: 26,
-          color: C.text,
-          background: "rgba(0,0,0,0.75)",
-          border: "1px solid rgba(52,211,153,0.35)",
-          borderRadius: 999,
-          padding: "8px 18px",
-        }}
-      >
-        <Mark size={26} /> Built with PitchKit
-      </div>
+      <div style={{ ...text(92, C.accent), ...line(1) }}>1 WORLD CUP GOAL.</div>
     </div>
   );
 }
@@ -110,6 +90,7 @@ export const GoalsFinalReel = createMatchReel(
   {
     save: false,
     pauses: false,
+    titleAccent: C.accent,
     intro: GOALS_CUT_BEATS.intro,
     hook: Hook,
     goalSubs,

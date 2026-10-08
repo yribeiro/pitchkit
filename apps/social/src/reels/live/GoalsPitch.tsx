@@ -273,7 +273,7 @@ function stepLabel(step: GoalStep) {
   return "";
 }
 
-function StepChip({ view }: { view: ViewState }) {
+function StepChip({ view, top }: { view: ViewState; top: number }) {
   const j = Math.floor(view.s);
   if (j > 2 || view.k < 0.6) return null;
   const local = view.s - j;
@@ -283,7 +283,7 @@ function StepChip({ view }: { view: ViewState }) {
     <div
       style={{
         position: "absolute",
-        top: 26,
+        top,
         left: 0,
         right: 0,
         display: "flex",
@@ -525,6 +525,12 @@ export function GoalsPitch({
     `translate(${-(PAD.left + cam.x * K)}px, ${-(PAD.top + cam.y * K)}px)`,
   ].join(" ");
 
+  // The step label sits just above the halfway line, wherever the camera has
+  // put it, kept on screen (the cold open runs full height).
+  const towardsGoal = !view || view.build.argentina ? 1 : -1;
+  const halfway = cam.top + towardsGoal * (cam.x - 60) * K * cam.scale;
+  const chipTop = Math.min(Math.max(halfway - 92, 120), view?.intro ? 1300 : 740);
+
   const players = playersAt(u);
   const ball = ballAt(u);
   const wide = 1 - smooth(Math.min(k / 0.6, 1));
@@ -589,7 +595,7 @@ export function GoalsPitch({
           </PitchStage>
         </div>
       </div>
-      {view && <StepChip view={view} />}
+      {view && <StepChip view={view} top={chipTop} />}
       {shootout > 0 && (
         <div style={{ position: "absolute", inset: 0, opacity: shootout }}>
           <GoalMouth T={T} frame={frame} />

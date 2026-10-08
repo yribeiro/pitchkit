@@ -54,6 +54,8 @@ export interface MatchReelOptions {
   goalSubs?: string[];
   /** The comment CTA: four lines, the middle two in PitchKit green. */
   cta?: [string, string, string, string];
+  /** Colour of the accent captions ("PENALTIES", "EXTRA TIME"). Default yellow. */
+  titleAccent?: string;
   /** Extra sound cues on top of the shared ones. */
   cues?: { at: number; name: string; volume: number; length: number }[];
 }
@@ -66,6 +68,7 @@ export function createMatchReel(
   const withSave = options.save ?? true;
   const withPauses = options.pauses ?? true;
   const INTRO = options.intro ?? 0;
+  const ACCENT = options.titleAccent ?? "#fde047";
   const { FRAME, GOALS, KICKS, CHAMPIONS, VALUE_AT, CTA_AT, END_AT, uAt } = T;
   const LIVE_DURATION = T.DURATION;
 
@@ -234,7 +237,7 @@ export function createMatchReel(
       sub: sub(3, "95 seconds later. 2–2."),
       color: FRA,
     },
-    { at: FRAME.extraTime, hold: 40, title: "EXTRA TIME", color: "#fde047", kind: "pause" },
+    { at: FRAME.extraTime, hold: 40, title: "EXTRA TIME", color: ACCENT, kind: "pause" },
     {
       at: FRAME.messi2,
       hold: goalHold(54),
@@ -257,7 +260,7 @@ export function createMatchReel(
       color: C.text,
       kind: "save",
     },
-    { at: FRAME.whistle, hold: 28, title: "PENALTIES", color: "#fde047" },
+    { at: FRAME.whistle, hold: 28, title: "PENALTIES", color: ACCENT },
     ...KICKS.map((k) => ({
       at: k.frame + 6,
       hold: FRAME.kickGap - 2,
@@ -554,7 +557,7 @@ export function createMatchReel(
         <div style={big(64)}>MINUTES ON TOP</div>
         {row("ARG", TOP_MINUTES.home, ARG, 0)}
         {row("FRA", TOP_MINUTES.away, FRA, 1)}
-        <div style={{ ...big(64, "#fde047"), marginTop: 6 }}>AND IT STILL WENT TO PENALTIES.</div>
+        <div style={{ ...big(64, ACCENT), marginTop: 6 }}>AND IT STILL WENT TO PENALTIES.</div>
         <div
           style={{
             display: "flex",
