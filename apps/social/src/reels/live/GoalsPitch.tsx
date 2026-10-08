@@ -203,14 +203,27 @@ interface ViewState {
   intro: boolean;
 }
 
+/** Step-time at frame 0 of the cold open: Messi's pass has only just left his foot. */
+const INTRO_S0 = 0.1;
+
 function viewAt(T: Timeline, frame: number): ViewState | null {
-  // The cold open: Di María's build-up, already mid-move, stopping short of the shot.
+  // The cold open: Di María's build-up, stopping short of the shot. Frame 0 is
+  // already halfway through the zoom from the tilted pitch into bird's-eye, so
+  // the first thing on screen is the camera moving and Messi's pass drawing in.
   if (frame < B.intro) {
+    const zoomIn = interpolate(frame, [0, 16], [0.5, 1], {
+      ...clamp,
+      easing: Easing.out(Easing.cubic),
+    });
+    const pullOut = interpolate(frame, [B.intro - 14, B.intro], [1, 0], {
+      ...clamp,
+      easing: SWOOP,
+    });
     return {
       build: BUILDS[1]!,
       index: 1,
-      k: interpolate(frame, [B.intro - 14, B.intro], [1, 0], { ...clamp, easing: SWOOP }),
-      s: Math.min(0.35 + frame / 17, 2.95),
+      k: Math.min(zoomIn, pullOut),
+      s: Math.min(INTRO_S0 + frame / 17, 2.95),
       after: 0,
       intro: true,
     };
@@ -235,7 +248,7 @@ function viewAt(T: Timeline, frame: number): ViewState | null {
 
 /** Step times at which each move starts: the build-up's ticks, for the sound. */
 export function goalsCutStepCues(T: Timeline) {
-  const intro = [0, 1, 2].map((j) => Math.max(0, Math.round((j - 0.35) * 17)));
+  const intro = [0, 1, 2].map((j) => Math.max(0, Math.round((j - INTRO_S0) * 17)));
   const goals = T.GOALS.flatMap((g) =>
     [0, 1, 2].map((j) => g.frame - GOAL_LEAD + B.morph + j * B.step),
   );
@@ -316,7 +329,10 @@ function Space360({ view }: { view: ViewState }) {
   const dots = dotsAt(build, s);
   const area = areaAt(build, s).map((p) => transform.toPixel(p));
   const turn = build.close.turn;
-  const fade = smooth(Math.min(Math.max((k - 0.4) / 0.6, 0), 1));
+  // The cold open starts mid-zoom with everything already on; goal views fade in.
+  const fade = view.intro
+    ? smooth(Math.min(k / 0.5, 1))
+    : smooth(Math.min(Math.max((k - 0.4) / 0.6, 0), 1));
   const id = `cam-${index}`;
   return (
     <g opacity={fade}>
@@ -552,7 +568,13 @@ export function GoalsPitch({
               {view && (
                 <g opacity={view.k > 0 ? 1 : 0}>
                   <Space360 view={view} />
-                  <g opacity={smooth(Math.min(Math.max((view.k - 0.5) / 0.5, 0), 1))}>
+                  <g
+                    opacity={
+                      view.intro
+                        ? smooth(Math.min(view.k / 0.5, 1))
+                        : smooth(Math.min(Math.max((view.k - 0.5) / 0.5, 0), 1))
+                    }
+                  >
                     <Moves view={view} />
                   </g>
                 </g>

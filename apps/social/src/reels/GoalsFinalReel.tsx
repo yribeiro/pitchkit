@@ -46,7 +46,8 @@ function Hook(frame: number) {
   const end = GOALS_CUT_BEATS.intro + 8;
   if (frame > end) return null;
   const line = (i: number) => {
-    const t = interpolate(frame, [i * 4, 6 + i * 4], [0, 1], {
+    // The headline is up from frame 0; the rest follows a beat apart.
+    const t = interpolate(frame, [i * 5 - 5, i * 5 + 1], [0, 1], {
       ...clamp,
       easing: Easing.out(Easing.cubic),
     });

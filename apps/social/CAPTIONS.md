@@ -627,7 +627,7 @@ cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
 ## Reel 06, goals cut (`reel-06-goals-final.mp4`, 39 s)
 
 Every goal of the 2022 World Cup final and the three moves before it, on StatsBomb 360
-data (`npm run snapshot:wc-goals360`). It opens cold on Di María's goal mid-move, Messi →
+data (`npm run snapshot:wc-goals360`). It opens cold on Di María's goal, already halfway through the camera's zoom from the tilted pitch into bird's-eye, Messi →
 Álvarez → Mac Allister, under "3 PASSES. 1 WORLD CUP GOAL." and cuts away before the shot
 (the open loop). Then the clock runs on the tilted pitch, with the network cut's drifting
 discs. At each goal the camera curves in and flattens to a bird's-eye view of the attacking
