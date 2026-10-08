@@ -587,9 +587,7 @@ export function createMatchReel(
       return { opacity: Math.min(t * 1.5, 1), transform: `translateY(${(1 - t) * 50}px)` };
     };
     return (
-      <AbsoluteFill
-        style={{ background: "rgba(0,0,0,0.9)", justifyContent: "center", padding: "0 80px 120px" }}
-      >
+      <AbsoluteFill style={{ background: C.bg, justifyContent: "center", padding: "0 80px 120px" }}>
         <div style={{ ...big(140), ...line(0) }}>{cta[0]}</div>
         <div style={{ ...big(140, C.accent), ...line(1) }}>{cta[1]}</div>
         <div style={{ ...big(140, C.accent), ...line(2) }}>{cta[2]}</div>
