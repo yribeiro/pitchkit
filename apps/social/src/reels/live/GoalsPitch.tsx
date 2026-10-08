@@ -13,6 +13,7 @@
  * towards the edge of what the camera saw.
  */
 import { Arrows, Comet, GoalAngle, Pitch, Scatter, usePitch, Voronoi } from "@pitchkit/react";
+import type { CSSProperties } from "react";
 import { Easing, interpolate } from "remotion";
 import { PitchStage } from "../../components/Chrome";
 import { wcGoals360 } from "../../data";
@@ -25,7 +26,6 @@ import {
   GoalMouth,
   K,
   lerp,
-  NIGHT,
   Numbers,
   PH,
   playersAt,
@@ -40,6 +40,12 @@ import type { Timeline } from "./timeline";
 import { GOAL_LEAD, GOALS_CUT_BEATS as B } from "./timeline";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
+/** Reel 05's broadcast grass: bright stripes and crisp white lines. */
+const GRASS = {
+  "--pitch-surface": "#15693a",
+  "--pitch-stripe": "rgba(255, 255, 255, 0.07)",
+  "--pitch-lines": "rgba(255, 255, 255, 0.9)",
+} as CSSProperties;
 const glide = Easing.inOut(Easing.cubic);
 
 /* 360 tracks ------------------------------------------------------------------ */
@@ -535,7 +541,7 @@ export function GoalsPitch({
             transform: camera,
           }}
         >
-          <PitchStage style={NIGHT}>
+          <PitchStage style={GRASS}>
             <Pitch type="statsbomb" width={PW} height={PH} padding={PAD} appearance={appearance}>
               {win > 0 && <FlagOnPitch amount={win} />}
               {wide > 0 && (
@@ -591,7 +597,7 @@ export function GoalsPitch({
       )}
       <BrandChip
         label="<Voronoi /> <Arrows /> <GoalAngle />"
-        opacity={view && frame >= B.intro ? view.k : 0}
+        opacity={view && frame >= B.intro ? Math.min(view.after, view.k) : 0}
       />
     </>
   );

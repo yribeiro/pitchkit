@@ -638,7 +638,7 @@ looking. The shot goes in with its `<GoalAngle />`, and the caption gives the ch
 names or how the penalty was won. Penalties show the two moves before the foul (or
 Montiel's handball), the foul, then the kick from the spot. No save: straight from the
 hat-trick to penalties. Then the shootout, Argentina's flag on the pitch and a two-sided
-CTA (rule 23). Background is reel 05's penalty green. For the cover, use
+CTA (rule 23). The pitch is reel 05's broadcast grass on reel 05's penalty-green background. For the cover, use
 `out/reel-06-goals-cover.png` (the cold open, with the hook).
 
 **Instagram**
