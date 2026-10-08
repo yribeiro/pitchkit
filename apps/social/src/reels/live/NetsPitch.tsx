@@ -37,7 +37,7 @@ const K = (PW - PAD.left - PAD.right) / 120;
 const S = PW / 1500;
 
 const NIGHT = {
-  "--pitch-surface": "#0b1220",
+  "--pitch-surface": "#0a2616",
   "--pitch-stripe": "rgba(255, 255, 255, 0.025)",
   "--pitch-lines": "rgba(255, 255, 255, 0.45)",
   "--pitch-line-width": "2",
@@ -293,7 +293,7 @@ function BrandChip({ label, opacity }: { label: string; opacity: number }) {
         fontFamily: FONT.mono,
         fontSize: 22,
         color: C.accent,
-        background: "rgba(4,6,12,0.82)",
+        background: "rgba(0,0,0,0.82)",
         border: "1px solid rgba(52,211,153,0.35)",
         borderRadius: 999,
         padding: "7px 16px",

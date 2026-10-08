@@ -258,7 +258,7 @@ export function createMatchReel(
           style={{
             ...big(76, m.color),
             display: "inline-block",
-            background: "rgba(4,6,12,0.82)",
+            background: "rgba(0,0,0,0.82)",
             borderRadius: 18,
             padding: "12px 26px 14px",
           }}
@@ -306,7 +306,7 @@ export function createMatchReel(
   const momentumVars = {
     "--pitch-series-1": ARG,
     "--pitch-series-2": FRA,
-    "--pitch-chart-surface": "#05060b",
+    "--pitch-chart-surface": "#000000",
     "--pitch-chart-text": "rgba(238, 245, 241, 0.9)",
     "--pitch-chart-muted": "rgba(238, 245, 241, 0.55)",
     "--pitch-grid": "rgba(255, 255, 255, 0.06)",
@@ -324,7 +324,7 @@ export function createMatchReel(
           right: 0,
           padding: "18px 40px 0",
           height: 260,
-          background: "#05060b",
+          background: "#000000",
           borderTop: "1px solid rgba(255,255,255,0.08)",
         }}
       >
@@ -430,7 +430,7 @@ export function createMatchReel(
             fontWeight: 800,
             fontSize: 26,
             color: C.text,
-            background: "rgba(4,6,12,0.75)",
+            background: "rgba(0,0,0,0.75)",
             border: "1px solid rgba(52,211,153,0.35)",
             borderRadius: 999,
             padding: "8px 18px",
@@ -508,7 +508,7 @@ export function createMatchReel(
           right: 50,
           opacity: t,
           transform: `translateY(${(1 - t) * 30}px)`,
-          background: "rgba(4,6,12,0.88)",
+          background: "rgba(0,0,0,0.88)",
           border: "2px solid rgba(255,255,255,0.1)",
           borderRadius: 28,
           padding: "34px 36px",
@@ -549,7 +549,7 @@ export function createMatchReel(
     };
     return (
       <AbsoluteFill
-        style={{ background: "rgba(3,4,8,0.9)", justifyContent: "center", padding: "0 80px 120px" }}
+        style={{ background: "rgba(0,0,0,0.9)", justifyContent: "center", padding: "0 80px 120px" }}
       >
         <div style={{ ...big(140), ...line(0) }}>WHICH MATCH</div>
         <div style={{ ...big(140, C.accent), ...line(1) }}>SHOULD WE</div>
@@ -618,7 +618,7 @@ export function createMatchReel(
     return (
       <AbsoluteFill
         style={{
-          background: "radial-gradient(120% 70% at 50% 45%, #141022 0%, #05060b 70%)",
+          background: "radial-gradient(circle at 50% 45%, #0d3b22 0%, #000 70%)",
           fontFamily: FONT.sans,
           color: C.text,
         }}
