@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pitch, Scatter } from "@pitchkit/react";
+import { Pitch, Scatter, Voronoi } from "@pitchkit/react";
 import {
   fetchEvents,
   fetchTrackingWindow,
@@ -138,22 +138,32 @@ export function MetricaTrackingBasic() {
         {failed
           ? "Couldn't reach Metrica's sample data."
           : frame
-            ? `Frame ${frame.Frame} · ${frames.length} frames read from two 32 MB files · ${FPS} fps`
+            ? `${frames.length} frames · 105×68 m pitch · playing at ${FPS} fps`
             : "Reading the frames around the goal…"}
       </p>
 
       <Pitch type="metrica" appearance={docsAppearance}>
         {frame && (
           <>
+            <Voronoi
+              data={frame.players}
+              x={(p) => p.x}
+              y={(p) => p.y}
+              fill={fill}
+              fillOpacity={0.13}
+              stroke="rgba(255,255,255,0.18)"
+              strokeWidth={0.4}
+            />
             <Scatter
               data={frame.players}
               x={(p) => p.x}
               y={(p) => p.y}
-              r={5}
+              // The event's `From` is the tracking column's own spelling, so
+              // this is how the scorer is picked out.
+              r={(p) => (p.player === goal?.From ? 3.6 : 2.4)}
               fill={fill}
-              // The event's `From` is the tracking column's own spelling.
               stroke={(p) => (p.player === goal?.From ? "#fff" : fill(p))}
-              strokeWidth={(p) => (p.player === goal?.From ? 2 : 1)}
+              strokeWidth={(p) => (p.player === goal?.From ? 1.2 : 0.7)}
               tooltip={(p) => `${p.team} #${p.jersey ?? "?"}`}
             />
             {/* Untracked in about 40% of frames, mostly while play is stopped. */}
@@ -162,10 +172,10 @@ export function MetricaTrackingBasic() {
                 data={[frame.ball]}
                 x={(b) => b.x}
                 y={(b) => b.y}
-                r={3}
+                r={1.4}
                 fill="#fff"
                 stroke="#111"
-                strokeWidth={1}
+                strokeWidth={0.4}
               />
             )}
           </>
