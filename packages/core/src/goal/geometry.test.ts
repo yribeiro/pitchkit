@@ -74,7 +74,10 @@ describe("computeGoalGeometry", () => {
       y: marker.line.y1,
       text: "7.32 m",
     });
-    expect(marker.labelBox.x + marker.labelBox.width / 2).toBeCloseTo(marker.label.x, 1);
+    expect((marker.labelBox?.x ?? 0) + (marker.labelBox?.width ?? 0) / 2).toBeCloseTo(
+      marker.label?.x ?? NaN,
+      1,
+    );
     for (const extension of marker.extensions) {
       expect(extension.y1).toBeGreaterThan(extension.y2);
     }
@@ -86,8 +89,8 @@ describe("computeGoalGeometry", () => {
     expect(marker.line.y2).toBeCloseTo(geometry.mouth.y, 2);
     expect(marker.line.x1).toBeGreaterThan(layout.left);
     expect(marker.line.x1).toBeLessThan(geometry.posts[0].x);
-    expect(marker.label.text).toBe("2.44 m");
-    expect(marker.labelBox.x).toBeGreaterThan(layout.left);
+    expect(marker.label?.text).toBe("2.44 m");
+    expect(marker.labelBox?.x).toBeGreaterThan(layout.left);
   });
 
   it("points each arrowhead at its end of the line", () => {
@@ -97,10 +100,30 @@ describe("computeGoalGeometry", () => {
     expect(tip(right)).toBe(`${geometry.widthMarker.line.x2} ${geometry.widthMarker.line.y2}`);
   });
 
+  it("drops the height label where it would cover the left post (#97 review)", () => {
+    const small = computeGoalGeometry(computeGoalLayout(160, 160 / 2.568));
+    expect(small.heightMarker.label).toBeUndefined();
+    expect(small.heightMarker.labelBox).toBeUndefined();
+    // The arrow still measures, and the width label still fits between the posts.
+    expect(small.heightMarker.line.y1).toBeGreaterThan(small.heightMarker.line.y2);
+    expect(small.widthMarker.label?.text).toBe("7.32 m");
+  });
+
+  it("keeps every label clear of the frame and inside the view at any width it draws", () => {
+    for (const width of [160, 190, 240, 360, 600, 1200]) {
+      const layout = computeGoalLayout(width, width / 2.568);
+      const geometry = computeGoalGeometry(layout);
+      const box = geometry.heightMarker.labelBox;
+      if (!box) continue;
+      expect(box.x).toBeGreaterThanOrEqual(layout.left);
+      expect(box.x + box.width).toBeLessThanOrEqual(geometry.posts[0].x);
+    }
+  });
+
   it("labels in imperial units on request", () => {
     const imperial = computeGoalGeometry(layout, "imperial");
-    expect(imperial.widthMarker.label.text).toBe("8 yd");
-    expect(imperial.heightMarker.label.text).toBe("8 ft");
+    expect(imperial.widthMarker.label?.text).toBe("8 yd");
+    expect(imperial.heightMarker.label?.text).toBe("8 ft");
   });
 });
 

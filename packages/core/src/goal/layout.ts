@@ -103,10 +103,16 @@ export interface GoalPoint {
  *
  * A point outside the view is pinned to its edge and marked `clamped`, the
  * way a radar pins an off-scale value to its rim: a shot far wide still
- * shows which side it went. `inset` pins it that many pixels inside the
- * sides and top, so a mark of that radius stays whole. A height below the
- * ground is pinned to the ground. `undefined` for a missing or non-finite
- * coordinate, which draws nothing rather than a shot at the origin.
+ * shows which side it went. A height below the ground is pinned to the
+ * ground. `undefined` for a missing or non-finite coordinate, which draws
+ * nothing rather than a shot at the origin.
+ *
+ * `inset` draws any point within that many pixels of the sides or top that
+ * many pixels inside them, so a mark of that radius stays whole. It moves
+ * where the point is drawn, never whether it counts as `clamped`: that is
+ * decided against the view itself. A view with no size (a hidden container
+ * measures 0 x 0) has no room to inset into, and every point lands on its
+ * one pixel.
  */
 export function goalPoint(
   layout: GoalLayout,
@@ -118,10 +124,12 @@ export function goalPoint(
   if (y === null || y === undefined || !Number.isFinite(y)) return undefined;
   if (z === null || z === undefined || !Number.isFinite(z)) return undefined;
   const [u, h] = toGoalMetres(frame, y, z);
-  const margin = inset / layout.scale;
+  const clamped = Math.abs(u) > GOAL_VIEW_HALF_WIDTH || h < 0 || h > GOAL_VIEW_TOP;
+  // A zero scale would make the margin infinite and the pixel NaN.
+  const margin = layout.scale > 0 ? Math.min(inset / layout.scale, GOAL_VIEW_HALF_WIDTH) : 0;
   const side = GOAL_VIEW_HALF_WIDTH - margin;
   const cu = Math.min(Math.max(u, -side), side);
-  const ch = Math.min(Math.max(h, 0), GOAL_VIEW_TOP - margin);
+  const ch = Math.min(Math.max(h, 0), Math.max(GOAL_VIEW_TOP - margin, 0));
   const [px, py] = goalPlaneToPixel(layout, cu, ch);
-  return { x: px, y: py, clamped: cu !== u || ch !== h };
+  return { x: px, y: py, clamped };
 }

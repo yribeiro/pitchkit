@@ -116,6 +116,14 @@ describe("GoalView", () => {
     expect(style("goal-line")).toContain("--pitch-lines");
   });
 
+  it("drops the height label on a view too small to fit it beside the post", () => {
+    const { container } = render(<GoalView type="statsbomb" width={160} height={62} />);
+    const marker = part(container, "goal-height-marker")[0];
+    expect(marker?.querySelector("line")).not.toBeNull();
+    expect(marker?.querySelector("text")).toBeNull();
+    expect(part(container, "goal-width-marker")[0]?.textContent).toBe("7.32 m");
+  });
+
   it("renders on the server", () => {
     const html = renderToString(
       <GoalView type="statsbomb">
@@ -154,6 +162,38 @@ describe("GoalShots", () => {
     expect(Number(circle?.getAttribute("cx"))).toBeCloseTo(layout.left + layout.width - 6, 5);
     expect(Number(circle?.getAttribute("cy"))).toBeCloseTo(layout.top + 6, 5);
     expect(circle?.hasAttribute("data-pitchkit-clamped")).toBe(true);
+  });
+
+  it("draws shots at finite positions in a view with no size, as a hidden container measures", () => {
+    const { container } = render(
+      <GoalView type="statsbomb" width={0} height={0}>
+        <GoalShots
+          data={[
+            { y: 40, z: 1 },
+            { y: 60, z: 9 },
+          ]}
+          y={(d) => d.y}
+          z={(d) => d.z}
+        />
+      </GoalView>,
+    );
+    for (const circle of Array.from(
+      container.querySelectorAll('[data-pitchkit-mark="goal-shot"]'),
+    )) {
+      expect(Number.isFinite(Number(circle.getAttribute("cx")))).toBe(true);
+      expect(Number.isFinite(Number(circle.getAttribute("cy")))).toBe(true);
+    }
+  });
+
+  it("does not flag a shot inside the view that is drawn nudged in from its edge", () => {
+    const { container } = render(
+      <GoalView type="metric" width={WIDTH} height={HEIGHT}>
+        <GoalShots data={[{ y: 7.3, z: 1 }]} y={(d) => d.y} z={(d) => d.z} r={10} />
+      </GoalView>,
+    );
+    const circle = container.querySelector('[data-pitchkit-mark="goal-shot"]');
+    expect(Number(circle?.getAttribute("cx"))).toBeCloseTo(layout.left + layout.width - 10, 5);
+    expect(circle?.hasAttribute("data-pitchkit-clamped")).toBe(false);
   });
 
   it("skips a shot with no height, such as a blocked one", () => {

@@ -43,8 +43,13 @@ export interface GoalDimensionMarker {
   /** One open arrowhead path per end. */
   readonly heads: readonly [string, string];
   readonly extensions: readonly [GoalSegment, GoalSegment];
-  readonly label: { readonly x: number; readonly y: number; readonly text: string };
-  readonly labelBox: GoalRect;
+  /**
+   * The label and its backing box, or `undefined` when the box is wider than
+   * the space the marker sits in: on a very small view the height label
+   * would cover the left post.
+   */
+  readonly label?: { readonly x: number; readonly y: number; readonly text: string };
+  readonly labelBox?: GoalRect;
 }
 
 export interface GoalGeometry {
@@ -114,6 +119,22 @@ function labelBox(x: number, y: number, text: string, fontSize: number): GoalRec
   const width = textWidth(text.length, fontSize) + 2 * padX;
   const height = fontSize + 6;
   return rect(x - width / 2, y - height / 2, width, height);
+}
+
+/**
+ * A marker's label on its backing box, centred on (`x`, `y`), or nothing
+ * when the box would be wider than `room`, the space the marker has.
+ */
+function markerLabel(
+  x: number,
+  y: number,
+  text: string,
+  fontSize: number,
+  room: number,
+): Pick<GoalDimensionMarker, "label" | "labelBox"> {
+  const box = labelBox(x, y, text, fontSize);
+  if (box.width + 4 > room) return {};
+  return { label: { x: round(x), y: round(y), text }, labelBox: box };
 }
 
 /** The marker labels for each unit system. */
@@ -200,8 +221,7 @@ export function computeGoalGeometry(
       segment(innerLeft, barTop - 3, innerLeft, widthY - 6),
       segment(innerRight, barTop - 3, innerRight, widthY - 6),
     ],
-    label: { x: round(centreX), y: round(widthY), text: labels.width },
-    labelBox: labelBox(centreX, widthY, labels.width, fontSize),
+    ...markerLabel(centreX, widthY, labels.width, fontSize, innerRight - innerLeft),
   };
 
   // Height: left of the left post, halfway across the space beside it, from
@@ -219,8 +239,7 @@ export function computeGoalGeometry(
       segment(postOuter - 3, groundY, heightX - 6, groundY),
       segment(postOuter - 3, barBottom, heightX - 6, barBottom),
     ],
-    label: { x: round(heightX), y: round(heightMid), text: labels.height },
-    labelBox: labelBox(heightX, heightMid, labels.height, fontSize),
+    ...markerLabel(heightX, heightMid, labels.height, fontSize, postOuter - layout.left),
   };
 
   return {

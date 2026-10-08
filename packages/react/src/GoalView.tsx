@@ -68,7 +68,7 @@ function DimensionMarker({
   marker: GoalDimensionMarker;
   fontSize: number;
 }) {
-  const box = marker.labelBox;
+  const { labelBox: box, label } = marker;
   return (
     <g data-pitchkit-part={part} opacity={0.75}>
       {marker.extensions.map((extension, i) => (
@@ -86,23 +86,27 @@ function DimensionMarker({
           style={{ fill: "none", stroke: LINES, strokeWidth: 1.25, strokeLinejoin: "round" }}
         />
       ))}
-      <rect
-        x={box.x}
-        y={box.y}
-        width={box.width}
-        height={box.height}
-        rx={3}
-        style={{ fill: BACKDROP }}
-      />
-      <text
-        x={marker.label.x}
-        y={marker.label.y}
-        textAnchor="middle"
-        dominantBaseline="central"
-        style={{ fill: LINES, fontSize, fontWeight: 500, fontVariantNumeric: "tabular-nums" }}
-      >
-        {marker.label.text}
-      </text>
+      {box && label && (
+        <>
+          <rect
+            x={box.x}
+            y={box.y}
+            width={box.width}
+            height={box.height}
+            rx={3}
+            style={{ fill: BACKDROP }}
+          />
+          <text
+            x={label.x}
+            y={label.y}
+            textAnchor="middle"
+            dominantBaseline="central"
+            style={{ fill: LINES, fontSize, fontWeight: 500, fontVariantNumeric: "tabular-nums" }}
+          >
+            {label.text}
+          </text>
+        </>
+      )}
     </g>
   );
 }

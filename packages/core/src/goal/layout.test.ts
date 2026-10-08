@@ -110,6 +110,36 @@ describe("goalPoint", () => {
     expect(goalPoint(layout, frame, 40, 1, 6)?.clamped).toBe(false);
   });
 
+  it("flags only shots outside the view, not ones the inset nudges in (#97 review)", () => {
+    // 7.27 m from the middle: inside the 7.32 m window, but within a radius (6 px) of its edge.
+    const near = goalPoint(layout, frame, 47.95, 1, 6);
+    expect(near?.clamped).toBe(false);
+    expect(near?.x).toBeCloseTo(layout.left + layout.width - 6, 10);
+    expect(goalPoint(layout, frame, 60, 1, 6)?.clamped).toBe(true);
+    // Exactly on the edge is inside.
+    expect(goalPoint(layout, GOAL_FRAMES.metric, 7.32, 4)?.clamped).toBe(false);
+  });
+
+  it("gives finite pixels in a view with no size, as a hidden container measures (#97 review)", () => {
+    const empty = computeGoalLayout(0, 0);
+    for (const [y, z] of [
+      [40, 1],
+      [60, 9],
+      [20, -1],
+    ] as const) {
+      const point = goalPoint(empty, frame, y, z, 6);
+      expect(Number.isFinite(point?.x)).toBe(true);
+      expect(Number.isFinite(point?.y)).toBe(true);
+    }
+  });
+
+  it("caps an inset wider than the view at its middle", () => {
+    const tiny = computeGoalLayout(10, 4);
+    const point = goalPoint(tiny, frame, 60, 9, 50);
+    expect(point?.x).toBeCloseTo(tiny.centreX, 10);
+    expect(point?.y).toBeCloseTo(tiny.groundY, 10);
+  });
+
   it("pins a height below the ground to the ground", () => {
     const point = goalPoint(layout, GOAL_FRAMES.metric, 0, -0.5);
     expect(point?.clamped).toBe(true);
