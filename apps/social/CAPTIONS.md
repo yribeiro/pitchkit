@@ -631,12 +631,13 @@ data (`npm run snapshot:wc-goals360`). It opens cold on Di María's goal, alread
 Álvarez → Mac Allister, under "3 PASSES. 1 WORLD CUP GOAL." and cuts away before the shot
 (the open loop). Then the clock runs on the tilted pitch, with the network cut's drifting
 discs. At each goal the camera curves in and flattens to a bird's-eye view of the attacking
-half. The three moves play one per beat, each labelled ("2 · ÁLVAREZ → MAC ALLISTER"), with a
+half. The three moves play one per beat as snail trails (each line's tail chases its head, so the pitch is clear for the shot), each labelled ("2 · ÁLVAREZ → MAC ALLISTER"), with a
 soft tick. The players the broadcast camera could see glide between 360 frames, and the
 space each controlled (`<Voronoi />`) morphs with them, fading out where the camera wasn't
 looking. The shot goes in with its `<GoalAngle />`, and the caption gives the chain of
 names or how the penalty was won. Penalties show the two moves before the foul (or
-Montiel's handball), the foul, then the kick from the spot. No save: straight from the
+Montiel's handball), the foul as a red cross with a buzz, then the kick from the spot with
+only the taker left on the pitch. No save: straight from the
 hat-trick to penalties. Then the shootout, Argentina's flag on the pitch and a two-sided
 CTA (rule 23). The pitch is reel 05's broadcast grass on reel 05's penalty-green background. For the cover, use
 `out/reel-06-goals-cover.png` (the cold open, with the hook).

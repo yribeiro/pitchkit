@@ -83,6 +83,8 @@ function pair(a: Dot[], b: Dot[]): Segment[] {
 
 interface Build {
   argentina: boolean;
+  /** A penalty: the build-up ends at a foul, then the kick from the spot. */
+  penalty: boolean;
   steps: GoalStep[];
   /** Step indices that have a 360 frame. */
   keys: number[];
@@ -150,6 +152,7 @@ const BUILDS: Build[] = wcGoals360.goals.map((g) => {
   const argentina = g.team === "A";
   return {
     argentina,
+    penalty: g.penalty,
     steps: g.steps,
     keys,
     segments,
@@ -255,10 +258,20 @@ function viewAt(T: Timeline, frame: number): ViewState | null {
 /** Step times at which each move starts: the build-up's ticks, for the sound. */
 export function goalsCutStepCues(T: Timeline) {
   const intro = [0, 1, 2].map((j) => Math.max(0, Math.round((j - INTRO_S0) * 17)));
-  const goals = T.GOALS.flatMap((g) =>
-    [0, 1, 2].map((j) => g.frame - GOAL_LEAD + B.morph + j * B.step),
+  const goals = T.GOALS.flatMap((g, i) =>
+    [0, 1, 2]
+      .filter((j) => BUILDS[i]!.steps[j]!.kind !== "foul")
+      .map((j) => g.frame - GOAL_LEAD + B.morph + j * B.step),
   );
   return [...intro, ...goals];
+}
+
+/** Frames at which a penalty's foul lands: the buzz. */
+export function goalsCutFoulCues(T: Timeline) {
+  return T.GOALS.flatMap((g, i) => {
+    const j = BUILDS[i]!.steps.findIndex((m) => m.kind === "foul");
+    return j >= 0 && j < 3 ? [g.frame - GOAL_LEAD + B.morph + j * B.step] : [];
+  });
 }
 
 /* Labels ---------------------------------------------------------------------- */
@@ -332,7 +345,11 @@ function StepChip({ view, top }: { view: ViewState; top: number }) {
 function Space360({ view }: { view: ViewState }) {
   const { transform } = usePitch();
   const { build, s, k, index } = view;
-  const dots = dotsAt(build, s);
+  // A penalty strips back to the taker alone as the kick comes up.
+  const spot = build.penalty ? interpolate(s, [2.55, 2.95], [0, 1], clamp) : 0;
+  const dots = dotsAt(build, s)
+    .map((d) => ({ ...d, o: d.o * (d.actor && s > 2.5 ? 1 : 1 - spot) }))
+    .filter((d) => d.o > 0.01);
   const area = areaAt(build, s).map((p) => transform.toPixel(p));
   const turn = build.close.turn;
   // The cold open starts mid-zoom with everything already on; goal views fade in.
@@ -354,7 +371,7 @@ function Space360({ view }: { view: ViewState }) {
           />
         </mask>
       </defs>
-      <g mask={`url(#${id}-mask)`}>
+      <g mask={`url(#${id}-mask)`} opacity={1 - spot}>
         <Voronoi
           data={dots}
           x={(d) => d.x}
@@ -398,13 +415,27 @@ function Space360({ view }: { view: ViewState }) {
   );
 }
 
-/** The moves drawn so far, the ball, the shot and its goal angle. */
+/**
+ * The moves as snail trails: each line's tail chases its head, so a move is
+ * gone a beat after it's made and the pitch is clear when the shot comes.
+ */
 function Moves({ view }: { view: ViewState }) {
   const { build, s, after } = view;
+  const { transform } = usePitch();
   const drawn = build.steps.slice(0, 3).flatMap((m, j) => {
-    const t = glide(Math.min(Math.max(s - j, 0), 1));
-    if (t <= 0 || m.kind === "foul") return [];
-    return [{ kind: m.kind, x: m.x, y: m.y, x2: lerp(m.x, m.endX, t), y2: lerp(m.y, m.endY, t) }];
+    if (m.kind === "foul") return [];
+    const head = glide(Math.min(Math.max(s - j, 0), 1));
+    const tail = glide(Math.min(Math.max((s - j - 0.35) / 0.65, 0), 1));
+    if (head - tail < 0.03) return [];
+    return [
+      {
+        kind: m.kind,
+        x: lerp(m.x, m.endX, tail),
+        y: lerp(m.y, m.endY, tail),
+        x2: lerp(m.x, m.endX, head),
+        y2: lerp(m.y, m.endY, head),
+      },
+    ];
   });
   const goal = build.steps[3]!;
   const st = Easing.in(Easing.quad)(Math.min(Math.max(s - 3, 0), 1));
@@ -412,7 +443,14 @@ function Moves({ view }: { view: ViewState }) {
     st > 0
       ? [{ x: goal.x, y: goal.y, x2: lerp(goal.x, goal.endX, st), y2: lerp(goal.y, goal.endY, st) }]
       : [];
-  const fouls = build.steps.slice(0, 3).filter((m, j) => m.kind === "foul" && s >= j);
+  // The foul: a small red cross that pops in with a buzz, then clears for the kick.
+  const foulAt = build.steps.findIndex((m) => m.kind === "foul");
+  const foul = foulAt >= 0 && foulAt < 3 && s >= foulAt ? build.steps[foulAt]! : null;
+  const local = s - foulAt;
+  const pop = Easing.out(Easing.back(3))(Math.min(local / 0.18, 1));
+  const buzz = local < 0.45 ? Math.sin(local * 90) * 7 * S * (1 - local / 0.45) : 0;
+  const foulFade = interpolate(s, [2.75, 3], [1, 0], clamp);
+  const [fx, fy] = foul ? transform.toPixel([foul.x, foul.y]) : [0, 0];
   return (
     <g>
       <Comet
@@ -435,16 +473,17 @@ function Moves({ view }: { view: ViewState }) {
         strokeWidth={5 * S}
         headSize={18 * S}
       />
-      {fouls.length > 0 && (
-        <Scatter
-          data={fouls}
-          x={(m) => m.x}
-          y={(m) => m.y}
-          r={22 * S}
-          fill="transparent"
+      {foul && foulFade > 0 && (
+        <g
+          transform={`translate(${fx + buzz} ${fy - buzz * 0.4}) scale(${pop})`}
+          opacity={foulFade}
           stroke="#ef4444"
-          strokeWidth={6 * S}
-        />
+          strokeWidth={7 * S}
+          strokeLinecap="round"
+        >
+          <line x1={-14 * S} y1={-14 * S} x2={14 * S} y2={14 * S} />
+          <line x1={14 * S} y1={-14 * S} x2={-14 * S} y2={14 * S} />
+        </g>
       )}
       {s >= 2.85 && (
         <g opacity={interpolate(s, [2.85, 3.1], [0, 1], clamp)}>
@@ -537,7 +576,7 @@ export function GoalsPitch({
 
   return (
     <>
-      <div style={{ position: "absolute", inset: 0, opacity: 1 - 0.8 * shootout }}>
+      <div style={{ position: "absolute", inset: 0, opacity: 1 - shootout }}>
         <div
           style={{
             position: "absolute",

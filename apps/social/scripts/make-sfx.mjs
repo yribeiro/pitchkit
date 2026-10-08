@@ -90,4 +90,12 @@ wav("thud", 0.9, (t) => {
   return 0.95 * Math.sin(boom) * Math.exp(-5 * t) + 0.25 * noise() * Math.exp(-30 * t);
 });
 
+// A phone-style buzz: two short pulses of a low, slightly square hum, for a foul.
+wav("buzz", 0.36, (t) => {
+  const pulse = (t < 0.13 ? 1 : 0) + (t > 0.19 && t < 0.32 ? 1 : 0);
+  const hum = Math.tanh(3 * Math.sin(TAU * 155 * t)) * 0.6 + 0.25 * Math.sin(TAU * 310 * t);
+  const edge = Math.min(1, (t % 0.19) / 0.01);
+  return 0.55 * pulse * edge * hum;
+});
+
 console.log(`sfx written to ${out}`);

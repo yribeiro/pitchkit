@@ -10,7 +10,7 @@
 import { Easing, interpolate } from "remotion";
 import { wcGoals360 } from "../data";
 import { C, FONT } from "../theme";
-import { GoalsPitch, goalsCutStepCues } from "./live/GoalsPitch";
+import { GoalsPitch, goalsCutFoulCues, goalsCutStepCues } from "./live/GoalsPitch";
 import { createMatchReel } from "./live/MatchShell";
 import { GOAL_LEAD, GOALS_CUT, GOALS_CUT_BEATS } from "./live/timeline";
 
@@ -97,6 +97,7 @@ export const GoalsFinalReel = createMatchReel(
     cta: ["DI MARÍA'S", "COUNTER", "OR MBAPPÉ'S", "VOLLEY?"],
     cues: [
       ...goalsCutStepCues(T).map((at) => ({ at, name: "tick", volume: 0.35, length: 3 })),
+      ...goalsCutFoulCues(T).map((at) => ({ at, name: "buzz", volume: 0.55, length: 11 })),
       ...T.GOALS.map((g) => ({
         at: g.frame - GOAL_LEAD,
         name: "whoosh",
