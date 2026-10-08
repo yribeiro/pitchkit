@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar or percentile pizza chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar or percentile pizza chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Metrica, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner, Wyscout or Metrica Sports open data (events, 360 freeze frames, broadcast or optical tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -36,7 +36,7 @@ binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
 | -------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `@pitchkit/react`          | The rendering surface: `<Pitch>` + layer components + `usePitch()`     | Almost always                                                                           |
 | `@pitchkit/core`           | Zero-dependency maths: pitch dimensions, transforms, geometry, binning | Only for helpers like `cropForHalf`, `getPitchDimensions`, `createStandardizeTransform` |
-| `@pitchkit/data-providers` | Optional loaders for StatsBomb, SkillCorner and Wyscout **open data**  | Only when the user wants real match data rather than their own (recipe 5)               |
+| `@pitchkit/data-providers` | Optional loaders for StatsBomb, SkillCorner, Wyscout, Metrica **open data** | Only when the user wants real match data rather than their own (recipe 5)               |
 
 `@pitchkit/react` is the **only supported rendering surface**. `@pitchkit/core` exports
 `svgRenderer` / `renderSceneToSVGElement`; those are internal building blocks for the
@@ -78,24 +78,22 @@ tell the user to install it before writing an import from it.
 | `"uefa"`        | 105 × 68  | bottom-left | up          | Real metres                |
 | `"skillcorner"` | 105 × 68  | center      | up          | Real metres, centre origin |
 | `"wyscout"`     | 100 × 100 | top-left    | down        | Normalised percentage grid |
+| `"metrica"`     | 1 × 1     | top-left    | down        | Normalised `0..1` grid     |
 
-`"wyscout"` is **not** `"opta"` under another name, even though both are
-0–100 on both axes: Wyscout's origin is top-left with y increasing downward,
-Opta's is bottom-left with y increasing upward. Plotting one on the other
-mirrors the pitch vertically and nothing errors, because every coordinate is
-still in range.
+`"wyscout"` is **not** `"opta"` under another name, though both are 0–100 on both axes:
+Wyscout's origin is top-left with y downward, Opta's bottom-left with y upward, so plotting
+one on the other mirrors the pitch and nothing errors. `"metrica"` (mplsoccer's
+`metricasports`) has Wyscout's orientation on a `0..1` grid; on `"wyscout"` it fills a corner.
 
-`"skillcorner"` is the only centre-origin type: x runs `-52.5` to `+52.5`, so
-data from `@pitchkit/data-providers/skillcorner` plots with its raw `x`/`y`
-and needs no conversion. Their pitches are really 104–106 m, so pass the
-match's own size when you want the touchlines exact — markings don't move,
-since a penalty area is 16.5 m deep on any pitch:
+`"skillcorner"` is the only centre-origin type: x runs `-52.5` to `+52.5`, so its raw `x`/`y`
+plot with no conversion. Its pitches are really 104–106 m, so pass the match's own size for
+exact touchlines (markings don't move: a penalty area is 16.5 m deep on any pitch):
 
 ```tsx
 <Pitch type="skillcorner" dimensions={{ length: match.pitch_length, width: match.pitch_width }} />
 ```
 
-Those five are the whole list. For a provider that isn't one of them, standardise the
+Those six are the whole list. For a provider that isn't one of them, standardise the
 data first and render in the target grid:
 
 ```tsx
@@ -412,7 +410,7 @@ percentile; a pizza's values are percentiles. Details: [momentum](references/api
 Only when the user wants **real matches** rather than their own data. Requires the separate
 `npm install @pitchkit/data-providers`; it is not a dependency of `@pitchkit/react`.
 
-Three providers, each on its own import subpath, each keeping that provider's own field
+Four providers, each on its own import subpath, each keeping that provider's own field
 names and values — a StatsBomb outcome is `"Off T"`, not a re-spelled `"off-target"`.
 
 ```tsx
@@ -446,12 +444,9 @@ StatsBomb's discriminant is nested inside `type`, and TypeScript only narrows on
 _top-level_ literal discriminants — so `if (event.type.name === "Shot") event.shot` runs
 correctly but fails to typecheck. Use `shots(events)` or `isShot(event)`.
 
-Coordinates: StatsBomb's `location` arrays are surfaced as lifted `x`/`y` (and
-`endX`/`endY`/`endZ`) for accessors, and Wyscout's `positions` the same way. SkillCorner's are
-already metres from the centre spot, so `<Pitch type="skillcorner">` plots them raw.
-`<Pitch type="wyscout">` also plots raw, but its `x` is normalised to the attacking direction
-(positive always points at the goal being attacked) — the same convention as SkillCorner's
-dynamic events, and the opposite of its tracking file.
+Coordinates: StatsBomb's `location`, Wyscout's `positions` and Metrica's `Start X`/`End X` are
+lifted to `x`/`y`/`endX`/`endY` for accessors; SkillCorner's are already metres from the centre
+spot. Every provider plots raw on its own `<Pitch type>`.
 
 ```ts
 import { fetchMatch, offBallRuns, streamTracking } from "@pitchkit/data-providers/skillcorner";
@@ -468,11 +463,9 @@ for await (const frame of streamTracking(match)) {
 }
 ```
 
-Two SkillCorner traps worth knowing before plotting: tracking coordinates are **absolute**
-and swap ends at half time, while dynamic-event coordinates are **normalised to the
-attacking direction** and never flip — mixing them mirrors half a match silently. And
-`is_detected: false` means the position was extrapolated, not seen, because broadcast
-tracking only covers what the camera framed.
+SkillCorner traps: tracking coordinates are **absolute** and swap ends at half time, while
+dynamic-event coordinates are **normalised to the attacking direction** — mixing them mirrors
+half a match silently. `is_detected: false` means extrapolated, not seen.
 
 ```ts
 import { fetchMatch, isGoal, shotGoalZone, shots } from "@pitchkit/data-providers/wyscout";
@@ -481,19 +474,26 @@ const match = await fetchMatch(2499943); // Liverpool 4–3 Manchester City, 201
 const goals = shots(match.events).filter(isGoal);
 ```
 
-`fetchMatch` returns events and both squads in one call; there's no `fetchMatches` since
-Wyscout's mirror publishes no match index, only a Markdown table.
+Wyscout traps: `fetchMatch` returns events and both squads; there is no `fetchMatches`. `x` is
+normalised to the attacking direction. **A goal is also tagged on the conceding keeper's save**,
+so filter `shots(events)` before `isGoal`. **A shot has no end coordinate** (`positions[1]` is a
+placeholder); `shotGoalZone(shot)` reads where it went. Nearly everything else is a tag:
+`hasTag`, `WYSCOUT_TAGS`, `isAccurate`, `wonDuel`.
 
-Two Wyscout traps: **a goal is tagged on the conceding keeper's save as well as the shot that
-scored it** (measured: 15 shots, 19 save attempts, 3 free kicks all carry it), so filter
-`shots(events)` before `isGoal`, not the whole feed. And **a shot has no end coordinate** —
-`positions[1]` is a placeholder on every `Shot`/`Interruption`/`Offside`; `shotGoalZone(shot)`
-reads where it went instead, from a goal-mouth tag. Almost everything else is a tag too:
-`hasTag`, `WYSCOUT_TAGS`, and predicates like `isAccurate`/`wonDuel` built on it.
+```ts
+import { fetchEvents, fetchTrackingWindow, isGoal, shots } from "@pitchkit/data-providers/metrica";
 
-None of the three providers' data ships with the package — it is fetched from their open-data
-repositories (Wyscout's from a mirror), and **all three ask to be credited** in anything
-published from it.
+const goal = shots(await fetchEvents(1)).find(isGoal)!; // sample games 1 and 2
+const frames = await fetchTrackingWindow(1, { fromFrame: goal["Start Frame"], toFrame: goal["End Frame"] });
+```
+
+Metrica traps: fields are the CSV headers verbatim (`goal["Start Frame"]` is a tracking `Frame`);
+the package's additions (`x`, `ball`, `players`) are lowercase. Coordinates are **absolute** and
+swap at half time: `attackingDirection(kickOffFrame, team)`. An own goal is a `BALL OUT`
+(`isOwnGoal`). Tracking is two 32 MB files, so window or stream it; `ball` is often `null`.
+
+No provider's data ships with the package — it is fetched from their open-data repositories
+(Wyscout's from a mirror), and **all four ask to be credited** in anything published from it.
 
 ## Where to look next
 

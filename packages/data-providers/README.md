@@ -4,15 +4,16 @@ Convenience loaders for open football data, shaped for [PitchKit](https://www.pi
 Raw provider JSON in, typed events out — with the coordinates already where a
 `<Scatter>` accessor wants them.
 
-Two provider modules today: **StatsBomb** (events + 360 tracking) and
-**SkillCorner** (broadcast tracking, dynamic events, phases of play), each on
-its own import subpath so you only pull in what you use.
+Four provider modules: **StatsBomb** (events + 360 tracking),
+**SkillCorner** (broadcast tracking, dynamic events, phases of play),
+**Wyscout** (events) and **Metrica Sports** (synchronised tracking and events),
+each on its own import subpath so you only pull in what you use.
 
 ```bash
 npm install @pitchkit/data-providers
 ```
 
-One runtime dependency (`csv-parse`, for SkillCorner's CSV files), and no
+One runtime dependency (`csv-parse`, for SkillCorner's and Metrica's CSV files), and no
 dependency on `@pitchkit/core` or `@pitchkit/react` — it's pure data
 transformation, useful on its own.
 
@@ -215,9 +216,56 @@ Selectors: `playerPossessions`, `passingOptions`, `offBallRuns`,
 `onBallEngagements`, `ofEventType`. Tracking joins onto the match through
 `indexPlayersById` — on `players[].id`, **not** `trackable_object`.
 
+## Metrica
+
+```ts
+import {
+  fetchEvents,
+  fetchTrackingWindow,
+  findPlayer,
+  isGoal,
+  shots,
+} from "@pitchkit/data-providers/metrica";
+
+const goal = shots(await fetchEvents(1)).find(isGoal)!;
+const frames = await fetchTrackingWindow(1, {
+  fromFrame: goal["Start Frame"] - 125, // five seconds of build-up
+  toFrame: goal["End Frame"],
+});
+const atShot = frames.find((frame) => frame.Frame === goal["Start Frame"])!;
+const scorer = findPlayer(atShot, goal.From); // { team: "Home", player: "Player9", x, y, … }
+```
+
+Metrica's two anonymised CSV sample games: tracking at 25 fps for every player
+and the ball, and the events that go with it. Plot both on
+`<Pitch type="metrica">`. What to know first:
+
+- **Field names are Metrica's CSV headers**, spaces and units included:
+  `event["Start Frame"]`, `event.From`, `frame["Time [s]"]`. Everything the
+  package adds is lowercase: `x`/`y`/`endX`/`endY` on events, and `ball` and
+  `players` on a frame. `NaN` cells become `null` (and no lifted `x`).
+- **Events and tracking share a clock.** An event's `"Start Frame"` is a
+  tracking `Frame`, and its `From` and `To` are a tracked player's `player`.
+- **Coordinates are `0..1` and absolute**: origin top-left, y downward, and
+  teams swap ends at half time. Which end each side starts at differs between
+  the games; `attackingDirection(frame, team)` reads it from a kick-off frame.
+- **An own goal is not a shot.** Metrica record it as a `BALL OUT` qualified
+  `GOAL` by the player who put it in (`isOwnGoal`), so
+  `shots(events).filter(isGoal)` misses Sample Game 1's only away goal.
+- **Tracking is two files of about 32 MB a game**, one per team. Prefer
+  `fetchTrackingWindow` (HTTP `Range` reads, about 220 KB for a goal) or
+  `streamTracking` (an async generator; `break` cancels both downloads) over
+  `fetchTracking`. The ball is `null` in about 40% of frames.
+- **Sample Game 3 isn't supported.** It is in a different format (FIFA EPTS
+  tracking, JSON events).
+
+Qualifiers live in `Subtype`, hyphen-joined (`"HEAD-ON TARGET-GOAL"`):
+`hasSubtype` reads one, and `isOnTarget`, `wonChallenge`, `isCross`,
+`isGoalKick` and the rest are built on it.
+
 ### Files you already have
 
-Both provider modules split the network layer in two: `loadX(url)` takes any
+Every provider module splits the network layer in two: `loadX(url)` takes any
 URL — a mirror, your own bucket, a static server — and `fetchX(id)` is sugar
 that builds the open-data URL for you.
 
@@ -260,8 +308,9 @@ for await (const line of lines) {
 
 This package ships **no data**. It fetches from whatever URL you give it.
 
-The default URLs point at each provider's own open-data repository. **Both ask
-to be credited** in anything you publish from their data.
+The default URLs point at each provider's own open-data repository (Wyscout's
+at a per-match mirror). **All of them ask to be credited** in anything you
+publish from their data.
 
 **StatsBomb** — [open-data](https://github.com/statsbomb/open-data) ·
 [specifications](https://github.com/statsbomb/open-data/tree/master/doc) ·
@@ -276,7 +325,18 @@ read the terms before you rely on it.
 [skillcorner.com](https://skillcorner.com/). MIT-licensed, with a request for
 credit.
 
-Both providers' documentation is the authority on what the fields mean; this
+**Wyscout** — the Pappalardo et al. dataset on
+[figshare](https://figshare.com/collections/Soccer_match_event_dataset/4415000),
+CC BY 4.0. Events are fetched from the
+[`koenvo/wyscout-soccer-match-event-dataset`](https://github.com/koenvo/wyscout-soccer-match-event-dataset)
+mirror, which splits the official archive per match without renaming a field.
+
+**Metrica Sports** — [sample-data](https://github.com/metrica-sports/sample-data) ·
+[event definitions](https://github.com/metrica-sports/sample-data/blob/master/documentation/events-definitions.pdf).
+No licence file; the README asks that anything public made from the data
+acknowledges the source.
+
+Each provider's documentation is the authority on what the fields mean; this
 package only covers loading them.
 
 ## Adding a provider

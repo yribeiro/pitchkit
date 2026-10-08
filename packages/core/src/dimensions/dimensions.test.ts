@@ -45,6 +45,32 @@ describe("PITCH_DIMENSIONS", () => {
     expect(dims.width).toBe(dims.realWidthMeters);
   });
 
+  it("metrica is a normalized 1x1 grid, top-left origin, y-down", () => {
+    const dims = PITCH_DIMENSIONS.metrica;
+    expect(dims.length).toBe(1);
+    expect(dims.width).toBe(1);
+    expect(dims.origin).toBe("top-left");
+    expect(dims.yDirection).toBe("down");
+    expect(dims.normalized).toBe(true);
+  });
+
+  it("metrica's markings are UEFA's metres over a 105x68 pitch", () => {
+    const { markings, realLengthMeters, realWidthMeters } = PITCH_DIMENSIONS.metrica;
+    const uefa = PITCH_DIMENSIONS.uefa.markings;
+    expect(markings.penaltyAreaLength * realLengthMeters).toBeCloseTo(uefa.penaltyAreaLength, 9);
+    expect(markings.penaltyAreaWidth * realWidthMeters).toBeCloseTo(uefa.penaltyAreaWidth, 9);
+    expect(markings.sixYardLength * realLengthMeters).toBeCloseTo(uefa.sixYardLength, 9);
+    expect(markings.sixYardWidth * realWidthMeters).toBeCloseTo(uefa.sixYardWidth, 9);
+    expect(markings.penaltySpotDistance * realLengthMeters).toBeCloseTo(
+      uefa.penaltySpotDistance,
+      9,
+    );
+    expect(markings.goalWidth * realWidthMeters).toBeCloseTo(uefa.goalWidth, 9);
+    // Radii are metres on every grid, so these are UEFA's values untouched.
+    expect(markings.centerCircleRadius).toBe(uefa.centerCircleRadius);
+    expect(markings.cornerArcRadius).toBe(uefa.cornerArcRadius);
+  });
+
   it.each(PITCH_TYPES)("%s markings are all positive", (pitchType) => {
     const { markings } = PITCH_DIMENSIONS[pitchType];
     for (const [key, value] of Object.entries(markings)) {

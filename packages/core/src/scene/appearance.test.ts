@@ -3,8 +3,10 @@ import {
   computeGoalBox,
   computeStripeBands,
   goalBoxDepth,
+  pitchGoalBoxDepth,
   resolveStripeCount,
 } from "./appearance.js";
+import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
 import type { Rect } from "./geometry.js";
 
 describe("resolveStripeCount", () => {
@@ -58,6 +60,19 @@ describe("goalBoxDepth", () => {
   it("scales linearly off the corner-arc radius", () => {
     expect(goalBoxDepth(1)).toBe(3);
     expect(goalBoxDepth(2)).toBe(6);
+  });
+});
+
+describe("pitchGoalBoxDepth", () => {
+  it("is goalBoxDepth unchanged on a grid in real units", () => {
+    expect(pitchGoalBoxDepth(PITCH_DIMENSIONS.uefa)).toBe(3);
+    expect(pitchGoalBoxDepth(PITCH_DIMENSIONS.statsbomb)).toBeCloseTo(3.279, 6);
+  });
+
+  it("converts metres to x units on a percentage grid", () => {
+    // 3 m of a 105 m pitch. Unconverted, this would be three pitch lengths.
+    expect(pitchGoalBoxDepth(PITCH_DIMENSIONS.metrica)).toBeCloseTo(3 / 105, 9);
+    expect(pitchGoalBoxDepth(PITCH_DIMENSIONS.opta)).toBeCloseTo(300 / 105, 9);
   });
 });
 

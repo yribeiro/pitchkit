@@ -1,0 +1,4 @@
+Team,Type,Subtype,Period,Start Frame,Start Time [s],End Frame,End Time [s],From,To,Start X,Start Y,End X,End Y
+Away,CHALLENGE,AERIAL-LOST,2,97536,3901.44,97536,3901.44,Player 26,,0.43,0.3,NaN,NaN
+Away,SET PIECE,PENALTY,2,115009,4600.36,115009,4600.36,Player20,,NaN,NaN,NaN,NaN
+Away,SHOT,ON TARGET-GOAL,2,115009,4600.36,115024,4600.96,Player20,,0.12,0.52,-0.02,0.54
