@@ -71,6 +71,7 @@ hardcoded data ([#27](https://github.com/yribeiro/pitchkit/issues/27)).
 | Radar (range bands, lower-is-better flip)               | 1     | ✅ `<RadarChart>` (0.6.0)                                                        |
 | Pizza / percentile (Nightingale), incl. comparison mode | 1     | ✅ `<PizzaChart>` (0.6.0)                                                        |
 | Bumpy chart (rank over time)                            | L     | ⬜                                                                               |
+| Goal view: shot placement in the goal mouth             | 1     | ✅ `<GoalView>`, `<GoalShots>`                                                   |
 | Race chart: cumulative step lines over match minutes    | 1     | ✅ `<RaceChart>` (0.6.0, [PR #78](https://github.com/yribeiro/pitchkit/pull/78)) |
 | Match momentum: signed bars per half, with event icons  | 1     | ✅ `<MomentumChart>` (0.6.0)                                                     |
 
@@ -100,6 +101,12 @@ slices coloured by group, value boxes, and a comparison mode. `seriesLayout` cho
 (up to three players) or overlaid (two, as mplsoccer does), and slices open the caller's detail view.
 Follow-ups, none started: keyboard focus giving the readout on the radar's axis labels the way slices
 do, and a table view of the values for both.
+
+`<GoalView>` is a coordinate root beside `<Pitch>`, not a chart
+([D29](./decisions.md#d29-goalview-a-third-coordinate-root-with-the-providers-goal-mouth-frame)), and
+also **not mplsoccer parity**. Its frames are `statsbomb` and `metric`. Follow-ups, none started:
+frames for other providers once their goal-mouth data can be verified. Its gallery card is the
+England–Switzerland shootout, under Shooting.
 
 Follow-ups, none started: keyboard focus giving the crosshair readout, a table view of the values,
 a `<RaceEvents>` child as sugar over the annotation slot once the manual version has been written
@@ -168,7 +175,8 @@ Complete as of 2026-09-06.
       SecondSpectrum, Metrica, custom; a public `Standardizer`.
 - [x] Radar and pizza charts ([#21](https://github.com/yribeiro/pitchkit/issues/21)):
       `<RadarChart>` and `<PizzaChart>`.
-- [ ] Goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)).
+- [x] Goal view ([#22](https://github.com/yribeiro/pitchkit/issues/22)): `<GoalView>` with
+      `<GoalShots>`, togglable width and height markers, and the penalty spot in perspective.
 - [ ] shadcn registry infrastructure and the first recipes: attack/territory
       ([#23](https://github.com/yribeiro/pitchkit/issues/23)), pass map
       ([#24](https://github.com/yribeiro/pitchkit/issues/24)).

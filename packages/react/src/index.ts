@@ -29,6 +29,14 @@ export type { GoalAngleProps } from "./GoalAngle.js";
 export { Flow } from "./Flow.js";
 export type { FlowProps } from "./Flow.js";
 
+export { GoalView } from "./GoalView.js";
+export type { GoalViewProps, GoalViewAppearance } from "./GoalView.js";
+export { GoalShots } from "./GoalShots.js";
+export type { GoalShotsProps } from "./GoalShots.js";
+export { useGoalView } from "./goal-view-context.js";
+export type { GoalViewContextValue } from "./goal-view-context.js";
+export type { GoalFrameId, GoalMarkerUnits, GoalPoint } from "@pitchkit/core";
+
 export { RaceChart } from "./RaceChart.js";
 export type { RaceChartProps, RaceSeries, RaceAppearance, RaceHoverRow } from "./race-types.js";
 

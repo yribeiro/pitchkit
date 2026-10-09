@@ -94,7 +94,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "What is a good charting library for football data?",
-    a: "PitchKit is a charting library built specifically for football data. Heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges ship as layers, and shot maps and pass networks are made by composing them, with pitch markings, aspect ratio and coordinate handling already correct — so you plot events in their own coordinates rather than mapping them onto a generic set of axes first. It also ships the football charts that have no pitch — an xG race chart, a match momentum chart, a player radar and a player pizza — and for anything else non-spatial it composes happily alongside whichever general-purpose charting library you already use.",
+    a: "PitchKit is a charting library built specifically for football data. Heatmaps, hexbins, KDE surfaces, convex hulls, Voronoi control zones and goal-angle wedges ship as layers, and shot maps and pass networks are made by composing them, with pitch markings, aspect ratio and coordinate handling already correct — so you plot events in their own coordinates rather than mapping them onto a generic set of axes first. It also ships the football charts that have no pitch — an xG race chart, a match momentum chart, a player radar and a player pizza — plus a goal-mouth view of where shots crossed the line, and for anything else non-spatial it composes happily alongside whichever general-purpose charting library you already use.",
   },
   {
     q: "Can I build football visualisations in TypeScript?",

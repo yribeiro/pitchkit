@@ -1,6 +1,6 @@
 ---
 name: pitchkit
-description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), or a player radar or percentile pizza chart; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
+description: Builds football (soccer) pitch visualisations for the web with PitchKit, the @pitchkit/react, @pitchkit/core and @pitchkit/data-providers packages. Use when the request involves a shot map, pass map, pass network, pass flow, touch map, heatmap, hexbin, KDE surface, Voronoi, convex hull, or any other chart drawn on a football pitch in React or Next.js; when they want an xG race chart, xG timeline, xG flow chart, any cumulative/running-total chart over match minutes, a match momentum chart (momentum bars with goals and cards beneath), a player radar or percentile pizza chart, or a goal-mouth shot-placement view; when the user names PitchKit, @pitchkit/react, @pitchkit/core, @pitchkit/data-providers or the Pitch component; when they mention StatsBomb, SkillCorner, Wyscout, Opta or UEFA pitch coordinates; when they want to load StatsBomb, SkillCorner or Wyscout open data (events, 360 freeze frames, broadcast tracking, dynamic events, phases of play); or when they ask for mplsoccer's behaviour on the web.
 license: MIT
 ---
 
@@ -28,7 +28,7 @@ Things that do **not** exist, however plausible: a `<PassMap>` / `<ShotMap>` /
 hands back pitch coordinates, an `<XgRace>` / `<XgTimeline>` / `<XgFlow>` component
 (the cumulative chart is `<RaceChart>`, and `<Flow>` is an unrelated pitch layer for
 binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
-`<MomentumChart>`), a `<Radar>` (it is `<RadarChart>`) or a `<Pizza>` (it is `<PizzaChart>`).
+`<MomentumChart>`), a `<Radar>` (`<RadarChart>`), a `<Pizza>` (`<PizzaChart>`) or a `<Goal>` (`<GoalView>`).
 
 ## Package split
 
@@ -120,7 +120,7 @@ Canvas density layers — client-only, accept `className` and `style` but **no**
 
 `<Heatmap>` `<PositionalHeatmap>` `<Hexbin>` `<KDE>`
 
-Roots: `<Pitch>`, and `<VerticalPitch>` (exactly `<Pitch orientation="vertical">`).
+Roots: `<Pitch>`, `<VerticalPitch>` (`<Pitch orientation="vertical">`), and `<GoalView>` + `<GoalShots>` ([api](references/api.md#goalview)).
 Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for custom marks.
 
 Non-pitch charts — separate roots, **not** children of `<Pitch>`, with no `type` prop (there is no

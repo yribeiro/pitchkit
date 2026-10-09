@@ -57,6 +57,69 @@ called outside one.
 `toProvider` is the inverse needed to turn a pointer position back into pitch
 coordinates.
 
+### `<GoalView>`
+
+The goal mouth from in front, as the shooter sees it: posts, bar and net to scale, and the ground
+in perspective to the six-yard line, penalty spot and penalty-area line. A root, sibling of
+`<Pitch>`; children are drawn in its goal-mouth coordinates.
+
+| Prop         | Type                      | Default | Notes                                                              |
+| ------------ | ------------------------- | ------- | ------------------------------------------------------------------ |
+| `type`       | `"statsbomb" \| "metric"` | —       | Required. The goal-mouth coordinate system of the shots.           |
+| `width`      | `number`                  | —       | Fixed pixel width. Pass with `height` or not at all.               |
+| `height`     | `number`                  | —       | Fixed pixel height. A box of another shape centres the view in it. |
+| `appearance` | `GoalViewAppearance`      | —       | `{ widthMarker?, heightMarker?, units? }` — see below.             |
+| `className`  | `string`                  | —       | On the wrapper `<div>`.                                            |
+| `style`      | `CSSProperties`           | —       | Merged into the wrapper's own positioning styles.                  |
+| `children`   | `ReactNode`               | —       | `<GoalShots>` and custom marks using `useGoalView()`.              |
+
+`type`:
+
+| Value         | `y` (across)                                       | `z` (up)                             |
+| ------------- | -------------------------------------------------- | ------------------------------------ |
+| `"statsbomb"` | `endY` (`end_location[1]`), yards; posts at 36, 44 | `endZ` (`end_location[2]`); bar 2.67 |
+| `"metric"`    | metres from the middle; posts at -3.66, 3.66       | metres; bar 2.44                     |
+
+In both, `y` grows to the shooter's right. `GoalViewAppearance`:
+
+| Field          | Type                     | Default    | Meaning                                                     |
+| -------------- | ------------------------ | ---------- | ----------------------------------------------------------- |
+| `widthMarker`  | `boolean`                | `true`     | "7.32 m" between the posts, above the bar.                  |
+| `heightMarker` | `boolean`                | `true`     | "2.44 m" from the ground to the bar, left of the left post. |
+| `units`        | `"metric" \| "imperial"` | `"metric"` | Marker labels: "7.32 m" / "2.44 m", or "8 yd" / "8 ft".     |
+
+The view spans one goal width either side of the middle and 4 m up. Responsive by default at a
+fixed aspect ratio (`GOAL_VIEW_ASPECT` from core). Themed by `--pitch-goal-backdrop`,
+`--pitch-goal-net`, `--pitch-goal-frame`, and the pitch's own `--pitch-surface`, `--pitch-lines`,
+`--pitch-line-width`.
+
+### `<GoalShots>`
+
+One `<circle>` per shot inside `<GoalView>`, `data-pitchkit-mark="goal-shot"`.
+
+| Prop          | Type                               | Default                  | Notes                                             |
+| ------------- | ---------------------------------- | ------------------------ | ------------------------------------------------- |
+| `data`        | `T[]`                              | —                        | Required.                                         |
+| `y`           | `Accessor<T, number \| undefined>` | —                        | Required. Across, in the view's `type` units.     |
+| `z`           | `Accessor<T, number \| undefined>` | —                        | Required. Height, in the view's `type` units.     |
+| `r`           | `Accessor<T, number>`              | `6`                      | Radius in pixels.                                 |
+| `fill`        | `Accessor<T, string>`              | `--pitch-marker-primary` |                                                   |
+| `fillOpacity` | `Accessor<T, number>`              | —                        |                                                   |
+| `stroke`      | `Accessor<T, string>`              | `--pitch-goal-backdrop`  | A ring that separates overlapping shots.          |
+| `strokeWidth` | `Accessor<T, number>`              | `1.5`                    |                                                   |
+| `className`   | `string`                           | —                        | Drops the themed colour defaults, as `<Scatter>`. |
+| `tooltip`     | `(d, i) => ReactNode`              | —                        |                                                   |
+
+A missing or non-finite `y` or `z` draws nothing (StatsBomb's blocked and wayward shots have no
+height). A shot outside the view is pinned one radius inside its edge and carries
+`data-pitchkit-clamped`.
+
+### `useGoalView()`
+
+Returns `{ frame, layout, toPixel }`. `toPixel(y, z, inset?)` gives `{ x, y, clamped }` in pixels,
+or `undefined` for a missing coordinate; `layout` has `scale` (pixels per metre), `centreX` and
+`groundY`. Throws outside a `<GoalView>`.
+
 ### `<RaceChart>`
 
 A cumulative step chart over match minutes — the "xG race chart" / "xG timeline". A root

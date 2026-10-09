@@ -147,5 +147,36 @@ export {
   wrapLabel,
 } from "./polar/labels.js";
 
+export type { GoalFrameId, GoalFrame } from "./goal/frames.js";
+export {
+  GOAL_FRAMES,
+  GOAL_WIDTH_METRES,
+  GOAL_HEIGHT_METRES,
+  toGoalMetres,
+  fromGoalMetres,
+} from "./goal/frames.js";
+export type { GoalLayout, GoalPoint } from "./goal/layout.js";
+export {
+  GOAL_VIEW_ASPECT,
+  GOAL_VIEW_HALF_WIDTH,
+  GOAL_VIEW_TOP,
+  GOAL_VIEW_GROUND,
+  GOAL_CAMERA_DISTANCE,
+  GOAL_CAMERA_HEIGHT,
+  computeGoalLayout,
+  goalPlaneToPixel,
+  goalPoint,
+  projectGround,
+} from "./goal/layout.js";
+export type {
+  GoalMarkerUnits,
+  GoalRect,
+  GoalSegment,
+  GoalGroundMarking,
+  GoalDimensionMarker,
+  GoalGeometry,
+} from "./goal/geometry.js";
+export { computeGoalGeometry, goalDimensionLabels } from "./goal/geometry.js";
+
 export { pitchTokens } from "./theme/tokens.js";
 export { partStyle } from "./theme/part-style.js";

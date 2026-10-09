@@ -223,6 +223,32 @@ PizzaChart (root)
 - **Interaction is on the slice.** Each slice carries `data-pitchkit-metric` and `data-pitchkit-series`
   and, with `renderDetail`, is a focusable button; a hover over any part of a wedge opens the readout.
 
+## Goal view
+
+`<GoalView>` ([D29](./decisions.md#d29-goalview-a-third-coordinate-root-with-the-providers-goal-mouth-frame))
+is a third coordinate root: the goal mouth from in front, rather than the pitch from above.
+
+```
+GoalView (root, type = goal-mouth frame)
+ ├─ layout    (computeGoalLayout: the fixed window fitted into the box, pixels per metre)
+ ├─ backdrop, ground, ground markings in perspective, penalty spot (clipped to the ground)
+ ├─ net, posts, crossbar, then the width and height markers
+ └─ children  (<GoalShots>, or marks placed with useGoalView().toPixel)
+```
+
+- **`core/goal/` owns the maths.** `frames.ts` has the provider frames and `toGoalMetres` /
+  `fromGoalMetres`; `layout.ts` the window, `computeGoalLayout`, `goalPlaneToPixel`, `projectGround`
+  and `goalPoint` (frame units to pixels, pinned to the window with an inset); `geometry.ts` every
+  static shape (`computeGoalGeometry`). Nothing imports `dimensions/` or `transform/`.
+- **Two planes, one scale.** The goal line is the picture plane: a shot maps linearly, at `scale`
+  pixels per metre. The ground uses the same scale at the goal line and recedes towards a camera
+  `GOAL_CAMERA_DISTANCE` out and `GOAL_CAMERA_HEIGHT` up, so a ground point `depth` metres out
+  is drawn at `scale × distance / (distance − depth)`.
+- **Ground markings are clipped to the ground.** The six-yard box and penalty area are wider than
+  the view, so only their front lines show; the clip keeps their sides out of a letterboxed box.
+- **Responsive by default**, at the fixed `GOAL_VIEW_ASPECT`, with the same nominal-width fallback
+  as `<Pitch>`. A fixed `width`/`height` of another shape centres the view inside it.
+
 ## Packages
 
 npm workspaces + Turborepo.
@@ -508,6 +534,14 @@ Re-verify against a fresh sample before "correcting" any of them.
   third is `x >= 80` for both teams and the away side's coordinates are not flipped. The docs
   momentum example counts on-ball events there per minute, home minus away, smoothed over three
   minutes. That is a derivation, not a StatsBomb metric: no momentum value exists in the feed.
+
+- **Goal-mouth coordinates are yards on the pitch's own `y`, with the posts at 36 and 44 and the
+  bar at 2.67 (8 ft).** In 20 Euro 2024 matches, 53 goals ended at `y` 36.1 to 43.8 and `z` up to 2.4,
+  and the 10 shots that hit the woodwork at `y` 36.1, 44.1 or `z` 2.7 to 3.0. A smaller `y` is the
+  shooter's left. `<GoalView type="statsbomb">` depends on this.
+- **Only some shots have a height.** `Blocked` and `Wayward` shots have a two-value `end_location`
+  (no `z`); every `Goal`, `Saved`, `Off T` and `Post` in that sample has three. A `Saved` shot's `x`
+  is 112 to 119.5: it ends where the keeper got to it, in front of the line.
 
 ### SkillCorner
 
