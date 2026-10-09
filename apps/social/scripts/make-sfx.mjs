@@ -98,4 +98,26 @@ wav("buzz", 0.36, (t) => {
   return 0.55 * pulse * edge * hum;
 });
 
+// A punchy kick: a click, then a fast pitch drop into a short, saturated
+// boom. For a hard cut, like a word being struck out.
+let kick = 0;
+wav("thump", 0.5, (t) => {
+  kick += (TAU * (48 + 190 * Math.exp(-40 * t))) / RATE;
+  const body = Math.tanh(2.2 * Math.sin(kick)) * Math.exp(-7 * t);
+  return 0.9 * body + 0.35 * noise() * Math.exp(-180 * t);
+});
+
+// A quick bright swipe of noise, for a pen stroke.
+let swLow = 0;
+let swPrev = 0;
+let swHigh = 0;
+const SWIPE = 0.22;
+wav("swipe", SWIPE, (t) => {
+  const env = Math.sin((Math.PI * t) / SWIPE) ** 2;
+  swLow += (0.15 + 0.5 * (t / SWIPE)) * (noise() - swLow);
+  swHigh = 0.9 * (swHigh + swLow - swPrev);
+  swPrev = swLow;
+  return 0.9 * swHigh * env;
+});
+
 console.log(`sfx written to ${out}`);
