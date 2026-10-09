@@ -22,6 +22,7 @@ import {
 import { FINAL_DURATION, FinalReel } from "./reels/FinalReel";
 import { LAYERS_DURATION, LayersReel } from "./reels/LayersReel";
 import { LIVE_DURATION, LiveFinalReel } from "./reels/LiveFinalReel";
+import { CLAUDE_DURATION, ClaudeReel } from "./reels/ClaudeReel";
 import { GOALS_DURATION, GoalsFinalReel } from "./reels/GoalsFinalReel";
 import { NETS_DURATION, NetsFinalReel } from "./reels/NetsFinalReel";
 import { NETWORKS_LOOP_DURATION, NetworksLoopReel } from "./reels/NetworksLoopReel";
@@ -139,6 +140,12 @@ export function Root() {
           id="reel-06-goals-final"
           component={GoalsFinalReel}
           durationInFrames={GOALS_DURATION}
+          {...REEL}
+        />
+        <Composition
+          id="reel-07-claude"
+          component={ClaudeReel}
+          durationInFrames={CLAUDE_DURATION}
           {...REEL}
         />
       </Folder>

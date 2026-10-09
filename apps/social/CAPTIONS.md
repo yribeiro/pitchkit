@@ -680,6 +680,63 @@ Facts behind it (`src/data/wc-goals360.json`, StatsBomb match 3869685):
 | Player movement                   | 360 frames seconds apart, paired frame to frame by nearest team-mate and slid; anyone unpaired fades. Di María's run before the first penalty has no 360 frame, so players glide across it |
 | Mbappé's shot before the handball | Outcome Blocked (off Montiel's arm), not Saved                                                                                                                                             |
 
+## Reel 07 — Football analysis is for coders. Not anymore. (`reel-07-claude.mp4`, 30 s)
+
+The first value reel: a contrarian hook (rule 25), three steps, a payoff, under 30 seconds.
+It opens on the finished chart, already drawn, under "FOOTBALL ANALYSIS IS FOR CODERS.",
+which is struck through in red and answered with a green "NOT ANYMORE." (whoosh and thud).
+Then 1 JUST ASK: the prompt types into a chat bubble, a soft tick per word, and Claude
+starts thinking. 2 CLAUDE WRITES IT: the component streams into a code panel and three
+lines light up in turn with a pop ("Free StatsBomb data, one call", "The last 3 passes
+before the goal", "The goal angle Di María had"), then "PitchKit's agent skill teaches
+Claude the library". 3 YOU GET THIS: the chart draws one pass per beat as the camera pushes
+in on the goal end, with the names building underneath (Messi → Álvarez → Mac Allister →
+Di María). It ends on "YOU DON'T WRITE THE CODE. JUST ASK." with the install command and
+"Save this. Then try it". No music in the render: add a track in the app and cut to it
+(rule 21). For the cover, use frame 45 (the struck-through hook over the chart).
+
+**Instagram**
+
+```
+Football analysis is for coders. Not anymore. ⚽️
+
+I asked Claude for the three passes before Di María's goal in the 2022 World Cup final. It wrote the chart for me, on StatsBomb's free data.
+
+1. Install PitchKit's agent skill (the command is at the end of the reel)
+2. Ask Claude for the chart you want, in plain English
+3. Get a real football chart you can run
+
+Save this, then try it on your favourite goal 👇
+
+Built with PitchKit, the free React-first football chart library. Link in bio.
+
+#footballanalysis #claude #ai #worldcup #messi #dimaria #footballdata #dataviz #statsbomb
+```
+
+**X**
+
+```
+Football analysis is for coders. Not anymore.
+
+I asked Claude for the 3 passes before Di María's goal in the 2022 World Cup final. With PitchKit's agent skill it wrote the chart, on @StatsBomb's free data, and it ran first time.
+
+Try it: npx @pitchkit/react skills install
+
+https://www.pitchkitjs.com
+```
+
+**Alt text:** A dark green pitch with three white arrows and a yellow shot into the top goal, under the words "Football analysis is for coders." A red line strikes through "is for coders" and green text replies "Not anymore." Step 1, "Just ask": a chat bubble types "Show me the three passes before Di María's goal in the 2022 World Cup final. Use PitchKit and StatsBomb's free data." Step 2, "Claude writes it": about forty lines of code stream into a panel, with three lines highlighted and explained in turn. Step 3, "You get this": the pitch draws Messi's pass to Álvarez, Álvarez's to Mac Allister and Mac Allister's to Di María, then Di María's shot with a yellow wedge to the posts, as the names appear below. It ends on "You don't write the code. Just ask.", the command "npx @pitchkit/react skills install" and "Save this. Then try it", then the PitchKit end card.
+
+Facts behind it (`src/reels/claude/DiMariaGoal.tsx`, StatsBomb match 3869685):
+
+| Claim                  | Detail                                                                                                                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The prompt             | The exact prompt on screen, answered by Claude with PitchKit's agent skill installed (`npx @pitchkit/react skills install`)                                                                         |
+| The code               | The code panel is generated from `DiMariaGoal.tsx` (`npm run snapshot:claude-demo` writes `claude-demo-code.json`); the reel renders that same file, unchanged                                      |
+| It runs                | `snapshot:claude-demo` runs the component's logic against live StatsBomb open data: Di María's goal at 35:22, after Messi → Álvarez, Álvarez → Mac Allister, Mac Allister → Di María                |
+| The data in the render | The renderer has no network, so the reel answers the component's fetch with StatsBomb's own raw events, trimmed to 51 of 4,407 (every shot, plus the goal's possession). Nothing is edited or added |
+| Free data              | StatsBomb open data, no account or key                                                                                                                                                              |
+
 ## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a

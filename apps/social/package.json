@@ -15,7 +15,8 @@
     "snapshot:wc-final": "node scripts/snapshot-wc-final.mjs",
     "snapshot:wc-360": "node scripts/snapshot-wc-360.mjs",
     "snapshot:wc-touches": "node scripts/snapshot-wc-touches.mjs",
-    "snapshot:wc-goals360": "node scripts/snapshot-wc-goals360.mjs"
+    "snapshot:wc-goals360": "node scripts/snapshot-wc-goals360.mjs",
+    "snapshot:claude-demo": "node scripts/snapshot-claude-demo.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.3.0",

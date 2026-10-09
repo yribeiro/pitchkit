@@ -1,0 +1,3543 @@
+[
+  {
+    "id": "545c2c84-018f-4570-a01c-753823feaeac",
+    "index": 192,
+    "period": 1,
+    "timestamp": "00:04:40.798",
+    "minute": 4,
+    "second": 40,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 14,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [92.4, 30],
+    "duration": 0.94819,
+    "related_events": ["109b23ae-6cc9-49d7-888c-0ef1302b8abd"],
+    "shot": {
+      "statsbomb_xg": 0.024542088,
+      "end_location": [117.3, 38.3, 0.8],
+      "key_pass_id": "b8d55d4b-37dc-4491-ad9c-baa235eec9df",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "freeze_frame": [
+        {
+          "location": [101, 48],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 36.1],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [103, 26.7],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.9, 21.4],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [98.6, 27.9],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [93.5, 40.3],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [95.1, 26.9],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [117.4, 38.5],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [77.7, 59.4],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [84.2, 29.2],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [84.1, 39.5],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [93.6, 52.5],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [101.5, 23.7],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [99.1, 12.6],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "4ad26294-8aaf-4d69-83dd-bbf9ef797b32",
+    "index": 340,
+    "period": 1,
+    "timestamp": "00:07:36.537",
+    "minute": 7,
+    "second": 36,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 18,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+    "position": { "id": 13, "name": "Right Center Midfield" },
+    "location": [99.2, 47.9],
+    "duration": 0.422018,
+    "related_events": [
+      "2e25cc68-01db-4b04-87b8-511991b3706f",
+      "a3062cbb-3c30-4bbe-bd00-97602d934e3a"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.062813334,
+      "end_location": [108.1, 40.4],
+      "key_pass_id": "a2ce05f8-e1cd-4efb-865a-257a45a38cc0",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 96, "name": "Blocked" },
+      "freeze_frame": [
+        {
+          "location": [88.4, 47.6],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [117.4, 41.1],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [106.3, 47.3],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [108.1, 39.8],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [102, 48.9],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [112.3, 30.3],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.6, 34.3],
+          "player": { "id": 3604, "name": "Olivier Giroud" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [104.9, 21.4],
+          "player": { "id": 5477, "name": "Ousmane Dembélé" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [105.4, 35.2],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.2, 39.8],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [109.5, 30.4],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.2, 38.6],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [107.8, 29.4],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [116.3, 21.5],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [106, 31.8],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [94.2, 41],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [97.7, 55.4],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "6d498191-05f0-432c-8764-03aea4ef9fb8",
+    "index": 602,
+    "period": 1,
+    "timestamp": "00:16:15.886",
+    "minute": 16,
+    "second": 15,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 27,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+    "position": { "id": 21, "name": "Left Wing" },
+    "location": [103.1, 34.6],
+    "duration": 0.87298,
+    "related_events": ["f5b6061e-0674-471a-9725-a1ba88489e5f"],
+    "shot": {
+      "statsbomb_xg": 0.106800534,
+      "end_location": [120, 39.6, 7.5],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "first_time": true,
+      "freeze_frame": [
+        {
+          "location": [117.8, 39.5],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [116.1, 46.7],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [112.3, 40.7],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.4, 39.3],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [108.6, 37],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.6, 33.7],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [96.6, 43.8],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [117.3, 53.9],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [111, 41.8],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [110, 37.9],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [100.2, 53.6],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "6d527ebc-a948-4cd8-ac82-daced35bb715",
+    "index": 771,
+    "period": 1,
+    "timestamp": "00:22:24.114",
+    "minute": 22,
+    "second": 24,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 32,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [108, 40],
+    "duration": 0.625635,
+    "related_events": ["c9b8e568-dcdc-4302-9683-0e9e9a55a42a"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 41.8, 0.2],
+      "outcome": { "id": 97, "name": "Goal" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 88, "name": "Penalty" }
+    }
+  },
+  {
+    "id": "f227a92e-d86c-4f3d-aa75-5ccb71adcae6",
+    "index": 979,
+    "period": 1,
+    "timestamp": "00:31:35.181",
+    "minute": 31,
+    "second": 35,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 46,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "out": true,
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [94.3, 23.5],
+    "duration": 3.284765,
+    "related_events": ["fb2e9a29-5b74-4402-ba04-4dc0d3fa0932"],
+    "shot": {
+      "statsbomb_xg": 0.010577817,
+      "end_location": [112.3, 80],
+      "key_pass_id": "1309a242-14ad-4a9c-b91c-45a568c57574",
+      "first_time": true,
+      "technique": { "id": 91, "name": "Half Volley" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 101, "name": "Wayward" },
+      "freeze_frame": [
+        {
+          "location": [117.9, 39],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [101.8, 42.5],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [103.9, 37.6],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [97.2, 39.1],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.7, 22.6],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.2, 23.6],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.7, 12.9],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [96.7, 25.1],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [84.6, 44.3],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [92.4, 14.1],
+          "player": { "id": 5477, "name": "Ousmane Dembélé" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [87.2, 37.1],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [99.2, 39.7],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [98, 8.7],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [101.3, 19.1],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [97.8, 23.8],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "9afa860b-47cd-4be3-84cc-9f0846027721",
+    "index": 1166,
+    "period": 1,
+    "timestamp": "00:35:12.890",
+    "minute": 35,
+    "second": 12,
+    "type": { "id": 30, "name": "Pass" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+    "position": { "id": 2, "name": "Right Back" },
+    "location": [25.9, 71.8],
+    "duration": 1.466588,
+    "related_events": [
+      "31fdf07c-4b0f-4255-a952-7f989c3fa856",
+      "e9c9721e-6da6-441e-b36f-05593500c42d"
+    ],
+    "pass": {
+      "recipient": { "id": 27886, "name": "Alexis Mac Allister" },
+      "length": 20.130821,
+      "angle": -0.67629254,
+      "height": { "id": 2, "name": "Low Pass" },
+      "end_location": [41.6, 59.2],
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 66, "name": "Recovery" }
+    }
+  },
+  {
+    "id": "31fdf07c-4b0f-4255-a952-7f989c3fa856",
+    "index": 1167,
+    "period": 1,
+    "timestamp": "00:35:14.357",
+    "minute": 35,
+    "second": 14,
+    "type": { "id": 42, "name": "Ball Receipt*" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [41.6, 59.2],
+    "related_events": ["9afa860b-47cd-4be3-84cc-9f0846027721"]
+  },
+  {
+    "id": "eedd2a31-c982-4dd2-a0b7-1db4c44639ad",
+    "index": 1168,
+    "period": 1,
+    "timestamp": "00:35:14.357",
+    "minute": 35,
+    "second": 14,
+    "type": { "id": 30, "name": "Pass" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [41.8, 59],
+    "duration": 0.986942,
+    "related_events": ["93a9489f-8ba1-46b1-91b7-28a6fc6eaa2a"],
+    "pass": {
+      "recipient": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+      "length": 11.641735,
+      "angle": 0.24289533,
+      "height": { "id": 1, "name": "Ground Pass" },
+      "end_location": [53.1, 61.8],
+      "body_part": { "id": 40, "name": "Right Foot" }
+    }
+  },
+  {
+    "id": "93a9489f-8ba1-46b1-91b7-28a6fc6eaa2a",
+    "index": 1169,
+    "period": 1,
+    "timestamp": "00:35:15.344",
+    "minute": 35,
+    "second": 15,
+    "type": { "id": 42, "name": "Ball Receipt*" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [53.1, 61.8],
+    "related_events": ["eedd2a31-c982-4dd2-a0b7-1db4c44639ad"]
+  },
+  {
+    "id": "b6de9b57-20ee-4cf3-ba6e-652981de52f7",
+    "index": 1170,
+    "period": 1,
+    "timestamp": "00:35:15.344",
+    "minute": 35,
+    "second": 15,
+    "type": { "id": 43, "name": "Carry" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [53.1, 61.8],
+    "duration": 0.466769,
+    "related_events": [
+      "3bfc095a-7e8d-468c-8edd-6739a72a09d3",
+      "93a9489f-8ba1-46b1-91b7-28a6fc6eaa2a"
+    ],
+    "carry": { "end_location": [52.9, 61.8] }
+  },
+  {
+    "id": "3bfc095a-7e8d-468c-8edd-6739a72a09d3",
+    "index": 1171,
+    "period": 1,
+    "timestamp": "00:35:15.811",
+    "minute": 35,
+    "second": 15,
+    "type": { "id": 30, "name": "Pass" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [52.9, 61.8],
+    "duration": 1.429727,
+    "related_events": ["2a98fd4d-08fa-48ad-b284-ce96885872bc"],
+    "pass": {
+      "recipient": { "id": 29560, "name": "Julián Álvarez" },
+      "length": 11.537765,
+      "angle": 0.5880026,
+      "height": { "id": 2, "name": "Low Pass" },
+      "end_location": [62.5, 68.2],
+      "body_part": { "id": 38, "name": "Left Foot" }
+    }
+  },
+  {
+    "id": "2a98fd4d-08fa-48ad-b284-ce96885872bc",
+    "index": 1172,
+    "period": 1,
+    "timestamp": "00:35:17.240",
+    "minute": 35,
+    "second": 17,
+    "type": { "id": 42, "name": "Ball Receipt*" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 29560, "name": "Julián Álvarez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [62.5, 68.2],
+    "related_events": ["3bfc095a-7e8d-468c-8edd-6739a72a09d3"]
+  },
+  {
+    "id": "81f143ae-d714-4008-9ca5-740c27301bd9",
+    "index": 1173,
+    "period": 1,
+    "timestamp": "00:35:17.240",
+    "minute": 35,
+    "second": 17,
+    "type": { "id": 43, "name": "Carry" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 29560, "name": "Julián Álvarez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [62.5, 68.2],
+    "duration": 0.070904,
+    "related_events": [
+      "2a98fd4d-08fa-48ad-b284-ce96885872bc",
+      "5a800227-911a-4490-b828-14ece1f81d76"
+    ],
+    "carry": { "end_location": [63.2, 68.2] }
+  },
+  {
+    "id": "5a800227-911a-4490-b828-14ece1f81d76",
+    "index": 1174,
+    "period": 1,
+    "timestamp": "00:35:17.311",
+    "minute": 35,
+    "second": 17,
+    "type": { "id": 30, "name": "Pass" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 29560, "name": "Julián Álvarez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [63.2, 68.2],
+    "duration": 3.651671,
+    "related_events": ["62bb4785-db35-4dc8-a5b8-52fcc265ae45"],
+    "pass": {
+      "recipient": { "id": 27886, "name": "Alexis Mac Allister" },
+      "length": 38.47207,
+      "angle": -0.3529904,
+      "height": { "id": 1, "name": "Ground Pass" },
+      "end_location": [99.3, 54.9],
+      "body_part": { "id": 40, "name": "Right Foot" }
+    }
+  },
+  {
+    "id": "62bb4785-db35-4dc8-a5b8-52fcc265ae45",
+    "index": 1175,
+    "period": 1,
+    "timestamp": "00:35:20.963",
+    "minute": 35,
+    "second": 20,
+    "type": { "id": 42, "name": "Ball Receipt*" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [99.3, 54.9],
+    "related_events": ["5a800227-911a-4490-b828-14ece1f81d76"]
+  },
+  {
+    "id": "ed70825d-8a40-470d-8b30-fd315ab5f0a6",
+    "index": 1176,
+    "period": 1,
+    "timestamp": "00:35:20.963",
+    "minute": 35,
+    "second": 20,
+    "type": { "id": 30, "name": "Pass" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [99.3, 54.9],
+    "duration": 1.661003,
+    "related_events": ["637f44e5-db4d-4e3b-89a9-fb0f384d3a59"],
+    "pass": {
+      "recipient": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+      "length": 26.00173,
+      "angle": -1.069301,
+      "height": { "id": 1, "name": "Ground Pass" },
+      "end_location": [111.8, 32.1],
+      "assisted_shot_id": "ef86f4d9-7acd-4ed0-a5ec-9129079e8fbe",
+      "goal_assist": true,
+      "body_part": { "id": 40, "name": "Right Foot" }
+    }
+  },
+  {
+    "id": "637f44e5-db4d-4e3b-89a9-fb0f384d3a59",
+    "index": 1177,
+    "period": 1,
+    "timestamp": "00:35:22.624",
+    "minute": 35,
+    "second": 22,
+    "type": { "id": 42, "name": "Ball Receipt*" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+    "position": { "id": 21, "name": "Left Wing" },
+    "location": [111.8, 32.1],
+    "related_events": ["ed70825d-8a40-470d-8b30-fd315ab5f0a6"]
+  },
+  {
+    "id": "ef86f4d9-7acd-4ed0-a5ec-9129079e8fbe",
+    "index": 1178,
+    "period": 1,
+    "timestamp": "00:35:22.647",
+    "minute": 35,
+    "second": 22,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+    "position": { "id": 21, "name": "Left Wing" },
+    "location": [111.8, 32.1],
+    "duration": 0.466153,
+    "related_events": ["07ff403e-90ed-4589-8dc1-d9ac61050632"],
+    "shot": {
+      "statsbomb_xg": 0.30340916,
+      "end_location": [120, 41.7, 0.5],
+      "key_pass_id": "ed70825d-8a40-470d-8b30-fd315ab5f0a6",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "first_time": true,
+      "freeze_frame": [
+        {
+          "location": [91, 50.1],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [111.7, 51.7],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.5, 48.1],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [110.4, 37.7],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.6, 48],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [93.8, 59.2],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [114.6, 35.1],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [109.2, 53.3],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "07ff403e-90ed-4589-8dc1-d9ac61050632",
+    "index": 1179,
+    "period": 1,
+    "timestamp": "00:35:23.113",
+    "minute": 35,
+    "second": 23,
+    "type": { "id": 23, "name": "Goal Keeper" },
+    "possession": 52,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3099, "name": "Hugo Lloris" },
+    "position": { "id": 1, "name": "Goalkeeper" },
+    "location": [5.5, 45],
+    "duration": 0,
+    "related_events": ["ef86f4d9-7acd-4ed0-a5ec-9129079e8fbe"],
+    "goalkeeper": {
+      "type": { "id": 26, "name": "Goal Conceded" },
+      "outcome": { "id": 55, "name": "No Touch" },
+      "technique": { "id": 45, "name": "Diving" },
+      "position": { "id": 44, "name": "Set" }
+    }
+  },
+  {
+    "id": "13a4889d-ad08-41be-9125-24c4c7d7879a",
+    "index": 1916,
+    "period": 2,
+    "timestamp": "00:03:49.971",
+    "minute": 48,
+    "second": 49,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 86,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 4, "name": "From Throw In" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+    "position": { "id": 13, "name": "Right Center Midfield" },
+    "location": [103.3, 52.3],
+    "duration": 0.86795,
+    "related_events": ["ba1a48d9-afea-4c05-922f-2f0193a4194f"],
+    "shot": {
+      "statsbomb_xg": 0.040216275,
+      "end_location": [117.6, 41.6, 1.3],
+      "key_pass_id": "d2e57de9-01bc-4d2e-8383-3822d5cb21b7",
+      "first_time": true,
+      "technique": { "id": 95, "name": "Volley" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "freeze_frame": [
+        {
+          "location": [117.8, 41.6],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [105.9, 50.1],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [108.9, 44.5],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [106.4, 40.2],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [113.7, 39.9],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.4, 30.9],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.4, 27.8],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.1, 17.8],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [110.4, 37.5],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [112.6, 37.3],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [92.2, 26.1],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "43691970-1dad-4e11-bd29-48f640c55ea1",
+    "index": 2204,
+    "period": 2,
+    "timestamp": "00:13:21.380",
+    "minute": 58,
+    "second": 21,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 107,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 3, "name": "From Free Kick" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 29560, "name": "Julián Álvarez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [110.5, 24.9],
+    "duration": 0.426019,
+    "related_events": ["10ca823a-345d-4333-8df2-bf82ec86a357"],
+    "shot": {
+      "one_on_one": true,
+      "statsbomb_xg": 0.05953379,
+      "end_location": [119.4, 35.8, 0.2],
+      "key_pass_id": "6927b0fd-c43c-43d1-9cd1-b6a0d22b97cd",
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "technique": { "id": 93, "name": "Normal" },
+      "freeze_frame": [
+        {
+          "location": [96.8, 40.2],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.5, 33.6],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [100.3, 29.4],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.1, 35.1],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.9, 26.6],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [118.9, 36.3],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [99.4, 36.6],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "9615ffbc-b513-45e6-9ccc-015234483f95",
+    "index": 2235,
+    "period": 2,
+    "timestamp": "00:14:51.755",
+    "minute": 59,
+    "second": 51,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 116,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [109.7, 46],
+    "duration": 0.718656,
+    "related_events": ["97ec937f-9584-45e7-831f-78266ef479a3"],
+    "shot": {
+      "statsbomb_xg": 0.11555985,
+      "end_location": [120, 45.5, 1.5],
+      "key_pass_id": "fae50a7c-334c-4b1f-9f33-57cfa86af990",
+      "outcome": { "id": 98, "name": "Off T" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "freeze_frame": [
+        {
+          "location": [109.8, 45.4],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [118, 42.7],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [95, 20.1],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [106.3, 34.4],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [110.8, 38.3],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [107, 26.8],
+          "player": { "id": 2995, "name": "Ángel Fabián Di María Hernández" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [108, 36.1],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.4, 32.9],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [109, 28.1],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [111.2, 37.4],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 32.9],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [110.1, 44.1],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.1, 45.5],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "9f6285ff-9b32-4a46-a4a0-74c1ca89276c",
+    "index": 2517,
+    "period": 2,
+    "timestamp": "00:22:15.084",
+    "minute": 67,
+    "second": 15,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 131,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 2, "name": "From Corner" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 22097, "name": "Randal Kolo Muani" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [113.4, 34.6],
+    "duration": 0.803718,
+    "under_pressure": true,
+    "related_events": [
+      "0da05524-c47e-4022-b33a-df986212d28a",
+      "bd6a3adc-794f-45b7-844a-085461b2f7ab"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.09618377,
+      "end_location": [120, 31.5, 1.1],
+      "key_pass_id": "c9b65458-c8c6-48b0-a94d-0b6ca28cfc1b",
+      "body_part": { "id": 37, "name": "Head" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "technique": { "id": 93, "name": "Normal" },
+      "aerial_won": true,
+      "freeze_frame": [
+        {
+          "location": [113.8, 37.4],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [114, 33.2],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [113.5, 35.6],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [111.9, 41.5],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [111.8, 48.2],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [111.8, 44.4],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [109.7, 45],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109, 39.7],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [112.7, 31.5],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [103, 35.5],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [118.3, 38.3],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [112.3, 38.7],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [112.8, 38.9],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [111.3, 48.8],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [109.8, 48.2],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [110.1, 42.4],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [108.7, 38.6],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [116.6, 0.2],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [97.4, 33.1],
+          "player": { "id": 6704, "name": "Theo Bernard François Hernández" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [95.5, 50.3],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "b2d43671-a3e6-4709-9c0c-646442c1074c",
+    "index": 2658,
+    "period": 2,
+    "timestamp": "00:25:09.207",
+    "minute": 70,
+    "second": 9,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 138,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 21, "name": "Left Wing" },
+    "location": [102.5, 27.9],
+    "duration": 0.90957,
+    "related_events": ["af3f089f-f0b9-49d2-87e1-5b0a10e3b4d8"],
+    "shot": {
+      "statsbomb_xg": 0.050644457,
+      "end_location": [120, 38.8, 4.5],
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "freeze_frame": [
+        {
+          "location": [103.3, 29.2],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.3, 12],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [102.1, 43.1],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [109.2, 34.4],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [104.5, 43.4],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.4, 27.1],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 34.8],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.9, 23.2],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.1, 27.4],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [117.1, 37.3],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [107.2, 42.3],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [108.9, 33.4],
+          "player": { "id": 5487, "name": "Antoine Griezmann" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [94.3, 58.8],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [99.6, 41.7],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [108.1, 19.1],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "43b2d123-6945-4a7c-8292-f7792af341f9",
+    "index": 2691,
+    "period": 2,
+    "timestamp": "00:26:31.216",
+    "minute": 71,
+    "second": 31,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 139,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 7, "name": "From Goal Kick" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 38718, "name": "Enzo Fernandez" },
+    "position": { "id": 10, "name": "Center Defensive Midfield" },
+    "location": [98.9, 32.2],
+    "duration": 1.099332,
+    "related_events": ["adbca8d5-9d69-4f53-b1ae-b3bacd82c6b9"],
+    "shot": {
+      "statsbomb_xg": 0.041589838,
+      "end_location": [117.8, 40.4, 1.7],
+      "key_pass_id": "6df8ce2d-052e-42fe-ab80-f3ff68526fd2",
+      "outcome": { "id": 100, "name": "Saved" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "freeze_frame": [
+        {
+          "location": [99.7, 35.6],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [104, 37.8],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.8, 31.4],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [107.4, 36.1],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.1, 34.2],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [103.2, 26.1],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [106.8, 29.5],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [107.6, 28.9],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [105, 21.8],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 19, "name": "Center Attacking Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [108, 35.9],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [106.8, 28],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [97, 12.6],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [109.5, 22.6],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [118.2, 39.6],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [88.5, 19.7],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [102.3, 41.4],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "6cc0d5e2-6999-4006-8a7a-34de4cbe3ffd",
+    "index": 2928,
+    "period": 2,
+    "timestamp": "00:34:24.975",
+    "minute": 79,
+    "second": 24,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 163,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [108, 40],
+    "duration": 0.360706,
+    "related_events": ["657afc07-537a-44cc-9411-cb0a713b0a63"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 37.3, 0.3],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" }
+    }
+  },
+  {
+    "id": "03fb2918-e1e7-4ec8-89ff-7bc5531e853d",
+    "index": 2987,
+    "period": 2,
+    "timestamp": "00:35:59.025",
+    "minute": 80,
+    "second": 59,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 165,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 4, "name": "From Throw In" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [104.8, 30.1],
+    "duration": 0.869946,
+    "related_events": ["18c660b6-283a-430e-abbd-925713631028"],
+    "shot": {
+      "statsbomb_xg": 0.1017027,
+      "end_location": [120, 41.5, 0.3],
+      "key_pass_id": "7b1441f1-4911-44d7-ac4b-f3f8f11daa76",
+      "first_time": true,
+      "technique": { "id": 95, "name": "Volley" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "freeze_frame": [
+        {
+          "location": [117.7, 37.9],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 41.9],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.3, 45.1],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.5, 46.5],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [103.5, 36],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [99, 35.3],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.2, 27],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [94, 37.7],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [98.1, 65.9],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [104.2, 42.6],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [101.1, 37.1],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "fe277079-395a-4ff3-bb29-e99d93014014",
+    "index": 3037,
+    "period": 2,
+    "timestamp": "00:38:23.690",
+    "minute": 83,
+    "second": 23,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 167,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 4, "name": "From Throw In" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 38718, "name": "Enzo Fernandez" },
+    "position": { "id": 10, "name": "Center Defensive Midfield" },
+    "location": [92.2, 35.9],
+    "duration": 0.403089,
+    "related_events": [
+      "1b6cd5fa-c60a-41aa-b6b2-f67fe35a11f7",
+      "a4eb24f7-0770-457f-984b-c838f687de5c"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.030159522,
+      "end_location": [101.8, 38.1],
+      "key_pass_id": "79c08284-37ea-4a68-8d22-4c6a7de3f863",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 96, "name": "Blocked" },
+      "freeze_frame": [
+        {
+          "location": [118.1, 40],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [85.2, 41.8],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 24, "name": "Left Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [96, 41.7],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [95.2, 32.9],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [92.9, 23.6],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [103.7, 43.7],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 38.2],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [100, 31.8],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [106.2, 33.8],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [104.1, 28.1],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.8, 19.3],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [85.8, 47.4],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [83.7, 22.7],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [93.7, 42.6],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [93.7, 28.6],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [100.3, 31.3],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [106.9, 32.6],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [105.5, 27.4],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [100.1, 19.4],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "5dbcde3d-ba75-483d-a65f-72d2b99ff713",
+    "index": 3257,
+    "period": 2,
+    "timestamp": "00:47:57.862",
+    "minute": 92,
+    "second": 57,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 183,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [95.9, 32.2],
+    "duration": 0.162324,
+    "related_events": [
+      "0e13c11b-c647-45c6-8892-b2884d7d1968",
+      "4da02a45-ece3-4258-9b35-54424d4fe522"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.0324491,
+      "end_location": [100.7, 33.5],
+      "outcome": { "id": 96, "name": "Blocked" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "freeze_frame": [
+        {
+          "location": [96.6, 30.5],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [83.9, 51.8],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [116.7, 39],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [101.3, 33.8],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.5, 32],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.5, 24.9],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [94.5, 33.6],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [102, 46.9],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [99.8, 44.5],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [97.6, 12.7],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [102.7, 28.9],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "8d2a6599-cc25-41a2-acde-41d10194b5bd",
+    "index": 3283,
+    "period": 2,
+    "timestamp": "00:48:45.484",
+    "minute": 93,
+    "second": 45,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 184,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 2, "name": "From Corner" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3026, "name": "Adrien Rabiot" },
+    "position": { "id": 11, "name": "Left Defensive Midfield" },
+    "location": [108.9, 28.5],
+    "duration": 0.569118,
+    "related_events": ["a11c09f1-7e6f-4777-bd7f-2516c5aab573"],
+    "shot": {
+      "statsbomb_xg": 0.09333491,
+      "end_location": [118, 36.6, 0.2],
+      "key_pass_id": "a67188a4-cc46-490a-a507-f0578fe89668",
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "first_time": true,
+      "technique": { "id": 93, "name": "Normal" },
+      "freeze_frame": [
+        {
+          "location": [112.2, 44.7],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [116.7, 37],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [112, 37.7],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [112.4, 34.3],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.4, 37.2],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [114.6, 23.1],
+          "player": { "id": 29201, "name": "Nahuel Molina Lucero" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [113.6, 26],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [113.5, 17.3],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [118.3, 36.4],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [103.5, 16.6],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [116.3, 21.8],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [115.6, 18.2],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [109.4, 51.2],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [114.4, 42.6],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [114.9, 37.5],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [103.3, 45.8],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 24, "name": "Left Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [106.4, 36.4],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [92.9, 45.5],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "867b8791-49c0-4d98-a976-c0b4cfc1cb5a",
+    "index": 3389,
+    "period": 2,
+    "timestamp": "00:51:37.226",
+    "minute": 96,
+    "second": 37,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 191,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [96.2, 40.9],
+    "duration": 0.660113,
+    "related_events": ["15d9d4e7-c92d-44c7-bac4-5137ee9a691f"],
+    "shot": {
+      "statsbomb_xg": 0.0430315,
+      "end_location": [117.6, 39.3, 2.3],
+      "key_pass_id": "482b934b-9cec-4ebc-a750-67348cf50d41",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "freeze_frame": [
+        {
+          "location": [117.6, 39.9],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [90.5, 27.9],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [101.2, 47.1],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [98.9, 41.6],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [100.7, 39.5],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.8, 36.5],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [93.4, 22],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [105.4, 33],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [103.4, 29.5],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [93.1, 37.7],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [101.1, 52.2],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [102.7, 35.9],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [103.6, 26.7],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [102.1, 16.3],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "d8c05bb0-ddb1-4ff2-9dbf-ba17b00a5359",
+    "index": 3526,
+    "period": 3,
+    "timestamp": "00:02:05.384",
+    "minute": 92,
+    "second": 5,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 200,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 3, "name": "From Free Kick" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 27886, "name": "Alexis Mac Allister" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [98.2, 23.8],
+    "duration": 0.867141,
+    "related_events": ["54ed4c73-0d25-45ab-8535-fd95e6d0981b"],
+    "shot": {
+      "statsbomb_xg": 0.019259434,
+      "end_location": [120, 28, 0.3],
+      "first_time": true,
+      "technique": { "id": 91, "name": "Half Volley" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "freeze_frame": [
+        {
+          "location": [108.2, 45.8],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [111.7, 38.6],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [112.2, 36.4],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [97.7, 50.1],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [108.9, 27.5],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.4, 40.3],
+          "player": { "id": 3026, "name": "Adrien Rabiot" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.8, 25],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [101.8, 12.7],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [91.3, 28.5],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [117.5, 39.1],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [97.7, 14.3],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [117.7, 31.8],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [102, 46],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [111.1, 22.4],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [93.6, 42.1],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "db8267ad-256a-450d-997f-382a4d545634",
+    "index": 3802,
+    "period": 3,
+    "timestamp": "00:09:54.465",
+    "minute": 99,
+    "second": 54,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 213,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 3, "name": "From Free Kick" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 11990, "name": "Youssouf Fofana" },
+    "position": { "id": 11, "name": "Left Defensive Midfield" },
+    "location": [89.8, 39.9],
+    "duration": 0.414646,
+    "related_events": [
+      "7b9b063d-d065-4856-bb37-57b7e568397a",
+      "beeea2ba-e4c0-44cf-9832-56f8cdf4f497"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.023031652,
+      "end_location": [103.3, 40.4],
+      "outcome": { "id": 96, "name": "Blocked" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "freeze_frame": [
+        {
+          "location": [105.3, 35],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": false
+        },
+        {
+          "location": [101.6, 38.8],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [97.3, 43.6],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [96.3, 35.7],
+          "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [104.6, 52.1],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [103.9, 40.1],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [106.4, 36.2],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [102.8, 33.7],
+          "player": { "id": 29560, "name": "Julián Álvarez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [103.6, 35],
+          "player": { "id": 7797, "name": "Rodrigo Javier De Paul" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.6, 21.1],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": false
+        },
+        {
+          "location": [117.8, 39.3],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [89.8, 56.6],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [88, 26.6],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [104.3, 61.1],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [105.6, 39.8],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [110, 44.9],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 24, "name": "Left Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [106.3, 37.3],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [105.8, 33.7],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [105.8, 30.5],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [98.6, 12.2],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "d3ba40fa-09d6-4488-b17d-672aaa2928d7",
+    "index": 3930,
+    "period": 3,
+    "timestamp": "00:14:28.023",
+    "minute": 104,
+    "second": 28,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 218,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [108.8, 45.3],
+    "duration": 0.134648,
+    "related_events": [
+      "36e9ec23-c73d-4b39-92e3-88ec8e613494",
+      "b59424b9-7721-42ad-b0b6-b376ebe5cddf"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.23260574,
+      "end_location": [110.6, 44.2],
+      "key_pass_id": "4110d7e1-c550-49c4-a07f-80df35b94088",
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 96, "name": "Blocked" },
+      "technique": { "id": 93, "name": "Normal" },
+      "freeze_frame": [
+        {
+          "location": [113.5, 39],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [116.7, 42.2],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [110.3, 43.3],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [105.6, 42.2],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [106.2, 39],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [98.6, 38.1],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [98.3, 39.2],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [99.5, 30.6],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [110.4, 37.7],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "a1654330-3747-4a25-b244-26ba2884c91c",
+    "index": 3934,
+    "period": 3,
+    "timestamp": "00:14:30.401",
+    "minute": 104,
+    "second": 30,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 218,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+    "position": { "id": 2, "name": "Right Back" },
+    "location": [96.3, 49.4],
+    "duration": 0.668562,
+    "related_events": [
+      "742ff5c4-0069-4cc9-b61e-3a10f3eaf62e",
+      "920ea063-a6c0-4f2c-b95d-8774a4c655ed"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.020604363,
+      "end_location": [112.7, 41],
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 96, "name": "Blocked" },
+      "first_time": true,
+      "technique": { "id": 91, "name": "Half Volley" },
+      "freeze_frame": [
+        {
+          "location": [117.8, 38.3],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.7, 49.2],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [112.8, 41],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [105.9, 47.1],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.8, 43.3],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [100.8, 38.9],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [95.3, 48],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [95.7, 34.7],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [117.6, 41.6],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [102, 23.8],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [102, 37.5],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [97, 43.2],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [112.6, 38.9],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [107.3, 41.3],
+          "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "5d7d4f2f-62da-4de9-90e3-3660ba17c4f3",
+    "index": 3970,
+    "period": 3,
+    "timestamp": "00:15:41.223",
+    "minute": 105,
+    "second": 41,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 221,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 6, "name": "From Counter" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [105.1, 33.5],
+    "duration": 1.060919,
+    "related_events": ["cee520f3-f32e-4945-a691-546cc785cae2"],
+    "shot": {
+      "statsbomb_xg": 0.14029205,
+      "end_location": [120, 34.9, 0.6],
+      "key_pass_id": "3607594a-faed-4ae3-8b21-8beb96f52e86",
+      "technique": { "id": 91, "name": "Half Volley" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "freeze_frame": [
+        {
+          "location": [109, 35.1],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [99.3, 45.2],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [93.5, 34.3],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [91.1, 34.8],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        },
+        {
+          "location": [105.2, 34.4],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "8bb8c7b5-9c14-4dfa-9279-0548ee8076db",
+    "index": 4042,
+    "period": 4,
+    "timestamp": "00:01:55.723",
+    "minute": 106,
+    "second": 55,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 226,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 4, "name": "From Throw In" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [103.6, 55.8],
+    "duration": 0.934735,
+    "related_events": ["514de4ec-e45d-48e5-af92-7eb72cfb3f92"],
+    "shot": {
+      "statsbomb_xg": 0.024784861,
+      "end_location": [119, 43.9, 0.2],
+      "key_pass_id": "9757031a-9738-49c1-b305-c84a78b06992",
+      "technique": { "id": 91, "name": "Half Volley" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "first_time": true,
+      "freeze_frame": [
+        {
+          "location": [103.8, 60.4],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [96.3, 56.3],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [101.8, 65.4],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [104.9, 56],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [98.1, 41.2],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [110.8, 58.7],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [107.5, 49.6],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [105.4, 43.4],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [107.6, 34.2],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [118.5, 42.4],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [89.8, 56.2],
+          "player": { "id": 16308, "name": "Leandro Daniel Paredes" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [87.2, 40.3],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        },
+        {
+          "location": [108.6, 76.8],
+          "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [109.6, 61.2],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [101.4, 42.7],
+          "player": { "id": 27886, "name": "Alexis Mac Allister" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [107.9, 66.1],
+          "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [106.1, 32.9],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "40cbfd91-87d9-4df8-a575-533b5c26767f",
+    "index": 4067,
+    "period": 4,
+    "timestamp": "00:02:57.018",
+    "minute": 107,
+    "second": 57,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 228,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+    "position": { "id": 23, "name": "Center Forward" },
+    "location": [114.4, 52],
+    "duration": 0.275733,
+    "related_events": ["8b439d73-06ea-40be-a9f8-c781a56cb2a3"],
+    "shot": {
+      "one_on_one": true,
+      "statsbomb_xg": 0.10407211,
+      "end_location": [118.7, 44.1, 1.8],
+      "key_pass_id": "25ac6afd-9d87-4d4a-a79d-13d413233505",
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "freeze_frame": [
+        {
+          "location": [99.7, 43.2],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [105, 49],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [105.6, 40.9],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [107.9, 44.1],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [113.1, 49.8],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [114, 42],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [118.7, 43.9],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [110.1, 37.8],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [89.4, 27.3],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [112.2, 44.7],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 17, "name": "Right Wing" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "54b889ec-6026-49ea-a913-e883dbe6e301",
+    "index": 4070,
+    "period": 4,
+    "timestamp": "00:02:58.079",
+    "minute": 107,
+    "second": 58,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 228,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 17, "name": "Right Wing" },
+    "location": [116.6, 43],
+    "duration": 0.330581,
+    "related_events": ["1a6eba89-8e9f-449f-b97c-d1374213eb33"],
+    "shot": {
+      "statsbomb_xg": 0.48840353,
+      "end_location": [120, 40.9, 0.3],
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "first_time": true,
+      "technique": { "id": 91, "name": "Half Volley" },
+      "freeze_frame": [
+        {
+          "location": [118.3, 43.7],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [103.5, 42.2],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [108.9, 48.5],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.9, 39.7],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [112, 42.1],
+          "player": { "id": 5485, "name": "Raphaël Varane" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [119, 50.8],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [120, 40.6],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [93.5, 28.4],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 21, "name": "Left Wing" },
+          "teammate": true
+        },
+        {
+          "location": [115.5, 34.6],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [115.6, 50.8],
+          "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+          "position": { "id": 23, "name": "Center Forward" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "08f2f203-cdc9-4146-99b6-818c5c32bf70",
+    "index": 4199,
+    "period": 4,
+    "timestamp": "00:10:38.948",
+    "minute": 115,
+    "second": 38,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 237,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 2, "name": "From Corner" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [101.4, 26.6],
+    "duration": 0.128318,
+    "related_events": [
+      "a38f27eb-03f9-4b62-8ec2-cdd8f052808f",
+      "c779043f-b321-4d41-b876-d430b0c41cd9"
+    ],
+    "shot": {
+      "statsbomb_xg": 0.03075741,
+      "end_location": [104.5, 29.1],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 96, "name": "Blocked" },
+      "freeze_frame": [
+        {
+          "location": [109.2, 41],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [109.2, 42.7],
+          "player": { "id": 5507, "name": "Nicolás Alejandro Tagliafico" },
+          "position": { "id": 8, "name": "Left Wing Back" },
+          "teammate": false
+        },
+        {
+          "location": [110.5, 37.9],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [108.9, 33.2],
+          "player": { "id": 7161, "name": "Germán Alejandro Pezzella" },
+          "position": { "id": 4, "name": "Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [113.1, 37.9],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [106.9, 34.3],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 15, "name": "Left Center Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [105.7, 28.7],
+          "player": { "id": 16308, "name": "Leandro Daniel Paredes" },
+          "position": { "id": 10, "name": "Center Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [112.3, 43.6],
+          "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+          "position": { "id": 24, "name": "Left Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [100.5, 45.5],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": false
+        },
+        {
+          "location": [105.2, 29.6],
+          "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+          "position": { "id": 7, "name": "Right Wing Back" },
+          "teammate": false
+        },
+        {
+          "location": [117.6, 37.8],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [106.4, 42.4],
+          "player": { "id": 11135, "name": "Ibrahima Konaté" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [108.3, 41],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [112.8, 42.1],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [104.1, 51.5],
+          "player": { "id": 4445, "name": "Jules Koundé" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": true
+        },
+        {
+          "location": [109.1, 36.3],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": true
+        },
+        {
+          "location": [105, 34.2],
+          "player": { "id": 22097, "name": "Randal Kolo Muani" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [90.8, 48.6],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [90, 33.2],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "d9b92dbd-4fea-4f48-b2fb-d7222eab2dbd",
+    "index": 4203,
+    "period": 4,
+    "timestamp": "00:12:05.189",
+    "minute": 117,
+    "second": 5,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 238,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [108, 40],
+    "duration": 0.406482,
+    "related_events": ["7702c4cb-e5ea-4353-9e70-6df2eead4987"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 36.7, 1.1],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" }
+    }
+  },
+  {
+    "id": "959edead-09fb-40b0-b6a3-72e73bd30d5a",
+    "index": 4337,
+    "period": 4,
+    "timestamp": "00:17:44.376",
+    "minute": 122,
+    "second": 44,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 245,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 3, "name": "From Free Kick" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 22097, "name": "Randal Kolo Muani" },
+    "position": { "id": 22, "name": "Right Center Forward" },
+    "location": [103.7, 45.1],
+    "duration": 0.212606,
+    "related_events": ["e6614a7e-5b0a-4853-9363-3f628dc8cbcb"],
+    "shot": {
+      "statsbomb_xg": 0.27751395,
+      "end_location": [109.7, 44.1, 0.5],
+      "key_pass_id": "d56cde7d-5b7b-45d7-9a28-49b6d4dcfc69",
+      "technique": { "id": 91, "name": "Half Volley" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "first_time": true,
+      "freeze_frame": [
+        {
+          "location": [102.3, 41.2],
+          "player": { "id": 7161, "name": "Germán Alejandro Pezzella" },
+          "position": { "id": 4, "name": "Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [101.9, 36.7],
+          "player": { "id": 20572, "name": "Cristian Gabriel Romero" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [93.5, 52.9],
+          "player": { "id": 19597, "name": "Marcos Javier Acuña" },
+          "position": { "id": 8, "name": "Left Wing Back" },
+          "teammate": false
+        },
+        {
+          "location": [95, 43.8],
+          "player": { "id": 3090, "name": "Nicolás Hernán Otamendi" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [109.7, 43.5],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [94.5, 38.9],
+          "player": { "id": 2972, "name": "Marcus Thuram" },
+          "position": { "id": 16, "name": "Left Midfield" },
+          "teammate": true
+        },
+        {
+          "location": [103.2, 36.1],
+          "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+          "position": { "id": 24, "name": "Left Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [89.7, 60.5],
+          "player": { "id": 8217, "name": "Kingsley Coman" },
+          "position": { "id": 12, "name": "Right Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "449f2702-ad18-4bc8-a9ef-59fb1dc1a707",
+    "index": 4357,
+    "period": 4,
+    "timestamp": "00:17:59.834",
+    "minute": 122,
+    "second": 59,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 246,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 1, "name": "Regular Play" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 11456, "name": "Lautaro Javier Martínez" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [110.8, 41.6],
+    "duration": 0.914533,
+    "related_events": ["d815fc14-5a24-4dad-99cf-7308ec839b7e"],
+    "shot": {
+      "statsbomb_xg": 0.10655013,
+      "end_location": [120, 46.5, 1.5],
+      "key_pass_id": "fc143837-ac4c-4606-84d0-8d4d2c4c1f22",
+      "body_part": { "id": 37, "name": "Head" },
+      "type": { "id": 87, "name": "Open Play" },
+      "outcome": { "id": 98, "name": "Off T" },
+      "technique": { "id": 93, "name": "Normal" },
+      "freeze_frame": [
+        {
+          "location": [108.1, 42.4],
+          "player": { "id": 7439, "name": "Axel Disasi" },
+          "position": { "id": 2, "name": "Right Back" },
+          "teammate": false
+        },
+        {
+          "location": [100.5, 51],
+          "player": { "id": 8519, "name": "Dayotchanculle Upamecano" },
+          "position": { "id": 5, "name": "Left Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [115.2, 45.5],
+          "player": { "id": 11135, "name": "Ibrahima Konaté" },
+          "position": { "id": 3, "name": "Right Center Back" },
+          "teammate": false
+        },
+        {
+          "location": [119, 56.6],
+          "player": { "id": 11990, "name": "Youssouf Fofana" },
+          "position": { "id": 11, "name": "Left Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [113.5, 41.4],
+          "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+          "position": { "id": 9, "name": "Right Defensive Midfield" },
+          "teammate": false
+        },
+        {
+          "location": [99.7, 58.3],
+          "player": { "id": 24778, "name": "Eduardo Camavinga" },
+          "position": { "id": 6, "name": "Left Back" },
+          "teammate": false
+        },
+        {
+          "location": [118.1, 42.4],
+          "player": { "id": 3099, "name": "Hugo Lloris" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        },
+        {
+          "location": [119.2, 58],
+          "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+          "position": { "id": 7, "name": "Right Wing Back" },
+          "teammate": true
+        },
+        {
+          "location": [100.8, 54.5],
+          "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+          "position": { "id": 22, "name": "Right Center Forward" },
+          "teammate": true
+        },
+        {
+          "location": [101.9, 38.8],
+          "player": { "id": 38718, "name": "Enzo Fernandez" },
+          "position": { "id": 13, "name": "Right Center Midfield" },
+          "teammate": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "d0f76056-0d67-4aae-b44a-83bef0b1cf27",
+    "index": 4389,
+    "period": 5,
+    "timestamp": "00:00:13.386",
+    "minute": 120,
+    "second": 13,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 248,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 3009, "name": "Kylian Mbappé Lottin" },
+    "position": { "id": 24, "name": "Left Center Forward" },
+    "location": [108.1, 40.1],
+    "duration": 0.440684,
+    "related_events": ["a78b2f33-2a71-4455-8590-0beab022c230"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 37.6, 1.3],
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "technique": { "id": 93, "name": "Normal" }
+    }
+  },
+  {
+    "id": "2a15edb5-2a54-41d5-afe9-87e447389b18",
+    "index": 4391,
+    "period": 5,
+    "timestamp": "00:01:02.191",
+    "minute": 121,
+    "second": 2,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 249,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5503, "name": "Lionel Andrés Messi Cuccittini" },
+    "position": { "id": 22, "name": "Right Center Forward" },
+    "location": [108.1, 40.1],
+    "duration": 0.843986,
+    "related_events": ["571f2328-3a11-4aa6-b344-0f281668a2e7"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 38.3, 0.2],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" }
+    }
+  },
+  {
+    "id": "97439112-dfb5-4bd5-9967-554095296096",
+    "index": 4393,
+    "period": 5,
+    "timestamp": "00:01:42.023",
+    "minute": 121,
+    "second": 42,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 250,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 8217, "name": "Kingsley Coman" },
+    "position": { "id": 12, "name": "Right Midfield" },
+    "location": [108.1, 40.1],
+    "duration": 0.362939,
+    "related_events": ["5afb9130-42c7-42bf-8b99-c3a491e886b2"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [118.8, 38.2, 0.9],
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 100, "name": "Saved" },
+      "technique": { "id": 93, "name": "Normal" }
+    }
+  },
+  {
+    "id": "50dcde1a-faa3-4eec-a0cd-3f09a7cf763a",
+    "index": 4395,
+    "period": 5,
+    "timestamp": "00:02:27.184",
+    "minute": 122,
+    "second": 27,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 251,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 5743, "name": "Paulo Bruno Exequiel Dybala" },
+    "position": { "id": 15, "name": "Left Center Midfield" },
+    "location": [108.1, 40.1],
+    "duration": 0.518391,
+    "related_events": ["d6c9beb1-073a-4ed5-a07d-b2d032ed7229"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 40.4, 0.2],
+      "body_part": { "id": 38, "name": "Left Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "technique": { "id": 93, "name": "Normal" }
+    }
+  },
+  {
+    "id": "54e27ba9-b9ae-44a3-ac8d-fc91e76a1b91",
+    "index": 4397,
+    "period": 5,
+    "timestamp": "00:03:29.289",
+    "minute": 123,
+    "second": 29,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 252,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 10481, "name": "Aurélien Djani Tchouaméni" },
+    "position": { "id": 9, "name": "Right Defensive Midfield" },
+    "location": [108.1, 40.1],
+    "duration": 0.380115,
+    "related_events": ["9e63fca2-451b-42c5-a48b-ab15dfc97a78"],
+    "shot": {
+      "one_on_one": true,
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 35.6, 0.2],
+      "outcome": { "id": 98, "name": "Off T" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "freeze_frame": [
+        {
+          "location": [119.9, 40],
+          "player": { "id": 6909, "name": "Damián Emiliano Martínez" },
+          "position": { "id": 1, "name": "Goalkeeper" },
+          "teammate": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "bcc6d4ae-f71c-4566-bf2d-c12f910eb526",
+    "index": 4399,
+    "period": 5,
+    "timestamp": "00:04:16.722",
+    "minute": 124,
+    "second": 16,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 253,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 16308, "name": "Leandro Daniel Paredes" },
+    "position": { "id": 10, "name": "Center Defensive Midfield" },
+    "location": [108.1, 40.1],
+    "duration": 0.571088,
+    "related_events": ["18368163-57c7-4e9f-a4c2-c1c884a0d696"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 37.6, 0.2],
+      "outcome": { "id": 97, "name": "Goal" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" }
+    }
+  },
+  {
+    "id": "59ebe83e-616a-4288-89fd-a0246b53d48f",
+    "index": 4402,
+    "period": 5,
+    "timestamp": "00:05:09.782",
+    "minute": 125,
+    "second": 9,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 254,
+    "possession_team": { "id": 771, "name": "France" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 771, "name": "France" },
+    "player": { "id": 22097, "name": "Randal Kolo Muani" },
+    "position": { "id": 22, "name": "Right Center Forward" },
+    "location": [108.1, 40.1],
+    "duration": 0.347222,
+    "related_events": ["071e5f12-a2c3-455d-8129-2b14cb81fad8"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 39.3, 1.6],
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" },
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" }
+    }
+  },
+  {
+    "id": "66eaf262-999f-4953-a924-f1b596de4dbf",
+    "index": 4404,
+    "period": 5,
+    "timestamp": "00:05:57.883",
+    "minute": 125,
+    "second": 57,
+    "type": { "id": 16, "name": "Shot" },
+    "possession": 255,
+    "possession_team": { "id": 779, "name": "Argentina" },
+    "play_pattern": { "id": 5, "name": "Other" },
+    "team": { "id": 779, "name": "Argentina" },
+    "player": { "id": 28263, "name": "Gonzalo Ariel Montiel" },
+    "position": { "id": 7, "name": "Right Wing Back" },
+    "location": [108.1, 40.1],
+    "duration": 0.496009,
+    "related_events": ["14d51627-1f8e-42ec-bf97-74f1f22c5e40"],
+    "shot": {
+      "statsbomb_xg": 0.7835,
+      "end_location": [120, 37.9, 0.2],
+      "type": { "id": 88, "name": "Penalty" },
+      "outcome": { "id": 97, "name": "Goal" },
+      "technique": { "id": 93, "name": "Normal" },
+      "body_part": { "id": 40, "name": "Right Foot" }
+    }
+  }
+]
