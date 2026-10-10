@@ -15,7 +15,7 @@ Private workspace (`"private": true`), never published.
 | `post-04-network`         | 1080×1350 PNG       | Spain's first-half pass network                                                                                                                                       |
 | `post-05-palettes`        | 1080×1350 PNG       | One shot map in four palettes                                                                                                                                         |
 | `post-06-layers`          | 1080×1350 PNG       | 3×3 catalogue of layer components                                                                                                                                     |
-| `wall-mosaic`             | 3240×2880 PNG       | One picture cut into six 1080×1440 grid tiles (`mosaic-tile-1…6.png`)                                                                                                 |
+| `wall-mosaic`             | 3240×2880 PNG       | One picture cut into six 1080×1440 grid tiles (`mosaic/tile-1…6.png` in the bucket)                                                                                   |
 | `carousel-01…08`          | 8 × 1080×1350 PNG   | "Analyse any corner kick": a saveable 5-step how-to on SkillCorner data                                                                                               |
 | `linkedin-*`              | 4 × 1200×1200 PNG   | Hexbin, PositionalHeatmap, Voronoi and Flow, for LinkedIn                                                                                                             |
 | `post-03-winner-animated` | 1080×1350 MP4, 13 s | Post 03 as a loop: opens on the 360 freeze frame and goal angle, turns back to the horizontal pitch, draws the build-up, then turns vertical again                    |
@@ -43,7 +43,12 @@ npm run render --workspace=social   # everything → apps/social/out/
 npm run render --workspace=social -- reel-02   # just ids containing "reel-02"
 ```
 
-Renders go to `out/` (gitignored). Set `REMOTION_BROWSER` to a local
+Renders go to `out/` (gitignored), then live in `gs://pitchkit-assets` (layout in
+`scripts/assets.mjs`). Run `npm run assets -- upload <id>` (or `upload --all`) after
+rendering, `download <id>` to fetch and `list` to browse. Credentials come from the
+gitignored `.env.local`: `GOOGLE_APPLICATION_CREDENTIALS` (a key file outside the repo)
+or `GCS_SERVICE_ACCOUNT_JSON`, plus `GCS_BUCKET`. Covers are rendered as
+`out/<id>-cover.png`. Set `REMOTION_BROWSER` to a local
 Chrome/Chromium headless shell to skip Remotion's own browser download.
 
 ## Data

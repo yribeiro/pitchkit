@@ -1,6 +1,9 @@
 # PitchKit launch — captions & posting plan
 
-Copy for every piece in `out/` (render with `npm run render --workspace=social`).
+Copy for every piece. Renders live in `gs://pitchkit-assets` (layout in
+`scripts/assets.mjs`). Render locally with `npm run render --workspace=social`, then
+upload with `npm run assets --workspace=social -- upload <id>`. The paths in the
+headings below are bucket paths.
 Each entry has an Instagram caption, an X post (≤ 280 chars, the image/video
 attached), and alt text. Every number below comes from the committed data in
 `src/data/`, so it matches the graphic.
@@ -54,7 +57,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 ---
 
-## Post 01 — intro (`post-01-intro.png`)
+## Post 01 — intro (`posts/01-intro/intro.png`)
 
 **Instagram**
 
@@ -83,7 +86,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **Alt text:** Dark green graphic with the headline "Football visualised for the web." Below it, Spain's first-half pass network from the Euro 2024 final on a football pitch, and the install command npm i @pitchkit/react.
 
-## Post 02 — code → chart (`post-02-code.png`)
+## Post 02 — code → chart (`posts/02-code/code.png`)
 
 **Instagram**
 
@@ -111,7 +114,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **Alt text:** A code editor showing 14 lines of TypeScript/JSX that load the Euro 2024 final from StatsBomb and plot Spain's shots with PitchKit. Below, the resulting half-pitch shot map with 16 shots sized by expected goals, two goals in orange, and the stats 16 shots, 1.79 xG, 2 goals.
 
-## Post 03 — the winner (`post-03-winner.png`)
+## Post 03 — the winner (`posts/03-winner/winner.png`)
 
 **Instagram**
 
@@ -136,7 +139,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **Alt text:** A football pitch showing the sequence of passes (white arrows) and carries (green trails) that led to Mikel Oyarzabal's 86th-minute winner for Spain against England in the Euro 2024 final, with red and white dots marking Spanish and English players' positions at the moment of the shot.
 
-## Post 04 — pass network (`post-04-network.png`)
+## Post 04 — pass network (`posts/04-network/network.png`)
 
 **Instagram**
 
@@ -166,7 +169,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 > The pass counts in this caption come from `src/data/spain-pass-network.json`;
 > if you re-run the snapshot, re-check them.
 
-## Post 05 — palettes (`post-05-palettes.png`)
+## Post 05 — palettes (`posts/05-palettes/palettes.png`)
 
 **Instagram**
 
@@ -193,7 +196,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **Alt text:** Four versions of the same full-pitch shot map from the Euro 2024 final, each in a different colour palette: cream Newsprint, dark blue Analyst navy, purple-grey Dracula and warm dark Gruvbox, each labelled ESP 2–1 ENG.
 
-## Post 06 — layer catalogue (`post-06-layers.png`)
+## Post 06 — layer catalogue (`posts/06-layers/layers.png`)
 
 **Instagram**
 
@@ -219,7 +222,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 ---
 
-## Reel 01 — quickstart (`reel-01-quickstart.mp4`, 22 s)
+## Reel 01 — quickstart (`reels/01-quickstart/quickstart.mp4`, 22 s)
 
 **Instagram**
 
@@ -246,7 +249,7 @@ On X, use at most one or two (`#dataviz`, `#football`) — or none, and tag
 
 **On-screen text is burned in; no voiceover needed.**
 
-## Reel 02 — tracking (`reel-02-tracking.mp4`, 24 s)
+## Reel 02 — tracking (`reels/02-tracking/tracking.mp4`, 24 s)
 
 Opens on a 2.8 s hook — "Ever wanted to watch the beautiful game from above?"
 over the pitch at a broadcast-camera tilt, which swings flat to top-down as the
@@ -282,7 +285,7 @@ slow-mo and time its drop on the GOAL card.
 
 **Alt text:** A football pitch tilted like a TV camera view swings flat to a top-down view, then 22 players shown as blue and orange dots move in real time, with the pitch divided into shaded cells showing which team controls each area, building up to Auckland FC's goal and a "GOAL" caption.
 
-## Reel 03 — 11 layers, one pitch (`reel-03-layers.mp4`, 20 s)
+## Reel 03 — 11 layers, one pitch (`reels/03-layers/layers.mp4`, 20 s)
 
 Hook "11 layers. One <Pitch>." (1.7 s), then 11 beats of 1.4 s each (to ~17.1 s),
 then the end card. Every beat is a real finding from the final, one PitchKit
@@ -326,7 +329,7 @@ Facts behind the chips (all in `layers-reel.json`; re-check if you re-run the sn
 | ConvexHull        | Spain's first-half average shape 11 units higher (66.9 v 55.5); areas 1,602 v 1,611                                                    | Average positions from on-ball events, not tracking; both teams drawn attacking up |
 | GoalAngle         | 19° (Williams), 18° (Palmer), 43° (Oyarzabal), on an attacking half pitch                                                              | Posts at y 36 and 44; StatsBomb units, not metres                                  |
 
-## Reel 04 — How did Spain and England set up? (`reel-04-networks.mp4`, 38 s)
+## Reel 04 — How did Spain and England set up? (`reels/04-networks/networks.mp4`, 38 s)
 
 Opens (0–2 s) on a title card in big block capitals, "Let's check out pass
 networks" (the last two words in PitchKit green), already half-written on the
@@ -341,8 +344,9 @@ clock) climbs; it holds
 on the strongest link, and a whip-pan carries Spain into England. A second
 title card ("Let's measure the shape") leads into the outro, which measures
 both finished shapes, then the same end card as reels 01–03. For the grid
-cover, use `out/reel-04-cover.png` (frame 130, the banner frame; render it with
-`npx remotion still src/index.ts reel-04-networks out/reel-04-cover.png --frame=130`).
+cover, use `reels/04-networks/cover.png` (frame 130, the banner frame; render it with
+`npx remotion still src/index.ts reel-04-networks out/reel-04-networks-cover.png --frame=130`;
+`upload reel-04-networks` puts it at `reels/04-networks/cover.png`).
 Post without a voiceover: music only, which is what the outlier football
 data reels use (see the music note below).
 
@@ -417,7 +421,7 @@ Facts behind it (all in `src/data/pass-networks.json`, from `npm run snapshot:ne
 | Metres                      | StatsBomb's 120 × 80 frame scaled to the Olympiastadion's 105 × 68 m pitch; average positions, goalkeepers excluded                                                                              |
 | Timing                      | Each pass and touch counts at its real match minute, easing in over ~0.8 s; each chapter replays the half in 7 s                                                                                 |
 
-## Reel 04 loop — Spain only (`reel-04-networks-loop.mp4`, 14 s)
+## Reel 04 loop — Spain only (`reels/04-networks/networks-loop.mp4`, 14 s)
 
 Tests rules 1, 2, 5, 15 and 16 in RULES-TO-TEST.md against the 38 s cut.
 There's no title card, and the first frame is already moving: the pitch is
@@ -449,7 +453,7 @@ Data: StatsBomb open data. Built with PitchKit, the free React-first football ch
 
 **Alt text:** A football pitch seen at an angle, close in, with Spain's starting 4-2-3-1 as numbered blue circles under the question "How did Spain set up at Euro 2024?". The pitch swings flat and upright as the circles drift to each player's average position from the first half, while lines between them thicken with every completed pass and a counter climbs to 283 passes. The thickest line, Laporte to Le Normand, lights up with the label "Laporte ↔ Le Normand, 31 passes, strongest link", then the network rewinds as the pitch tilts back to the team sheet and the loop starts again.
 
-## Reel 05 — The 2022 World Cup final in 34 seconds (`reel-05-wc-final.mp4`, 34 s)
+## Reel 05 — The 2022 World Cup final in 34 seconds (`reels/05-wc-final/wc-final.mp4`, 34 s)
 
 Built from HOOKS.md. It opens in medias res, with the match clock already running, Messi's
 penalty already flying in and giant shot counters side by side: Argentina's climbing to 9 while France's sits on **0** (the open loop). That
@@ -469,7 +473,7 @@ a tick:
 
 Sound effects are baked in: ticks, whooshes on the spins, a pop on each goal, a thud on
 each missed penalty. Post it with a big trending track from Instagram's picker and keep the original
-audio at about 40%. For the cover, use `out/reel-05-cover.png` (frame 60, the 0 counter
+audio at about 40%. For the cover, use `reels/05-wc-final/cover.png` (frame 60, the 0 counter
 over Argentina's shots).
 
 **Instagram**
@@ -515,7 +519,7 @@ Facts behind it (all in `src/data/wc-final.json`, from `npm run snapshot:wc-fina
 | Shots 20–10, xG 2.76–2.27            | Open play and extra time, penalties included, shootout excluded                                                                                              |
 | Momentum                             | The docs recipe: on-ball events in the attacking third, Argentina +1 / France −1 per minute, smoothed over three minutes; a stand-in, not an official metric |
 
-## Reel 06 — The 2022 World Cup final, live in 360 (`reel-06-live-final.mp4`, 45 s)
+## Reel 06 — The 2022 World Cup final, live in 360 (`reels/06-live-final/live-final.mp4`, 45 s)
 
 The final played back as a time-lapse of StatsBomb 360 data, in the style of a live
 broadcast graphic. A 3D pitch (Three.js), seen diagonally from Argentina's end like a TV
@@ -534,7 +538,7 @@ caption for each one (placed away from the end the action is at), France's first
 under the score. Argentina's colour then floods the whole pitch under "ARGENTINA, WORLD
 CHAMPIONS", followed by minutes on top (75' v 63', "and it still went to penalties"), a
 comment CTA and the end card. A tick sounds for every match minute, plus pops, whooshes,
-a riser and thuds. For the cover, use `out/reel-06-cover.png` (frame 1040, the champions
+a riser and thuds. For the cover, use `reels/06-live-final/cover.png` (frame 1040, the champions
 wash).
 
 **Instagram**
@@ -577,7 +581,7 @@ Facts behind it (`src/data/wc-360.json` from `npm run snapshot:wc-360`, plus `wc
 | Minutes on top, 75 v 63       | Minutes of the momentum series above and below zero (6 are level); the series is the docs recipe, a stand-in rather than an official metric                          |
 | Goals, the save, the shootout | As reel 05 (`wc-final.json`)                                                                                                                                         |
 
-## Reel 06, network cut (`reel-06-network-final.mp4`, 39 s)
+## Reel 06, network cut (`reels/06-network-final/network-final.mp4`, 39 s)
 
 The same final at the pace of watching a game, using the pass-network idea without the
 lines. Each of the 34 players who touched the ball is a numbered disc that drifts to
@@ -598,7 +602,7 @@ centre spot. PitchKit branding comes in three places: a "Built with PitchKit" ch
 hook, an `<Arrows /> <Comet />` chip on each goal view, and the value card's "Every
 chart in this reel is PitchKit" line. The scoreboard, momentum strip, champions
 caption, CTA and end card are shared with the 3D cut. For the
-cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
+cover, use `reels/06-network-final/cover.png` (7 s: Di María's goal at 36').
 
 **Instagram**
 
@@ -624,7 +628,7 @@ cover, use `out/reel-06-network-cover.png` (7 s: Di María's goal at 36').
 >
 > https://www.pitchkitjs.com
 
-## Reel 06, goals cut (`reel-06-goals-final.mp4`, 39 s)
+## Reel 06, goals cut (`reels/06-goals-final/goals-final.mp4`, 39 s)
 
 Every goal of the 2022 World Cup final and the three moves before it, on StatsBomb 360
 data (`npm run snapshot:wc-goals360`). It opens cold on Di María's goal, already halfway through the camera's zoom from the tilted pitch into bird's-eye, Messi →
@@ -640,7 +644,7 @@ Montiel's handball), the foul as a red cross with a buzz, then the kick from the
 only the taker left on the pitch. No save: straight from the
 hat-trick to penalties. Then the shootout, Argentina's flag on the pitch, turned level under "World Champions" with the sun below the title and a two-sided
 CTA (rule 23). The pitch is reel 05's broadcast grass on reel 05's penalty-green background. For the cover, use
-`out/reel-06-goals-cover.png` (the cold open, with the hook).
+`reels/06-goals-final/cover.png` (the cold open, with the hook).
 
 **Instagram**
 
@@ -680,7 +684,7 @@ Facts behind it (`src/data/wc-goals360.json`, StatsBomb match 3869685):
 | Player movement                   | 360 frames seconds apart, paired frame to frame by nearest team-mate and slid; anyone unpaired fades. Di María's run before the first penalty has no 360 frame, so players glide across it |
 | Mbappé's shot before the handball | Outcome Blocked (off Montiel's arm), not Saved                                                                                                                                             |
 
-## Reel 07 — Football analysis is for coders. Not anymore. (`reel-07-claude.mp4`, 30 s)
+## Reel 07 — Football analysis is for coders. Not anymore. (`reels/07-claude/claude.mp4`, 30 s)
 
 The first value reel: a contrarian hook (rules 25 and 26, "common belief → contradict"),
 three steps, a payoff, under 30 seconds. It opens on the finished chart under "FOOTBALL
@@ -697,7 +701,7 @@ María's 11 appears as he receives, then the shot and the goal angle grow toward
 a pop, and the camera pulls back to the whole move. It ends on "YOU DON'T WRITE THE CODE.
 JUST ASK." with the install command and "Save this. Then try it". No music in the render:
 add a track in the app and cut to it (rule 21). For the cover, use frame 40 (the struck-out
-hook and "NOT ANYMORE." over the chart).
+hook and "NOT ANYMORE." over the chart), saved as `reels/07-claude/cover.png`.
 
 **Instagram**
 
@@ -744,7 +748,7 @@ Facts behind it (`src/reels/claude/DiMariaGoal.tsx`, StatsBomb match 3869685):
 | The Claude spark       | From Simple Icons (CC0); the mark is Anthropic's trademark                                                                                                                                                          |
 | Free data              | StatsBomb open data, no account or key                                                                                                                                                                              |
 
-## Carousel 01 — Analyse any corner kick (`carousel-01-cover.png` … `carousel-08-save.png`)
+## Carousel 01 — Analyse any corner kick (`carousels/01-corner-kicks/01-cover.png` … `08-save.png`)
 
 Eight 1080×1350 slides, one carousel. Built to be saved: a numbered how-to, a
 real code snippet, and a five-question checklist. Every position is a real
@@ -797,7 +801,7 @@ Facts behind the slides (all in `corners.json`; re-check if you re-run the snaps
 | 6     | 4 of 4 corners ended in a shot, 3.4–12.8 s after the kick                                                                       | Tiny sample; straight line is kick to shot, not the ball's route                             |
 | 7     | 3–6 attackers v 9–10 defenders; corners from the attacker's left 3×, right 1×; 4 shots by 3 players (Pijnaker, May, Gillion ×2) |                                                                                              |
 
-## LinkedIn images (`linkedin-hexbin|positional|voronoi|flow|momentum.png`, 1200×1200)
+## LinkedIn images (`linkedin/hexbin|positional|voronoi|flow|momentum.png`, 1200×1200)
 
 Square so a multi-image LinkedIn post never crops them. Each shows one layer on
 the Euro 2024 final, with the component name, one stat and the line of code
@@ -820,9 +824,9 @@ metric, and the image says so.
 
 ---
 
-## Wall mosaic — six tiles (`mosaic-tile-1.png` … `mosaic-tile-6.png`)
+## Wall mosaic — six tiles (`mosaic/tile-1.png` … `mosaic/tile-6.png`)
 
-One 3240×2880 picture (`wall-mosaic.png`) cut into six 1080×1440 (3:4) tiles.
+One 3240×2880 picture (`mosaic/wall.png`) cut into six 1080×1440 (3:4) tiles.
 Tile 1 is top-left, tile 6 bottom-right, in reading order.
 
 **Posting order is reversed: 6 first, 1 last.** The grid puts the newest post

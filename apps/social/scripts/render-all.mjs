@@ -1,5 +1,6 @@
 /**
  * Render every composition to out/: stills as PNG, reels as H.264 MP4.
+ * Renders are then uploaded with `npm run assets -- upload <id>` (see scripts/assets.mjs).
  *
  *   npm run render --workspace=social            # everything
  *   npm run render --workspace=social -- post-03 # ids containing "post-03"
