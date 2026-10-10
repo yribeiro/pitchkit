@@ -33,6 +33,7 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
+    "@google-cloud/storage": "^8.4.0",
     "@pitchkit/data-providers": "*",
     "@remotion/cli": "4.0.529",
     "@types/react": "^19",

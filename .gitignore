@@ -10,3 +10,8 @@ coverage
 .env
 .env.local
 .env.*.local
+# Service-account keys: keep them outside the repo, but never commit one here.
+*-sa.json
+*-sa-*.json
+*service-account*.json
+gcp-key*.json
