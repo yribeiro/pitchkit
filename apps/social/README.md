@@ -43,6 +43,12 @@ npm run render --workspace=social   # everything → apps/social/out/
 npm run render --workspace=social -- reel-02   # just ids containing "reel-02"
 ```
 
+Storyboards: `npm run storyboard -- <id>` builds a reel's review page in
+`out/storyboard/<id>/` from its beats in `src/storyboards/<id>.json` (the same file
+sets the reel's timeline): a timed strip and a rendered frame per beat, the reel and
+cover (7-day signed bucket links), the copy from CAPTIONS.md, and the notes. Add
+`--upload` to put it in the bucket and `--no-render` to reuse the frames.
+
 Renders go to `out/` (gitignored), then live in `gs://pitchkit-assets` (layout in
 `scripts/assets.mjs`). Run `npm run assets -- upload <id>` (or `upload --all`) after
 rendering, `download <id>` to fetch and `list` to browse. Credentials come from the

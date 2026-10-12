@@ -32,6 +32,7 @@ import codeJson from "../data/claude-demo-code.json";
 import rawEvents from "../data/claude-demo-events.json";
 import rawLineups from "../data/claude-demo-lineups.json";
 import { C, FONT } from "../theme";
+import storyboard from "../storyboards/reel-07-claude.json";
 import DiMariaGoal from "./claude/DiMariaGoal";
 import { CLAUDE_ORANGE, CLAUDE_SPARK } from "./claude/marks";
 
@@ -41,16 +42,22 @@ const smooth = Easing.inOut(Easing.cubic);
 
 /* Timeline (30 fps) ------------------------------------------------------- */
 
-const ASK = 75;
-const CODE = 225;
-const DRAW = 435;
-const CTA = 660;
-const END_AT = 810;
-export const CLAUDE_DURATION = END_AT + 75;
+/** The beats (src/storyboards/reel-07-claude.json) set the timeline. */
+const beat = (key: string) => {
+  const b = storyboard.beats.find((x) => x.key === key);
+  if (!b) throw new Error(`No beat "${key}" in the reel 07 storyboard`);
+  return b;
+};
+const ASK = beat("ask").start;
+const CODE = beat("code").start;
+const DRAW = beat("passes").start;
+const CTA = beat("cta").start;
+const END_AT = beat("end").start;
+export const CLAUDE_DURATION = beat("end").end;
 
 /** The hook: the strike lands, then the flip. */
 const STRIKE = [11, 17] as const;
-const FLIP = 24;
+const FLIP = beat("flip").start;
 
 const PROMPT =
   "Show me the three passes before Di María's goal in the 2022 World Cup final: who passed, when, and his shirt number. Use PitchKit and StatsBomb's free data.";
@@ -139,7 +146,7 @@ const PASSERS = ["MESSI", "ÁLVAREZ", "MAC ALLISTER", "DI MARÍA"];
 const PASS_AT = [16, 44, 72];
 const PASS_LEN = 18;
 const RECEIVED = PASS_AT.map((t) => t + PASS_LEN);
-const SHOT_AT = RECEIVED[2]! + 10;
+const SHOT_AT = beat("shot").start - DRAW;
 const SHOT_LEN = 9;
 
 /** How far each mark has drawn, 0..1, at frame `t` of the draw beat. */

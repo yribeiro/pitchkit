@@ -1,0 +1,88 @@
+{
+  "id": "reel-07-claude",
+  "title": "Football analysis is for coders. Not anymore.",
+  "fps": 30,
+  "formula": "Common belief → Contradict → Stay → Why (rule 25)",
+  "beats": [
+    {
+      "key": "myth",
+      "title": "The myth",
+      "start": 0,
+      "end": 24,
+      "still": 20,
+      "onScreen": "FOOTBALL ANALYSIS IS FOR CODERS. over the finished chart: Di María's goal and the three passes before it.",
+      "motion": "Headline is up from frame 0. A red pen stroke strikes out \"is for coders\" (frames 11–17); the headline jolts and the struck words dim.",
+      "sound": "Swipe as the pen moves, thump as it lands."
+    },
+    {
+      "key": "flip",
+      "title": "The flip",
+      "start": 24,
+      "end": 75,
+      "still": 45,
+      "onScreen": "NOT ANYMORE. in green under the struck-out line.",
+      "motion": "NOT ANYMORE. pops in from 60%. The chart behind slowly pushes in on the goal.",
+      "sound": "Whoosh into a thud."
+    },
+    {
+      "key": "ask",
+      "title": "1 · Just ask",
+      "start": 75,
+      "end": 225,
+      "still": 195,
+      "onScreen": "A chat bubble: the real prompt, asking for the three passes, who and when, and his shirt number, on StatsBomb's free data.",
+      "motion": "The prompt types in over about 3 seconds. Then the Claude spark spins beside \"Claude is writing the chart…\".",
+      "sound": "A soft tick per word, a pop as Claude starts."
+    },
+    {
+      "key": "code",
+      "title": "2 · Claude writes it",
+      "start": 225,
+      "end": 435,
+      "still": 400,
+      "onScreen": "The component Claude wrote, as written, in a code window. Four callouts: free StatsBomb data, the last 3 passes, the goal angle, who passed and when.",
+      "motion": "Code streams in, then the window scrolls to each callout line in turn and lights it. Then \"PitchKit's agent skill teaches Claude the library\".",
+      "sound": "Whoosh, then a pop per callout."
+    },
+    {
+      "key": "passes",
+      "title": "3 · You get this: the passes",
+      "start": 435,
+      "end": 535,
+      "still": 527,
+      "onScreen": "Reel 05's striped pitch. Messi → Álvarez → Mac Allister, each labelled with the passer and the time. Di María's 11 as he receives.",
+      "motion": "Each pass draws on while the camera follows it; its label pops in, and the name chain below grows as each pass lands.",
+      "sound": "A swipe per pass, a tick as each lands."
+    },
+    {
+      "key": "shot",
+      "title": "The goal",
+      "start": 535,
+      "end": 660,
+      "still": 640,
+      "onScreen": "Di María's shot and his goal angle; the whole move; MESSI → ÁLVAREZ → MAC ALLISTER → DI MARÍA, with Di María in green.",
+      "motion": "The shot and the goal angle grow from the shooter towards goal, then the camera pulls back to the whole move.",
+      "sound": "Swipe into the goal pop."
+    },
+    {
+      "key": "cta",
+      "title": "The payoff",
+      "start": 660,
+      "end": 810,
+      "still": 705,
+      "onScreen": "YOU DON'T WRITE THE CODE. JUST ASK. The install command, then \"Save this. Then try it ↓\".",
+      "motion": "Each line springs up in turn.",
+      "sound": "Whoosh, then a tick per line."
+    },
+    {
+      "key": "end",
+      "title": "End card",
+      "start": 810,
+      "end": 885,
+      "still": 850,
+      "onScreen": "The PitchKit end card.",
+      "motion": "End card in.",
+      "sound": "Whoosh."
+    }
+  ]
+}
