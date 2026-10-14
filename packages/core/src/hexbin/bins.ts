@@ -1,6 +1,6 @@
 import type { PitchDimensions } from "../dimensions/types.js";
 import { resolve } from "../scene/resolve.js";
-import { fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
+import { displayUnitScale, fromExtentFrame, toExtentFrame } from "../transform/canonical.js";
 import type { HexbinLayer } from "../scene/types.js";
 
 const DEFAULT_BINS_X = 20;
@@ -11,8 +11,10 @@ const SQRT3 = Math.sqrt(3);
 /**
  * One hexagonal cell: its centre in provider coordinates plus the
  * statistic accumulated inside it. `radius` is the circumradius (centre to
- * vertex), also in provider units, so a painter can derive the six corners
- * without re-deriving the tiling.
+ * vertex) in display units, which are the provider's own units except on a
+ * percentage grid, where they are metres (see `displayUnitScale`). Pass it
+ * to `hexCorners` with the same `dimensions` to get the six corners without
+ * re-deriving the tiling.
  */
 export interface HexBin {
   readonly x: number;
@@ -25,15 +27,26 @@ export interface HexBin {
  * The six vertices of a pointy-top hexagon, in provider coordinates,
  * starting at the top vertex and going clockwise. Shared by the painter
  * and the tests so "what shape is a hex bin" has one definition.
+ *
+ * `radius` is in display units. With `dimensions` given, each corner's
+ * offset is converted back to provider units per axis, so on a percentage
+ * grid (where one x unit and one y unit cover different amounts of grass)
+ * the hexagon is regular on screen rather than in grid units (#99).
+ * Without it the axes are taken to share a unit.
  */
 export function hexCorners(
   centerX: number,
   centerY: number,
   radius: number,
+  dimensions?: PitchDimensions,
 ): Array<readonly [number, number]> {
+  const [unitScaleX, unitScaleY] = dimensions ? displayUnitScale(dimensions) : [1, 1];
   return Array.from({ length: 6 }, (_, i) => {
     const angle = (Math.PI / 3) * i - Math.PI / 2;
-    return [centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle)] as const;
+    return [
+      centerX + (radius * Math.cos(angle)) / unitScaleX,
+      centerY + (radius * Math.sin(angle)) / unitScaleY,
+    ] as const;
   });
 }
 
@@ -55,15 +68,21 @@ export function hexCorners(
  * Cell size is driven by `binsX` (hexagon columns across the pitch
  * length), mirroring `Heatmap`'s `binsX`, rather than an absolute radius —
  * so the same layer looks right on a 120x80 StatsBomb pitch and a 100x100
- * Opta one. The pitch transform is uniform-scale (see
- * `createPixelTransform`), so hexagons that are regular in provider units
- * stay regular in pixels.
+ * Opta one.
+ *
+ * The lattice is built in display units, not provider units: the pitch
+ * transform scales metres uniformly, but on a percentage grid (Opta,
+ * Wyscout) one x unit is 1.05 m and one y unit only 0.68 m. A lattice that
+ * is regular in grid units would be drawn squashed and would bin points
+ * differently from the same pitch in metres (#99). Everywhere else
+ * `displayUnitScale` is `[1, 1]` and this changes nothing.
  */
 export function computeHexBins<T>(layer: HexbinLayer<T>, dimensions: PitchDimensions): HexBin[] {
   const binsX = layer.binsX ?? DEFAULT_BINS_X;
+  const [unitScaleX, unitScaleY] = displayUnitScale(dimensions);
   // Pointy-top hexagons tile with horizontal spacing √3·r and vertical
   // spacing 1.5·r; solving the horizontal one for `binsX` columns gives r.
-  const radius = dimensions.length / (binsX * SQRT3);
+  const radius = (dimensions.length * unitScaleX) / (binsX * SQRT3);
   const dx = radius * SQRT3;
   const dy = radius * 1.5;
 
@@ -77,7 +96,7 @@ export function computeHexBins<T>(layer: HexbinLayer<T>, dimensions: PitchDimens
     if (x < 0 || x > dimensions.length || y < 0 || y > dimensions.width) return;
 
     const amount = layer.weight !== undefined ? resolve(layer.weight, d, i) : 1;
-    const [col, row] = nearestHex(x, y, dx, dy);
+    const [col, row] = nearestHex(x * unitScaleX, y * unitScaleY, dx, dy);
     const key = `${col},${row}`;
     totals.set(key, (totals.get(key) ?? 0) + amount);
   });
@@ -85,8 +104,12 @@ export function computeHexBins<T>(layer: HexbinLayer<T>, dimensions: PitchDimens
   const bins: HexBin[] = [];
   for (const [key, value] of totals) {
     const [col, row] = key.split(",").map(Number) as [number, number];
-    // Back out to provider-native coordinates for `transform.toPixel`.
-    const [x, y] = fromExtentFrame(dimensions, [(col + rowOffset(row)) * dx, row * dy]);
+    // Back out of display units and the extent frame, to provider-native
+    // coordinates for `transform.toPixel`.
+    const [x, y] = fromExtentFrame(dimensions, [
+      ((col + rowOffset(row)) * dx) / unitScaleX,
+      (row * dy) / unitScaleY,
+    ]);
     bins.push({ x, y, radius, value });
   }
   return bins;
