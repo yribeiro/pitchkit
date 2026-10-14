@@ -167,4 +167,35 @@ describe.each(Object.keys(PITCH_DIMENSIONS) as PitchTypeId[])("paintHexbinLayer 
     expect(clip.width).toBeCloseTo(Math.abs(b[0] - a[0]), 6);
     expect(clip.height).toBeCloseTo(Math.abs(b[1] - a[1]), 6);
   });
+
+  // Before #99 a percentage grid drew hexagons ~1.5x too wide for their
+  // height: the lattice was regular in grid units, not on screen.
+  it.each(["horizontal", "vertical"] as const)(
+    "draws regular hexagons in pixels (%s)",
+    (orientation) => {
+      const dims = PITCH_DIMENSIONS[type];
+      const pixels = createPixelTransform(dims, { width: 1050, height: 1050, orientation });
+      const [x, y] = fromExtentFrame(dims, [dims.length / 2, dims.width / 2]);
+      const { ctx, ops } = createMockContext();
+
+      paintHexbinLayer(ctx, layer({ data: [{ x, y }], binsX: 12 }), dims, pixels);
+
+      const corners = ops
+        .filter((o) => o.op === "moveTo" || o.op === "lineTo")
+        .map((o) => [o.x, o.y] as const);
+      expect(corners).toHaveLength(6);
+      const sides = corners.map((c, i) => {
+        const next = corners[(i + 1) % 6] as readonly [number, number];
+        return Math.hypot(next[0] - c[0], next[1] - c[1]);
+      });
+      for (const side of sides) expect(side).toBeCloseTo(sides[0] as number, 6);
+      const xs = corners.map((c) => c[0]);
+      const ys = corners.map((c) => c[1]);
+      const across = Math.max(...xs) - Math.min(...xs);
+      const along = Math.max(...ys) - Math.min(...ys);
+      // Pointy-top in the provider frame; a vertical pitch turns it flat-top.
+      const ratio = orientation === "horizontal" ? across / along : along / across;
+      expect(ratio).toBeCloseTo(Math.sqrt(3) / 2, 6);
+    },
+  );
 });
