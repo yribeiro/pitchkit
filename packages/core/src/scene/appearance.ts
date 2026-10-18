@@ -1,3 +1,5 @@
+import type { PitchDimensions } from "../dimensions/types.js";
+import { displayUnitScale } from "../transform/canonical.js";
 import type { Line, Rect } from "./geometry.js";
 import type { PitchStripes } from "./types.js";
 
@@ -38,6 +40,17 @@ export function computeStripeBands(outline: Rect, stripeCount: number): Rect[] {
  */
 export function goalBoxDepth(cornerArcRadius: number): number {
   return cornerArcRadius * 3;
+}
+
+/**
+ * {@link goalBoxDepth} for a given pitch, in its own x units.
+ *
+ * The corner-arc radius is in metres on every grid, so on a percentage grid
+ * the depth has to be converted before it is drawn alongside x coordinates.
+ * On Metrica's `0..1` grid the unconverted value is three pitch lengths.
+ */
+export function pitchGoalBoxDepth(dimensions: PitchDimensions): number {
+  return goalBoxDepth(dimensions.markings.cornerArcRadius) / displayUnitScale(dimensions)[0];
 }
 
 /** Computes the goal-box Rect for one goal line. `isLeft` = the pitch's near/left goal. */

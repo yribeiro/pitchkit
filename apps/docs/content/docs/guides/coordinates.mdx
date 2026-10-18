@@ -17,18 +17,22 @@ aligned.
 | `uefa`        | 105 × 68  | bottom-left     | up          | Real metres                   |
 | `skillcorner` | 105 × 68  | **centre spot** | up          | Real metres, per-match extent |
 | `wyscout`     | 100 × 100 | top-left        | down        | Normalized percentage grid    |
+| `metrica`     | 1 × 1     | top-left        | down        | Normalized `0..1` grid        |
 
 ```tsx
 <Pitch type="statsbomb">{/* data in 120x80, y-down */}</Pitch>
 <Pitch type="opta">{/* data in 0-100, y-up */}</Pitch>
 <Pitch type="skillcorner">{/* metres from the centre spot */}</Pitch>
 <Pitch type="wyscout">{/* data in 0-100, y-down */}</Pitch>
+<Pitch type="metrica">{/* data in 0-1, y-down */}</Pitch>
 ```
 
 `opta` and `wyscout` are both 0–100 on both axes, but not interchangeable: Opta's origin is
 bottom-left with y increasing upward, Wyscout's is top-left with y increasing downward.
 Plotting one provider's data on the other's type mirrors the pitch vertically, and nothing
-errors — every coordinate is still in range.
+errors — every coordinate is still in range. `metrica` has Wyscout's orientation on a `0..1`
+grid instead, so Metrica data on `wyscout` crowds into the top-left corner. mplsoccer calls
+this type `metricasports`.
 
 A percentage grid renders at the **real pitch's proportions**, not as a square, because the
 transform converts each axis to metres before deriving the pitch's on-screen shape — x spans

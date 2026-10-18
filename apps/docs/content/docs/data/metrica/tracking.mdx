@@ -1,0 +1,145 @@
+---
+title: Metrica tracking and events
+description: Metrica Sports' sample games — 25 fps tracking and the events on the same clock, typed and plotted.
+---
+
+Everything below is live: the example reads Metrica's sample data in your browser, picks out
+every goal from the events file, and replays the five seconds before it from the tracking
+data. Only those frames are downloaded, not the two 32 MB files they come from.
+
+<PitchPreview name="metrica-tracking-basic" />
+
+## Two games, two kinds of file
+
+Metrica publish two anonymised games in CSV: one events file per game, and one tracking file
+per team. Teams are only ever `"Home"` and `"Away"`, players `"Player1"` to `"Player28"`.
+
+```ts
+import { fetchEvents, fetchTrackingWindow, streamTracking } from "@pitchkit/data-providers/metrica";
+
+const events = await fetchEvents(1); // ~150 KB, under 2,000 rows
+const frames = await fetchTrackingWindow(1, { fromFrame: 2164, toFrame: 2309 });
+```
+
+`METRICA_SAMPLE_GAMES` is `[1, 2]`.
+
+<Callout type="warn">
+  Sample Game 3 is in a different format, FIFA EPTS tracking with XML metadata and JSON events, and
+  these loaders don't read it.
+</Callout>
+
+## Events and tracking share a clock
+
+This is what makes the data worth loading together. An event's `"Start Frame"` is a tracking
+`Frame`, and its `From` and `To` are the tracking file's own column headers, so placing the
+player behind an event takes no mapping:
+
+```ts
+import { findPlayer, isGoal, shots } from "@pitchkit/data-providers/metrica";
+
+const goal = shots(events).find(isGoal)!;
+const atShot = frames.find((frame) => frame.Frame === goal["Start Frame"])!;
+findPlayer(atShot, goal.From); // { team: "Home", player: "Player9", jersey: 9, x: 0.918, y: 0.467 }
+```
+
+Measured across both games, a pass's start position sits a median 0.004 grid units
+from the passer's tracked position on its start frame.
+
+## Field names are Metrica's headers
+
+Rows keep Metrica's CSV headers as their keys, spaces and units included, so their event
+definitions read against the types with no mapping table. What the package adds is
+lowercase:
+
+```ts
+goal["Start Frame"]; // 2289
+goal.Subtype; // "HEAD-ON TARGET-GOAL"
+goal.x; // 0.92, lifted from "Start X" for an accessor
+
+frame["Time [s]"]; // 91.56
+frame.ball; // { x, y } or null
+frame.players; // [{ team, player, jersey, x, y }, …]
+```
+
+A `NaN` cell becomes `null`, and a lifted `x`/`y` is absent rather than `NaN`. Every
+`SET PIECE` and `CARD` lacks a start position; recoveries and challenges lack an end.
+
+<Callout>
+  Player names are kept exactly as the header spells them. Sample Game 2 has a `"Player 26"`, with a
+  space, in both its tracking and events files, so a match on `From` still works.
+</Callout>
+
+## Coordinates are absolute
+
+The grid is `0..1` on both axes, origin top-left with y increasing downward, on a 105×68 m
+pitch. `<Pitch type="metrica">` plots it raw.
+
+Teams **swap ends at half time**, and which end each side starts at differs between the games:
+Home attack towards `x = 1` in Game 1's first half and towards `x = 0` in Game 2's. Neither
+file says so, so `attackingDirection` reads it from where the players stand:
+
+```ts
+import { attackingDirection } from "@pitchkit/data-providers/metrica";
+
+const [kickOff] = await fetchTrackingWindow(1, { fromFrame: 1, toFrame: 1 });
+attackingDirection(kickOff, "Home"); // "left_to_right"
+```
+
+<Callout type="warn">
+  Pass a **kick-off frame**, where every player is in their own half. Mid-play the answer can be
+  wrong: 39 frames before Game 1's opening goal, Home are camped in the Away half.
+</Callout>
+
+## Qualifiers live in `Subtype`
+
+Everything beyond the event type is a hyphen-joined list of qualifiers. `hasSubtype` reads one,
+and the named predicates are built on it:
+
+```ts
+import { hasSubtype, isCross, isOnTarget, wonChallenge } from "@pitchkit/data-providers/metrica";
+
+hasSubtype(goal, "HEAD"); // true
+hasSubtype(goalKick, "GOAL"); // false: "GOAL KICK" is one qualifier
+```
+
+A `PASS` always reached a teammate; one that didn't is a `BALL LOST` or `BALL OUT`. A goal
+kick is a `PASS` qualified `GOAL KICK` (`isGoalKick`), never a `SET PIECE`.
+
+## An own goal is not a shot
+
+Metrica record an own goal as a `BALL OUT` qualified `GOAL`, by the player who put it in, so
+its `Team` is the side that conceded. `shots(events).filter(isGoal)` therefore misses Game 1's
+only away goal. The example above adds `events.filter(isOwnGoal)`:
+
+```ts
+const goals = [...shots(events).filter(isGoal), ...events.filter(isOwnGoal)];
+```
+
+## Reading tracking without downloading it
+
+A game's tracking is two files, one per team, of about 32 MB and 140,000-odd frames each. Three
+ways in:
+
+- **`fetchTrackingWindow(game, { fromFrame, toFrame })`** reads just those rows with HTTP
+  `Range` requests. A goal's build-up costs about six requests and 220 KB, against 65 MB for the
+  game.
+- **`streamTracking(game)`** is an async generator over both files at once. Leaving the loop
+  cancels both downloads.
+- **`fetchTracking(game)`** reads both files whole. That suits a server; in a browser it is
+  65 MB.
+
+`frame.ball` is `null` in about 40% of frames, mostly while play is stopped. A player who isn't
+on the pitch (a substitute yet to come on) is left out of `frame.players`.
+
+If the files are on disk, `parseEvents(csv)` and `parseTracking(homeCsv, awayCsv)` do the same
+work with no network.
+
+## Official documentation
+
+- **[metrica-sports/sample-data](https://github.com/metrica-sports/sample-data)** — the
+  repository this package reads from.
+- **[Event definitions](https://github.com/metrica-sports/sample-data/blob/master/documentation/events-definitions.pdf)**
+  — every event type and subtype, which is what `hasSubtype` and the predicates read.
+
+The repository has no licence file. Its README asks that anything public made from the data
+acknowledges Metrica Sports as the source.

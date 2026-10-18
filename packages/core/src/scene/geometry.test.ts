@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
 import type { PitchTypeId } from "../dimensions/types.js";
+import { displayUnitScale } from "../transform/canonical.js";
 import { computePitchGeometry } from "./geometry.js";
 
 const PITCH_TYPES = Object.keys(PITCH_DIMENSIONS) as PitchTypeId[];
@@ -45,7 +46,9 @@ describe("computePitchGeometry", () => {
   it.each(PITCH_TYPES)("%s: center circle radius converts to a plausible ~9.15m", (pitchType) => {
     const dims = PITCH_DIMENSIONS[pitchType];
     const geometry = computePitchGeometry(dims);
-    const lengthScale = dims.realLengthMeters / dims.length;
+    // A radius on a percentage grid is already in metres; only real-unit
+    // grids (StatsBomb's 120x80 among them) need converting.
+    const lengthScale = dims.normalized ? 1 : dims.realLengthMeters / dims.length;
     const radiusMeters = geometry.centerCircle.radius * lengthScale;
     expect(radiusMeters).toBeGreaterThan(8);
     expect(radiusMeters).toBeLessThan(10.5);
@@ -89,4 +92,31 @@ describe("computePitchGeometry", () => {
       expect((leftArc.start[1] + leftArc.end[1]) / 2).toBeCloseTo(centerY, 6);
     },
   );
+
+  // Radii are metres and coordinates are grid units, so these measure in
+  // metres. Before they did, a percentage grid's arcs ended off their own
+  // circles: slightly on Opta and Wyscout, and by whole pitch lengths on
+  // Metrica's 0..1 grid.
+  it.each(PITCH_TYPES)("%s: penalty arc endpoints lie on the arc's circle", (pitchType) => {
+    const dims = PITCH_DIMENSIONS[pitchType];
+    const [unitX, unitY] = displayUnitScale(dims);
+    for (const arc of computePitchGeometry(dims).penaltyArcs) {
+      for (const point of [arc.start, arc.end]) {
+        const distance = Math.hypot(
+          (point[0] - arc.center[0]) * unitX,
+          (point[1] - arc.center[1]) * unitY,
+        );
+        expect(distance).toBeCloseTo(arc.radius, 6);
+      }
+    }
+  });
+
+  it.each(PITCH_TYPES)("%s: corner arc endpoints lie on the arc's circle", (pitchType) => {
+    const dims = PITCH_DIMENSIONS[pitchType];
+    const [unitX, unitY] = displayUnitScale(dims);
+    for (const arc of computePitchGeometry(dims).cornerArcs) {
+      expect(Math.abs(arc.start[0] - arc.center[0]) * unitX).toBeCloseTo(arc.radius, 6);
+      expect(Math.abs(arc.end[1] - arc.center[1]) * unitY).toBeCloseTo(arc.radius, 6);
+    }
+  });
 });

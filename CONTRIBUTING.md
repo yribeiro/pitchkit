@@ -25,7 +25,7 @@ The repo is an npm-workspaces + Turborepo monorepo:
 | ------------------------- | ----------------------------------------------------- |
 | `packages/core`           | Zero-dependency engine — maths, geometry, scene model |
 | `packages/react`          | React bindings — the supported rendering surface      |
-| `packages/data-providers` | Open-data loaders (StatsBomb, SkillCorner, Wyscout)   |
+| `packages/data-providers` | Open-data loaders (StatsBomb, SkillCorner, Wyscout, Metrica) |
 | `apps/docs`               | Docs + showcase site (Next.js, Fumadocs)              |
 | `examples/react-vite`     | Vite app for eyeballing components in a browser       |
 | `examples/react-nextjs`   | Next.js App Router app, used to verify SSR behaviour  |

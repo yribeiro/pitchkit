@@ -1,7 +1,7 @@
 /**
  * Root entry: only the pieces every provider module shares. The actual
- * loaders live on per-provider subpaths — `/statsbomb`, `/skillcorner` and
- * `/wyscout` today, room for `/metrica` later — so importing one provider
+ * loaders live on per-provider subpaths — `/statsbomb`, `/skillcorner`,
+ * `/wyscout` and `/metrica` — so importing one provider
  * never pulls in code for the others.
  *
  * `@module` names this entry in the generated API reference; without it

@@ -50,6 +50,7 @@ export {
   resolveStripeCount,
   computeStripeBands,
   goalBoxDepth,
+  pitchGoalBoxDepth,
   computeGoalBox,
 } from "./scene/appearance.js";
 

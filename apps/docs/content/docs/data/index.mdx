@@ -85,6 +85,10 @@ predicate.
   - Source: [figshare collection](https://figshare.com/collections/Soccer_match_event_dataset/4415000) ·
     [data paper](https://www.nature.com/articles/s41597-019-0247-7) ·
     [event mirror](https://github.com/koenvo/wyscout-soccer-match-event-dataset)
+- **[Metrica Sports](/docs/data/metrica/tracking)** — two anonymised sample games of 25 fps
+  tracking and the events that go with it, on the same clock.
+  - Source: [metrica-sports/sample-data](https://github.com/metrica-sports/sample-data) ·
+    [event definitions](https://github.com/metrica-sports/sample-data/blob/master/documentation/events-definitions.pdf)
 
 SkillCorner also has its own pitch type. Its coordinates are metres from the centre spot, so
 `<Pitch type="skillcorner">` plots them raw — no lifting, no conversion:
@@ -102,6 +106,15 @@ increasing upward. `<Pitch type="wyscout">` plots its coordinates raw:
 ```tsx
 <Pitch type="wyscout">
   <Scatter data={shots} x={(s) => s.x} y={(s) => s.y} />
+</Pitch>
+```
+
+Metrica's grid has Wyscout's orientation at a hundredth of the scale: `0..1` on both axes,
+origin top-left, y downward. `<Pitch type="metrica">` plots it raw:
+
+```tsx
+<Pitch type="metrica">
+  <Scatter data={frame.players} x={(p) => p.x} y={(p) => p.y} />
 </Pitch>
 ```
 
@@ -123,3 +136,6 @@ in anything you publish from their data:
   official release (figshare) has no per-match JSON file, so events are fetched from a
   community mirror that splits the same archive per match with no field renamed — the
   reference files (competitions, teams, players) come from figshare directly.
+- **Metrica Sports** — [sample-data](https://github.com/metrica-sports/sample-data) carries no
+  licence file. Its README asks that anything public made from the data acknowledges Metrica
+  Sports as the source.

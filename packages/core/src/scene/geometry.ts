@@ -1,4 +1,5 @@
 import type { PitchDimensions } from "../dimensions/types.js";
+import { displayUnitScale } from "../transform/canonical.js";
 import type { Point } from "../transform/types.js";
 
 export interface Rect {
@@ -66,6 +67,11 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
   const minX = dimensions.origin === "center" ? -length / 2 : 0;
   const minY = dimensions.origin === "center" ? -width / 2 : 0;
   const maxX = minX + length;
+  // Radii are in metres on every grid (see `PitchMarkings`), so wherever one
+  // meets a grid coordinate it goes through the unit scale first. Identity
+  // for grids already in real units; on a percentage grid it is what keeps
+  // an arc's endpoints on its own circle.
+  const [unitX, unitY] = displayUnitScale(dimensions);
   const centerX = minX + length / 2;
   const centerY = minY + width / 2;
 
@@ -93,8 +99,9 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
     const boxEdgeX = fromLeft
       ? minX + markings.penaltyAreaLength
       : maxX - markings.penaltyAreaLength;
-    const dx = Math.abs(boxEdgeX - spot[0]);
-    const dy = Math.sqrt(Math.max(markings.centerCircleRadius ** 2 - dx ** 2, 0));
+    const dxMetres = Math.abs(boxEdgeX - spot[0]) * unitX;
+    const dyMetres = Math.sqrt(Math.max(markings.centerCircleRadius ** 2 - dxMetres ** 2, 0));
+    const dy = dyMetres / unitY;
     return {
       center: spot,
       radius: markings.centerCircleRadius,
@@ -113,8 +120,8 @@ export function computePitchGeometry(dimensions: PitchDimensions): PitchGeometry
     return {
       center: [cornerX, cornerY],
       radius: markings.cornerArcRadius,
-      start: [cornerX + xSign * markings.cornerArcRadius, cornerY],
-      end: [cornerX, cornerY + ySign * markings.cornerArcRadius],
+      start: [cornerX + (xSign * markings.cornerArcRadius) / unitX, cornerY],
+      end: [cornerX, cornerY + (ySign * markings.cornerArcRadius) / unitY],
     };
   };
 

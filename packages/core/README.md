@@ -26,7 +26,7 @@ Zero runtime dependencies. ESM, tree-shakeable, ships its own types.
 
 ## What's inside
 
-**Pitch dimensions** — `statsbomb`, `opta`, `uefa`, `skillcorner` and `wyscout`, each in the
+**Pitch dimensions** — `statsbomb`, `opta`, `uefa`, `skillcorner`, `wyscout` and `metrica`, each in the
 provider's real coordinate space, sourced from mplsoccer's published constants so real event data
 aligns exactly.
 

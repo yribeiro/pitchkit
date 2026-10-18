@@ -43,7 +43,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
   {
     title: "Provider-agnostic coordinates",
-    body: "StatsBomb, SkillCorner, Wyscout, Opta and UEFA coordinate systems out of the box — including SkillCorner's centre-origin metres. Feed data in its native units; one transform pipeline keeps everything aligned.",
+    body: "StatsBomb, SkillCorner, Wyscout, Metrica, Opta and UEFA coordinate systems out of the box — including SkillCorner's centre-origin metres. Feed data in its native units; one transform pipeline keeps everything aligned.",
     href: "/docs/guides/coordinates",
     icon: "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18",
   },
@@ -67,7 +67,7 @@ const FEATURES: { title: string; body: string; href: string; icon: string }[] = 
   },
   {
     title: "Real data in one call",
-    body: "One import per provider loads typed StatsBomb, SkillCorner or Wyscout open data — events, tracking, phases of play — ready to plot. No adapter, no field mapping.",
+    body: "One import per provider loads typed StatsBomb, SkillCorner, Wyscout or Metrica open data — events, tracking, phases of play — ready to plot. No adapter, no field mapping.",
     href: "/docs/data",
     icon: "M3 5c0-1.7 4-3 9-3s9 1.3 9 3-4 3-9 3-9-1.3-9-3ZM3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3",
   },
@@ -110,7 +110,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Which football data providers does PitchKit support?",
-    a: "StatsBomb, SkillCorner, Wyscout, Opta and UEFA coordinate systems are handled natively — feed data in its own units and one transform pipeline keeps everything aligned. @pitchkit/data-providers goes further and fetches it for you: the StatsBomb module loads typed open-data events ready to plot, including 360 freeze frames; the SkillCorner module streams broadcast tracking, dynamic events and phases of play; and the Wyscout module reads the Pappalardo et al. open dataset's 1,941 matches.",
+    a: "StatsBomb, SkillCorner, Wyscout, Metrica, Opta and UEFA coordinate systems are handled natively — feed data in its own units and one transform pipeline keeps everything aligned. @pitchkit/data-providers goes further and fetches it for you: the StatsBomb module loads typed open-data events ready to plot, including 360 freeze frames; the SkillCorner module streams broadcast tracking, dynamic events and phases of play; the Wyscout module reads the Pappalardo et al. open dataset's 1,941 matches; and the Metrica module reads Metrica Sports' synchronised tracking and events, a window of frames at a time.",
   },
 ];
 

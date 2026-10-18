@@ -24,7 +24,7 @@ npm workspaces + Turborepo, Node >= 22.
 | ------------------------- | ------------------------------------------------------------------------ |
 | `packages/core`           | Coordinates, geometry, scene model, Canvas painters. No React, no deps.  |
 | `packages/react`          | The React components, and the bundled Agent Skill in `skills/pitchkit/`. |
-| `packages/data-providers` | StatsBomb, SkillCorner and Wyscout open-data loaders.                    |
+| `packages/data-providers` | StatsBomb, SkillCorner, Wyscout and Metrica open-data loaders.           |
 | `apps/docs`               | pitchkitjs.com: Next.js, Fumadocs, Tailwind v4.                          |
 | `examples/*`              | Vite and Next.js review apps.                                            |
 

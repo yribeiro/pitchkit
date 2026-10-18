@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["src/index.ts", "src/statsbomb/index.ts", "src/skillcorner/index.ts", "src/wyscout/index.ts"],
+  "entryPoints": ["src/index.ts", "src/statsbomb/index.ts", "src/skillcorner/index.ts", "src/wyscout/index.ts", "src/metrica/index.ts"],
   "tsconfig": "tsconfig.json",
   "disableGit": true,
   "basePath": "../..",
