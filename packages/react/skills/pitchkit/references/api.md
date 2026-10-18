@@ -532,7 +532,8 @@ count points per bin, provide it to sum a value (total xG per zone, say).
 e.g. to compute a legend's domain, or to render a table alongside the chart)
 
 - `computeHeatmapBins`, `computePositionalZones` / `computePositionalBins`,
-  `computeHexBins` / `hexCorners`, `computeKdeGrid` / `silvermanBandwidth`
+  `computeHexBins` / `hexCorners` (give `hexCorners` the pitch dimensions as its fourth argument, or
+  its hexagons are squashed on Opta and Wyscout pitches), `computeKdeGrid` / `silvermanBandwidth`
 - `computeFlowBins`, `computeConvexHull`, `computeVoronoiCells`, `computePolygonCentroid`,
   `computeGoalAngle` / `selectGoal`
 - `createColorScale` — the interpolator the density painters use

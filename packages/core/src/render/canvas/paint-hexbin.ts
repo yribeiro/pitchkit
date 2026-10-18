@@ -54,7 +54,7 @@ export function paintHexbinLayer<T>(
   ctx.clip();
 
   for (const bin of bins) {
-    const corners = hexCorners(bin.x, bin.y, bin.radius).map((corner) =>
+    const corners = hexCorners(bin.x, bin.y, bin.radius, dimensions).map((corner) =>
       transform.toPixel([corner[0], corner[1]]),
     );
 

@@ -97,7 +97,10 @@ aspect 1.0000 to 1.5441. Fixed via [PR #72](https://github.com/yribeiro/pitchkit
 
 **Consequences:** Overriding the dimensions of a normalised grid throws. Test files derive
 their pitch-type list from `Object.keys(PITCH_DIMENSIONS)` rather than hardcoding it. The
-hardcoded lists had silently left `skillcorner` uncovered in six files.
+hardcoded lists had silently left `skillcorner` uncovered in six files. Anything that builds a
+shape meant to be regular on screen builds it in `displayUnitScale` units, not grid units:
+`computeHexBins` built its lattice in grid units and drew squashed hexagons on Opta and Wyscout
+([issue #99](https://github.com/yribeiro/pitchkit/issues/99)).
 
 ### D7. SkillCorner markings don't scale with pitch size
 

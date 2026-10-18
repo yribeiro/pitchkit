@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PITCH_DIMENSIONS } from "../dimensions/registry.js";
+import type { PitchDimensions } from "../dimensions/types.js";
 import type { HexbinLayer } from "../scene/types.js";
 import { computeHexBins, hexCorners } from "./bins.js";
 
@@ -134,5 +135,49 @@ describe("computeHexBins", () => {
     );
     const rowOne = bins.find((b) => Math.abs(b.y - dy) < 1e-9);
     expect(rowOne?.x).toBeCloseTo(dx / 2, 6);
+  });
+});
+
+// #99: on a percentage grid one x unit and one y unit cover different
+// amounts of grass, so the lattice has to be built in metres for points to
+// land in the bins they would on the same pitch measured in metres.
+describe("computeHexBins on a percentage grid", () => {
+  const opta = PITCH_DIMENSIONS.opta; // 0..100 on both axes over 105 x 68 m
+  // The same pitch, origin and y direction, in metres.
+  const metres: PitchDimensions = {
+    ...opta,
+    length: opta.realLengthMeters,
+    width: opta.realWidthMeters,
+    normalized: false,
+  };
+  const scaleX = opta.realLengthMeters / opta.length;
+  const scaleY = opta.realWidthMeters / opta.width;
+
+  const points = Array.from({ length: 400 }, (_, i) => ({
+    x: ((i * 37) % 1000) / 10,
+    y: ((i * 53) % 1000) / 10,
+  }));
+
+  it("bins points exactly as the same pitch in metres does", () => {
+    const grid = computeHexBins(layer({ data: points, binsX: 12 }), opta);
+    const metric = computeHexBins(
+      layer({ data: points.map((p) => ({ x: p.x * scaleX, y: p.y * scaleY })), binsX: 12 }),
+      metres,
+    );
+
+    const key = (x: number, y: number) => `${x.toFixed(6)},${y.toFixed(6)}`;
+    const toMetres = (b: { x: number; y: number }) => key(b.x * scaleX, b.y * scaleY);
+    expect(new Map(grid.map((b) => [toMetres(b), b.value]))).toEqual(
+      new Map(metric.map((b) => [key(b.x, b.y), b.value])),
+    );
+    expect(grid[0]?.radius).toBeCloseTo(metric[0]?.radius as number, 9);
+  });
+
+  it("gives hexCorners the per-axis conversion back to grid units", () => {
+    const [bin] = computeHexBins(layer({ data: [{ x: 50, y: 50 }], binsX: 12 }), opta);
+    const { x, y, radius } = bin as { x: number; y: number; radius: number };
+    for (const [cx, cy] of hexCorners(x, y, radius, opta)) {
+      expect(distance(cx * scaleX, cy * scaleY, x * scaleX, y * scaleY)).toBeCloseTo(radius, 6);
+    }
   });
 });
