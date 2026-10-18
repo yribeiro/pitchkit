@@ -5,7 +5,7 @@ import { pitchTokens } from "@pitchkit/core";
 import type { Viewport } from "@pitchkit/core";
 import { CARD_RED, CARD_YELLOW } from "./chart-tokens.js";
 import { usePitchContext } from "./context.js";
-import { Ball } from "./momentum-icons.js";
+import { BALL_PATH, BALL_VIEWBOX, BOOT_PATH, BOOT_VIEWBOX } from "./avatar-icons.js";
 
 export type PlayerCard = "yellow" | "second-yellow" | "red";
 export type PlayerSubstitution = "on" | "off";
@@ -145,7 +145,11 @@ export function PlayerAvatar({
   const goalCount = count(goals);
   const assistCount = count(assists);
   const summary = describePlayerEvents({ goals, assists, card, subbed });
-  const showImage = children === undefined && src !== undefined && src !== failedSrc;
+  // `{photo && <Image … />}` passes false or "" when there is no photo, which
+  // should fall back like no children at all.
+  const hasChildren =
+    children !== undefined && children !== null && children !== false && children !== "";
+  const showImage = !hasChildren && src !== undefined && src !== failedSrc;
 
   const rootStyle = {
     "--pk-avatar-size":
@@ -186,33 +190,34 @@ export function PlayerAvatar({
             justifyContent: "center",
           }}
         >
-          {children ??
-            (showImage ? (
-              <img
-                src={src}
-                alt=""
-                width={size ?? autoSize}
-                height={size ?? autoSize}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                onError={() => setFailedSrc(src)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            ) : (
-              <span
-                data-pitchkit-part="avatar-initials"
-                aria-hidden
-                style={{
-                  fontSize: `calc(${SIZE} * 0.36)`,
-                  fontWeight: 700,
-                  color: BADGE_TEXT,
-                  lineHeight: 1,
-                }}
-              >
-                {playerInitials(name)}
-              </span>
-            ))}
+          {hasChildren ? (
+            children
+          ) : showImage ? (
+            <img
+              src={src}
+              alt=""
+              width={size ?? autoSize}
+              height={size ?? autoSize}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              onError={() => setFailedSrc(src)}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <span
+              data-pitchkit-part="avatar-initials"
+              aria-hidden
+              style={{
+                fontSize: `calc(${SIZE} * 0.36)`,
+                fontWeight: 700,
+                color: BADGE_TEXT,
+                lineHeight: 1,
+              }}
+            >
+              {playerInitials(name)}
+            </span>
+          )}
         </div>
 
         {(card || subbed) && (
@@ -234,14 +239,16 @@ export function PlayerAvatar({
           <BadgeColumn side="right">
             {goalCount > 0 && (
               <Badge part="avatar-goals" count={goalCount}>
-                <Glyph>
-                  <Ball cx={12} cy={12} r={9.5} />
+                <Glyph viewBox={BALL_VIEWBOX}>
+                  <path d={BALL_PATH} fill="currentColor" fillRule="evenodd" />
                 </Glyph>
               </Badge>
             )}
             {assistCount > 0 && (
               <Badge part="avatar-assists" count={assistCount}>
-                <BootIcon />
+                <Glyph viewBox={BOOT_VIEWBOX} wide>
+                  <path d={BOOT_PATH} fill="currentColor" fillRule="evenodd" />
+                </Glyph>
               </Badge>
             )}
           </BadgeColumn>
@@ -335,14 +342,28 @@ function Badge({ part, count, children }: { part: string; count?: number; childr
   );
 }
 
-/** An icon on PitchKit's 24-unit grid, sized to its badge. */
-function Glyph({ color, children }: { color?: string; children: ReactNode }) {
+/**
+ * An icon sized to its badge. A `wide` one (the boot, twice as wide as it is
+ * tall) gets a shorter box that runs into the pill's padding, so it reads at
+ * the same weight as the round icons rather than as a sliver.
+ */
+function Glyph({
+  viewBox = "0 0 24 24",
+  wide = false,
+  color,
+  children,
+}: {
+  viewBox?: string;
+  wide?: boolean;
+  color?: string;
+  children: ReactNode;
+}) {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox={viewBox}
       style={{
-        width: `calc(${BADGE} * 0.76)`,
-        height: `calc(${BADGE} * 0.76)`,
+        width: `calc(${BADGE} * ${wide ? 1.24 : 0.76})`,
+        height: `calc(${BADGE} * ${wide ? 0.62 : 0.76})`,
         color,
         flexShrink: 0,
       }}
@@ -388,16 +409,6 @@ function SubIcon({ subbed }: { subbed: PlayerSubstitution }) {
   return (
     <Glyph color={subbed === "on" ? SUB_ON : SUB_OFF}>
       <path {...STROKE} d={subbed === "on" ? "M12 20V5M6 11l6-6 6 6" : "M12 4v15M6 13l6 6 6-6"} />
-    </Glyph>
-  );
-}
-
-/** A boot, side on, toe to the right, with three studs. */
-function BootIcon() {
-  return (
-    <Glyph>
-      <path {...STROKE} d="M4 5h5.5l1 5 4.5 1.5c3 1 5 2.2 5 4.5v1.5H4Z" />
-      <path {...STROKE} d="M7 18v2.5M12 18v2.5M17 18v2.5" />
     </Glyph>
   );
 }

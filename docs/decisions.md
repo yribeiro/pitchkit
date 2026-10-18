@@ -395,10 +395,14 @@ fill a round, `position: relative` box. It is one component per player, not a `d
 - **Sizes are CSS.** The photo's diameter is `size`, else `--pitch-avatar-size`, else a tenth of the
   pitch's shorter side between 24 and 72 px. Badges and text are `calc()` fractions of it, so one
   variable rescales the whole avatar without a render.
-- **The icons are PitchKit's own**, on the 24-unit grid of `<MomentumChart>`'s
-  ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)); the ball is shared.
-  The lineup graphics of match centres such as FotMob and SofaScore prompted the layout and are not
-  copied.
+- **The goal and assist glyphs are filled silhouettes, generated and traced.** Stroked line icons
+  turned to mush at a 15px badge. The ball and boot were generated as raster concepts (Recraft, via
+  ElevenLabs), picked for legibility at 15 to 20 px, and traced to paths with
+  `packages/react/scripts/trace-icon.py`; the ball was averaged with its mirror image and clipped to a
+  true circle first. The boot keeps its 2:1 shape in a wider box. Cards and substitution arrows are
+  drawn by hand on the 24-unit grid of `<MomentumChart>`'s icons
+  ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)). The lineup
+  graphics of match centres such as FotMob and SofaScore prompted the layout and are not copied.
 
 **Why:** Every match centre draws a lineup this way, and the part apps most want to control is the
 image: who hosts it, how it is resized, what shows while it loads. Letting that be the caller's own

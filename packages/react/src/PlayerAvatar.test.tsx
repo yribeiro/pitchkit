@@ -133,6 +133,30 @@ describe("PlayerAvatar", () => {
     expect((custom!.parentElement as HTMLElement).style.position).toBe("absolute");
   });
 
+  it("treats false or empty children as no photo", () => {
+    const { container } = renderOnPitch(
+      <PlayerAvatar x={60} y={40} name="Bono">
+        {false}
+      </PlayerAvatar>,
+    );
+
+    expect(container.querySelector('[data-pitchkit-part="avatar-initials"]')?.textContent).toBe(
+      "B",
+    );
+  });
+
+  it("draws the goal and assist glyphs as filled paths", () => {
+    const { container } = renderOnPitch(
+      <PlayerAvatar x={60} y={40} name="Bono" goals={1} assists={1} />,
+    );
+
+    for (const part of ["avatar-goals", "avatar-assists"]) {
+      const path = container.querySelector(`[data-pitchkit-part="${part}"] path`);
+      expect(path?.getAttribute("fill")).toBe("currentColor");
+      expect(path?.getAttribute("d")?.length).toBeGreaterThan(100);
+    }
+  });
+
   it("takes its size from the prop, else the CSS variable, else the pitch", () => {
     const { container: fixed } = renderOnPitch(
       <PlayerAvatar x={60} y={40} name="Bono" size={50} />,
