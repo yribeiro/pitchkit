@@ -41,7 +41,7 @@ export const pitchTokens = {
   avatarBall: "--pitch-avatar-ball",
   subOn: "--pitch-sub-on",
   subOff: "--pitch-sub-off",
-  subIdle: "--pitch-sub-idle",
+  subArrow: "--pitch-sub-arrow",
   tooltipBg: "--pitch-tooltip-bg",
   tooltipColor: "--pitch-tooltip-color",
 } as const;

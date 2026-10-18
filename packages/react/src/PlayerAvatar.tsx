@@ -57,8 +57,7 @@ const ICON_HALO = `var(${pitchTokens.avatarIconHalo}, rgba(255, 255, 255, 0.9))`
 const ICON_SHADOW = `drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35))`;
 const SUB_ON = `var(${pitchTokens.subOn}, #22c55e)`;
 const SUB_OFF = `var(${pitchTokens.subOff}, #ef4444)`;
-/** The arrow that didn't happen: the down arrow for a player who came on. */
-const SUB_IDLE = `var(${pitchTokens.subIdle}, #ffffff)`;
+const SUB_ARROW = `var(${pitchTokens.subArrow}, #ffffff)`;
 
 // Every size inside the avatar is a fraction of these two, so one CSS
 // variable (or the `size` prop) rescales the whole thing without a re-render.
@@ -429,19 +428,19 @@ function CardIcon({ card }: { card: PlayerCard }) {
 }
 
 /**
- * One icon for both directions, as match centres draw it: an arrow up and an
- * arrow down side by side. The one that happened takes its colour (green up
- * for on, red down for off) and the other stays plain, so direction and
- * colour both say which.
+ * A rounded square in the substitution's colour, green on and red off, with
+ * a diagonal arrow through it: bottom left to top right for a player coming
+ * on, top right to bottom left for one going off. Colour and direction both
+ * say which.
  */
 function SubIcon({ subbed }: { subbed: PlayerSubstitution }) {
   return (
     <Glyph>
-      <path {...STROKE} stroke={subbed === "on" ? SUB_ON : SUB_IDLE} d="M7.5 20V5M3.5 9l4-4 4 4" />
+      <rect x={3} y={3} width={18} height={18} rx={4.5} fill={subbed === "on" ? SUB_ON : SUB_OFF} />
       <path
         {...STROKE}
-        stroke={subbed === "off" ? SUB_OFF : SUB_IDLE}
-        d="M16.5 4v15M12.5 15l4 4 4-4"
+        stroke={SUB_ARROW}
+        d={subbed === "on" ? "M8 16 16 8M10 8h6v6" : "M16 8 8 16M8 10v6h6"}
       />
     </Glyph>
   );

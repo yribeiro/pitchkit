@@ -402,8 +402,9 @@ fill a round, `position: relative` box. It is one component per player, not a `d
   true circle first, and is drawn over a light disc so a dark ball still reads as a football. The boot is
   tilted heel-up, toe to the bottom right, so it takes the ball's width in the same square. Badges have no
   backing: the icons sit on the grass or the photo's edge, dark by default, lifted by a thin light halo,
-  with a count from two up in the icon's bottom-right corner. A substitution is one icon either way, an up
-  and a down arrow side by side, with the one that happened in colour. Cards and substitution arrows are
+  with a count from two up in the icon's bottom-right corner. A substitution is a rounded square, green on or
+  red off, with a diagonal arrow through it: bottom left to top right coming on, top right to bottom left
+  going off. Cards and substitution arrows are
   drawn by hand on the 24-unit grid of `<MomentumChart>`'s icons
   ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)). The lineup
   graphics of match centres such as FotMob and SofaScore prompted the layout and are not copied.
@@ -415,7 +416,7 @@ component costs server rendering for the avatars and nothing else.
 **Consequences:**
 
 - Twelve new tokens: `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-icon`, `-icon-halo`,
-  `-ball`, `-initials`, `--pitch-sub-on`, `--pitch-sub-off` and `--pitch-sub-idle`. Cards reuse `--pitch-card-yellow` and `--pitch-card-red`.
+  `-ball`, `-initials`, `--pitch-sub-on`, `--pitch-sub-off` and `--pitch-sub-arrow`. Cards reuse `--pitch-card-yellow` and `--pitch-card-red`.
 - `PitchContextValue` gains `overlay`, a ref. `usePitch()` doesn't expose it; a second HTML mark would
   be the reason to.
 - No rating badge yet, and no formation helper: positions are the caller's `x` and `y`.

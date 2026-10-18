@@ -133,24 +133,27 @@ describe("PlayerAvatar", () => {
     expect((custom!.parentElement as HTMLElement).style.position).toBe("absolute");
   });
 
-  it("draws one substitution icon, colouring only the arrow that happened", () => {
-    const strokes = (subbed: "on" | "off") => {
+  it("draws a substitution as a green or red square with an arrow in or out", () => {
+    const icon = (subbed: "on" | "off") => {
       const { container } = renderOnPitch(
         <PlayerAvatar x={60} y={40} name="Bono" subbed={subbed} />,
       );
-      return Array.from(container.querySelectorAll('[data-pitchkit-part="avatar-sub"] path')).map(
-        (p) => p.getAttribute("stroke"),
-      );
+      const badge = container.querySelector('[data-pitchkit-part="avatar-sub"]')!;
+      return {
+        fill: badge.querySelector("rect")?.getAttribute("fill"),
+        arrow: badge.querySelector("path")?.getAttribute("d"),
+      };
     };
 
-    expect(strokes("on")).toEqual([
-      "var(--pitch-sub-on, #22c55e)",
-      "var(--pitch-sub-idle, #ffffff)",
-    ]);
-    expect(strokes("off")).toEqual([
-      "var(--pitch-sub-idle, #ffffff)",
-      "var(--pitch-sub-off, #ef4444)",
-    ]);
+    // On: from the bottom left to the top right. Off: the reverse.
+    expect(icon("on")).toEqual({
+      fill: "var(--pitch-sub-on, #22c55e)",
+      arrow: "M8 16 16 8M10 8h6v6",
+    });
+    expect(icon("off")).toEqual({
+      fill: "var(--pitch-sub-off, #ef4444)",
+      arrow: "M16 8 8 16M8 10v6h6",
+    });
   });
 
   it("treats false or empty children as no photo", () => {

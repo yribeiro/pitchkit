@@ -4,7 +4,7 @@
 ---
 
 Add `<PlayerAvatar>`, a player's photo, shirt number and name at a point on the pitch, with badges
-for a yellow, second yellow or red card, a substitution on or off (one up-and-down arrow icon, the arrow that happened in colour), goals and assists. Counts show from
+for a yellow, second yellow or red card, a substitution on or off (a green or red square with a diagonal arrow, in or out), goals and assists. Counts show from
 two up, and the badges are read out in words after the name.
 
 It is HTML rather than SVG, so the photo can be any image component: pass `src` for a lazy-loaded
@@ -16,5 +16,5 @@ appear after hydration rather than in server-rendered HTML.
 `@pitchkit/core` adds twelve theme tokens: `--pitch-avatar-size`, `--pitch-avatar-bg`,
 `--pitch-avatar-ring`, `--pitch-avatar-text`, `--pitch-avatar-muted`, `--pitch-avatar-icon`,
 `--pitch-avatar-icon-halo`, `--pitch-avatar-ball`, `--pitch-avatar-initials`, `--pitch-sub-on`,
-`--pitch-sub-off` and `--pitch-sub-idle`. The bundled Agent Skill documents
+`--pitch-sub-off` and `--pitch-sub-arrow`. The bundled Agent Skill documents
 all of it.
