@@ -27,6 +27,9 @@ export const pitchTokens = {
   chartAccentText: "--pitch-chart-accent-text",
   cardYellow: "--pitch-card-yellow",
   cardRed: "--pitch-card-red",
+  goalBackdrop: "--pitch-goal-backdrop",
+  goalNet: "--pitch-goal-net",
+  goalFrame: "--pitch-goal-frame",
   tooltipBg: "--pitch-tooltip-bg",
   tooltipColor: "--pitch-tooltip-color",
 } as const;

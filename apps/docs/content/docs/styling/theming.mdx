@@ -20,6 +20,18 @@ variable once in your global stylesheet and every `<Pitch>` picks it up through 
 | `--pitch-tooltip-bg`     | Tooltip background                                        | `rgba(17, 17, 17, 0.92)`    |
 | `--pitch-tooltip-color`  | Tooltip text                                              | `#fff`                      |
 
+### Goal view variables
+
+[`<GoalView>`](/docs/components/goal-view) reads three more, and draws its ground and markings
+with the pitch's own `--pitch-surface`, `--pitch-lines` and `--pitch-line-width`, so a themed pitch
+and goal view match.
+
+| Variable                | Controls                                                          | Default                     |
+| ----------------------- | ----------------------------------------------------------------- | --------------------------- |
+| `--pitch-goal-backdrop` | Everything behind the goal, the label boxes and the ring on shots | `#0f2a19`                   |
+| `--pitch-goal-net`      | The net                                                           | `rgba(255, 255, 255, 0.18)` |
+| `--pitch-goal-frame`    | Posts and crossbar                                                | `#ffffff`                   |
+
 ### Chart variables
 
 The [charts](/docs/charts) read a second set. They are not the pitch's colours: a chart has no

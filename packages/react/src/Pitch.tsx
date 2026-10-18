@@ -18,7 +18,7 @@ import type {
 import { PitchContext } from "./context.js";
 import type { TooltipState } from "./context.js";
 import { PitchGeometryShapes, PitchMarkingShapes, PitchSurfaceShapes } from "./pitch-geometry.js";
-import { TooltipOverlay } from "./TooltipOverlay.js";
+import { TooltipOverlay, hasTooltipContent } from "./TooltipOverlay.js";
 import { useResizeObserver } from "./use-resize-observer.js";
 
 export interface PitchProps {
@@ -57,18 +57,6 @@ export interface PitchProps {
 // until the first client measurement ("explicit aspect ratio on first
 // paint, ResizeObserver refine after hydration": docs/architecture.md#responsive-and-multi-device).
 const NOMINAL_WIDTH = 600;
-
-/**
- * Layer components set tooltip state on hover whenever a `tooltip` prop was
- * passed, without inspecting what the accessor returned. An accessor that
- * returns nothing for a given datum — `(d) => d.isKeeper ? "Goalkeeper" : undefined`,
- * a common shape — means "nothing to say about this one", so skip the
- * overlay entirely rather than painting an empty, text-less box.
- */
-function hasTooltipContent(tooltip: TooltipState | null): tooltip is TooltipState {
-  const content = tooltip?.content;
-  return content !== null && content !== undefined && content !== false && content !== "";
-}
 
 /**
  * The root pitch component: owns the coordinate system, is responsive by

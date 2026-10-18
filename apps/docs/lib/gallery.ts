@@ -3,8 +3,8 @@
  * which category tab, with display copy. Scoped deliberately to what's
  * buildable with today's mark set (issue #28) — new-mark entries get added
  * here incrementally as each Milestone 2 mark lands. Positional heatmap,
- * hexbin and KDE arrived with issue #19, and radar and pizza after them;
- * the goal view is still to come.
+ * hexbin and KDE arrived with issue #19, then radar and pizza, then the
+ * goal view, whose card sits under "Shooting".
  *
  * "Timeline" is the one category whose cards are not drawn on a pitch. It
  * exists for <RaceChart> and <MomentumChart>, and will take the bumpy chart later.
@@ -41,6 +41,14 @@ export const GALLERY_ENTRIES: GalleryEntry[] = [
       "Attacking half, vertical framing — markers sized by xG, coloured by outcome, goal angle on the best chance.",
     category: "Shooting",
     docsHref: "/docs/overlays/scatter",
+  },
+  {
+    name: "penalty-shootout-gallery",
+    title: "Penalty shootout",
+    description:
+      "Every kick of England v Switzerland at Euro 2024 where it crossed the line, numbered in kick order, with the penalty spot below for distance.",
+    category: "Shooting",
+    docsHref: "/docs/components/goal-view",
   },
   {
     name: "buildup-gallery",

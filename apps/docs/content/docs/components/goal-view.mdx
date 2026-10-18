@@ -1,0 +1,112 @@
+---
+title: GoalView
+description: The goal mouth seen from in front, with the penalty spot below for distance. Plots where shots crossed the line, in StatsBomb's own goal-mouth coordinates.
+---
+
+<PitchPreview name="goal-view-basic" />
+
+`<GoalView>` is the goal-mouth chart analysts use for shot placement and penalties, sometimes
+called a keeper's-eye view: the goal as the shooter sees it, with each shot where it crossed the
+line. The posts, crossbar and net are drawn to scale. The ground in front of the goal recedes in
+perspective to the six-yard line, the penalty spot and the edge of the penalty area, so the
+distance reads at a glance.
+
+It is a root, a sibling of `<Pitch>` and not a layer inside one. A pitch is seen from above; a goal
+view looks along the pitch at the goal, so it has its own coordinate system and its own layer,
+`<GoalShots>`. Pitch layers such as `<Scatter>` don't work inside it.
+
+## Usage
+
+```tsx
+<GoalView type="statsbomb">
+  <GoalShots data={shots} y={(shot) => shot.endY} z={(shot) => shot.endZ} />
+</GoalView>
+```
+
+| Prop                 | Type                      | Does                                                                         |
+| -------------------- | ------------------------- | ---------------------------------------------------------------------------- |
+| `type`               | `"statsbomb" \| "metric"` | Required. The coordinate system your shots are in; see below.                |
+| `width`, `height`    | number                    | Fixed pixel size. Provide both or neither. Otherwise it fills its container. |
+| `appearance`         | `GoalViewAppearance`      | The dimension markers; see below.                                            |
+| `className`, `style` | —                         | Applied to the wrapper `<div>`.                                              |
+
+## Coordinates
+
+`y` runs across the goal and grows to the shooter's right; `z` is the height off the ground.
+
+| `type`        | `y`                                                     | `z`                                   |
+| ------------- | ------------------------------------------------------- | ------------------------------------- |
+| `"statsbomb"` | `end_location[1]`, in yards. The posts are at 36 and 44 | `end_location[2]`. The bar is at 2.67 |
+| `"metric"`    | Metres from the middle of the goal: posts at ±3.66      | Metres. The bar is at 2.44            |
+
+With [`@pitchkit/data-providers`](/docs/data/statsbomb/events), a StatsBomb shot already carries
+these as `endY` and `endZ`. Two things to know about StatsBomb's data:
+
+- **Blocked and wayward shots have no height.** Their `end_location` has two values, so `endZ` is
+  `undefined` and `<GoalShots>` leaves them out.
+- **A saved shot ends where the keeper got to it**, in front of the line, not where it would
+  have crossed. It is drawn at that `y` and `z`.
+
+The view shows one goal width either side of the middle and 4 m up. A shot outside that, such as
+one blazed over the bar, is pinned just inside the edge, so it still shows which way it went. It
+carries `data-pitchkit-clamped`, and the tooltip can give the real numbers.
+
+## Dimension markers
+
+<PitchPreview name="goal-view-markers-basic" />
+
+The width between the posts and the height to the crossbar are drawn as measurements, so the
+scale of a shot's placement is never in doubt. Each is a toggle on `appearance`:
+
+```tsx
+<GoalView
+  type="statsbomb"
+  appearance={{ widthMarker: false, heightMarker: true, units: "imperial" }}
+/>
+```
+
+| Key            | Does                                                                            |
+| -------------- | ------------------------------------------------------------------------------- |
+| `widthMarker`  | The distance between the posts, above the bar. On by default.                   |
+| `heightMarker` | The height of the bar, left of the left post. On by default.                    |
+| `units`        | `"metric"` (default) labels them 7.32 m and 2.44 m; `"imperial"` 8 yd and 8 ft. |
+
+On a view under about 190 px wide there is no room for the height label beside the post, so it is
+left off and the arrow stays.
+
+The penalty spot is always drawn. Its place in the perspective is to scale, 11 m out from the
+centre of the goal line; its size is not, since a real spot seen from this low would be a dash.
+
+## `<GoalShots>`
+
+One circle per shot, with the same accessor props as [`<Scatter>`](/docs/overlays/scatter): `r`,
+`fill`, `fillOpacity`, `stroke`, `strokeWidth`, `className` and `tooltip`, with `y` and `z` in
+place of `x` and `y`. Shots get a ring in the backdrop colour by default, so ones that land on
+top of each other stay apart.
+
+## Your own marks
+
+`useGoalView()` gives a child the same mapping `<GoalShots>` uses, for anything else you want on
+the goal, such as a keeper's dive or a label:
+
+```tsx
+function Label({ y, z, text }: { y: number; z: number; text: string }) {
+  const { toPixel } = useGoalView();
+  const point = toPixel(y, z);
+  return point ? (
+    <text x={point.x} y={point.y - 10} textAnchor="middle">
+      {text}
+    </text>
+  ) : null;
+}
+```
+
+`toPixel(y, z)` returns `{ x, y, clamped }`, or `undefined` for a missing coordinate. `layout`
+gives `scale`, the pixels per metre, for sizing things in real units.
+
+## Theming
+
+The ground and its markings use the pitch's own variables (`--pitch-surface`, `--pitch-lines`,
+`--pitch-line-width`), so a goal view matches a themed pitch. Three more are its own:
+`--pitch-goal-backdrop` behind the goal, `--pitch-goal-net` and `--pitch-goal-frame`. See
+[Theming](/docs/styling/theming#goal-view-variables).
