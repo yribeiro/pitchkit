@@ -1,5 +1,66 @@
 # @pitchkit/react
 
+## 0.8.0
+
+### Minor Changes
+
+- 3ea511b: Add `<GoalView>`, the goal mouth seen from in front, for plotting where shots crossed the line.
+
+  It is a root beside `<Pitch>` with its own goal-mouth coordinates: `type="statsbomb"` takes a
+  StatsBomb shot's `end_location[1]` and `[2]` (`endY`/`endZ` from `@pitchkit/data-providers`) as they
+  are, and `type="metric"` takes metres from the middle of the goal. Posts, crossbar and net are drawn to
+  scale, and the ground recedes in perspective to the six-yard line, penalty spot and penalty area for a
+  sense of distance. Width and height markers are on by default and toggled with
+  `appearance.widthMarker` and `appearance.heightMarker`; `appearance.units` labels them in metres or
+  yards and feet.
+
+  Shots are drawn with `<GoalShots>` (`y`, `z` and the usual `<Scatter>` accessors); one outside the view
+  is pinned just inside its edge and marked `data-pitchkit-clamped`. `useGoalView()` gives custom marks
+  the same mapping. `@pitchkit/core` adds the maths under `goal/` (`GOAL_FRAMES`, `computeGoalLayout`,
+  `goalPoint`, `projectGround`, `computeGoalGeometry`) and three theme tokens: `--pitch-goal-backdrop`,
+  `--pitch-goal-net` and `--pitch-goal-frame`. The bundled Agent Skill documents all of it.
+
+- 5dcf720: Metrica Sports open data, and a `metrica` pitch type.
+
+  `@pitchkit/data-providers/metrica` loads Metrica's two anonymised CSV sample
+  games: 25 fps tracking for every player and the ball, and the events that go
+  with it on the same clock. `fetchEvents(game)` reads the events;
+  `fetchTrackingWindow(game, { fromFrame, toFrame })` reads a window of frames
+  with HTTP `Range` requests, so a goal's build-up costs a few hundred KB instead
+  of 65 MB; `streamTracking(game)` is an async generator over both teams' files.
+  Field names are Metrica's own CSV headers (`event["Start Frame"]`); `x`/`y`,
+  `ball` and `players` are the only additions. Selectors (`shots`, `byTeam`,
+  `findPlayer`, `attackingDirection`, …) and predicates (`isGoal`, `isOwnGoal`,
+  `hasSubtype`, `wonChallenge`, …) read the rest. Sample Game 3, in FIFA EPTS
+  format, isn't supported.
+
+  `core` gains the `"metrica"` pitch type, a normalized `0..1` grid with its
+  origin top-left and y downward (mplsoccer's `metricasports`). It widens the
+  public `PitchTypeId` union: additive for callers, but an exhaustive `switch`
+  over it gains a case. It also adds `pitchGoalBoxDepth(dimensions)`.
+
+  It fixes how markings are drawn on every normalized grid. Radii are metres, so
+  the penalty-arc and corner-arc endpoints and the goal-box depth now convert
+  through `displayUnitScale` before meeting grid coordinates. On Opta and Wyscout
+  the penalty arcs now end on their own circle and the corner arcs are true
+  quarter circles; both shifted by a few pixels. StatsBomb, UEFA and SkillCorner
+  are byte-identical.
+
+  The bundled skill documents the `metrica` pitch type and the Metrica loader.
+
+### Patch Changes
+
+- 9700b4f: Fix `<Hexbin>` drawing squashed hexagons on percentage-grid pitches (`opta`, `wyscout`)
+  ([#99](https://github.com/yribeiro/pitchkit/issues/99)). `computeHexBins` built its lattice in grid
+  units, where one x unit is 1.05 m and one y unit 0.68 m, so hexagons came out about 1.5 times too wide
+  for their height and points fell into different bins than on the same pitch in metres. The lattice is
+  now built in metres on those pitches. `HexBin.radius` is in those display units, and `hexCorners` takes
+  an optional `dimensions` argument to convert the corners back per axis. Other pitch types are unchanged.
+- Updated dependencies [3ea511b]
+- Updated dependencies [9700b4f]
+- Updated dependencies [5dcf720]
+  - @pitchkit/core@0.7.0
+
 ## 0.7.0
 
 ### Minor Changes
