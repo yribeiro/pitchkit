@@ -439,8 +439,8 @@ data-driven: map your lineup to one `<PlayerAvatar>` each, with a `key`.
 
 Any other `HTMLAttributes<HTMLDivElement>` (`className`, `style`, `onClick`…) go on the root. For
 `next/image`, nest it: `<PlayerAvatar …><Image src={url} alt="" fill sizes="64px" /></PlayerAvatar>`.
-Theme with `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-icon`, `-initials`,
-`--pitch-sub-on`, `--pitch-sub-off`, and the shared `--pitch-card-yellow` / `--pitch-card-red`.
+Theme with `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-icon`, `-icon-halo`, `-ball`,
+`-initials`, `--pitch-sub-on`, `--pitch-sub-off`, `--pitch-sub-idle`, and the shared `--pitch-card-yellow` / `--pitch-card-red`.
 
 ## Canvas density layers
 

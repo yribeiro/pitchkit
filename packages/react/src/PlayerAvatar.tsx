@@ -46,13 +46,19 @@ const AVATAR_BG = `var(${pitchTokens.avatarBg}, #d4d8dd)`;
 const AVATAR_RING = `var(${pitchTokens.avatarRing}, #ffffff)`;
 const AVATAR_TEXT = `var(${pitchTokens.avatarText}, #ffffff)`;
 const AVATAR_MUTED = `var(${pitchTokens.avatarMuted}, rgba(255, 255, 255, 0.7))`;
-const ICON = `var(${pitchTokens.avatarIcon}, #ffffff)`;
+const ICON = `var(${pitchTokens.avatarIcon}, #111827)`;
+/** Behind the ball's panels, so a dark ball still reads as a football on dark grass. */
+const BALL_FILL = `var(${pitchTokens.avatarBall}, #ffffff)`;
 const INITIALS = `var(${pitchTokens.avatarInitials}, #1f2937)`;
 // The badges sit straight on the grass or the photo with no backing, so a
-// soft shadow is what separates them from whatever is behind.
-const ICON_SHADOW = "drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.55))";
+// thin halo in a contrasting colour, plus a soft shadow, is what separates
+// them from whatever is behind. Dark icons get a light halo by default.
+const ICON_HALO = `var(${pitchTokens.avatarIconHalo}, rgba(255, 255, 255, 0.9))`;
+const ICON_SHADOW = `drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35))`;
 const SUB_ON = `var(${pitchTokens.subOn}, #22c55e)`;
 const SUB_OFF = `var(${pitchTokens.subOff}, #ef4444)`;
+/** The arrow that didn't happen: the down arrow for a player who came on. */
+const SUB_IDLE = `var(${pitchTokens.subIdle}, #ffffff)`;
 
 // Every size inside the avatar is a fraction of these two, so one CSS
 // variable (or the `size` prop) rescales the whole thing without a re-render.
@@ -243,6 +249,7 @@ export function PlayerAvatar({
             {goalCount > 0 && (
               <Badge part="avatar-goals" count={goalCount}>
                 <Glyph viewBox={BALL_VIEWBOX}>
+                  <circle cx={11.8} cy={12} r={11.6} fill={BALL_FILL} />
                   <path d={BALL_PATH} fill="currentColor" fillRule="evenodd" />
                 </Glyph>
               </Badge>
@@ -354,7 +361,7 @@ function Badge({ part, count, children }: { part: string; count?: number; childr
             fontWeight: 800,
             lineHeight: 1,
             color: ICON,
-            textShadow: "0 0 2px rgba(0, 0, 0, 0.9), 0 1px 1px rgba(0, 0, 0, 0.8)",
+            textShadow: `0 0 2px ${ICON_HALO}, 0 0 1px ${ICON_HALO}`,
           }}
         >
           {count}
@@ -393,7 +400,7 @@ function Glyph({
 const STROKE = {
   fill: "none",
   stroke: "currentColor",
-  strokeWidth: 3.25,
+  strokeWidth: 2.75,
   strokeLinecap: "round",
   strokeLinejoin: "round",
 } as const;
@@ -421,11 +428,21 @@ function CardIcon({ card }: { card: PlayerCard }) {
   );
 }
 
-/** On: an arrow up, in. Off: an arrow down, out. Colour and direction both say which. */
+/**
+ * One icon for both directions, as match centres draw it: an arrow up and an
+ * arrow down side by side. The one that happened takes its colour (green up
+ * for on, red down for off) and the other stays plain, so direction and
+ * colour both say which.
+ */
 function SubIcon({ subbed }: { subbed: PlayerSubstitution }) {
   return (
-    <Glyph color={subbed === "on" ? SUB_ON : SUB_OFF}>
-      <path {...STROKE} d={subbed === "on" ? "M12 20V5M6 11l6-6 6 6" : "M12 4v15M6 13l6 6 6-6"} />
+    <Glyph>
+      <path {...STROKE} stroke={subbed === "on" ? SUB_ON : SUB_IDLE} d="M7.5 20V5M3.5 9l4-4 4 4" />
+      <path
+        {...STROKE}
+        stroke={subbed === "off" ? SUB_OFF : SUB_IDLE}
+        d="M16.5 4v15M12.5 15l4 4 4-4"
+      />
     </Glyph>
   );
 }

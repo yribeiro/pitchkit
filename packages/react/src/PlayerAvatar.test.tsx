@@ -133,6 +133,26 @@ describe("PlayerAvatar", () => {
     expect((custom!.parentElement as HTMLElement).style.position).toBe("absolute");
   });
 
+  it("draws one substitution icon, colouring only the arrow that happened", () => {
+    const strokes = (subbed: "on" | "off") => {
+      const { container } = renderOnPitch(
+        <PlayerAvatar x={60} y={40} name="Bono" subbed={subbed} />,
+      );
+      return Array.from(container.querySelectorAll('[data-pitchkit-part="avatar-sub"] path')).map(
+        (p) => p.getAttribute("stroke"),
+      );
+    };
+
+    expect(strokes("on")).toEqual([
+      "var(--pitch-sub-on, #22c55e)",
+      "var(--pitch-sub-idle, #ffffff)",
+    ]);
+    expect(strokes("off")).toEqual([
+      "var(--pitch-sub-idle, #ffffff)",
+      "var(--pitch-sub-off, #ef4444)",
+    ]);
+  });
+
   it("treats false or empty children as no photo", () => {
     const { container } = renderOnPitch(
       <PlayerAvatar x={60} y={40} name="Bono">

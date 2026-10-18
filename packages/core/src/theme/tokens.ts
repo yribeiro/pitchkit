@@ -36,9 +36,12 @@ export const pitchTokens = {
   avatarText: "--pitch-avatar-text",
   avatarMuted: "--pitch-avatar-muted",
   avatarIcon: "--pitch-avatar-icon",
+  avatarIconHalo: "--pitch-avatar-icon-halo",
   avatarInitials: "--pitch-avatar-initials",
+  avatarBall: "--pitch-avatar-ball",
   subOn: "--pitch-sub-on",
   subOff: "--pitch-sub-off",
+  subIdle: "--pitch-sub-idle",
   tooltipBg: "--pitch-tooltip-bg",
   tooltipColor: "--pitch-tooltip-color",
 } as const;
