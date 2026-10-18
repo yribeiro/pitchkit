@@ -32,6 +32,23 @@ and goal view match.
 | `--pitch-goal-net`      | The net                                                           | `rgba(255, 255, 255, 0.18)` |
 | `--pitch-goal-frame`    | Posts and crossbar                                                | `#ffffff`                   |
 
+### Player avatar variables
+
+[`<PlayerAvatar>`](/docs/overlays/player-avatar) reads nine more, and draws its cards with the
+`--pitch-card-yellow` and `--pitch-card-red` below.
+
+| Variable                    | Controls                             | Default                    |
+| --------------------------- | ------------------------------------ | -------------------------- |
+| `--pitch-avatar-size`       | Photo diameter                       | Scales with the pitch      |
+| `--pitch-avatar-bg`         | Behind the photo and the initials    | `#d4d8dd`                  |
+| `--pitch-avatar-ring`       | The ring around the photo            | `#ffffff`                  |
+| `--pitch-avatar-text`       | The name                             | `#ffffff`                  |
+| `--pitch-avatar-muted`      | The shirt number                     | `rgba(255, 255, 255, 0.7)` |
+| `--pitch-avatar-badge-bg`   | Badge backgrounds                    | `#ffffff`                  |
+| `--pitch-avatar-badge-text` | Badge icons, counts and the initials | `#111827`                  |
+| `--pitch-sub-on`            | The substituted-on arrow             | `#16a34a`                  |
+| `--pitch-sub-off`           | The substituted-off arrow            | `#dc2626`                  |
+
 ### Chart variables
 
 The [charts](/docs/charts) read a second set. They are not the pitch's colours: a chart has no
@@ -48,8 +65,8 @@ value.
 | `--pitch-chart-accent-text` | Text on those controls                                                                       | `#ffffff`                                                        |
 | `--pitch-axis`              | Baselines, period rules, the zero line                                                       | `#c6cebc`                                                        |
 | `--pitch-grid`              | Gridlines and panel backgrounds                                                              | `#e5eade`                                                        |
-| `--pitch-card-yellow`       | Yellow cards on a chart                                                                      | `#facc15`                                                        |
-| `--pitch-card-red`          | Red cards and own goals on a chart                                                           | `#ef4444`                                                        |
+| `--pitch-card-yellow`       | Yellow cards on a chart and on `<PlayerAvatar>`                                              | `#facc15`                                                        |
+| `--pitch-card-red`          | Red cards and own goals on a chart, and red cards on `<PlayerAvatar>`                        | `#ef4444`                                                        |
 
 Charts that overlay series, like the radar, read best with up to three: past that, no palette keeps
 every pair distinguishable.

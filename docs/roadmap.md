@@ -37,6 +37,13 @@ Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1*
 | Voronoi                         | 1     | ✅                                                  |
 | Goal angle                      | 1     | ✅                                                  |
 | Angle and distance helpers      | 1     | ⬜                                                  |
+| Player avatar (lineup)          | 1     | ✅ `<PlayerAvatar>`                                 |
+
+`<PlayerAvatar>` is the match-centre lineup graphic and **not mplsoccer parity**
+([D30](./decisions.md#d30-playeravatar-html-in-an-overlay-the-photo-as-children)). It is HTML in an
+overlay over the pitch, so the photo can be `next/image`, and it renders after hydration. Follow-ups,
+none started: a rating badge, a captain marker, and a formation helper that turns `"4-3-3"` into
+positions.
 
 ### Statistical and aggregate layers
 
@@ -164,6 +171,7 @@ Complete as of 2026-09-06.
 - [x] `<RaceChart>`, the first non-pitch chart and the first with no mplsoccer equivalent
       ([PR #78](https://github.com/yribeiro/pitchkit/pull/78)).
 - [x] `<MomentumChart>`, match momentum bars with an event icon row.
+- [x] `<PlayerAvatar>`, lineup avatars with cards, substitutions, goals and assists.
 - [x] Open-data loaders: StatsBomb events ([PR #50](https://github.com/yribeiro/pitchkit/pull/50))
       and 360 ([PR #52](https://github.com/yribeiro/pitchkit/pull/52)), SkillCorner
       ([PR #58](https://github.com/yribeiro/pitchkit/pull/58)), Wyscout

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import {
   computePitchGeometry,
@@ -80,6 +80,7 @@ export function Pitch({
   const dimensions = getPitchDimensions(type, dimensionOverrides);
   const [containerRef, measuredSize] = useResizeObserver<HTMLDivElement>();
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const overlay = useRef<HTMLDivElement | null>(null);
 
   const isExplicitSize = explicitWidth !== undefined && explicitHeight !== undefined;
 
@@ -144,7 +145,7 @@ export function Pitch({
             appearance={appearance}
           />
         )}
-        <PitchContext.Provider value={{ dimensions, viewport, transform, setTooltip }}>
+        <PitchContext.Provider value={{ dimensions, viewport, transform, setTooltip, overlay }}>
           {children}
         </PitchContext.Provider>
         {linesOnTop && (
@@ -156,6 +157,13 @@ export function Pitch({
           />
         )}
       </svg>
+      {/* HTML marks (<PlayerAvatar>) portal in here. It passes pointer
+          events through, so the SVG marks underneath keep their hover. */}
+      <div
+        ref={overlay}
+        data-pitchkit-layer="html-overlay"
+        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+      />
       {hasTooltipContent(tooltip) && <TooltipOverlay tooltip={tooltip} />}
     </div>
   );

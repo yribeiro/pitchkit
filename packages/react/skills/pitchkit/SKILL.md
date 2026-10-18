@@ -116,7 +116,7 @@ SVG layers — server-renderable, one element per datum, all accept `className` 
 
 Canvas density layers — client-only, accept `className` and `style` but **no** `tooltip`:
 
-`<Heatmap>` `<PositionalHeatmap>` `<Hexbin>` `<KDE>`
+`<Heatmap>` `<PositionalHeatmap>` `<Hexbin>` `<KDE>`. Also client-only (HTML, one per player): `<PlayerAvatar>`, with any image component as children ([api](references/api.md#playeravatar)).
 
 Roots: `<Pitch>`, `<VerticalPitch>` (`<Pitch orientation="vertical">`), and `<GoalView>` + `<GoalShots>` ([api](references/api.md#goalview)).
 Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for custom marks.

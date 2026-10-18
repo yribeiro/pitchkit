@@ -65,7 +65,7 @@ const STROKE = {
 } as const;
 
 /** A football: the ball, its centre panel, and five seams to the rim. */
-function Ball({ cx, cy, r }: { cx: number; cy: number; r: number }) {
+export function Ball({ cx, cy, r }: { cx: number; cy: number; r: number }) {
   const k = r / 9.5;
   const at = (x: number, y: number) =>
     `${(cx + (x - 12) * k).toFixed(2)} ${(cy + (y - 12) * k).toFixed(2)}`;

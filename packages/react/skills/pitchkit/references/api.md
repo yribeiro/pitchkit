@@ -415,6 +415,33 @@ SVG cannot vary a line's stroke width along its length, so this is a filled quad
 
 ---
 
+## HTML overlay
+
+### `<PlayerAvatar>`
+
+One player at a point on the pitch: photo, number, name, and badges. A descendant of `<Pitch>`; it
+renders HTML into an overlay `<Pitch>` stacks over its `<svg>`, so it is **not** in server-rendered
+HTML and appears after hydration. Root carries `data-pitchkit-mark="player-avatar"`. Not
+data-driven: map your lineup to one `<PlayerAvatar>` each, with a `key`.
+
+| Prop       | Type                                   | Default           | Notes                                                           |
+| ---------- | -------------------------------------- | ----------------- | --------------------------------------------------------------- |
+| `x`, `y`   | `number`                               | —                 | Required. The photo's centre, in the pitch's `type` units.      |
+| `name`     | `string`                               | —                 | Required. Label, and initials when there is no photo.           |
+| `number`   | `number \| string`                     | —                 | Shown before the name.                                          |
+| `card`     | `"yellow" \| "second-yellow" \| "red"` | —                 |                                                                 |
+| `subbed`   | `"on" \| "off"`                        | —                 |                                                                 |
+| `goals`    | `number`                               | —                 | Count shown from 2 up; 0, negatives and NaN draw no badge.      |
+| `assists`  | `number`                               | —                 | As `goals`.                                                     |
+| `src`      | `string`                               | —                 | Plain `<img loading="lazy">`; on error, falls back to initials. |
+| `size`     | `number`                               | 10% of short side | Pixels, clamped 24–72 by default. Beats `--pitch-avatar-size`.  |
+| `children` | `ReactNode`                            | —                 | Replaces the photo, in a round `position: relative` box.        |
+
+Any other `HTMLAttributes<HTMLDivElement>` (`className`, `style`, `onClick`…) go on the root. For
+`next/image`, nest it: `<PlayerAvatar …><Image src={url} alt="" fill sizes="64px" /></PlayerAvatar>`.
+Theme with `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-badge-bg`, `-badge-text`,
+`--pitch-sub-on`, `--pitch-sub-off`, and the shared `--pitch-card-yellow` / `--pitch-card-red`.
+
 ## Canvas density layers
 
 Client-only: they paint to a `<canvas>` inside a `<foreignObject>` after hydration, and
