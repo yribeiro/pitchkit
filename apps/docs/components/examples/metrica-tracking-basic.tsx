@@ -78,13 +78,17 @@ export function MetricaTrackingBasic() {
   const [loaded, setLoaded] = useState<{ game: number; goals: MetricaEvent[] }>();
   const [goalIndex, setGoalIndex] = useState(0);
   const [clip, setClip] = useState<{ goal: MetricaEvent; frames: MetricaFrame[] }>();
-  const [failed, setFailed] = useState(false);
+  // Which load failed, so picking another game or goal clears the message.
+  const [failedLoad, setFailedLoad] = useState<string>();
 
   useEffect(() => {
     const controller = new AbortController();
     loadGoals(game, controller.signal)
-      .then((goals) => setLoaded({ game, goals }))
-      .catch(() => !controller.signal.aborted && setFailed(true));
+      .then((goals) => {
+        setLoaded({ game, goals });
+        setFailedLoad(undefined);
+      })
+      .catch(() => !controller.signal.aborted && setFailedLoad(`events-${game}`));
     return () => controller.abort();
   }, [game]);
 
@@ -94,12 +98,20 @@ export function MetricaTrackingBasic() {
     if (!goal) return;
     const controller = new AbortController();
     loadClip(game, goal, controller.signal)
-      .then((frames) => setClip({ goal, frames }))
-      .catch(() => !controller.signal.aborted && setFailed(true));
+      .then((frames) => {
+        setClip({ goal, frames });
+        setFailedLoad(undefined);
+      })
+      .catch(
+        () => !controller.signal.aborted && setFailedLoad(`clip-${game}-${goal["Start Frame"]}`),
+      );
     return () => controller.abort();
   }, [game, goal]);
 
   const frames = clip && clip.goal === goal ? clip.frames : [];
+  const failed =
+    failedLoad === `events-${game}` ||
+    (goal !== undefined && failedLoad === `clip-${game}-${goal["Start Frame"]}`);
   const frame = frames[usePlayhead(frames.length)];
   const fill = (p: { team: string }) =>
     p.team === "Home" ? "var(--pitch-marker-primary)" : "var(--pitch-marker-goal)";
