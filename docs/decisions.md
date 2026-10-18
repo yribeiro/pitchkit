@@ -399,7 +399,9 @@ fill a round, `position: relative` box. It is one component per player, not a `d
   turned to mush at a 15px badge. The ball and boot were generated as raster concepts (Recraft, via
   ElevenLabs), picked for legibility at 15 to 20 px, and traced to paths with
   `packages/react/scripts/trace-icon.py`; the ball was averaged with its mirror image and clipped to a
-  true circle first. The boot keeps its 2:1 shape in a wider box. Cards and substitution arrows are
+  true circle first. The boot is tilted heel-up, toe to the bottom right, so it takes the ball's width
+  in the same square. Badges have no backing: the icons sit on the grass or the photo's edge, white,
+  lifted by a drop shadow, with a count from two up in the icon's bottom-right corner. Cards and substitution arrows are
   drawn by hand on the 24-unit grid of `<MomentumChart>`'s icons
   ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)). The lineup
   graphics of match centres such as FotMob and SofaScore prompted the layout and are not copied.
@@ -410,7 +412,7 @@ component costs server rendering for the avatars and nothing else.
 
 **Consequences:**
 
-- Nine new tokens: `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-badge-bg`, `-badge-text`,
+- Nine new tokens: `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-icon`, `-initials`,
   `--pitch-sub-on` and `--pitch-sub-off`. Cards reuse `--pitch-card-yellow` and `--pitch-card-red`.
 - `PitchContextValue` gains `overlay`, a ref. `usePitch()` doesn't expose it; a second HTML mark would
   be the reason to.

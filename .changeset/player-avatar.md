@@ -14,6 +14,6 @@ now stacks an HTML overlay layer over its `<svg>` for it to render into; like th
 appear after hydration rather than in server-rendered HTML.
 
 `@pitchkit/core` adds nine theme tokens: `--pitch-avatar-size`, `--pitch-avatar-bg`,
-`--pitch-avatar-ring`, `--pitch-avatar-text`, `--pitch-avatar-muted`, `--pitch-avatar-badge-bg`,
-`--pitch-avatar-badge-text`, `--pitch-sub-on` and `--pitch-sub-off`. The bundled Agent Skill documents
+`--pitch-avatar-ring`, `--pitch-avatar-text`, `--pitch-avatar-muted`, `--pitch-avatar-icon`,
+`--pitch-avatar-initials`, `--pitch-sub-on` and `--pitch-sub-off`. The bundled Agent Skill documents
 all of it.

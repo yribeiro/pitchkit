@@ -5,7 +5,7 @@ import { pitchTokens } from "@pitchkit/core";
 import type { Viewport } from "@pitchkit/core";
 import { CARD_RED, CARD_YELLOW } from "./chart-tokens.js";
 import { usePitchContext } from "./context.js";
-import { BALL_PATH, BALL_VIEWBOX, BOOT_PATH, BOOT_VIEWBOX } from "./avatar-icons.js";
+import { BALL_PATH, BALL_VIEWBOX, BOOT_PATH, BOOT_TRANSFORM } from "./avatar-icons.js";
 
 export type PlayerCard = "yellow" | "second-yellow" | "red";
 export type PlayerSubstitution = "on" | "off";
@@ -46,10 +46,13 @@ const AVATAR_BG = `var(${pitchTokens.avatarBg}, #d4d8dd)`;
 const AVATAR_RING = `var(${pitchTokens.avatarRing}, #ffffff)`;
 const AVATAR_TEXT = `var(${pitchTokens.avatarText}, #ffffff)`;
 const AVATAR_MUTED = `var(${pitchTokens.avatarMuted}, rgba(255, 255, 255, 0.7))`;
-const BADGE_BG = `var(${pitchTokens.avatarBadgeBg}, #ffffff)`;
-const BADGE_TEXT = `var(${pitchTokens.avatarBadgeText}, #111827)`;
-const SUB_ON = `var(${pitchTokens.subOn}, #16a34a)`;
-const SUB_OFF = `var(${pitchTokens.subOff}, #dc2626)`;
+const ICON = `var(${pitchTokens.avatarIcon}, #ffffff)`;
+const INITIALS = `var(${pitchTokens.avatarInitials}, #1f2937)`;
+// The badges sit straight on the grass or the photo with no backing, so a
+// soft shadow is what separates them from whatever is behind.
+const ICON_SHADOW = "drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.55))";
+const SUB_ON = `var(${pitchTokens.subOn}, #22c55e)`;
+const SUB_OFF = `var(${pitchTokens.subOff}, #ef4444)`;
 
 // Every size inside the avatar is a fraction of these two, so one CSS
 // variable (or the `size` prop) rescales the whole thing without a re-render.
@@ -211,7 +214,7 @@ export function PlayerAvatar({
               style={{
                 fontSize: `calc(${SIZE} * 0.36)`,
                 fontWeight: 700,
-                color: BADGE_TEXT,
+                color: INITIALS,
                 lineHeight: 1,
               }}
             >
@@ -246,8 +249,13 @@ export function PlayerAvatar({
             )}
             {assistCount > 0 && (
               <Badge part="avatar-assists" count={assistCount}>
-                <Glyph viewBox={BOOT_VIEWBOX} wide>
-                  <path d={BOOT_PATH} fill="currentColor" fillRule="evenodd" />
+                <Glyph>
+                  <path
+                    d={BOOT_PATH}
+                    transform={BOOT_TRANSFORM}
+                    fill="currentColor"
+                    fillRule="evenodd"
+                  />
                 </Glyph>
               </Badge>
             )}
@@ -313,48 +321,56 @@ function BadgeColumn({ side, children }: { side: "left" | "right"; children: Rea
   );
 }
 
+/**
+ * One icon, with its count tucked into its bottom-right corner from two up.
+ * No backing: the icon sits on the grass or the photo's edge, lifted by a
+ * shadow.
+ */
 function Badge({ part, count, children }: { part: string; count?: number; children: ReactNode }) {
   return (
     <span
       data-pitchkit-part={part}
       data-count={count}
       style={{
+        position: "relative",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 1,
-        boxSizing: "border-box",
+        width: BADGE,
         height: BADGE,
-        minWidth: BADGE,
-        padding: `0 calc(${BADGE} * 0.12)`,
-        borderRadius: 999,
-        background: BADGE_BG,
-        color: BADGE_TEXT,
-        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.35)",
-        fontSize: `calc(${BADGE} * 0.62)`,
-        fontWeight: 700,
-        lineHeight: 1,
+        color: ICON,
+        filter: ICON_SHADOW,
       }}
     >
       {children}
-      {count !== undefined && count > 1 && <span>{count}</span>}
+      {count !== undefined && count > 1 && (
+        <span
+          data-pitchkit-part="avatar-count"
+          style={{
+            position: "absolute",
+            right: `calc(${BADGE} * -0.22)`,
+            bottom: `calc(${BADGE} * -0.18)`,
+            fontSize: `calc(${BADGE} * 0.56)`,
+            fontWeight: 800,
+            lineHeight: 1,
+            color: ICON,
+            textShadow: "0 0 2px rgba(0, 0, 0, 0.9), 0 1px 1px rgba(0, 0, 0, 0.8)",
+          }}
+        >
+          {count}
+        </span>
+      )}
     </span>
   );
 }
 
-/**
- * An icon sized to its badge. A `wide` one (the boot, twice as wide as it is
- * tall) gets a shorter box that runs into the pill's padding, so it reads at
- * the same weight as the round icons rather than as a sliver.
- */
+/** An icon on the 24-unit grid, filling its badge. */
 function Glyph({
   viewBox = "0 0 24 24",
-  wide = false,
   color,
   children,
 }: {
   viewBox?: string;
-  wide?: boolean;
   color?: string;
   children: ReactNode;
 }) {
@@ -362,10 +378,11 @@ function Glyph({
     <svg
       viewBox={viewBox}
       style={{
-        width: `calc(${BADGE} * ${wide ? 1.24 : 0.76})`,
-        height: `calc(${BADGE} * ${wide ? 0.62 : 0.76})`,
+        width: `calc(${BADGE} * 0.88)`,
+        height: `calc(${BADGE} * 0.88)`,
         color,
         flexShrink: 0,
+        overflow: "visible",
       }}
     >
       {children}
@@ -376,7 +393,7 @@ function Glyph({
 const STROKE = {
   fill: "none",
   stroke: "currentColor",
-  strokeWidth: 2.25,
+  strokeWidth: 3.25,
   strokeLinecap: "round",
   strokeLinejoin: "round",
 } as const;
