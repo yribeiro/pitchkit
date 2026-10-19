@@ -1,0 +1,138 @@
+---
+title: Impect events
+description: Every Bundesliga 2023/24 match from Impect's open data — typed, filtered, plotted.
+---
+
+Everything below is live: the example fetches a real Bundesliga 2023/24 match from Impect's
+open data in your browser, and the picker covers all 306 of them.
+
+<ImpectCredit />
+
+<PitchPreview name="impect-events-basic" />
+
+## Getting a match
+
+```ts
+import {
+  fetchMatches,
+  fetchMatchEvents,
+  fetchSquads,
+  IMPECT_BUNDESLIGA_2023_24,
+} from "@pitchkit/data-providers/impect";
+
+const matches = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // 306 matches, ~180 KB
+const squads = await fetchSquads(IMPECT_BUNDESLIGA_2023_24); // the 18 clubs
+const events = await fetchMatchEvents(matches[0].id); // ~3,000 events, 5-6 MB
+```
+
+Events name teams by `squadId` and players by `player.id`; `indexSquadsById` and
+`indexPlayersById` turn those into names. `fetchLineups(matchId)` adds shirt numbers, starting
+positions and substitutions.
+
+<Callout type="warn">
+  A match's events are 5-6 MB of JSON. Fetch once and keep them; don't call `fetchMatchEvents` per
+  render.
+</Callout>
+
+## The match list has no score
+
+Count it from the events with `score`, which adds each side's `GOAL` events to the other side's
+`OWN_GOAL`s:
+
+```ts
+import { score } from "@pitchkit/data-providers/impect";
+
+score(events, matches[0]); // { home: 0, away: 4 }: Werder Bremen 0-4 Bayern
+```
+
+An own goal is credited to the team that **conceded** it, and has no position. A goal is two
+events: the `SHOT` with `result: "SUCCESS"`, then a `GOAL` marker, also without a position.
+`shots(events).filter(isGoal)` gives the scoring shots, own goals excepted.
+
+## Two coordinate frames
+
+Impect publish every position twice, on a 105×68 m pitch measured from the centre spot:
+
+- `start.coordinates` are **absolute**, as seen on TV. Teams swap ends at half time, and
+  which end each starts at varies by match.
+- `start.adjCoordinates` turn each event so the **acting** team attacks towards `+x`, in both
+  halves. That is the team in `squadId`: a defender's clearance is seen from the defender's
+  side, not the attacker's.
+
+The lifted `x`/`y`/`endX`/`endY` are the adjusted ones, which is why every shot in the example
+lands in the half drawn. `<Pitch type="impect">` plots either frame raw, with y increasing to
+the attacking team's left.
+
+## The second half starts at 10,000 seconds
+
+`gameTime.gameTimeInSec` restarts each period at a fixed offset: 0, 10,000, then 20,000 and
+30,000 for extra time. Dividing it by 60 gives a minute of 166 just after half time.
+`matchSeconds` converts to the match clock, and sorting on `gameTimeInSec` is already play order:
+
+```ts
+import { inMatchOrder, inPeriod, matchSeconds } from "@pitchkit/data-providers/impect";
+
+const [secondHalfKickOff] = inPeriod(events, 2);
+secondHalfKickOff.gameTime.gameTimeInSec; // 10000
+matchSeconds(secondHalfKickOff); // 2700, which is 45:00
+inMatchOrder(events); // first-half stoppage time before the second half
+```
+
+## Narrowing the feed
+
+`actionType` is top level, so a plain comparison narrows without a guard. The selectors are
+convenience:
+
+```ts
+import { byTeam, passes, shots } from "@pitchkit/data-providers/impect";
+
+shots(events); // penalties and direct free kicks included
+passes(events); // PASS events only
+byTeam(events, 33); // FC Bayern München's
+```
+
+<Callout type="warn">
+  **Set pieces aren't `PASS` events.** A corner, free kick, throw-in, goal kick or kick-off is its
+  own action type, though each carries a `pass` object. A pass map from `passes(events)` misses
+  them; `events.filter(hasPass)` is every ball played on purpose.
+</Callout>
+
+## Predicates
+
+Filters over Impect's own fields, for `.filter()`:
+
+```ts
+import {
+  isGoal,
+  isHeader,
+  isOwnGoal,
+  isPenalty,
+  isSuccessful,
+} from "@pitchkit/data-providers/impect";
+
+const goals = shots(events).filter(isGoal);
+const completed = passes(events).filter(isSuccessful);
+```
+
+A pass's `result` is `SUCCESS` when it reached a teammate under pressure below 80, `NEUTRAL`
+when the receiver was under high pressure or a foul followed, and `FAIL` for a pass to an
+opponent, out of play or offside. About one shot in three has a `shot.targetPoint` (`hasTargetPoint`):
+where it would have crossed the goal line, in metres.
+
+## Licensing
+
+Impect's open data is **not openly licensed**. Their
+[terms of use](https://github.com/ImpectAPI/open-data/blob/main/LICENSE.pdf) allow
+non-commercial analytical and research use only, forbid editing, reproducing or
+redistributing the data, and require IMPECT to be credited, with their logo, in anything you
+publish from it. `@pitchkit/data-providers` ships none of it: every loader fetches from
+Impect's own repository when you call it.
+
+## Official documentation
+
+- **[ImpectAPI/open-data](https://github.com/ImpectAPI/open-data)** — the repository these
+  loaders fetch from.
+- **[Documentation (PDF)](https://github.com/ImpectAPI/open-data/blob/main/Documentation.pdf)**
+  — every field, action type and coordinate frame, defined by Impect.
+- **[kloppy](https://kloppy.pysport.org/user-guide/loading-data/impect/)** — the Python
+  equivalent, if you want the same data in a notebook.

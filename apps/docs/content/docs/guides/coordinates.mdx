@@ -18,6 +18,7 @@ aligned.
 | `skillcorner` | 105 × 68  | **centre spot** | up          | Real metres, per-match extent |
 | `wyscout`     | 100 × 100 | top-left        | down        | Normalised percentage grid    |
 | `metrica`     | 1 × 1     | top-left        | down        | Normalised `0..1` grid        |
+| `impect`      | 105 × 68  | **centre spot** | up          | Real metres, standardised     |
 
 ```tsx
 <Pitch type="statsbomb">{/* data in 120x80, y-down */}</Pitch>
@@ -25,6 +26,7 @@ aligned.
 <Pitch type="skillcorner">{/* metres from the centre spot */}</Pitch>
 <Pitch type="wyscout">{/* data in 0-100, y-down */}</Pitch>
 <Pitch type="metrica">{/* data in 0-1, y-down */}</Pitch>
+<Pitch type="impect">{/* metres from the centre spot, 105x68 */}</Pitch>
 ```
 
 `opta` and `wyscout` are both 0–100 on both axes, but not interchangeable: Opta's origin is

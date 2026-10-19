@@ -89,6 +89,10 @@ predicate.
   tracking and the events that go with it, on the same clock.
   - Source: [metrica-sports/sample-data](https://github.com/metrica-sports/sample-data) ·
     [event definitions](https://github.com/metrica-sports/sample-data/blob/master/documentation/events-definitions.pdf)
+- **[Impect](/docs/data/impect/events)** — event data for all 306 Bundesliga 2023/24 matches,
+  with lineups, squads and players. Non-commercial use only; see Licensing.
+  - Source: [ImpectAPI/open-data](https://github.com/ImpectAPI/open-data) ·
+    [documentation](https://github.com/ImpectAPI/open-data/blob/main/Documentation.pdf)
 
 SkillCorner also has its own pitch type. Its coordinates are metres from the centre spot, so
 `<Pitch type="skillcorner">` plots them raw — no lifting, no conversion:
@@ -118,6 +122,9 @@ origin top-left, y downward. `<Pitch type="metrica">` plots it raw:
 </Pitch>
 ```
 
+Impect's grid is SkillCorner's shape standardised to 105×68: metres from the centre spot, y to
+the left. `<Pitch type="impect">` plots it raw, in either of Impect's two coordinate frames.
+
 ## Licensing
 
 This package ships **no data** — it fetches from whatever URL you give it. The default URLs
@@ -139,3 +146,7 @@ in anything you publish from their data:
 - **Metrica Sports** — [sample-data](https://github.com/metrica-sports/sample-data) carries no
   licence file. Its README asks that anything public made from the data acknowledges Metrica
   Sports as the source.
+- **Impect** — [open-data](https://github.com/ImpectAPI/open-data) is **not openly licensed**.
+  Its [terms of use](https://github.com/ImpectAPI/open-data/blob/main/LICENSE.pdf) allow
+  non-commercial analytical and research use only, forbid redistributing or altering the data,
+  and require IMPECT to be credited, with their logo, in anything you publish.

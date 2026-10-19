@@ -6,6 +6,7 @@ import { SITE_URL, X_HANDLE } from "@/lib/site";
 import { source } from "@/lib/source";
 import { AgentLogos, AgentTools } from "@/components/agent-tools";
 import { PitchPreview } from "@/components/pitch-preview";
+import { ImpectCredit } from "@/components/provider-credit";
 import { YouTubeClip } from "@/components/youtube-clip";
 
 export default async function Page(props: { params: Promise<{ slug?: string[] }> }) {
@@ -27,6 +28,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
             YouTubeClip,
             AgentTools,
             AgentLogos,
+            ImpectCredit,
           }}
         />
       </DocsBody>
