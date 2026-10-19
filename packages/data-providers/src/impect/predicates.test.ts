@@ -54,7 +54,7 @@ describe("goals", () => {
 
 describe("results and passes", () => {
   it("read result", () => {
-    expect(events.filter(isSuccessful).length).toBeGreaterThan(0);
+    expect(events.filter(isSuccessful).map((event) => event.index)).toEqual([0, 2, 5, 11, 13, 15]);
     expect(events.filter(isFailed).map((event) => event.actionType)).toEqual(["SHOT", "CORNER"]);
   });
 
@@ -76,9 +76,9 @@ describe("results and passes", () => {
   });
 
   it("narrow to events with positions", () => {
-    expect(events.filter(hasEndLocation).every((event) => typeof event.endX === "number")).toBe(
-      true,
-    );
+    // The reception has a start but no end, so the two guards differ.
+    expect(events.filter(hasEndLocation)).toHaveLength(10);
+    expect(events.filter(hasLocation).length - events.filter(hasEndLocation).length).toBe(1);
     expect(events.filter((event) => !hasLocation(event)).map((event) => event.actionType)).toEqual([
       "GOAL",
       "FOUL",

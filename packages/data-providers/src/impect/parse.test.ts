@@ -78,7 +78,9 @@ describe("reference files", () => {
     expect(() => parseMatches(squadsFixture())).toThrow(/matches\/matches_\{iterationId\}/);
     expect(() => parseSquads(playersFixture())).toThrow(/an Impect squad/);
     expect(() => parsePlayers(squadsFixture())).toThrow(/players\/players_/);
-    expect(() => parseIterations("[]")).toThrow(/a string|string/);
+    expect(() => parseIterations("[]")).toThrow(
+      /Expected an array of Impect iterations, but got string/,
+    );
     expect(() => parseLineups(eventsFixture())).toThrow(/lineups\/lineups_\{matchId\}/);
     expect(() => parseLineups({})).toThrow(/an empty object/);
   });
