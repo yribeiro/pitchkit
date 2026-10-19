@@ -1,0 +1,778 @@
+[
+  {
+    "index": 0,
+    "id": 9000,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 0.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 11,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "KICK_OFF",
+    "start": {
+      "coordinates": {
+        "x": 0,
+        "y": 0
+      },
+      "adjCoordinates": {
+        "x": 0,
+        "y": 0
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "adjCoordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "KICKOFF_WHISTLE",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 12,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": "SUCCESS",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 1,
+    "id": 9001,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 2.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 12,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "RECEPTION",
+    "start": {
+      "coordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "adjCoordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": null,
+    "action": "RECEPTION",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 2,
+    "id": 9002,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 5.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 12,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "PASS",
+    "start": {
+      "coordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "adjCoordinates": {
+        "x": -10,
+        "y": 5
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": 20,
+        "y": -10
+      },
+      "adjCoordinates": {
+        "x": 20,
+        "y": -10
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "LOW_PASS",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 13,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": "SUCCESS",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 3,
+    "id": 9003,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 9.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 13,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "PASS",
+    "start": {
+      "coordinates": {
+        "x": 20,
+        "y": -10
+      },
+      "adjCoordinates": {
+        "x": 20,
+        "y": -10
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": 40,
+        "y": 0
+      },
+      "adjCoordinates": {
+        "x": 40,
+        "y": 0
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "HIGH_CROSS",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 14,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": "NEUTRAL",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 4,
+    "id": 9004,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 10.0
+    },
+    "squadId": 2,
+    "player": {
+      "id": 21,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "CLEARANCE",
+    "start": {
+      "coordinates": {
+        "x": 40,
+        "y": 1
+      },
+      "adjCoordinates": {
+        "x": -40,
+        "y": -1
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": 10,
+        "y": 20
+      },
+      "adjCoordinates": {
+        "x": -10,
+        "y": -20
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "CLEARANCE",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "HEAD",
+    "result": null,
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 5,
+    "id": 9005,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 30.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 14,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "SHOT",
+    "start": {
+      "coordinates": {
+        "x": 38,
+        "y": -4
+      },
+      "adjCoordinates": {
+        "x": 38,
+        "y": -4
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": 52.5,
+        "y": 2
+      },
+      "adjCoordinates": {
+        "x": 52.5,
+        "y": 2
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "MID_RANGE_SHOT",
+    "phase": null,
+    "duel": null,
+    "shot": {
+      "distance": 14.5,
+      "angle": 20.0,
+      "targetPoint": {
+        "y": 2.0,
+        "z": 0.5
+      }
+    },
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT_RIGHT",
+    "result": "SUCCESS",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 6,
+    "id": 9006,
+    "gameTime": {
+      "gameTime": "00:30.5000",
+      "gameTimeInSec": 30.5
+    },
+    "squadId": 1,
+    "player": {
+      "id": 14,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "GOAL",
+    "start": null,
+    "end": null,
+    "action": "GOAL",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 7,
+    "id": 9007,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 60.0
+    },
+    "squadId": 2,
+    "player": {
+      "id": 22,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "SHOT",
+    "start": {
+      "coordinates": {
+        "x": -45,
+        "y": 2
+      },
+      "adjCoordinates": {
+        "x": 45,
+        "y": -2
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -52.5,
+        "y": 6
+      },
+      "adjCoordinates": {
+        "x": 52.5,
+        "y": -6
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "HEADER",
+    "phase": null,
+    "duel": null,
+    "shot": {
+      "distance": 7.8,
+      "angle": 15.0
+    },
+    "pass": null,
+    "currentAttackingSquadId": 2,
+    "bodyPart": "HEAD",
+    "result": "FAIL",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 8,
+    "id": 9008,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 70.0
+    },
+    "squadId": 2,
+    "player": {
+      "id": 23,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "CORNER",
+    "start": {
+      "coordinates": {
+        "x": -52.5,
+        "y": -34
+      },
+      "adjCoordinates": {
+        "x": 52.5,
+        "y": 34
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -46,
+        "y": 0
+      },
+      "adjCoordinates": {
+        "x": 46,
+        "y": 0
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "CORNER",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 22,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 2,
+    "bodyPart": "FOOT",
+    "result": "FAIL",
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 9,
+    "id": 9009,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 80.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 15,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "FOUL",
+    "start": null,
+    "end": null,
+    "action": "FOUL",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 10,
+    "id": 9010,
+    "gameTime": {
+      "gameTime": "45:00.0000 (+02:30.0000)",
+      "gameTimeInSec": 2850.0
+    },
+    "squadId": null,
+    "player": null,
+    "pressure": 0.0,
+    "actionType": "FINAL_WHISTLE",
+    "start": null,
+    "end": null,
+    "action": "FINAL_WHISTLE",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": null,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 1,
+    "setPiece": null
+  },
+  {
+    "index": 11,
+    "id": 9011,
+    "gameTime": {
+      "gameTime": "45:00.0000",
+      "gameTimeInSec": 10000.0
+    },
+    "squadId": 2,
+    "player": {
+      "id": 21,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "KICK_OFF",
+    "start": {
+      "coordinates": {
+        "x": 0,
+        "y": 0
+      },
+      "adjCoordinates": {
+        "x": 0,
+        "y": 0
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -8,
+        "y": 3
+      },
+      "adjCoordinates": {
+        "x": -8,
+        "y": 3
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "KICKOFF_WHISTLE",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 22,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 2,
+    "bodyPart": "FOOT",
+    "result": "SUCCESS",
+    "periodId": 2,
+    "setPiece": null
+  },
+  {
+    "index": 12,
+    "id": 9012,
+    "gameTime": {
+      "gameTime": "55:00.0000",
+      "gameTimeInSec": 10600.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 15,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "OWN_GOAL",
+    "start": null,
+    "end": null,
+    "action": "OWN_GOAL",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 2,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 2,
+    "setPiece": null
+  },
+  {
+    "index": 13,
+    "id": 9013,
+    "gameTime": {
+      "gameTime": "60:00.0000",
+      "gameTimeInSec": 10900.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 11,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "SHOT",
+    "start": {
+      "coordinates": {
+        "x": -41.5,
+        "y": 0
+      },
+      "adjCoordinates": {
+        "x": 41.5,
+        "y": 0
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -52.5,
+        "y": -1
+      },
+      "adjCoordinates": {
+        "x": 52.5,
+        "y": 1
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "PENALTY_KICK",
+    "phase": null,
+    "duel": null,
+    "shot": {
+      "distance": 11.0,
+      "angle": 0.0,
+      "targetPoint": null
+    },
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT_LEFT",
+    "result": "SUCCESS",
+    "periodId": 2,
+    "setPiece": null
+  },
+  {
+    "index": 14,
+    "id": 9014,
+    "gameTime": {
+      "gameTime": "60:00.5000",
+      "gameTimeInSec": 10900.5
+    },
+    "squadId": 1,
+    "player": {
+      "id": 11,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "GOAL",
+    "start": null,
+    "end": null,
+    "action": "GOAL",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 2,
+    "setPiece": null
+  },
+  {
+    "index": 15,
+    "id": 9015,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 11000.0
+    },
+    "squadId": 1,
+    "player": {
+      "id": 12,
+      "position": "CENTRAL_MIDFIELD",
+      "positionSide": "CENTRE"
+    },
+    "pressure": 0.0,
+    "actionType": "THROW_IN",
+    "start": {
+      "coordinates": {
+        "x": -20,
+        "y": 34
+      },
+      "adjCoordinates": {
+        "x": 20,
+        "y": -34
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "end": {
+      "coordinates": {
+        "x": -25,
+        "y": 25
+      },
+      "adjCoordinates": {
+        "x": 25,
+        "y": -25
+      },
+      "packingZone": null,
+      "pitchPosition": null,
+      "lane": null
+    },
+    "action": "THROW_IN",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": {
+      "distance": 10.0,
+      "angle": 0.0,
+      "receiver": {
+        "playerId": 13,
+        "type": "TEAMMATE"
+      }
+    },
+    "currentAttackingSquadId": 1,
+    "bodyPart": "FOOT",
+    "result": "SUCCESS",
+    "periodId": 2,
+    "setPiece": null
+  },
+  {
+    "index": 16,
+    "id": 9016,
+    "gameTime": {
+      "gameTime": "00:00.0000",
+      "gameTimeInSec": 11100.0
+    },
+    "squadId": null,
+    "player": null,
+    "pressure": 0.0,
+    "actionType": "NO_VIDEO",
+    "start": null,
+    "end": null,
+    "action": "VIDEO_NOT_AVAILABLE",
+    "phase": null,
+    "duel": null,
+    "shot": null,
+    "pass": null,
+    "currentAttackingSquadId": null,
+    "bodyPart": "FOOT",
+    "result": null,
+    "periodId": 2,
+    "setPiece": null
+  }
+]

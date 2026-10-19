@@ -1,0 +1,109 @@
+{
+  "id": 1,
+  "dateTime": "2000-01-01T15:00:00Z",
+  "lastCalculationDate": "2000-01-01T00:00:00Z",
+  "iterationId": 1,
+  "squadHome": {
+    "id": 1,
+    "players": [
+      {
+        "id": 11,
+        "shirtNumber": 1
+      },
+      {
+        "id": 12,
+        "shirtNumber": 2
+      },
+      {
+        "id": 13,
+        "shirtNumber": 3
+      },
+      {
+        "id": 14,
+        "shirtNumber": 4
+      },
+      {
+        "id": 15,
+        "shirtNumber": 5
+      }
+    ],
+    "startingPositions": [
+      {
+        "playerId": 11,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 12,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 13,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 14,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 15,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      }
+    ],
+    "substitutions": [],
+    "startingFormation": "4-4-2",
+    "formations": [],
+    "coachId": null
+  },
+  "squadAway": {
+    "id": 2,
+    "players": [
+      {
+        "id": 21,
+        "shirtNumber": 1
+      },
+      {
+        "id": 22,
+        "shirtNumber": 2
+      },
+      {
+        "id": 23,
+        "shirtNumber": 3
+      },
+      {
+        "id": 24,
+        "shirtNumber": 4
+      }
+    ],
+    "startingPositions": [
+      {
+        "playerId": 21,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 22,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 23,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      },
+      {
+        "playerId": 24,
+        "position": "CENTRAL_MIDFIELD",
+        "positionSide": "CENTRE"
+      }
+    ],
+    "substitutions": [],
+    "startingFormation": "4-4-2",
+    "formations": [],
+    "coachId": null
+  }
+}

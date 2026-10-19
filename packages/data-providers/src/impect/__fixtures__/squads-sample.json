@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Home FC",
+    "countryId": 1,
+    "type": "CLUB",
+    "gender": "MALE",
+    "imageUrl": null,
+    "idMappings": [],
+    "access": true
+  },
+  {
+    "id": 2,
+    "name": "Away FC",
+    "countryId": 1,
+    "type": "CLUB",
+    "gender": "MALE",
+    "imageUrl": null,
+    "idMappings": [],
+    "access": true
+  }
+]

@@ -1,7 +1,7 @@
 {
   "name": "@pitchkit/data-providers",
   "version": "0.5.0",
-  "description": "Convenience loaders for open football data (StatsBomb events + 360, SkillCorner tracking, Wyscout events, Metrica tracking + events) — raw files in, typed events out, ready for PitchKit.",
+  "description": "Convenience loaders for open football data (StatsBomb events + 360, SkillCorner tracking, Wyscout events, Metrica tracking + events, Impect events) — raw files in, typed events out, ready for PitchKit.",
   "license": "MIT",
   "author": "Yohahn Ribeiro",
   "homepage": "https://github.com/yribeiro/pitchkit#readme",
@@ -20,6 +20,7 @@
     "skillcorner",
     "wyscout",
     "metrica",
+    "impect",
     "tracking-data",
     "open-data",
     "event-data",
@@ -54,6 +55,10 @@
     "./metrica": {
       "types": "./dist/metrica/index.d.ts",
       "import": "./dist/metrica/index.js"
+    },
+    "./impect": {
+      "types": "./dist/impect/index.d.ts",
+      "import": "./dist/impect/index.js"
     }
   },
   "main": "./dist/index.js",

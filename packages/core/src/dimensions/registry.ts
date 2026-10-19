@@ -5,6 +5,7 @@ import { uefaDimensions } from "./uefa.js";
 import { skillcornerDimensions } from "./skillcorner.js";
 import { wyscoutDimensions } from "./wyscout.js";
 import { metricaDimensions } from "./metrica.js";
+import { impectDimensions } from "./impect.js";
 
 export const PITCH_DIMENSIONS: Readonly<Record<PitchTypeId, PitchDimensions>> = {
   statsbomb: statsbombDimensions,
@@ -13,6 +14,7 @@ export const PITCH_DIMENSIONS: Readonly<Record<PitchTypeId, PitchDimensions>> = 
   skillcorner: skillcornerDimensions,
   wyscout: wyscoutDimensions,
   metrica: metricaDimensions,
+  impect: impectDimensions,
 };
 
 /**

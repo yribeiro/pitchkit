@@ -1,0 +1,15 @@
+[
+  {
+    "iterationId": 1,
+    "id": 1,
+    "homeSquadId": 1,
+    "awaySquadId": 2,
+    "scheduledDate": "2000-01-01T15:00:00Z",
+    "matchDay": {
+      "index": 0,
+      "name": "Matchday 1"
+    },
+    "available": true,
+    "idMappings": []
+  }
+]
