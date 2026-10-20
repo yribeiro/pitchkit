@@ -49,6 +49,24 @@ one per player inside `<Pitch>` or `<VerticalPitch>`.
 Any other HTML attribute (`className`, `style`, `onClick`, `aria-*`, `data-*`) goes on the avatar's
 root `<div>`.
 
+## Formations
+
+Avatars are placed by `x` and `y`, so a formation is a table of positions. Give each player a stable
+`key`, pass a transition on `left` and `top` through `className`, and the avatars slide when the
+shape changes. Use the arrows, the dots or the arrow keys:
+
+<PitchPreview name="player-avatar-formations-basic" />
+
+```tsx
+<PlayerAvatar
+  key={p.number}
+  x={spots[p.number][0]}
+  y={spots[p.number][1]}
+  name={p.name}
+  className="motion-safe:transition-[left,top] motion-safe:duration-500"
+/>
+```
+
 ## Optimised images
 
 `src` is a plain `<img loading="lazy" decoding="async">`, which is fine for a CDN that already
