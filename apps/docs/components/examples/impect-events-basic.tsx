@@ -5,6 +5,7 @@ import { cropForHalf, getPitchDimensions } from "@pitchkit/core";
 import { Scatter, VerticalPitch } from "@pitchkit/react";
 import {
   fetchMatchEvents,
+  hasLocation,
   isGoal,
   isOwnGoal,
   matchSeconds,
@@ -24,6 +25,23 @@ function clock(seconds: number): string {
 }
 
 /**
+ * What the chart needs from a match: its located shots, and the goal and
+ * own-goal events `score` counts. A few dozen events, where the whole match
+ * is about 3,000, so keeping one per match visited stays cheap.
+ */
+interface MatchSummary {
+  readonly shots: (ImpectEvent & { readonly x: number; readonly y: number })[];
+  readonly goals: ImpectEvent[];
+}
+
+function summarise(events: readonly ImpectEvent[]): MatchSummary {
+  return {
+    shots: shots(events).filter(hasLocation),
+    goals: events.filter((event) => event.actionType === "GOAL" || isOwnGoal(event)),
+  };
+}
+
+/**
  * A shot map from a real Bundesliga 2023/24 match, fetched in the browser
  * from Impect's open data.
  *
@@ -31,34 +49,51 @@ function clock(seconds: number): string {
  * towards +x, so both teams' shots land in the one half drawn here.
  */
 export function ImpectEventsBasic() {
-  const season = useImpectSeason();
+  const { season, failed: seasonFailed } = useImpectSeason();
   const [matchId, setMatchId] = useState(DEFAULT_MATCH_ID);
-  // Keyed by the match it belongs to, so "still loading" is derived rather
-  // than a second state field.
-  const [result, setResult] = useState<{ key: number; events: ImpectEvent[] }>();
+  // One summary per match visited, so going back to a match doesn't
+  // download its ~5 MB of events again.
+  const [summaries, setSummaries] = useState<ReadonlyMap<number, MatchSummary>>(new Map());
   const [failedMatch, setFailedMatch] = useState<number>();
 
   useEffect(() => {
-    // ~5 MB of events: fetched once per match, then narrowed in memory.
-    fetchMatchEvents(matchId)
-      .then((events) => setResult({ key: matchId, events }))
-      .catch(() => setFailedMatch(matchId));
-  }, [matchId]);
+    if (summaries.has(matchId)) return;
+    // Cancelled when the match changes, so a slow earlier download can't
+    // finish last and leave the chart showing nothing.
+    const controller = new AbortController();
+    fetchMatchEvents(matchId, { signal: controller.signal })
+      .then((events) => {
+        setSummaries((previous) => new Map(previous).set(matchId, summarise(events)));
+        setFailedMatch(undefined);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setFailedMatch(matchId);
+      });
+    return () => controller.abort();
+  }, [matchId, summaries]);
 
-  const events = result?.key === matchId ? result.events : undefined;
+  const summary = summaries.get(matchId);
   const match = season?.matches.find((m) => m.id === matchId);
-  const matchShots = events ? shots(events) : [];
-  const homeId = match?.homeSquadId;
   const squadName = (id: number | null) =>
     (id !== null && season?.squads.get(id)?.name) || "Unknown";
+  // Until the match list is in, there's no telling home from away.
+  const fill = (shot: ImpectEvent) =>
+    match && shot.squadId !== match.homeSquadId
+      ? "var(--pitch-marker-goal)"
+      : "var(--pitch-marker-primary)";
 
   let status = "Fetching the match from Impect's open data (~5 MB)…";
   if (failedMatch === matchId) status = "Couldn't reach Impect's open data.";
-  else if (events && match) {
-    // The match list carries no score, and own goals aren't shots.
-    const { home, away } = score(events, match);
-    const ownGoals = events.filter(isOwnGoal).length;
-    status = `${matchShots.length} shots · ${home}–${away}${ownGoals ? ` (${ownGoals} own goal${ownGoals > 1 ? "s" : ""})` : ""}`;
+  else if (summary) {
+    status = `${summary.shots.length} shots`;
+    if (match) {
+      // The match list carries no score, and own goals aren't shots.
+      const { home, away } = score(summary.goals, match);
+      const ownGoals = summary.goals.filter(isOwnGoal).length;
+      status += ` · ${home}–${away}${ownGoals ? ` (${ownGoals} own goal${ownGoals > 1 ? "s" : ""})` : ""}`;
+    } else if (seasonFailed) {
+      status += " · couldn't load the match list, so no score";
+    }
   }
 
   return (
@@ -70,7 +105,11 @@ export function ImpectEventsBasic() {
         onChange={(event) => setMatchId(Number(event.target.value))}
         className={selectClass}
       >
-        {!season && <option value={DEFAULT_MATCH_ID}>Loading matches…</option>}
+        {!season && (
+          <option value={DEFAULT_MATCH_ID}>
+            {seasonFailed ? "Couldn't load the match list" : "Loading matches…"}
+          </option>
+        )}
         {season?.matches.map((m) => (
           <option key={m.id} value={m.id}>
             {matchLabel(m, season)}
@@ -81,18 +120,16 @@ export function ImpectEventsBasic() {
 
       <VerticalPitch type="impect" appearance={docsAppearance} crop={cropForHalf(dimensions)}>
         <Scatter
-          data={matchShots}
-          x={(shot) => shot.x ?? 0}
-          y={(shot) => shot.y ?? 0}
+          data={summary?.shots ?? []}
+          x={(shot) => shot.x}
+          y={(shot) => shot.y}
           r={(shot) => (isGoal(shot) ? 7 : 4.5)}
-          fill={(shot) =>
-            shot.squadId === homeId ? "var(--pitch-marker-primary)" : "var(--pitch-marker-goal)"
-          }
+          fill={fill}
           fillOpacity={(shot) => (isGoal(shot) ? 0.95 : 0.55)}
           stroke="white"
           strokeWidth={(shot) => (isGoal(shot) ? 2 : 1)}
           tooltip={(shot) =>
-            `${clock(matchSeconds(shot))} ${squadName(shot.squadId)} — ${shot.action}${isGoal(shot) ? ", goal" : ""}`
+            `${clock(matchSeconds(shot))} ${squadName(shot.squadId)} — ${shot.action ?? "shot"}${isGoal(shot) ? ", goal" : ""}`
           }
         />
       </VerticalPitch>

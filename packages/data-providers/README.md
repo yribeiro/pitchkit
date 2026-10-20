@@ -279,7 +279,8 @@ import {
 const matches = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // all 306
 const events = await fetchMatchEvents(122838); // Werder Bremen 0-4 Bayern
 const goals = shots(events).filter(isGoal);
-score(events, matches[0]); // { home: 0, away: 4 }; the match list has no score
+const match = matches.find((m) => m.id === 122838)!;
+score(events, match); // { home: 0, away: 4 }; the match list has no score
 ```
 
 Impect's event data for the whole 2023/24 Bundesliga, with lineups, squads and

@@ -24,24 +24,41 @@ export interface ImpectSeason {
   readonly squads: ReadonlyMap<number, ImpectSquad>;
 }
 
-/** The 306 matches and 18 clubs of Impect's Bundesliga 2023/24 (~190 KB together). */
-export function useImpectSeason(): ImpectSeason | undefined {
-  const [season, setSeason] = useState<ImpectSeason>();
+/**
+ * The published matches and 18 clubs of Impect's Bundesliga 2023/24 (~190 KB
+ * together), with whether loading them failed, so the example can say so.
+ */
+export function useImpectSeason(): { season?: ImpectSeason; failed: boolean } {
+  const [state, setState] = useState<{ season?: ImpectSeason; failed: boolean }>({
+    failed: false,
+  });
 
   useEffect(() => {
-    Promise.all([fetchMatches(IMPECT_BUNDESLIGA_2023_24), fetchSquads(IMPECT_BUNDESLIGA_2023_24)])
+    const controller = new AbortController();
+    const options = { signal: controller.signal };
+    Promise.all([
+      fetchMatches(IMPECT_BUNDESLIGA_2023_24, options),
+      fetchSquads(IMPECT_BUNDESLIGA_2023_24, options),
+    ])
       .then(([matches, squads]) => {
-        setSeason({
-          matches: [...matches].sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate)),
-          squads: indexSquadsById(squads),
+        setState({
+          season: {
+            // A match marked unavailable has no events file to fetch.
+            matches: matches
+              .filter((match) => match.available)
+              .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate)),
+            squads: indexSquadsById(squads),
+          },
+          failed: false,
         });
       })
       .catch(() => {
-        /* the example surfaces its own load failure */
+        if (!controller.signal.aborted) setState({ failed: true });
       });
+    return () => controller.abort();
   }, []);
 
-  return season;
+  return state;
 }
 
 /** "Matchday 1 · SV Werder Bremen v FC Bayern München". The match list has no score. */

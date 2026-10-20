@@ -36,7 +36,7 @@ binned pass direction), a `<Momentum>` / `<MatchMomentum>` component (it is
 | -------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `@pitchkit/react`          | The rendering surface: `<Pitch>` + layer components + `usePitch()`                  | Almost always                                                                           |
 | `@pitchkit/core`           | Zero-dependency maths: pitch dimensions, transforms, geometry, binning              | Only for helpers like `cropForHalf`, `getPitchDimensions`, `createStandardizeTransform` |
-| `@pitchkit/data-providers` | Optional loaders for StatsBomb, SkillCorner, Wyscout, Metrica, Impect **open data** | Only when the user wants real match data rather than their own (recipe 5)               |
+| `@pitchkit/data-providers` | Optional loaders for StatsBomb, SkillCorner, Wyscout, Metrica, Impect **open data** | Only when the user wants real match data rather than their own (recipe 6)               |
 
 `@pitchkit/react` is the **only supported rendering surface**. `@pitchkit/core` exports
 `svgRenderer` / `renderSceneToSVGElement`; those are internal building blocks for the

@@ -71,6 +71,10 @@ const PERIOD_OFFSETS: Readonly<Record<number, readonly [number, number]>> = {
  * `gameTimeInSec / 60` gives a minute of 166 early in the second half. As on
  * any match clock, first-half stoppage time overlaps the start of the second
  * half; sort with `inMatchOrder`, not on this.
+ *
+ * Impect define four periods (two halves, two of extra time). An event in any
+ * other period, which the open data doesn't have, gets its `gameTimeInSec`
+ * back unchanged, as Wyscout's `matchSeconds` does for an unknown period.
  */
 export function matchSeconds(event: ImpectEvent): number {
   const [from, to] = PERIOD_OFFSETS[event.periodId] ?? [0, 0];

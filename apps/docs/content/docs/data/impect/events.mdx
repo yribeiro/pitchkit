@@ -22,7 +22,8 @@ import {
 
 const matches = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // 306 matches, ~180 KB
 const squads = await fetchSquads(IMPECT_BUNDESLIGA_2023_24); // the 18 clubs
-const events = await fetchMatchEvents(matches[0].id); // ~3,000 events, 5-6 MB
+const match = matches.find((m) => m.id === 122838)!; // Werder Bremen v Bayern
+const events = await fetchMatchEvents(match.id); // ~3,000 events, 5-6 MB
 ```
 
 Events name teams by `squadId` and players by `player.id`; `indexSquadsById` and
@@ -42,7 +43,7 @@ Count it from the events with `score`, which adds each side's `GOAL` events to t
 ```ts
 import { score } from "@pitchkit/data-providers/impect";
 
-score(events, matches[0]); // { home: 0, away: 4 }: Werder Bremen 0-4 Bayern
+score(events, match); // { home: 0, away: 4 }: Werder Bremen 0-4 Bayern
 ```
 
 An own goal is credited to the team that **conceded** it, and has no position. A goal is two

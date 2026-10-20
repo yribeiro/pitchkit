@@ -87,7 +87,8 @@ import {
   shots,
 } from "@pitchkit/data-providers/impect";
 
-const [match] = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // all 306 matches
+const matches = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // all 306
+const match = matches.find((m) => m.id === 122838)!; // Werder Bremen v Bayern
 const events = await fetchMatchEvents(match.id); // ~5 MB: fetch once
 const goals = shots(events).filter(isGoal);
 const minutes = goals.map((goal) => matchSeconds(goal) / 60);

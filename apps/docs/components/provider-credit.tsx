@@ -7,7 +7,8 @@
  * paths, so drawing those paths in currentColor gives their dark mark on the
  * light theme and their light mark on the dark one. Path data is from
  * `img/impect_logo_black.svg` in github.com/ImpectAPI/open-data; the mark is
- * Impect's trademark.
+ * Impect's trademark. The plain-text pages get the same credit from
+ * `providerCredits` in `lib/llms.ts`; keep the two in step.
  */
 
 const IMPECT_LOGO_PATHS = [
