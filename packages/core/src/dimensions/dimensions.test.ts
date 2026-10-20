@@ -45,6 +45,22 @@ describe("PITCH_DIMENSIONS", () => {
     expect(dims.width).toBe(dims.realWidthMeters);
   });
 
+  it("impect is a 105x68 metre grid, centre origin, y-up", () => {
+    const dims = PITCH_DIMENSIONS.impect;
+    expect(dims.length).toBe(105);
+    expect(dims.width).toBe(68);
+    expect(dims.origin).toBe("center");
+    expect(dims.yDirection).toBe("up");
+    expect(dims.normalized).toBe(false);
+  });
+
+  it("impect shares SkillCorner's geometry and UEFA's markings", () => {
+    const { pitchType: _impect, ...impect } = PITCH_DIMENSIONS.impect;
+    const { pitchType: _skillcorner, ...skillcorner } = PITCH_DIMENSIONS.skillcorner;
+    expect(impect).toEqual(skillcorner);
+    expect(PITCH_DIMENSIONS.impect.markings).toEqual(PITCH_DIMENSIONS.uefa.markings);
+  });
+
   it("metrica is a normalized 1x1 grid, top-left origin, y-down", () => {
     const dims = PITCH_DIMENSIONS.metrica;
     expect(dims.length).toBe(1);

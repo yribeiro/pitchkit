@@ -42,7 +42,7 @@ export const apiPages = () => allPages().filter(isApiPage);
  */
 export async function renderPage(page: DocsPage): Promise<string> {
   const processed = await page.data.getText("processed");
-  const body = stripHeadingAnchors(youTubeLink(await inlineExamples(processed)));
+  const body = stripHeadingAnchors(providerCredits(youTubeLink(await inlineExamples(processed))));
   const description = page.data.description ? `\n> ${page.data.description}\n` : "";
 
   return `# ${page.data.title}
@@ -138,6 +138,27 @@ function youTubeLink(markdown: string): string {
  * Drops the `[#slug]` suffix remark leaves on headings. It's an anchor id for
  * the rendered page, and reads as stray syntax in plain Markdown.
  */
+const IMPECT_CREDIT = /^[ \t]*<ImpectCredit\s*\/>[ \t]*$/gm;
+
+/**
+ * Replaces `<ImpectCredit />` with the same credit as text.
+ *
+ * Impect's terms require the credit on anything published from their data,
+ * and the plain-text outputs are published too: the page's `.md` variant and
+ * `llms-full.txt`, which agents read in place of the rendered page. Dropping
+ * the tag there would publish the data without the attribution. Keep this in
+ * step with `components/provider-credit.tsx`.
+ */
+function providerCredits(markdown: string): string {
+  return markdown.replace(
+    IMPECT_CREDIT,
+    "> Data provided by [IMPECT](https://www.impect.com), under their " +
+      "[terms of use](https://github.com/ImpectAPI/open-data/blob/main/LICENSE.pdf): " +
+      "non-commercial analytical and research use only, no redistribution, and credit " +
+      "to IMPECT in anything you publish.",
+  );
+}
+
 function stripHeadingAnchors(markdown: string): string {
   // `[ \t]`, not `\s`: the latter matches newlines, so a greedy trailing `\s*`
   // swallows the blank line after the heading and glues it to its paragraph.
@@ -173,9 +194,9 @@ export function renderIndex(): string {
 
   return `# PitchKit
 
-> A React and TypeScript football (soccer) visualisation library for the web — mplsoccer's feature set, built for React and Next.js instead of matplotlib. Declarative \`<Pitch>\` + layer components for shot maps, pass networks, heatmaps, hexbins, KDE surfaces and Voronoi control zones; provider-native coordinates (StatsBomb, SkillCorner, Wyscout, Metrica, Opta, UEFA), responsive by default, themed with CSS variables, MIT licensed.
+> A React and TypeScript football (soccer) visualisation library for the web — mplsoccer's feature set, built for React and Next.js instead of matplotlib. Declarative \`<Pitch>\` + layer components for shot maps, pass networks, heatmaps, hexbins, KDE surfaces and Voronoi control zones; provider-native coordinates (StatsBomb, SkillCorner, Wyscout, Metrica, Impect, Opta, UEFA), responsive by default, themed with CSS variables, MIT licensed.
 
-PitchKit ships three packages: \`@pitchkit/core\` (zero-dependency coordinate transforms, geometry and Canvas painters), \`@pitchkit/react\` (the only supported rendering surface) and \`@pitchkit/data-providers\` (typed loaders for StatsBomb open data, SkillCorner tracking, Wyscout events, and Metrica tracking and events). Composite recipes and theme presets are copied into your project rather than imported.
+PitchKit ships three packages: \`@pitchkit/core\` (zero-dependency coordinate transforms, geometry and Canvas painters), \`@pitchkit/react\` (the only supported rendering surface) and \`@pitchkit/data-providers\` (typed loaders for StatsBomb open data, SkillCorner tracking, Wyscout events, Metrica tracking and events, and Impect events). Composite recipes and theme presets are copied into your project rather than imported.
 
 Every page below is also available as raw Markdown by appending \`.md\` to its URL.
 

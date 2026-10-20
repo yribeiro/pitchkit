@@ -526,7 +526,7 @@ intentional.
 ### D13. One `@pitchkit/data-providers` package, one entry point per provider
 
 **Decision:** Loaders live in `@pitchkit/data-providers`, exported per provider
-(`/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`).
+(`/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`, `/impect`).
 
 **Why:** More providers were planned ([#30](https://github.com/yribeiro/pitchkit/issues/30)),
 and one package per provider would multiply release overhead.
@@ -545,13 +545,32 @@ predicate functions (`isGoal`, `hasTag`), not derived fields.
 **Why:** A user can read the provider's own specification alongside the types with no
 mapping table, and a predicate can be fixed without changing the data shape.
 
-**Consequences:** Third-party mirrors are acceptable only when they rename nothing. Metrica's
+**Consequences:** Third-party mirrors are acceptable only when they rename nothing. That is
+what makes the Wyscout per-match mirror usable (see
+[architecture: data provider facts](./architecture.md#data-provider-facts)). Metrica's
 headers are kept verbatim, spaces and units included (`event["Start Frame"]`). Its tracking
 file is one wide row per frame, so the loader gathers each player's column pair into
 `players` and the ball's into `ball`; those, like every addition, are lowercase, and the
-player names stay the header's own spelling. That is
-what makes the Wyscout per-match mirror usable (see
-[architecture: data provider facts](./architecture.md#data-provider-facts)).
+player names stay the header's own spelling. Impect publish two coordinate frames; both stay
+in place, and the lifted `x`/`y` are the adjusted one.
+
+### D31. Test fixtures are real data, unless the provider's terms forbid copying it
+
+**Decision:** Each provider's tests run against trimmed excerpts of its real files, checked
+in under `__fixtures__/`. Impect's are the exception: hand-made files in Impect's exact field
+shapes, with invented ids, names and positions.
+
+**Why:** A fixture invented to make a test pass stops being evidence of anything, which is
+why the rule exists. But Impect's terms of use forbid editing, reproducing or redistributing
+their data, and a committed excerpt would be all three. The loaders themselves are fine: they
+fetch from Impect's own repository when a user calls them, and the package ships no data.
+
+**Consequences:** Impect's fixtures can't catch a change in Impect's format. Every fact they
+encode was measured against the live files instead, and is recorded in
+[architecture: data provider facts](./architecture.md#impect); re-measure when Impect publish
+a new data version. Docs and examples that show Impect data fetch it in the reader's browser,
+credit Impect with their logo, and state the non-commercial terms. A future provider with
+similar terms follows this pattern.
 
 ---
 

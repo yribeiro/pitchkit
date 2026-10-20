@@ -26,6 +26,12 @@ if (!skillPath) throw new Error("Could not locate skills/pitchkit/SKILL.md from 
 const skillFile: string = skillPath;
 
 const skill = readFileSync(skillFile, "utf8");
+// Per-provider recipes live in a reference file, to keep SKILL.md under its
+// length guidance; their imports are checked exactly like SKILL.md's.
+const dataProvidersReference = readFileSync(
+  join(skillFile, "..", "references", "data-providers.md"),
+  "utf8",
+);
 const apiReference = readFileSync(join(skillFile, "..", "references", "api.md"), "utf8");
 
 /**
@@ -40,7 +46,7 @@ const apiReference = readFileSync(join(skillFile, "..", "references", "api.md"),
  * plays on SKILL.md.
  */
 function providerExports(
-  provider: "statsbomb" | "skillcorner" | "wyscout" | "metrica",
+  provider: "statsbomb" | "skillcorner" | "wyscout" | "metrica" | "impect",
 ): Set<string> {
   // skillPath is <pkg>/skills/pitchkit/SKILL.md, so three levels up is the
   // react package and its sibling is data-providers.
@@ -75,11 +81,11 @@ function providerExports(
 }
 
 const IMPORT_PATTERN =
-  /import\s+\{([^}]+)\}\s+from\s+"(@pitchkit\/(?:react|core|data-providers\/statsbomb|data-providers\/skillcorner|data-providers\/wyscout|data-providers\/metrica))"/g;
+  /import\s+\{([^}]+)\}\s+from\s+"(@pitchkit\/(?:react|core|data-providers\/statsbomb|data-providers\/skillcorner|data-providers\/wyscout|data-providers\/metrica|data-providers\/impect))"/g;
 
 function importedNames(packageName: string): string[] {
   const names = new Set<string>();
-  for (const [, clause, from] of skill.matchAll(IMPORT_PATTERN)) {
+  for (const [, clause, from] of `${skill}\n${dataProvidersReference}`.matchAll(IMPORT_PATTERN)) {
     if (from !== packageName || clause === undefined) continue;
     for (const specifier of clause.split(",")) {
       const name = specifier
@@ -109,16 +115,21 @@ describe("the bundled skill's recipes", () => {
   });
 
   it("only import values @pitchkit/data-providers actually exports", () => {
-    // Recipe 5 imports from all four provider subpaths. Without this the
-    // newest recipe would be the only unchecked one.
+    // Recipe 6 and references/data-providers.md import from all five
+    // provider subpaths. Without this the newest recipe would be the only
+    // unchecked one.
     const statsbomb = providerExports("statsbomb");
     const skillcorner = providerExports("skillcorner");
     const wyscout = providerExports("wyscout");
     const metrica = providerExports("metrica");
-    expect(statsbomb.size).toBeGreaterThan(10);
-    expect(skillcorner.size).toBeGreaterThan(10);
-    expect(wyscout.size).toBeGreaterThan(10);
-    expect(metrica.size).toBeGreaterThan(10);
+    const impect = providerExports("impect");
+    for (const exports of [statsbomb, skillcorner, wyscout, metrica, impect]) {
+      expect(exports.size).toBeGreaterThan(10);
+    }
+    // Each provider's recipe imports something, so the check below isn't vacuous.
+    for (const provider of ["statsbomb", "skillcorner", "wyscout", "metrica", "impect"]) {
+      expect(importedNames(`@pitchkit/data-providers/${provider}`).length).toBeGreaterThan(2);
+    }
 
     expect({
       statsbomb: importedNames("@pitchkit/data-providers/statsbomb").filter(
@@ -133,7 +144,10 @@ describe("the bundled skill's recipes", () => {
       metrica: importedNames("@pitchkit/data-providers/metrica").filter(
         (name) => !metrica.has(name),
       ),
-    }).toEqual({ statsbomb: [], skillcorner: [], wyscout: [], metrica: [] });
+      impect: importedNames("@pitchkit/data-providers/impect").filter(
+        (name) => !impect.has(name),
+      ),
+    }).toEqual({ statsbomb: [], skillcorner: [], wyscout: [], metrica: [], impect: [] });
   });
 
   it("names every pitch type the dimensions registry knows about, and no others", () => {

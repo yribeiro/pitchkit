@@ -4,10 +4,11 @@ Convenience loaders for open football data, shaped for [PitchKit](https://www.pi
 Raw provider JSON in, typed events out — with the coordinates already where a
 `<Scatter>` accessor wants them.
 
-Four provider modules: **StatsBomb** (events + 360 tracking),
+Five provider modules: **StatsBomb** (events + 360 tracking),
 **SkillCorner** (broadcast tracking, dynamic events, phases of play),
-**Wyscout** (events) and **Metrica Sports** (synchronised tracking and events),
-each on its own import subpath so you only pull in what you use.
+**Wyscout** (events), **Metrica Sports** (synchronised tracking and events) and
+**Impect** (events), each on its own import subpath so you only pull in what
+you use.
 
 ```bash
 npm install @pitchkit/data-providers
@@ -263,6 +264,46 @@ Qualifiers live in `Subtype`, hyphen-joined (`"HEAD-ON TARGET-GOAL"`):
 `hasSubtype` reads one, and `isOnTarget`, `wonChallenge`, `isCross`,
 `isGoalKick` and the rest are built on it.
 
+## Impect
+
+```ts
+import {
+  fetchMatches,
+  fetchMatchEvents,
+  IMPECT_BUNDESLIGA_2023_24,
+  isGoal,
+  score,
+  shots,
+} from "@pitchkit/data-providers/impect";
+
+const matches = await fetchMatches(IMPECT_BUNDESLIGA_2023_24); // all 306
+const events = await fetchMatchEvents(122838); // Werder Bremen 0-4 Bayern
+const goals = shots(events).filter(isGoal);
+const match = matches.find((m) => m.id === 122838)!;
+score(events, match); // { home: 0, away: 4 }; the match list has no score
+```
+
+Impect's event data for the whole 2023/24 Bundesliga, with lineups, squads and
+players. Plot it on `<Pitch type="impect">`: metres from the centre spot, y to
+the left. What to know first:
+
+- **It is not openly licensed.** Impect's terms allow non-commercial analytical
+  and research use, forbid redistributing or altering the data, and require
+  Impect to be credited, with their logo, in anything published. Read
+  [the terms](https://github.com/ImpectAPI/open-data/blob/main/LICENSE.pdf)
+  before you build on it.
+- **Two coordinate frames.** `start.coordinates` are absolute and swap ends at
+  half time. `start.adjCoordinates` turn every event so the **acting** team
+  attacks towards `+x`; those are what `x`/`y`/`endX`/`endY` lift.
+- **The second half's clock starts at 10,000 seconds** (`gameTimeInSec`). Use
+  `matchSeconds` for a match clock and `inMatchOrder` to sort.
+- **Set pieces aren't `PASS` events.** A corner, free kick or throw-in is its
+  own action type with a `pass` object, so `passes(events)` leaves them out;
+  `events.filter(hasPass)` is every ball played.
+- **A goal is a successful `SHOT` plus a `GOAL` marker**, and an own goal is an
+  `OWN_GOAL` event credited to the side that conceded. `score` counts both.
+- **A match's events are 5-6 MB.** Fetch once and keep them.
+
 ### Files you already have
 
 Every provider module splits the network layer in two: `loadX(url)` takes any
@@ -336,6 +377,13 @@ mirror, which splits the official archive per match without renaming a field.
 No licence file; the README asks that anything public made from the data
 acknowledges the source.
 
+**Impect** — [open-data](https://github.com/ImpectAPI/open-data) ·
+[documentation](https://github.com/ImpectAPI/open-data/blob/main/Documentation.pdf) ·
+[terms of use](https://github.com/ImpectAPI/open-data/blob/main/LICENSE.pdf).
+**Not an open licence:** non-commercial analytical and research use only, no
+redistribution or alteration of the data, and credit to Impect, with their
+logo, in anything published.
+
 Each provider's documentation is the authority on what the fields mean; this
 package only covers loading them.
 
@@ -345,7 +393,10 @@ Providers live one per directory under `src/`, each with its own entry in
 `package.json`'s `exports` and `tsup.config.ts`'s `entry`. Follow
 `src/statsbomb/` — types, parse, load, select, predicates — and keep the same
 principle: the provider's own vocabulary in the data, interpretation in the
-functions.
+functions. Test against trimmed real files in `__fixtures__/`, unless the
+provider's terms forbid copying their data, as Impect's do; then hand-make the
+fixtures in the provider's exact shapes and record how each fact they encode
+was measured.
 
 ## Licence
 

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "season": "00/01",
+    "competition": {
+      "name": "Example League",
+      "id": 1,
+      "type": "League",
+      "countryId": 1,
+      "gender": "MALE"
+    },
+    "dataVersion": "V3",
+    "lastChangeTimestamp": "2000-01-01T00:00:00Z",
+    "idMappings": []
+  }
+]

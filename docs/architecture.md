@@ -45,7 +45,7 @@ coordinates. One scale-and-transform pipeline (`transform/pixel-transform.ts`) m
 pixels for the current container size, orientation and crop, so every layer aligns and
 resizes together.
 
-Pitch types shipped: `statsbomb`, `opta`, `wyscout`, `uefa`, `skillcorner`, `metrica`. Two
+Pitch types shipped: `statsbomb`, `opta`, `wyscout`, `uefa`, `skillcorner`, `metrica`, `impect`. Two
 non-obvious cases:
 
 - Centre-origin grids convert through an extent frame
@@ -258,14 +258,14 @@ GoalView (root, type = goal-mouth frame)
 
 npm workspaces + Turborepo.
 
-| Package / path             | Role                                                                                                                                                  |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@pitchkit/core`           | Dimensions, transforms, scene model, geometry, Canvas painters. Zero runtime dependencies, no React.                                                  |
-| `@pitchkit/react`          | Declarative components (`<Pitch>`, `<Scatter>`, …), responsive sizing, tooltips, `usePitch()`. Depends only on `core`. Ships the bundled Agent Skill. |
-| `@pitchkit/data-providers` | Open-data loaders: `/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`. Depends on neither `core` nor `react`; its one runtime dependency is `csv-parse`. |
-| `apps/docs`                | The docs and showcase site (Next.js App Router, Fumadocs, Tailwind v4).                                                                               |
-| `examples/react-vite`      | Vite app for eyeballing components.                                                                                                                   |
-| `examples/react-nextjs`    | Next.js app that verifies SSR under a real server.                                                                                                    |
+| Package / path             | Role                                                                                                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@pitchkit/core`           | Dimensions, transforms, scene model, geometry, Canvas painters. Zero runtime dependencies, no React.                                                                  |
+| `@pitchkit/react`          | Declarative components (`<Pitch>`, `<Scatter>`, …), responsive sizing, tooltips, `usePitch()`. Depends only on `core`. Ships the bundled Agent Skill.                 |
+| `@pitchkit/data-providers` | Open-data loaders: `/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`, `/impect`. Depends on neither `core` nor `react`; its one runtime dependency is `csv-parse`. |
+| `apps/docs`                | The docs and showcase site (Next.js App Router, Fumadocs, Tailwind v4).                                                                                               |
+| `examples/react-vite`      | Vite app for eyeballing components.                                                                                                                                   |
+| `examples/react-nextjs`    | Next.js app that verifies SSR under a real server.                                                                                                                    |
 
 Packages build with tsup (ESM plus `.d.ts`), tree-shakeable, `sideEffects: false`, and
 publish under the `@pitchkit` scope. Recipes and theme presets are meant to ship as shadcn
@@ -618,3 +618,37 @@ Re-verify against a fresh sample before "correcting" any of them.
   first rows lands up to 440 KB short late in a file: a substitute's columns are `NaN,NaN`
   until they come on, so rows grow. Measured live, a 6-second goal window costs about 6
   requests and 220 KB.
+
+### Impect
+
+- **Not openly licensed.** `ImpectAPI/open-data` grants a non-exclusive, non-transferable
+  licence for analytical and research use. It forbids commercial use and editing,
+  reproducing or redistributing the data, and requires Impect to be credited, with their logo,
+  in anything published. So the package ships no Impect data, and its test fixtures are
+  hand-made ([D31](./decisions.md#d31-test-fixtures-are-real-data-unless-the-providers-terms-forbid-copying-it)).
+- **One iteration: Bundesliga 2023/24** (id 743), 306 matches. A match's events are
+  pretty-printed JSON of 5 to 6 MB (about 3,000 events), served from
+  `raw.githubusercontent.com` with CORS and no Git LFS. The match list has no scores.
+- **Two coordinate frames, both 105×68 m from the centre spot with y up** (left-sided players
+  average y ≈ +22, right-sided ≈ −22). `coordinates` are absolute: teams swap ends at half
+  time, and which end each starts at varies by match. `adjCoordinates` turn each event so the
+  **acting** team (`squadId`) attacks towards `+x`, not the team in possession
+  (`currentAttackingSquadId`). Measured on 18,977 located events across six matches, every one
+  agreed, three only to within 0.1 m rounding. The loader lifts the adjusted pair.
+- **`gameTimeInSec` restarts at 10,000 for the second half** (20,000 and 30,000 for extra
+  time), per Impect's documentation and the data. `gameTime` is a string with stoppage time
+  appended, `"45:00.0000 (+03:01.3990)"`. Sorting on `gameTimeInSec` is play order.
+- **A goal is two events:** a `SHOT` with `result: "SUCCESS"`, then a `GOAL` marker with no
+  position. In six matches every `GOAL` (21) followed a successful shot by the same team.
+- **An own goal is an `OWN_GOAL` event credited to the team that conceded**, with no
+  position. It appeared in 12 of the first 120 matches. Scores built from `GOAL` plus the
+  opponent's `OWN_GOAL` match the real results checked (Bremen 0–4 Bayern, Leipzig 2–2
+  Bayern, Bayern 0–1 Bremen, Gladbach 5–2 Bochum, Bayern 3–1 Augsburg, Mainz 0–3 Leverkusen).
+- **Set pieces are their own action types** (`CORNER`, `FREE_KICK`, `THROW_IN`, `GOAL_KICK`,
+  `KICK_OFF`), each with a `pass` object; `PASS` events exclude them. A penalty is a `SHOT`
+  with `action: "PENALTY_KICK"`. A pass `result` is `SUCCESS` (reached a teammate under
+  pressure below 80), `NEUTRAL` (high pressure, or a foul followed) or `FAIL`.
+- **About one shot in three has a `shot.targetPoint`**, in metres on the goal mouth, y the
+  same way round as the adjusted pitch y despite the documentation's "inverted" note. Every
+  `GOAL`, `OWN_GOAL`, `FOUL`, `OFFSIDE`, `NO_VIDEO`, `REFEREE_INTERCEPTION` and
+  `FINAL_WHISTLE` has no `start`.

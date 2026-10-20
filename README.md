@@ -64,7 +64,7 @@ OG images, PDFs).
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | [`@pitchkit/react`](./packages/react)                   | Declarative React components — the supported way to render. Start here.                                                             |
 | [`@pitchkit/core`](./packages/core)                     | Zero-dependency engine: coordinate systems, transforms, scene model, geometry, heatmaps.                                            |
-| [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb, SkillCorner, Wyscout, Metrica). One dependency (`csv-parse`), and not on `core`/`react`. |
+| [`@pitchkit/data-providers`](./packages/data-providers) | Optional loaders for open football data (StatsBomb, SkillCorner, Wyscout, Metrica, Impect). One dependency (`csv-parse`), and not on `core`/`react`. |
 
 ### Components
 
@@ -87,7 +87,7 @@ Every visual prop takes either a static value or a function of the datum, so `fi
 
 ## Pitch types
 
-`statsbomb` · `opta` · `uefa` · `skillcorner` · `wyscout` · `metrica` — each with the provider's real
+`statsbomb` · `opta` · `uefa` · `skillcorner` · `wyscout` · `metrica` · `impect` — each with the provider's real
 coordinate space, so your data goes in unmodified. `getPitchDimensions(type)` exposes the
 underlying numbers, and `cropForHalf()` crops to the attacking half.
 
@@ -122,8 +122,9 @@ StatsBomb [events](https://www.pitchkitjs.com/docs/data/statsbomb/events) and
 [360 tracking](https://www.pitchkitjs.com/docs/data/statsbomb/360) are supported, along with
 [SkillCorner](https://www.pitchkitjs.com/docs/data/skillcorner/tracking) broadcast tracking,
 dynamic events and phases of play, [Wyscout](https://www.pitchkitjs.com/docs/data/wyscout/events)
-match events, and [Metrica](https://www.pitchkitjs.com/docs/data/metrica/tracking) synchronised
-tracking and events — each keeping that provider's own field names and values, only lifting
+match events, [Metrica](https://www.pitchkitjs.com/docs/data/metrica/tracking) synchronised
+tracking and events, and [Impect](https://www.pitchkitjs.com/docs/data/impect/events)
+Bundesliga events (non-commercial use only) — each keeping that provider's own field names and values, only lifting
 coordinates into the `x`/`y` an accessor wants. One dependency (`csv-parse`, for SkillCorner's
 and Metrica's CSV files), and no dependency on `core` or `react` either.
 

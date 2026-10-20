@@ -5,7 +5,8 @@ export type PitchTypeId =
   | "uefa"
   | "skillcorner"
   | "wyscout"
-  | "metrica";
+  | "metrica"
+  | "impect";
 
 /** Which corner of the pitch sits at provider coordinate (0, 0). */
 export type PitchOrigin = "top-left" | "bottom-left" | "center";
