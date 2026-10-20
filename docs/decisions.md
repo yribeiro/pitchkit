@@ -554,7 +554,7 @@ file is one wide row per frame, so the loader gathers each player's column pair 
 player names stay the header's own spelling. Impect publish two coordinate frames; both stay
 in place, and the lifted `x`/`y` are the adjusted one.
 
-### D30. Test fixtures are real data, unless the provider's terms forbid copying it
+### D31. Test fixtures are real data, unless the provider's terms forbid copying it
 
 **Decision:** Each provider's tests run against trimmed excerpts of its real files, checked
 in under `__fixtures__/`. Impect's are the exception: hand-made files in Impect's exact field

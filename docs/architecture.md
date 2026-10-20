@@ -258,14 +258,14 @@ GoalView (root, type = goal-mouth frame)
 
 npm workspaces + Turborepo.
 
-| Package / path             | Role                                                                                                                                                  |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@pitchkit/core`           | Dimensions, transforms, scene model, geometry, Canvas painters. Zero runtime dependencies, no React.                                                  |
-| `@pitchkit/react`          | Declarative components (`<Pitch>`, `<Scatter>`, …), responsive sizing, tooltips, `usePitch()`. Depends only on `core`. Ships the bundled Agent Skill. |
+| Package / path             | Role                                                                                                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@pitchkit/core`           | Dimensions, transforms, scene model, geometry, Canvas painters. Zero runtime dependencies, no React.                                                                  |
+| `@pitchkit/react`          | Declarative components (`<Pitch>`, `<Scatter>`, …), responsive sizing, tooltips, `usePitch()`. Depends only on `core`. Ships the bundled Agent Skill.                 |
 | `@pitchkit/data-providers` | Open-data loaders: `/statsbomb`, `/skillcorner`, `/wyscout`, `/metrica`, `/impect`. Depends on neither `core` nor `react`; its one runtime dependency is `csv-parse`. |
-| `apps/docs`                | The docs and showcase site (Next.js App Router, Fumadocs, Tailwind v4).                                                                               |
-| `examples/react-vite`      | Vite app for eyeballing components.                                                                                                                   |
-| `examples/react-nextjs`    | Next.js app that verifies SSR under a real server.                                                                                                    |
+| `apps/docs`                | The docs and showcase site (Next.js App Router, Fumadocs, Tailwind v4).                                                                                               |
+| `examples/react-vite`      | Vite app for eyeballing components.                                                                                                                                   |
+| `examples/react-nextjs`    | Next.js app that verifies SSR under a real server.                                                                                                                    |
 
 Packages build with tsup (ESM plus `.d.ts`), tree-shakeable, `sideEffects: false`, and
 publish under the `@pitchkit` scope. Recipes and theme presets are meant to ship as shadcn
@@ -625,7 +625,7 @@ Re-verify against a fresh sample before "correcting" any of them.
   licence for analytical and research use. It forbids commercial use and editing,
   reproducing or redistributing the data, and requires Impect to be credited, with their logo,
   in anything published. So the package ships no Impect data, and its test fixtures are
-  hand-made ([D30](./decisions.md#d30-test-fixtures-are-real-data-unless-the-providers-terms-forbid-copying-it)).
+  hand-made ([D31](./decisions.md#d31-test-fixtures-are-real-data-unless-the-providers-terms-forbid-copying-it)).
 - **One iteration: Bundesliga 2023/24** (id 743), 306 matches. A match's events are
   pretty-printed JSON of 5 to 6 MB (about 3,000 events), served from
   `raw.githubusercontent.com` with CORS and no Git LFS. The match list has no scores.
@@ -652,4 +652,3 @@ Re-verify against a fresh sample before "correcting" any of them.
   same way round as the adjusted pitch y despite the documentation's "inverted" note. Every
   `GOAL`, `OWN_GOAL`, `FOUL`, `OFFSIDE`, `NO_VIDEO`, `REFEREE_INTERCEPTION` and
   `FINAL_WHISTLE` has no `start`.
-
