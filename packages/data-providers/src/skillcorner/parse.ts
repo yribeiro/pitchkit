@@ -1,5 +1,6 @@
 import { parse as parseCsv } from "csv-parse/browser/esm/sync";
 import { DataProviderError } from "../errors.js";
+import { describe, isRecord } from "../guards.js";
 import { pitchProjection, projectOrNull } from "./coordinates.js";
 import type { PitchProjection } from "./coordinates.js";
 import type {
@@ -20,23 +21,6 @@ import type {
  * package doesn't model — and ones SkillCorner adds later — survive untouched.
  * The only additions are the corner-origin `pitch*` coordinates.
  */
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/** Describes what we actually got, for error messages that help. */
-function describe(value: unknown): string {
-  if (Array.isArray(value)) return `an array of ${value.length}`;
-  if (value === null) return "null";
-  if (isRecord(value)) {
-    const keys = Object.keys(value);
-    if (keys.length === 0) return "an empty object";
-    const shown = keys.slice(0, 4).join(", ");
-    return `an object with keys: ${shown}${keys.length > 4 ? ", ..." : ""}`;
-  }
-  return typeof value;
-}
 
 // ---------------------------------------------------------------------------
 // CSV cell coercion

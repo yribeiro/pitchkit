@@ -1,3 +1,4 @@
+import { isRecord } from "../guards.js";
 import { isActor, isKeeper, isOpponent, isTeammate } from "./predicates.js";
 import type {
   StatsBombCarry,
@@ -35,10 +36,6 @@ import type {
  * only by inventing a field StatsBomb doesn't have — which this package
  * deliberately doesn't do.
  */
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
 
 /**
  * Guards check the sub-object is really there, not just that the type name
