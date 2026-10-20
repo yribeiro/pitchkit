@@ -28,6 +28,8 @@ export { GoalAngle } from "./GoalAngle.js";
 export type { GoalAngleProps } from "./GoalAngle.js";
 export { Flow } from "./Flow.js";
 export type { FlowProps } from "./Flow.js";
+export { PlayerAvatar } from "./PlayerAvatar.js";
+export type { PlayerAvatarProps, PlayerCard, PlayerSubstitution } from "./PlayerAvatar.js";
 
 export { GoalView } from "./GoalView.js";
 export type { GoalViewProps, GoalViewAppearance } from "./GoalView.js";

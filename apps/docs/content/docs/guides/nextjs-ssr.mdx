@@ -52,6 +52,10 @@ panel above is still fully server-rendered into the initial HTML.
 server-renderable content — they render nothing on the server and paint after hydration. The
 pitch and any SVG layers around them still SSR normally.
 
+[`<PlayerAvatar>`](/docs/overlays/player-avatar) is client-only too. It is HTML in a layer stacked
+over the pitch, so its photo can be `next/image`, and it appears after hydration rather than in the
+server HTML. Give `next/image` the photo host in `images.remotePatterns`, as for any remote image.
+
 ## Data fetching
 
 Fetch on the server as usual and pass plain data down — arrays and objects serialize fine

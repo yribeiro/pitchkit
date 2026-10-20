@@ -30,6 +30,10 @@ standards around them. The reasons behind these choices are in the
   tooltips and accessibility.
 - **Canvas 2D** for dense raster layers (heatmap, positional heatmap, hexbin, KDE), where one
   DOM node per bin would be too slow. WebGL remains an option for tracking-scale data later.
+- **HTML** for marks whose content is the caller's own component: `<PlayerAvatar>`'s photo can be
+  `next/image`. They portal into an overlay `<div>` stacked over the `<svg>`, so like Canvas they
+  render after hydration
+  ([D30](./decisions.md#d30-playeravatar-html-in-an-overlay-the-photo-as-children)).
 - A layer declares what to draw, and the renderer decides how. The public API is the same
   regardless of backend. ([D1](./decisions.md#d1-hybrid-rendering-svg-for-marks-canvas-for-density))
 

@@ -119,6 +119,10 @@ Canvas density layers — client-only, accept `className` and `style` but **no**
 
 `<Heatmap>` `<PositionalHeatmap>` `<Hexbin>` `<KDE>`
 
+HTML overlay — client-only, one per player, any image component as children:
+
+`<PlayerAvatar>` (photo, number, name, card, substitution, goals, assists; recipe 7)
+
 Roots: `<Pitch>`, `<VerticalPitch>` (`<Pitch orientation="vertical">`), and `<GoalView>` + `<GoalShots>` ([api](references/api.md#goalview)).
 Escape hatch: `usePitch()` returns `{ dimensions, viewport, transform }` for custom marks.
 
@@ -454,6 +458,70 @@ and the traps that silently mirror a half or double-count goals.
 
 Every provider asks to be credited in anything published from its data, and **Impect's data
 is non-commercial only** and may not be redistributed.
+
+## Recipe 7 — lineup with player avatars
+
+`<PlayerAvatar>` is the match-centre lineup graphic: photo, shirt number, name, and badges for a
+card, a substitution, goals and assists. It is **not** a `data` + accessors layer: map the lineup to
+one component per player, keyed. Positions are the caller's `x`/`y` in the pitch's `type` units;
+there is no formation helper, so lay the shape out by hand.
+
+```tsx
+"use client";
+
+import Image from "next/image";
+import { PlayerAvatar, VerticalPitch } from "@pitchkit/react";
+import type { PlayerCard, PlayerSubstitution } from "@pitchkit/react";
+
+interface Player {
+  id: string;
+  name: string;
+  number: number;
+  x: number; // StatsBomb units: on <VerticalPitch> 0 is the top, so the keeper is x ≈ 112
+  y: number; // 0..80, left touchline to right
+  photo?: string;
+  card?: PlayerCard; // "yellow" | "second-yellow" | "red"
+  subbed?: PlayerSubstitution; // "on" | "off"
+  goals?: number;
+  assists?: number;
+}
+
+export function Lineup({ players }: { players: Player[] }) {
+  return (
+    <VerticalPitch type="statsbomb">
+      {players.map((p) => (
+        <PlayerAvatar
+          key={p.id}
+          x={p.x}
+          y={p.y}
+          name={p.name}
+          number={p.number}
+          card={p.card}
+          subbed={p.subbed}
+          goals={p.goals}
+          assists={p.assists}
+        >
+          {p.photo && <Image src={p.photo} alt="" fill sizes="64px" style={{ objectFit: "cover" }} />}
+        </PlayerAvatar>
+      ))}
+    </VerticalPitch>
+  );
+}
+```
+
+- **Photo:** `children` replace it, inside a round `position: relative` box, so `next/image`'s
+  `fill` works as is; remote hosts still need `images.remotePatterns` in `next.config`. Without a
+  framework image component, pass `src` (a lazy `<img>`). With neither, or when `src` fails to load,
+  it shows initials. Use `alt=""`: the name is already text in the avatar.
+- **Size:** unset, the photo is 10% of the pitch's shorter side, clamped 24–72 px, and everything
+  else scales with it. `size={56}` or `--pitch-avatar-size: 56px` in CSS fixes it.
+- **Not in server HTML.** It portals into an overlay `<div>` that `<Pitch>` stacks over its `<svg>`,
+  and appears after hydration. Don't test for it with `renderToString`; don't use it in an OG image.
+- **Badges:** counts show from two up; `0`, negatives and `NaN` draw nothing. Screen readers hear
+  "8 L. Delacroix, 2 goals, yellow card, substituted off".
+- Any other HTML attribute (`onClick`, `className`, `aria-*`) goes on the avatar's root. `style` can't
+  move it: position and centring win, and a `transform` in `style` applies after the centring. With a
+  `crop`, an avatar whose point is off the shown part isn't drawn.
 
 ## Where to look next
 

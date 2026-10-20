@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
 import type { PitchDimensions, PixelTransform, Viewport } from "@pitchkit/core";
 
 export interface TooltipState {
@@ -14,6 +14,13 @@ export interface PitchContextValue {
   readonly viewport: Viewport;
   readonly transform: PixelTransform;
   readonly setTooltip: (tooltip: TooltipState | null) => void;
+  /**
+   * The HTML layer stacked over the pitch's `<svg>`, for marks that have to
+   * be HTML rather than SVG (`<PlayerAvatar>`). A ref, not state, so a pitch
+   * with no HTML marks never renders twice for it: `current` is `null` on the
+   * server and until the element mounts, and set by the time effects run.
+   */
+  readonly overlay: RefObject<HTMLDivElement | null>;
 }
 
 export const PitchContext = createContext<PitchContextValue | null>(null);

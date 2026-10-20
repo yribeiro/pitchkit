@@ -13,6 +13,7 @@
     "convex-hull",
     "voronoi",
     "goal-angle",
-    "flow"
+    "flow",
+    "player-avatar"
   ]
 }

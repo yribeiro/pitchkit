@@ -70,7 +70,7 @@ OG images, PDFs).
 
 `<Pitch>` · `<VerticalPitch>` · `<Scatter>` · `<Annotate>` · `<Arrows>` · `<Comet>` ·
 `<Heatmap>` · `<PositionalHeatmap>` · `<Hexbin>` · `<KDE>` · `<Polygon>` · `<ConvexHull>` ·
-`<Voronoi>` · `<GoalAngle>` · `<Flow>` ·
+`<Voronoi>` · `<GoalAngle>` · `<Flow>` · `<PlayerAvatar>` ·
 `usePitch()`
 
 Not everything draws on a pitch. `<RaceChart>` is a chart in its own right, a sibling of `<Pitch>`

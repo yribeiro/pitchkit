@@ -1,0 +1,140 @@
+---
+title: Player Avatar
+description: A player's photo, number and name on the pitch, with badges for cards, substitutions, goals and assists. Takes any image component, including next/image.
+---
+
+<PitchPreview name="player-avatar-basic" />
+
+The players in this example are invented: their names are made up and their photos are AI-generated
+faces of people who don't exist.
+
+`<PlayerAvatar>` is the lineup graphic from a match centre: one player at a point on the pitch,
+with their photo, shirt number and name, and a badge for each thing that happened to them. Render
+one per player inside `<Pitch>` or `<VerticalPitch>`.
+
+## Usage
+
+```tsx
+<VerticalPitch type="statsbomb">
+  {lineup.map((p) => (
+    <PlayerAvatar
+      key={p.id}
+      x={p.x}
+      y={p.y}
+      name={p.name}
+      number={p.number}
+      card={p.card}
+      subbed={p.subbed}
+      goals={p.goals}
+      assists={p.assists}
+      src={p.photoUrl}
+    />
+  ))}
+</VerticalPitch>
+```
+
+| Prop       | Type                                   | Does                                                                                                                                                |
+| ---------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `x`, `y`   | number                                 | Required. Where the photo's centre sits, in the pitch's `type` units.                                                                               |
+| `name`     | string                                 | Required. Shown under the photo, and the initials when there is no photo.                                                                           |
+| `number`   | number \| string                       | The shirt number, shown before the name.                                                                                                            |
+| `card`     | `"yellow" \| "second-yellow" \| "red"` | A card badge. A second yellow draws the yellow behind the red.                                                                                      |
+| `subbed`   | `"on" \| "off"`                        | A square with a diagonal arrow: green, bottom left to top right, for a player who came on; red, top right to bottom left, for one who was replaced. |
+| `goals`    | number                                 | A ball badge, with the count from two up.                                                                                                           |
+| `assists`  | number                                 | A boot badge, with the count from two up.                                                                                                           |
+| `src`      | string                                 | The photo, as a lazy-loaded `<img>`. A photo that fails to load falls back to initials.                                                             |
+| `size`     | number                                 | The photo's diameter in pixels. Leave it unset to scale with the pitch.                                                                             |
+| `children` | ReactNode                              | Replaces the photo; see below.                                                                                                                      |
+
+Any other HTML attribute (`className`, `style`, `onClick`, `aria-*`, `data-*`) goes on the avatar's
+root `<div>`.
+
+## Formations
+
+Avatars are placed by `x` and `y`, so a formation is a table of positions. Give each player a stable
+`key`, pass a transition on `left` and `top` through `className`, and the avatars slide when the
+shape changes. Use the arrows, the dots or the arrow keys:
+
+<PitchPreview name="player-avatar-formations-basic" />
+
+```tsx
+<PlayerAvatar
+  key={p.number}
+  x={spots[p.number][0]}
+  y={spots[p.number][1]}
+  name={p.name}
+  className="motion-safe:transition-[left,top] motion-safe:duration-500"
+/>
+```
+
+## Optimised images
+
+`src` is a plain `<img loading="lazy" decoding="async">`, which is fine for a CDN that already
+serves small images. To use your framework's image component, pass it as `children` instead. It
+renders inside a round box the size of the photo, with `position: relative`, so `next/image`'s `fill`
+mode works as is:
+
+```tsx
+import Image from "next/image";
+
+<PlayerAvatar x={p.x} y={p.y} name={p.name} number={p.number}>
+  <Image src={p.photoUrl} alt="" fill sizes="64px" style={{ objectFit: "cover" }} />
+</PlayerAvatar>;
+```
+
+The same works for `<picture>`, Cloudinary or Imgix components, or anything else. Use `alt=""`: the
+player's name is already in the avatar as text.
+
+## Size
+
+With no `size`, the photo is a tenth of the pitch's shorter side, between 24 and 72 pixels, so a
+full lineup fits in either orientation and shrinks with the pitch. The badges and the name scale with
+it. To fix it everywhere, set `--pitch-avatar-size` in CSS; `size` beats the variable.
+
+```css
+.lineup {
+  --pitch-avatar-size: 56px;
+}
+```
+
+## Rendering
+
+The avatars are HTML, not SVG, so the photo can be any image component. They render into a layer
+`<Pitch>` stacks over its `<svg>`, positioned in percentages of the pitch, so they move with it when
+it resizes. Like the [density layers](/docs/guides/nextjs-ssr), they are not in the server-rendered
+HTML and appear after hydration.
+
+- With a `crop`, an avatar whose point is outside the shown part of the pitch isn't drawn, as an SVG
+  mark there would be clipped. One near a touchline still shows in full, label and all.
+- Only the photo and the name take the pointer, so a `<Scatter>` tooltip under the space around an
+  avatar still works.
+- `style` and `className` go on the avatar's root, but can't move it: its position and centring
+  always win. A `transform` in `style`, such as `scale(1.1)`, is applied after the centring.
+
+## Styling
+
+| Variable                   | Controls                                     | Default                    |
+| -------------------------- | -------------------------------------------- | -------------------------- |
+| `--pitch-avatar-size`      | Photo diameter                               | Scales with the pitch      |
+| `--pitch-avatar-bg`        | Behind the photo and the initials            | `#d4d8dd`                  |
+| `--pitch-avatar-ring`      | The ring around the photo                    | `#ffffff`                  |
+| `--pitch-avatar-text`      | The name                                     | `#ffffff`                  |
+| `--pitch-avatar-muted`     | The shirt number                             | `rgba(255, 255, 255, 0.7)` |
+| `--pitch-avatar-icon`      | The goal and assist icons and counts         | `#111827`                  |
+| `--pitch-avatar-icon-halo` | The thin edge that lifts icons off the grass | `rgba(255, 255, 255, 0.9)` |
+| `--pitch-avatar-ball`      | The ball's light panels                      | `#ffffff`                  |
+| `--pitch-avatar-initials`  | The initials when there is no photo          | `#1f2937`                  |
+| `--pitch-sub-on`           | The square, for a player who came on         | `#22c55e`                  |
+| `--pitch-sub-off`          | The square, for a player who went off        | `#ef4444`                  |
+| `--pitch-sub-arrow`        | The arrow inside the square                  | `#ffffff`                  |
+| `--pitch-card-yellow`      | Yellow cards, shared with the charts         | `#facc15`                  |
+| `--pitch-card-red`         | Red cards, shared with the charts            | `#ef4444`                  |
+
+Each part carries a `data-pitchkit-part` attribute (`avatar-photo`, `avatar-initials`,
+`avatar-card`, `avatar-sub`, `avatar-goals`, `avatar-assists`, `avatar-label`, `avatar-number`,
+`avatar-name`) for [Tailwind's arbitrary variants](/docs/styling/tailwind).
+
+## Accessibility
+
+The badges are hidden from screen readers and said in words instead, after the name: "8 L. Delacroix,
+2 goals, yellow card, substituted off".
