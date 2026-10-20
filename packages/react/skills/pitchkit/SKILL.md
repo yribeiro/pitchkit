@@ -517,8 +517,8 @@ interface Player {
   id: string;
   name: string;
   number: number;
-  x: number; // StatsBomb units, 0..120 towards the opponent's goal
-  y: number; // 0..80
+  x: number; // StatsBomb units: on <VerticalPitch> 0 is the top, so the keeper is x ≈ 112
+  y: number; // 0..80, left touchline to right
   photo?: string;
   card?: PlayerCard; // "yellow" | "second-yellow" | "red"
   subbed?: PlayerSubstitution; // "on" | "off"
@@ -558,8 +558,10 @@ export function Lineup({ players }: { players: Player[] }) {
 - **Not in server HTML.** It portals into an overlay `<div>` that `<Pitch>` stacks over its `<svg>`,
   and appears after hydration. Don't test for it with `renderToString`; don't use it in an OG image.
 - **Badges:** counts show from two up; `0`, negatives and `NaN` draw nothing. Screen readers hear
-  "8 A. Ounahi, 2 goals, yellow card, substituted off".
-- Any other HTML attribute (`onClick`, `className`, `aria-*`) goes on the avatar's root.
+  "8 L. Delacroix, 2 goals, yellow card, substituted off".
+- Any other HTML attribute (`onClick`, `className`, `aria-*`) goes on the avatar's root. `style` can't
+  move it: position and centring win, and a `transform` in `style` applies after the centring. With a
+  `crop`, an avatar whose point is off the shown part isn't drawn.
 
 ## Where to look next
 

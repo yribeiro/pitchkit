@@ -390,6 +390,12 @@ fill a round, `position: relative` box. It is one component per player, not a `d
 - **The overlay is a ref, not state.** Holding the element in `<Pitch>`'s state re-rendered every pitch
   once after mount, and repainted its Canvas layers, whether or not it had an avatar. The avatar reads
   the ref in a passive effect instead, so only the avatar renders twice.
+- **It shares the SVG's box, and takes the pointer only where it draws.** `<Pitch>` wraps the `<svg>`,
+  the overlay and the tooltip in one inner box at its content box, since `inset: 0` on the wrapper
+  itself resolved against the padding box and shifted every avatar on a padded pitch. The overlay can't
+  clip like the SVG viewport without cutting labels that spill past a touchline, so an avatar outside
+  the `crop` isn't drawn instead. Only the photo and the name take pointer events, so SVG tooltips under
+  the rest of the avatar's box still work, and positioning wins over a caller's `style`.
 - **One per player, because each needs its own children.** A `data` array can't carry a different
   `<Image>` per row without a render-prop, and a lineup is eleven players, not three thousand points.
 - **Sizes are CSS.** The photo's diameter is `size`, else `--pitch-avatar-size`, else a tenth of the

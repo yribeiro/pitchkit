@@ -57,7 +57,7 @@ describe("PlayerAvatar", () => {
       <PlayerAvatar
         x={60}
         y={40}
-        name="A. Ounahi"
+        name="L. Delacroix"
         card="yellow"
         subbed="off"
         goals={2}
@@ -71,7 +71,7 @@ describe("PlayerAvatar", () => {
 
   it("shows a count from two up", () => {
     const { container } = renderOnPitch(
-      <PlayerAvatar x={60} y={40} name="A. Ounahi" goals={2} assists={1} />,
+      <PlayerAvatar x={60} y={40} name="L. Delacroix" goals={2} assists={1} />,
     );
 
     expect(container.querySelector('[data-pitchkit-part="avatar-goals"]')?.textContent).toBe("2");
@@ -89,7 +89,7 @@ describe("PlayerAvatar", () => {
 
   it("says in words what the badges show", () => {
     const { container } = renderOnPitch(
-      <PlayerAvatar x={60} y={40} name="A. Ounahi" card="yellow" subbed="off" goals={2} />,
+      <PlayerAvatar x={60} y={40} name="L. Delacroix" card="yellow" subbed="off" goals={2} />,
     );
 
     expect(avatarIn(container)?.textContent).toContain("2 goals, yellow card, substituted off");
@@ -180,6 +180,72 @@ describe("PlayerAvatar", () => {
     }
   });
 
+  it("treats an array of falsy children as no photo, and shows src", () => {
+    const { container } = renderOnPitch(
+      <PlayerAvatar x={60} y={40} name="Bono" src="/bono.png">
+        {[undefined, false, ""]}
+      </PlayerAvatar>,
+    );
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/bono.png");
+  });
+
+  it("is not drawn when its point is outside the pitch's crop", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={300} height={400} crop={{ x0: 60, x1: 120, y0: 0, y1: 80 }}>
+        <PlayerAvatar x={10} y={40} name="Keeper" />
+        <PlayerAvatar x={100} y={40} name="Striker" />
+      </Pitch>,
+    );
+
+    const names = Array.from(container.querySelectorAll('[data-pitchkit-part="avatar-name"]'));
+    expect(names.map((n) => n.textContent)).toEqual(["Striker"]);
+  });
+
+  it("keeps its centring when the caller passes a transform or a position", () => {
+    const { container } = renderOnPitch(
+      <PlayerAvatar
+        x={30}
+        y={20}
+        name="Bono"
+        style={{ transform: "scale(1.1)", position: "static", left: 0, color: "red" }}
+      />,
+    );
+    const style = avatarIn(container)!.style;
+
+    expect(style.transform).toBe("translate(-50%, calc(var(--pk-avatar-size) / -2)) scale(1.1)");
+    expect(style.position).toBe("absolute");
+    expect(style.left).toBe("25%");
+    expect(style.color).toBe("red");
+  });
+
+  it("takes pointer events only on the photo and the label's text", () => {
+    const { container } = renderOnPitch(<PlayerAvatar x={60} y={40} name="Bono" />);
+
+    expect(avatarIn(container)!.style.pointerEvents).toBe("none");
+    expect(
+      container.querySelector<HTMLElement>('[data-pitchkit-part="avatar-photo"]')!.style
+        .pointerEvents,
+    ).toBe("auto");
+    expect(
+      container.querySelector<HTMLElement>('[data-pitchkit-part="avatar-name"]')!.parentElement!
+        .style.pointerEvents,
+    ).toBe("auto");
+  });
+
+  it("shares the SVG's box, so padding on the pitch can't move it", () => {
+    const { container } = render(
+      <Pitch type="statsbomb" width={600} height={400} style={{ padding: 16 }}>
+        <PlayerAvatar x={60} y={40} name="Bono" />
+      </Pitch>,
+    );
+    const overlay = container.querySelector('[data-pitchkit-layer="html-overlay"]')!;
+    const svg = container.querySelector("svg")!;
+
+    expect(overlay.parentElement).toBe(svg.parentElement);
+    expect(overlay.parentElement).not.toBe(container.firstChild);
+  });
+
   it("takes its size from the prop, else the CSS variable, else the pitch", () => {
     const { container: fixed } = renderOnPitch(
       <PlayerAvatar x={60} y={40} name="Bono" size={50} />,
@@ -243,6 +309,7 @@ describe("playerInitials", () => {
     expect(playerInitials("Bono")).toBe("B");
     expect(playerInitials("  ")).toBe("");
     expect(playerInitials("(c) A. Hakimi")).toBe("CH");
+    expect(playerInitials("𠮷田 太郎")).toBe("𠮷太");
   });
 });
 

@@ -125,46 +125,51 @@ export function Pitch({
         ...style,
       }}
     >
-      <svg
-        width="100%"
-        height="100%"
-        viewBox={`0 0 ${viewport.width} ${viewport.height}`}
-        style={{ display: "block" }}
-      >
-        {/* With `linesOnTop` the markings are emitted *after* the children
+      {/* The content box, which is what the viewport measures. The SVG, the
+          HTML overlay and the tooltip all position against it, so padding
+          on the wrapper can't push the HTML marks off the SVG ones. */}
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${viewport.width} ${viewport.height}`}
+          style={{ display: "block" }}
+        >
+          {/* With `linesOnTop` the markings are emitted *after* the children
             so an opaque density layer can't hide them; the grass surface
             stays underneath either way. Default keeps the single combined
             group, so nothing about the existing DOM changes. */}
-        {linesOnTop ? (
-          <PitchSurfaceShapes geometry={geometry} transform={transform} appearance={appearance} />
-        ) : (
-          <PitchGeometryShapes
-            geometry={geometry}
-            transform={transform}
-            dimensions={dimensions}
-            appearance={appearance}
-          />
-        )}
-        <PitchContext.Provider value={{ dimensions, viewport, transform, setTooltip, overlay }}>
-          {children}
-        </PitchContext.Provider>
-        {linesOnTop && (
-          <PitchMarkingShapes
-            geometry={geometry}
-            transform={transform}
-            dimensions={dimensions}
-            appearance={appearance}
-          />
-        )}
-      </svg>
-      {/* HTML marks (<PlayerAvatar>) portal in here. It passes pointer
-          events through, so the SVG marks underneath keep their hover. */}
-      <div
-        ref={overlay}
-        data-pitchkit-layer="html-overlay"
-        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-      />
-      {hasTooltipContent(tooltip) && <TooltipOverlay tooltip={tooltip} />}
+          {linesOnTop ? (
+            <PitchSurfaceShapes geometry={geometry} transform={transform} appearance={appearance} />
+          ) : (
+            <PitchGeometryShapes
+              geometry={geometry}
+              transform={transform}
+              dimensions={dimensions}
+              appearance={appearance}
+            />
+          )}
+          <PitchContext.Provider value={{ dimensions, viewport, transform, setTooltip, overlay }}>
+            {children}
+          </PitchContext.Provider>
+          {linesOnTop && (
+            <PitchMarkingShapes
+              geometry={geometry}
+              transform={transform}
+              dimensions={dimensions}
+              appearance={appearance}
+            />
+          )}
+        </svg>
+        {/* HTML marks (<PlayerAvatar>) portal in here. The layer itself passes
+          pointer events through; only the parts of a mark that draw take them. */}
+        <div
+          ref={overlay}
+          data-pitchkit-layer="html-overlay"
+          style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+        />
+        {hasTooltipContent(tooltip) && <TooltipOverlay tooltip={tooltip} />}
+      </div>
     </div>
   );
 }

@@ -18,3 +18,6 @@ appear after hydration rather than in server-rendered HTML.
 `--pitch-avatar-icon-halo`, `--pitch-avatar-ball`, `--pitch-avatar-initials`, `--pitch-sub-on`,
 `--pitch-sub-off` and `--pitch-sub-arrow`. The bundled Agent Skill documents
 all of it.
+
+`<Pitch>` now wraps its `<svg>`, the overlay and the tooltip in one inner box sized to its content box, so
+HTML marks and the hover tooltip stay on their points when the pitch has padding or a border.

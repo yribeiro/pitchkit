@@ -104,6 +104,13 @@ The avatars are HTML, not SVG, so the photo can be any image component. They ren
 it resizes. Like the [density layers](/docs/guides/nextjs-ssr), they are not in the server-rendered
 HTML and appear after hydration.
 
+- With a `crop`, an avatar whose point is outside the shown part of the pitch isn't drawn, as an SVG
+  mark there would be clipped. One near a touchline still shows in full, label and all.
+- Only the photo and the name take the pointer, so a `<Scatter>` tooltip under the space around an
+  avatar still works.
+- `style` and `className` go on the avatar's root, but can't move it: its position and centring
+  always win. A `transform` in `style`, such as `scale(1.1)`, is applied after the centring.
+
 ## Styling
 
 | Variable                   | Controls                                     | Default                    |
@@ -129,5 +136,5 @@ Each part carries a `data-pitchkit-part` attribute (`avatar-photo`, `avatar-init
 
 ## Accessibility
 
-The badges are hidden from screen readers and said in words instead, after the name: "8 A. Ounahi,
+The badges are hidden from screen readers and said in words instead, after the name: "8 L. Delacroix,
 2 goals, yellow card, substituted off".

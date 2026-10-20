@@ -1,9 +1,23 @@
-import { useEffect, useState } from "react";
+import { Children, useEffect, useState } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { pitchTokens } from "@pitchkit/core";
 import type { Viewport } from "@pitchkit/core";
-import { CARD_RED, CARD_YELLOW } from "./chart-tokens.js";
+import {
+  AVATAR_BALL,
+  AVATAR_BG,
+  AVATAR_ICON,
+  AVATAR_ICON_HALO,
+  AVATAR_INITIALS,
+  AVATAR_MUTED,
+  AVATAR_RING,
+  AVATAR_TEXT,
+  CARD_RED,
+  CARD_YELLOW,
+  SUB_ARROW,
+  SUB_OFF,
+  SUB_ON,
+} from "./chart-tokens.js";
 import { usePitchContext } from "./context.js";
 import { BALL_PATH, BALL_VIEWBOX, BOOT_PATH, BOOT_TRANSFORM } from "./avatar-icons.js";
 
@@ -42,22 +56,10 @@ export interface PlayerAvatarProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   readonly children?: ReactNode;
 }
 
-const AVATAR_BG = `var(${pitchTokens.avatarBg}, #d4d8dd)`;
-const AVATAR_RING = `var(${pitchTokens.avatarRing}, #ffffff)`;
-const AVATAR_TEXT = `var(${pitchTokens.avatarText}, #ffffff)`;
-const AVATAR_MUTED = `var(${pitchTokens.avatarMuted}, rgba(255, 255, 255, 0.7))`;
-const ICON = `var(${pitchTokens.avatarIcon}, #111827)`;
-/** Behind the ball's panels, so a dark ball still reads as a football on dark grass. */
-const BALL_FILL = `var(${pitchTokens.avatarBall}, #ffffff)`;
-const INITIALS = `var(${pitchTokens.avatarInitials}, #1f2937)`;
 // The badges sit straight on the grass or the photo with no backing, so a
 // thin halo in a contrasting colour, plus a soft shadow, is what separates
 // them from whatever is behind. Dark icons get a light halo by default.
-const ICON_HALO = `var(${pitchTokens.avatarIconHalo}, rgba(255, 255, 255, 0.9))`;
-const ICON_SHADOW = `drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 0 0.75px ${ICON_HALO}) drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35))`;
-const SUB_ON = `var(${pitchTokens.subOn}, #22c55e)`;
-const SUB_OFF = `var(${pitchTokens.subOff}, #ef4444)`;
-const SUB_ARROW = `var(${pitchTokens.subArrow}, #ffffff)`;
+const ICON_SHADOW = `drop-shadow(0 0 0.75px ${AVATAR_ICON_HALO}) drop-shadow(0 0 0.75px ${AVATAR_ICON_HALO}) drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.35))`;
 
 // Every size inside the avatar is a fraction of these two, so one CSS
 // variable (or the `size` prop) rescales the whole thing without a re-render.
@@ -83,7 +85,10 @@ export function playerInitials(name: string): string {
   if (words.length === 0) return "";
   const first = words[0] as string;
   const last = words[words.length - 1] as string;
-  return (words.length === 1 ? first.charAt(0) : first.charAt(0) + last.charAt(0)).toUpperCase();
+  // By code point, not UTF-16 unit, so a name starting outside the Basic
+  // Multilingual Plane ("𠮷田") gives its whole first character.
+  const initial = (word: string) => Array.from(word)[0] ?? "";
+  return (words.length === 1 ? initial(first) : initial(first) + initial(last)).toUpperCase();
 }
 
 /** What the badges say, in words, for a screen reader: "2 goals, yellow card". */
@@ -104,6 +109,20 @@ export function describePlayerEvents({
   if (subbed === "on") parts.push("substituted on");
   if (subbed === "off") parts.push("substituted off");
   return parts.join(", ");
+}
+
+/**
+ * Whether (`x`, `y`) falls outside the pitch's `crop`. The SVG viewport clips
+ * marks there; the HTML overlay can't clip without also cutting off avatars
+ * whose label spills past a touchline, so an avatar off the shown part of the
+ * pitch is not drawn at all.
+ */
+function outsideCrop(viewport: Pick<Viewport, "crop">, x: number, y: number): boolean {
+  const crop = viewport.crop;
+  if (!crop) return false;
+  const [x0, x1] = crop.x0 < crop.x1 ? [crop.x0, crop.x1] : [crop.x1, crop.x0];
+  const [y0, y1] = crop.y0 < crop.y1 ? [crop.y0, crop.y1] : [crop.y1, crop.y0];
+  return x < x0 || x > x1 || y < y0 || y > y1;
 }
 
 /** A whole, positive count, or 0 for anything else. */
@@ -146,20 +165,29 @@ export function PlayerAvatar({
     setOverlay(overlayRef.current);
   }, [overlayRef]);
 
-  if (!overlay) return null;
+  if (!overlay || outsideCrop(viewport, x, y)) return null;
 
   const [px, py] = transform.toPixel([x, y]);
   const autoSize = defaultAvatarSize(viewport);
   const goalCount = count(goals);
   const assistCount = count(assists);
   const summary = describePlayerEvents({ goals, assists, card, subbed });
-  // `{photo && <Image … />}` passes false or "" when there is no photo, which
-  // should fall back like no children at all.
-  const hasChildren =
-    children !== undefined && children !== null && children !== false && children !== "";
+  // `{photo && <Image … />}` passes false, "" or an array of them when there
+  // is no photo, which should fall back like no children at all.
+  const hasChildren = Children.toArray(children).some((child) => child !== "");
   const showImage = !hasChildren && src !== undefined && src !== failedSrc;
 
   const rootStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "max-content",
+    maxWidth: `calc(${SIZE} * 2.6)`,
+    // The root's box is wider than what it draws, so it lets pointer events
+    // through to the SVG marks below; only the photo and the label's text
+    // take them.
+    pointerEvents: "none",
+    ...style,
     "--pk-avatar-size":
       size !== undefined ? `${size}px` : `var(${pitchTokens.avatarSize}, ${autoSize}px)`,
     "--pk-avatar-badge": `max(14px, calc(${SIZE} * 0.4))`,
@@ -168,22 +196,23 @@ export function PlayerAvatar({
     // viewBox: a resize moves the avatar before React re-renders it.
     left: `${(px / viewport.width) * 100}%`,
     top: `${(py / viewport.height) * 100}%`,
-    // Centre the photo, not the photo and label together, on the point.
-    transform: `translate(-50%, calc(${SIZE} / -2))`,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "max-content",
-    maxWidth: `calc(${SIZE} * 2.6)`,
-    pointerEvents: "auto",
-    ...style,
+    // Centre the photo, not the photo and label together, on the point. A
+    // caller's own transform (a hover scale, say) is applied after it, so
+    // positioning always wins over `style`.
+    transform: `translate(-50%, calc(${SIZE} / -2))${style?.transform ? ` ${style.transform}` : ""}`,
   } as CSSProperties;
 
   return createPortal(
     <div data-pitchkit-mark="player-avatar" className={className} style={rootStyle} {...rest}>
       <div
         data-pitchkit-part="avatar-photo"
-        style={{ position: "relative", width: SIZE, height: SIZE, flexShrink: 0 }}
+        style={{
+          position: "relative",
+          width: SIZE,
+          height: SIZE,
+          flexShrink: 0,
+          pointerEvents: "auto",
+        }}
       >
         <div
           style={{
@@ -219,7 +248,7 @@ export function PlayerAvatar({
               style={{
                 fontSize: `calc(${SIZE} * 0.36)`,
                 fontWeight: 700,
-                color: INITIALS,
+                color: AVATAR_INITIALS,
                 lineHeight: 1,
               }}
             >
@@ -248,7 +277,7 @@ export function PlayerAvatar({
             {goalCount > 0 && (
               <Badge part="avatar-goals" count={goalCount}>
                 <Glyph viewBox={BALL_VIEWBOX}>
-                  <circle cx={11.8} cy={12} r={11.6} fill={BALL_FILL} />
+                  <circle cx={11.8} cy={12} r={11.6} fill={AVATAR_BALL} />
                   <path d={BALL_PATH} fill="currentColor" fillRule="evenodd" />
                 </Glyph>
               </Badge>
@@ -282,12 +311,14 @@ export function PlayerAvatar({
           textShadow: "0 1px 2px rgba(0, 0, 0, 0.6)",
         }}
       >
-        {number !== undefined && (
-          <span data-pitchkit-part="avatar-number" style={{ color: AVATAR_MUTED }}>
-            {number}{" "}
-          </span>
-        )}
-        <span data-pitchkit-part="avatar-name">{name}</span>
+        <span style={{ pointerEvents: "auto" }}>
+          {number !== undefined && (
+            <span data-pitchkit-part="avatar-number" style={{ color: AVATAR_MUTED }}>
+              {number}{" "}
+            </span>
+          )}
+          <span data-pitchkit-part="avatar-name">{name}</span>
+        </span>
         {summary && <span style={VISUALLY_HIDDEN}>, {summary}</span>}
       </div>
     </div>,
@@ -344,7 +375,7 @@ function Badge({ part, count, children }: { part: string; count?: number; childr
         justifyContent: "center",
         width: BADGE,
         height: BADGE,
-        color: ICON,
+        color: AVATAR_ICON,
         filter: ICON_SHADOW,
       }}
     >
@@ -359,8 +390,8 @@ function Badge({ part, count, children }: { part: string; count?: number; childr
             fontSize: `calc(${BADGE} * 0.56)`,
             fontWeight: 800,
             lineHeight: 1,
-            color: ICON,
-            textShadow: `0 0 2px ${ICON_HALO}, 0 0 1px ${ICON_HALO}`,
+            color: AVATAR_ICON,
+            textShadow: `0 0 2px ${AVATAR_ICON_HALO}, 0 0 1px ${AVATAR_ICON_HALO}`,
           }}
         >
           {count}
@@ -371,22 +402,13 @@ function Badge({ part, count, children }: { part: string; count?: number; childr
 }
 
 /** An icon on the 24-unit grid, filling its badge. */
-function Glyph({
-  viewBox = "0 0 24 24",
-  color,
-  children,
-}: {
-  viewBox?: string;
-  color?: string;
-  children: ReactNode;
-}) {
+function Glyph({ viewBox = "0 0 24 24", children }: { viewBox?: string; children: ReactNode }) {
   return (
     <svg
       viewBox={viewBox}
       style={{
         width: `calc(${BADGE} * 0.88)`,
         height: `calc(${BADGE} * 0.88)`,
-        color,
         flexShrink: 0,
         overflow: "visible",
       }}
