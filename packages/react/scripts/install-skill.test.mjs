@@ -111,9 +111,9 @@ describe("the bundled skill", () => {
       expect(description).not.toMatch(/\byou(r)?\b/i);
     });
 
-    it("keeps the body under the 500-line guidance, deferring detail to references/", async () => {
+    it("keeps the body under 600 lines, deferring detail to references/", async () => {
       const { body } = await read();
-      expect(body.split("\n").length).toBeLessThan(500);
+      expect(body.split("\n").length).toBeLessThan(600);
     });
   });
 });

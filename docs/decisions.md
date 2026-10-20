@@ -372,6 +372,62 @@ is the one choice that keeps placement exact while still drawing the ground in p
 - `hasTooltipContent` moved to `TooltipOverlay.tsx`, shared by both roots.
 - Like `<RaceChart>` it has no mplsoccer equivalent.
 
+### D30. `<PlayerAvatar>`: HTML in an overlay, the photo as children
+
+**Decision:** `<PlayerAvatar>` is a `<Pitch>` child that renders HTML, not SVG. `<Pitch>` stacks an
+overlay `<div>` (`data-pitchkit-layer="html-overlay"`) over its `<svg>`, and each avatar portals into
+it, positioned in percentages of the pitch. The photo is `src` (a lazy `<img>`) or `children`, which
+fill a round, `position: relative` box. It is one component per player, not a `data` + accessors layer.
+
+- **HTML, because the photo has to be the caller's image component.** `next/image`, `<picture>` and CDN
+  components render HTML `<img>`. SVG `<image>` can't take any of them, and `<foreignObject>` has
+  long-standing WebKit bugs with positioned, transformed and scaled content inside it, which a caller's
+  own image component is free to use.
+- **A portal, so it is client-only.** React's server renderer doesn't support portals. Avatars appear
+  after hydration, as the Canvas layers do
+  ([D1](#d1-hybrid-rendering-svg-for-marks-canvas-for-density)); the overlay `<div>` itself is in the
+  server HTML.
+- **The overlay is a ref, not state.** Holding the element in `<Pitch>`'s state re-rendered every pitch
+  once after mount, and repainted its Canvas layers, whether or not it had an avatar. The avatar reads
+  the ref in a passive effect instead, so only the avatar renders twice.
+- **It shares the SVG's box, and takes the pointer only where it draws.** `<Pitch>` wraps the `<svg>`,
+  the overlay and the tooltip in one inner box at its content box, since `inset: 0` on the wrapper
+  itself resolved against the padding box and shifted every avatar on a padded pitch. The overlay can't
+  clip like the SVG viewport without cutting labels that spill past a touchline, so an avatar outside
+  the `crop` isn't drawn instead. Only the photo and the name take pointer events, so SVG tooltips under
+  the rest of the avatar's box still work, and positioning wins over a caller's `style`.
+- **One per player, because each needs its own children.** A `data` array can't carry a different
+  `<Image>` per row without a render-prop, and a lineup is eleven players, not three thousand points.
+- **Sizes are CSS.** The photo's diameter is `size`, else `--pitch-avatar-size`, else a tenth of the
+  pitch's shorter side between 24 and 72 px. Badges and text are `calc()` fractions of it, so one
+  variable rescales the whole avatar without a render.
+- **The goal and assist glyphs are filled silhouettes, generated and traced.** Stroked line icons
+  turned to mush at a 15px badge. The ball and boot were generated as raster concepts (Recraft, via
+  ElevenLabs), picked for legibility at 15 to 20 px, and traced to paths with
+  potrace (a one-off step, not kept in the repo); the ball was averaged with its mirror image and clipped to a
+  true circle first, and is drawn over a light disc so a dark ball still reads as a football. The boot is
+  tilted heel-up, toe to the bottom right, so it takes the ball's width in the same square. Badges have no
+  backing: the icons sit on the grass or the photo's edge, dark by default, lifted by a thin light halo,
+  with a count from two up in the icon's bottom-right corner. A substitution is a rounded square, green on or
+  red off, with a diagonal arrow through it: bottom left to top right coming on, top right to bottom left
+  going off. Cards and substitution arrows are
+  drawn by hand on the 24-unit grid of `<MomentumChart>`'s icons
+  ([D25](#d25-momentumchart-signed-values-bars-to-the-next-sample-our-own-icons)). The lineup
+  graphics of match centres such as FotMob and SofaScore prompted the layout and are not copied.
+
+**Why:** Every match centre draws a lineup this way, and the part apps most want to control is the
+image: who hosts it, how it is resized, what shows while it loads. Letting that be the caller's own
+component costs server rendering for the avatars and nothing else.
+
+**Consequences:**
+
+- Twelve new tokens: `--pitch-avatar-size`, `-bg`, `-ring`, `-text`, `-muted`, `-icon`, `-icon-halo`,
+  `-ball`, `-initials`, `--pitch-sub-on`, `--pitch-sub-off` and `--pitch-sub-arrow`. Cards reuse `--pitch-card-yellow` and `--pitch-card-red`.
+- `PitchContextValue` gains `overlay`, a ref. `usePitch()` doesn't expose it; a second HTML mark would
+  be the reason to.
+- No rating badge yet, and no formation helper: positions are the caller's `x` and `y`.
+- No mplsoccer equivalent.
+
 ---
 
 ## Styling and theming

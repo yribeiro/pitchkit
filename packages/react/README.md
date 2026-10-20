@@ -70,6 +70,7 @@ and `fill={(d) => d.teamColor}` are the same prop.
 | `<Voronoi>`           | Voronoi cells, clipped to the pitch                          |
 | `<GoalAngle>`         | The angle-to-goal wedge from a shot location                 |
 | `<Flow>`              | Binned direction + magnitude vectors                         |
+| `<PlayerAvatar>`      | Lineup avatar: photo, name, cards, subs, goals, assists      |
 | `usePitch()`          | Hook exposing the pixel transform for custom SVG             |
 | `<RaceChart>`         | Cumulative step chart over match minutes — the xG race chart |
 | `useRaceChart()`      | Hook exposing a `<RaceChart>`'s scales, for annotations      |

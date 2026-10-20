@@ -39,6 +39,7 @@ Five things to hold in your head — that's the whole model:
 | [`<ConvexHull>`](/docs/overlays/convex-hull)               | Hull of a point set                | Team/player shape                 |
 | [`<Voronoi>`](/docs/overlays/voronoi)                      | Nearest-player tessellation        | Space control                     |
 | [`<GoalAngle>`](/docs/overlays/goal-angle)                 | Wedge to both posts                | Shot quality context              |
+| [`<PlayerAvatar>`](/docs/overlays/player-avatar)           | Photo, name and events per player  | Lineups, team sheets              |
 
 The accessor pattern is what keeps PitchKit shape-agnostic: there's no required data
 schema — `x={(shot) => shot.location[0]}` adapts any provider's records without a
@@ -48,8 +49,9 @@ pre-processing step.
 
 Marks are SVG (crisp, inspectable, hoverable — most take a `tooltip` accessor). The density
 layers are the exception: `<Heatmap>`, `<PositionalHeatmap>`, `<Hexbin>` and `<KDE>` paint to
-a `<canvas>`, where a handful of fills beat thousands of DOM nodes. The split is per-layer and automatic — you compose both
-kinds freely in one pitch.
+a `<canvas>`, where a handful of fills beat thousands of DOM nodes. `<PlayerAvatar>` is HTML laid
+over the pitch, so its photo can be any image component, `next/image` included. The split is per-layer and automatic — you compose all
+three kinds freely in one pitch.
 
 ## Escape hatch
 
