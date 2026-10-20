@@ -20,22 +20,22 @@ interface Player {
 // people who don't exist, served from the docs site's own /players folder.
 //
 // A 4-3-3 in StatsBomb coordinates (120 x 80): on a vertical pitch x runs top to
-// bottom, so the keeper at x 112 is drawn at the foot, the side attacks upwards, and
+// bottom, so the keeper at x 113 is drawn at the foot, the side attacks upwards, and
 // y 70 (the right-back) is on the right.
 const lineup: Player[] = [
-  { number: 1, name: "J. Marlow", photo: "marlow", x: 112, y: 40 },
-  { number: 3, name: "T. Brennick", photo: "brennick", x: 92, y: 10 },
-  { number: 25, name: "S. Okonkwo-Hale", photo: "okonkwo-hale", x: 98, y: 30, card: "yellow" },
-  { number: 14, name: "D. Varela-Ruiz", photo: "varela-ruiz", x: 98, y: 50, subbed: "off" },
-  { number: 2, name: "E. Lindqvist", photo: "lindqvist", x: 92, y: 70, card: "yellow", assists: 1 },
-  { number: 24, name: "A. Mbeki-Soto", photo: "mbeki-soto", x: 70, y: 25 },
-  { number: 6, name: "R. Tanaka-Holm", photo: "tanaka-holm", x: 74, y: 40, subbed: "off" },
+  { number: 1, name: "J. Marlow", photo: "marlow", x: 113, y: 40 },
+  { number: 3, name: "T. Brennick", photo: "brennick", x: 86, y: 13 },
+  { number: 25, name: "S. Okonkwo-Hale", photo: "okonkwo-hale", x: 96, y: 28, card: "yellow" },
+  { number: 14, name: "D. Varela-Ruiz", photo: "varela-ruiz", x: 96, y: 52, subbed: "off" },
+  { number: 2, name: "E. Lindqvist", photo: "lindqvist", x: 86, y: 67, card: "yellow", assists: 1 },
+  { number: 24, name: "A. Mbeki-Soto", photo: "mbeki-soto", x: 68, y: 22 },
+  { number: 6, name: "R. Tanaka-Holm", photo: "tanaka-holm", x: 78, y: 40, subbed: "off" },
   {
     number: 8,
     name: "L. Delacroix",
     photo: "delacroix",
-    x: 62,
-    y: 55,
+    x: 68,
+    y: 58,
     card: "yellow",
     subbed: "off",
     goals: 2,
@@ -45,12 +45,12 @@ const lineup: Player[] = [
     name: "N. Haddad-Kerr",
     photo: "haddad-kerr",
     x: 38,
-    y: 12,
+    y: 14,
     card: "yellow",
     subbed: "off",
   },
-  { number: 11, name: "F. Ostrander", photo: "ostrander", x: 24, y: 40, subbed: "off" },
-  { number: 10, name: "M. Quintero-Bell", photo: "quintero-bell", x: 38, y: 68, assists: 2 },
+  { number: 11, name: "F. Ostrander", photo: "ostrander", x: 27, y: 40, subbed: "off" },
+  { number: 10, name: "M. Quintero-Bell", photo: "quintero-bell", x: 38, y: 66, assists: 2 },
 ];
 
 /** `<PlayerAvatar>` puts a photo, number, name and match events at each player's position. */
