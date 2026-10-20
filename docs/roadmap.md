@@ -15,14 +15,14 @@ Status: ✅ shipped · 🟡 partial · ⬜ not started. Phase: **M** = MVP, **1*
 
 ### Pitch drawing and geometry
 
-| Feature                                         | Phase | Status                                                                                              |
-| ----------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------- |
-| Horizontal pitch                                | M     | ✅ `<Pitch>`                                                                                        |
-| Vertical pitch                                  | M     | ✅ `<VerticalPitch>`                                                                                |
-| Half-pitch, padding, crop                       | M     | ✅ `crop`, `padding`, `cropForHalf()`                                                               |
+| Feature                                         | Phase | Status                                                                                                      |
+| ----------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------- |
+| Horizontal pitch                                | M     | ✅ `<Pitch>`                                                                                                |
+| Vertical pitch                                  | M     | ✅ `<VerticalPitch>`                                                                                        |
+| Half-pitch, padding, crop                       | M     | ✅ `crop`, `padding`, `cropForHalf()`                                                                       |
 | Pitch types                                     | M → 1 | 🟡 StatsBomb, Opta, Wyscout, UEFA, SkillCorner, Metrica, Impect. Remaining: Tracab, SecondSpectrum, custom. |
-| Styling: stripes, line colour/width, goal types | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                     |
-| Coordinate standardiser (provider → provider)   | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.       |
+| Styling: stripes, line colour/width, goal types | M → 1 | ✅ CSS variables; `appearance.stripes`, `goalType` (`line`/`box`), `linesOnTop`                             |
+| Coordinate standardiser (provider → provider)   | 1     | 🟡 `createStandardizeTransform` (uniform-extent). No marking-interpolated `Standardizer` yet.               |
 
 ### Plotting primitives
 
@@ -122,14 +122,14 @@ component.
 
 ### Supporting utilities
 
-| Feature                                    | Phase | Status                                                                                                                     |
-| ------------------------------------------ | ----- | -------------------------------------------------------------------------------------------------------------------------- |
-| Grid / jointgrid layout                    | 1     | ⬜                                                                                                                         |
-| Inset axes and images                      | L     | ⬜                                                                                                                         |
-| Fonts                                      | M     | Not needed: web fonts are CSS.                                                                                             |
+| Feature                                    | Phase | Status                                                                                                                                                         |
+| ------------------------------------------ | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grid / jointgrid layout                    | 1     | ⬜                                                                                                                                                             |
+| Inset axes and images                      | L     | ⬜                                                                                                                                                             |
+| Fonts                                      | M     | Not needed: web fonts are CSS.                                                                                                                                 |
 | Open-data loaders                          | 1     | ✅ StatsBomb (events + 360), SkillCorner, Wyscout, Metrica (sample games 1 and 2), Impect (Bundesliga 2023/24 events). Metrica's EPTS/JSON game 3 is not read. |
-| Authenticated StatsBomb API / local files  | —     | Out of scope                                                                                                               |
-| Image export (PNG/SVG) with logo/watermark | 1     | ⬜                                                                                                                         |
+| Authenticated StatsBomb API / local files  | —     | Out of scope                                                                                                                                                   |
+| Image export (PNG/SVG) with logo/watermark | 1     | ⬜                                                                                                                                                             |
 
 Image export is the path from a finished chart out of the browser tab. SVG layers export as
 they are. Canvas layers need their `devicePixelRatio`-scaled buffer flattened into the same
@@ -252,3 +252,4 @@ All three packages are published under the `pitchkit` npm org. Each package's ow
 | 2026-10-03 | 0.5.0  | 0.6.0   | —                | `RaceChart`, `MomentumChart`, `RadarChart`, `PizzaChart`: the first non-pitch charts, with the cartesian and polar maths and chart theme tokens they share.                                                                                                           |
 | 2026-10-06 | 0.6.0  | 0.7.0   | —                | **Breaking:** `RaceChart` and `MomentumChart` require a `period` on every event and datum ([#82](https://github.com/yribeiro/pitchkit/issues/82)). Fixes for chart edge cases (#83), overlaid pizza slice order (#89) and four layers on centre-origin pitches (#90). |
 | 2026-10-18 | 0.7.0  | 0.8.0   | 0.5.0            | `GoalView` and `GoalShots`: the goal mouth from in front, for shot placement. Metrica Sports provider (tracking and events) and `metrica` pitch type. Hexbin lattice built in metres on percentage grids.                                                             |
+| 2026-10-20 | 0.8.0  | 0.9.0   | 0.6.0            | `PlayerAvatar`: lineup avatars with cards, substitutions, goals and assists. Impect provider (Bundesliga 2023/24 events) and `impect` pitch type. Wyscout and Impect schema errors worded like StatsBomb's and SkillCorner's.                                         |
