@@ -404,7 +404,7 @@ fill a round, `position: relative` box. It is one component per player, not a `d
 - **The goal and assist glyphs are filled silhouettes, generated and traced.** Stroked line icons
   turned to mush at a 15px badge. The ball and boot were generated as raster concepts (Recraft, via
   ElevenLabs), picked for legibility at 15 to 20 px, and traced to paths with
-  `packages/react/scripts/trace-icon.py`; the ball was averaged with its mirror image and clipped to a
+  potrace (a one-off step, not kept in the repo); the ball was averaged with its mirror image and clipped to a
   true circle first, and is drawn over a light disc so a dark ball still reads as a football. The boot is
   tilted heel-up, toe to the bottom right, so it takes the ball's width in the same square. Badges have no
   backing: the icons sit on the grass or the photo's edge, dark by default, lifted by a thin light halo,

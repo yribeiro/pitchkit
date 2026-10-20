@@ -4,11 +4,11 @@
  * to mush.
  *
  * Both were generated as raster concepts (Recraft, via ElevenLabs), then
- * traced to paths with `scripts/trace-icon.py`. The ball was averaged with
- * its own mirror image and clipped to a true circle before tracing, so its
- * outline is round and its panels symmetric. Coordinates are rounded to a
- * tenth of a unit. To redraw one, regenerate the concept and re-run the
- * script; don't hand-edit the paths.
+ * traced to paths with potrace. The ball was averaged with its own mirror
+ * image and clipped to a true circle before tracing, so its outline is round
+ * and its panels symmetric. Coordinates are rounded to a tenth of a unit.
+ * To redraw one, replace the path with a new trace rather than hand-editing
+ * it.
  */
 
 /** A football, panels in ink and seams knocked out, in a 24-unit square. */
