@@ -1,5 +1,52 @@
 # @pitchkit/core
 
+## 0.8.0
+
+### Minor Changes
+
+- 8b9084e: Impect open data, and an `impect` pitch type.
+
+  `@pitchkit/data-providers/impect` loads Impect's open event data: all 306
+  Bundesliga 2023/24 matches, with lineups, squads and players. `fetchMatches`,
+  `fetchMatchEvents` and the other fetchers take Impect's ids; `shots`, `passes`,
+  `byTeam` and `inPeriod` narrow the feed; `isGoal`, `isOwnGoal`, `hasPass` and
+  the other predicates read it. `matchSeconds` gives a match clock, since Impect's
+  second half starts at 10,000 seconds, and `score` counts goals and own goals,
+  since the match list has none. Field names are Impect's own; the lifted
+  `x`/`y`/`endX`/`endY` are the adjusted coordinates, where the acting team
+  attacks towards `+x`.
+
+  Impect's data is **not openly licensed**: their terms allow non-commercial
+  analytical and research use only, and forbid redistributing it. The package
+  ships none of it and fetches from Impect's own repository.
+
+  `core` gains the `"impect"` pitch type: 105x68 metres from the centre spot,
+  y up (mplsoccer's `impect`). It widens the public `PitchTypeId` union, which is
+  additive for callers, though an exhaustive `switch` over it gains a case.
+
+  The bundled skill documents the pitch type and the loader, and its per-provider
+  recipes move to a new `references/data-providers.md`, keeping `SKILL.md` under
+  its length guidance.
+
+- c703887: Add `<PlayerAvatar>`, a player's photo, shirt number and name at a point on the pitch, with badges
+  for a yellow, second yellow or red card, a substitution on or off (a green or red square with a diagonal arrow, in or out), goals and assists. Counts show from
+  two up, and the badges are read out in words after the name.
+
+  It is HTML rather than SVG, so the photo can be any image component: pass `src` for a lazy-loaded
+  `<img>`, or nest `next/image` (or any other) as `children`, which fill a round `position: relative`
+  box. With no `size` it scales with the pitch, and `--pitch-avatar-size` sets it from CSS. `<Pitch>`
+  now stacks an HTML overlay layer over its `<svg>` for it to render into; like the Canvas layers, avatars
+  appear after hydration rather than in server-rendered HTML.
+
+  `@pitchkit/core` adds twelve theme tokens: `--pitch-avatar-size`, `--pitch-avatar-bg`,
+  `--pitch-avatar-ring`, `--pitch-avatar-text`, `--pitch-avatar-muted`, `--pitch-avatar-icon`,
+  `--pitch-avatar-icon-halo`, `--pitch-avatar-ball`, `--pitch-avatar-initials`, `--pitch-sub-on`,
+  `--pitch-sub-off` and `--pitch-sub-arrow`. The bundled Agent Skill documents
+  all of it.
+
+  `<Pitch>` now wraps its `<svg>`, the overlay and the tooltip in one inner box sized to its content box, so
+  HTML marks and the hover tooltip stay on their points when the pitch has padding or a border.
+
 ## 0.7.0
 
 ### Minor Changes
