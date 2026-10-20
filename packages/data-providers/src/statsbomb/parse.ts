@@ -1,4 +1,5 @@
 import { DataProviderError } from "../errors.js";
+import { describe, isRecord } from "../guards.js";
 import type {
   StatsBombCompetition,
   StatsBombEvent,
@@ -12,27 +13,6 @@ import type {
  * they're the half you use when the JSON is already on disk, in a bundle, or
  * came from your own cache.
  */
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/**
- * Describes what we actually got, for error messages that help. An object of
- * the wrong shape is the common case — someone pasted a matches URL into an
- * events field — so name its keys rather than just saying "object".
- */
-function describe(value: unknown): string {
-  if (Array.isArray(value)) return `an array of ${value.length}`;
-  if (value === null) return "null";
-  if (isRecord(value)) {
-    const keys = Object.keys(value);
-    if (keys.length === 0) return "an empty object";
-    const shown = keys.slice(0, 4).join(", ");
-    return `an object with keys: ${shown}${keys.length > 4 ? ", ..." : ""}`;
-  }
-  return typeof value;
-}
 
 function expectArray(json: unknown, what: string): unknown[] {
   if (!Array.isArray(json)) {

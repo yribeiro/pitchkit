@@ -1,4 +1,5 @@
 import { DataProviderError } from "../errors.js";
+import { describe, isRecord } from "../guards.js";
 import type {
   WyscoutCompetition,
   WyscoutEvent,
@@ -7,21 +8,6 @@ import type {
   WyscoutPosition,
   WyscoutTeam,
 } from "./types.js";
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/** Describes what actually arrived, for an error message worth reading. */
-function describe(value: unknown): string {
-  if (value === null) return "null";
-  if (Array.isArray(value)) return `an array of ${value.length}`;
-  if (isRecord(value)) {
-    const keys = Object.keys(value).slice(0, 4);
-    return keys.length > 0 ? `an object with keys ${keys.join(", ")}` : "an empty object";
-  }
-  return typeof value;
-}
 
 function expectArray(json: unknown, what: string): unknown[] {
   if (!Array.isArray(json)) {
