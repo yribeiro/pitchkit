@@ -689,6 +689,36 @@
    "id": 209379632
   },
   {
+   "eventId": 7,
+   "subEventName": "Touch",
+   "tags": [
+    {
+     "id": 102
+    },
+    {
+     "id": 1401
+    }
+   ],
+   "playerId": 70086,
+   "positions": [
+    {
+     "y": 41,
+     "x": 3
+    },
+    {
+     "y": 100,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Others on the ball",
+   "teamId": 1625,
+   "matchPeriod": "1H",
+   "eventSec": 2746.124824,
+   "subEventId": 72,
+   "id": 209379572
+  },
+  {
    "eventId": 9,
    "subEventName": "Reflexes",
    "tags": [
@@ -746,6 +776,42 @@
    "id": 209379576
   },
   {
+   "eventId": 3,
+   "subEventName": "Penalty",
+   "tags": [
+    {
+     "id": 101
+    },
+    {
+     "id": 402
+    },
+    {
+     "id": 1202
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 8325,
+   "positions": [
+    {
+     "y": 51,
+     "x": 90
+    },
+    {
+     "y": 79,
+     "x": 89
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Free Kick",
+   "teamId": 1625,
+   "matchPeriod": "2H",
+   "eventSec": 105.26587299999983,
+   "subEventId": 35,
+   "id": 209379606
+  },
+  {
    "eventId": 2,
    "subEventName": "Foul",
    "tags": [
@@ -771,6 +837,45 @@
    "eventSec": 639.4059830000001,
    "subEventId": 20,
    "id": 209379879
+  },
+  {
+   "eventId": 10,
+   "subEventName": "Shot",
+   "tags": [
+    {
+     "id": 101
+    },
+    {
+     "id": 402
+    },
+    {
+     "id": 201
+    },
+    {
+     "id": 1204
+    },
+    {
+     "id": 1801
+    }
+   ],
+   "playerId": 11066,
+   "positions": [
+    {
+     "y": 50,
+     "x": 92
+    },
+    {
+     "y": 100,
+     "x": 100
+    }
+   ],
+   "matchId": 2499841,
+   "eventName": "Shot",
+   "teamId": 1625,
+   "matchPeriod": "2H",
+   "eventSec": 2316.3027739999998,
+   "subEventId": 100,
+   "id": 209380288
   }
  ],
  "teams": {

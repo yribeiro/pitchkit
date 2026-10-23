@@ -45,15 +45,18 @@ silently. `is_detected: false` means extrapolated, not seen. Pass the match's ow
 ## Wyscout — `/wyscout`, `type="wyscout"`
 
 ```ts
-import { fetchMatch, isGoal, shotGoalZone, shots } from "@pitchkit/data-providers/wyscout";
+import { fetchMatch, goalAttempts, isGoal, shotGoalZone } from "@pitchkit/data-providers/wyscout";
 
 const match = await fetchMatch(2499943); // Liverpool 4–3 Manchester City, 2018
-const goals = shots(match.events).filter(isGoal);
+const goals = goalAttempts(match.events).filter(isGoal);
 ```
 
 `fetchMatch` returns events and both squads; there is no `fetchMatches`. `x` is normalised to
 the attacking direction. **A goal is also tagged on the conceding keeper's save**, so filter
-`shots(events)` before `isGoal`. **A shot has no end coordinate** (`positions[1]` is a
+`goalAttempts(events)` before `isGoal`. Not `shots(events)`: **a penalty or direct free kick is a
+`Free Kick`**, not a `Shot`. **That is still not the score:** an own goal is `isOwnGoal` (tag 102,
+`teamId` is the side that conceded), and shootout kicks are penalties in `matchPeriod: "P"`.
+`goalsFor(events, teamId)` handles both. **A shot has no end coordinate** (`positions[1]` is a
 placeholder); `shotGoalZone(shot)` reads where it went. Nearly everything else is a tag:
 `hasTag`, `WYSCOUT_TAGS`, `isAccurate`, `wonDuel`.
 

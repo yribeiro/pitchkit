@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { matchFixture } from "./fixtures.js";
 import { parseMatch } from "./parse.js";
-import { isGoal } from "./predicates.js";
+import { isGoal, isOwnGoal } from "./predicates.js";
 import {
   byPlayer,
   byTeam,
   duels,
   fouls,
   freeKicks,
+  goalAttempts,
+  goalsFor,
   inMatchOrder,
   indexPlayersById,
   matchSeconds,
@@ -35,12 +37,65 @@ describe("selectors", () => {
     expect(ofType(events, "Not A Type")).toEqual([]);
   });
 
-  it("shots() is what makes isGoal count each goal once", () => {
+  it("goalAttempts() is what makes isGoal count each goal once", () => {
     // The whole feed carries the goal tag twice — on the shot or free kick,
     // and again on the conceding keeper's save attempt.
     const everywhere = events.filter(isGoal);
-    const onShots = shots(events).filter(isGoal);
-    expect(everywhere.length).toBeGreaterThan(onShots.length);
+    const onAttempts = goalAttempts(events).filter(isGoal);
+    expect(everywhere.length).toBeGreaterThan(onAttempts.length);
+    expect(onAttempts.some((e) => e.eventName === "Save attempt")).toBe(false);
+  });
+});
+
+describe("goalAttempts", () => {
+  it("adds penalties to shots, because Wyscout records a penalty as a Free Kick", () => {
+    const attempts = goalAttempts(events);
+    const penalty = attempts.find((e) => e.subEventName === "Penalty");
+    expect(penalty?.eventName).toBe("Free Kick");
+    expect(isGoal(penalty!)).toBe(true);
+    expect(shots(events)).not.toContain(penalty);
+    expect(attempts).toEqual(expect.arrayContaining(shots(events)));
+  });
+
+  it("leaves out set pieces that are not attempts on goal", () => {
+    const freeKickAttempts = goalAttempts(events).filter((e) => e.eventName === "Free Kick");
+    expect(freeKickAttempts.length).toBeGreaterThan(0);
+    expect(freeKicks(events).length).toBeGreaterThan(freeKickAttempts.length);
+    for (const e of freeKickAttempts) {
+      expect(["Penalty", "Free kick shot"]).toContain(e.subEventName);
+    }
+  });
+});
+
+describe("goalsFor", () => {
+  const huddersfield = 1673;
+  const city = 1625;
+
+  it("gives the real score, Huddersfield 1–2 Manchester City, where shots alone find one goal", () => {
+    expect(teamIds(match).sort()).toEqual([city, huddersfield]);
+    expect(goalsFor(events, huddersfield)).toBe(1);
+    expect(goalsFor(events, city)).toBe(2);
+    expect(shots(events).filter(isGoal)).toHaveLength(1);
+  });
+
+  it("credits an own goal to the other side: it is tag 102 on the conceding team's event", () => {
+    const ownGoals = events.filter(isOwnGoal);
+    expect(ownGoals).toHaveLength(1);
+    expect(ownGoals[0]?.eventName).toBe("Others on the ball");
+    expect(ownGoals[0]?.teamId).toBe(city);
+    expect(isGoal(ownGoals[0]!)).toBe(false);
+    expect(goalAttempts(events)).not.toContain(ownGoals[0]);
+  });
+
+  it("leaves out shootout kicks", () => {
+    const penalty = goalAttempts(events).find((e) => e.subEventName === "Penalty")!;
+    const shootoutKick = { ...penalty, id: -1, matchPeriod: "P" as const };
+    expect(goalsFor([...events, shootoutKick], city)).toBe(2);
+    expect(goalsFor([...events, { ...shootoutKick, matchPeriod: "E1" as const }], city)).toBe(3);
+  });
+
+  it("is zero for a team that isn't in the match", () => {
+    expect(goalsFor(events, 999999)).toBe(0);
   });
 });
 
