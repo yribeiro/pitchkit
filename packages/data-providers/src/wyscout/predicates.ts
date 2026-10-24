@@ -123,8 +123,9 @@ export function hasEndLocation(event: WyscoutEvent): boolean {
  * Was this a goal?
  *
  * Applies to the event that produced it — but note the same tag also sits on
- * the conceding keeper's `Save attempt`, so filter `shots()` rather than the
- * whole feed unless you want both sides of each goal. See `shots`.
+ * the conceding keeper's `Save attempt`, so filter `goalAttempts()` rather
+ * than the whole feed unless you want both sides of each goal. An own goal
+ * carries `isOwnGoal` instead. See `goalAttempts`.
  */
 export const isGoal = (event: WyscoutEvent): boolean => hasTag(event, WYSCOUT_TAGS.GOAL);
 export const isOwnGoal = (event: WyscoutEvent): boolean => hasTag(event, WYSCOUT_TAGS.OWN_GOAL);

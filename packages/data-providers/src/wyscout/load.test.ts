@@ -80,14 +80,14 @@ describe("fetchMatch", () => {
     const match = await fetchMatch(2499841, { fetch: fetchStub });
 
     expect(requestedUrl(fetchStub)).toBe(`${WYSCOUT_EVENTS_BASE_URL}/2499841.json`);
-    expect(match.events).toHaveLength(27);
+    expect(match.events).toHaveLength(30);
     expect(Object.keys(match.teams)).toHaveLength(2);
   });
 
   it("fetchMatchEvents returns just the events", async () => {
     const fetchStub = stubFetch("match-2499841-sample");
     const events = await fetchMatchEvents(2499841, { fetch: fetchStub });
-    expect(events).toHaveLength(27);
+    expect(events).toHaveLength(30);
   });
 });
 

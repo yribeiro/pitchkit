@@ -577,8 +577,19 @@ Re-verify against a fresh sample before "correcting" any of them.
   with y pointing down, and Opta's is bottom-left with y pointing up. Plotting one on the
   other's type mirrors the pitch vertically, and nothing errors.
 - **A goal is tagged twice:** tag 101 is on the scoring action and on the keeper's
-  `Save attempt`. `shots(events).filter(isGoal)` counts each goal once; filtering the whole
-  feed doesn't.
+  `Save attempt`. `goalAttempts(events).filter(isGoal)` counts each goal once; filtering the
+  whole feed doesn't.
+- **Not every goal is a `Shot`.** A penalty is `eventName: "Free Kick"`,
+  `subEventName: "Penalty"`, and a direct free kick is `"Free kick shot"`; both carry tag 101.
+  `shots(events).filter(isGoal)` finds 4 of France 4–2 Croatia's goals (`2058017`) and 4 of
+  Russia 5–0 Saudi Arabia's (`2057954`). `goalAttempts` adds both sub-events back.
+- **An own goal is tag 102, never 101**, on one event by the player who put it in (`Others on
+the ball` in all five checked: `2058004`, `2058011`, `2058017`, `2499841`, `2576335`). Its
+  `teamId` is the side that conceded.
+- **Shootout kicks are penalties in `matchPeriod: "P"`**, tagged 101 when scored. Excluding
+  them, attempts tagged 101 plus the opponents' own goals gave the real score in all 36
+  matches checked, among them every 2018 World Cup knockout tie (`2058002`–`2058017`, four
+  with shootouts).
 - **A shot has no end coordinate.** `positions[1]` is a placeholder for every shot,
   `Interruption` and `Offside`; the goal-mouth tags (1201–1223) record where a shot went
   (`shotGoalZone`). The exclusion is keyed on event type, not value: `(100, 100)` is a

@@ -6,15 +6,19 @@
  * the 2018 World Cup and Euro 2016. Released under CC BY 4.0.
  *
  * Four layers, each usable on its own: `parse*` (pure, no network),
- * `load*`/`fetch*` (network), `shots`/`passes`/`duels` (narrowing selectors)
- * and the `is*` predicates (composable filters).
+ * `load*`/`fetch*` (network), `goalAttempts`/`shots`/`passes`/`duels`
+ * (narrowing selectors) and the `is*` predicates (composable filters).
  *
  * ```ts
- * import { fetchMatch, shots, isGoal } from "@pitchkit/data-providers/wyscout";
+ * import { fetchMatch, goalAttempts, isGoal } from "@pitchkit/data-providers/wyscout";
  *
  * const match = await fetchMatch(2499841); // Huddersfield v Man City
- * const goals = shots(match.events).filter(isGoal);
+ * const goals = goalAttempts(match.events).filter(isGoal);
  * ```
+ *
+ * A penalty or direct free kick is a `Free Kick`, not a `Shot`, which is why
+ * that reads `goalAttempts` rather than `shots`. An own goal is neither, so
+ * for the score use `goalsFor(events, teamId)`.
  *
  * Three things about this data are load-bearing and easy to get wrong:
  *
@@ -82,6 +86,8 @@ export {
   duels,
   fouls,
   freeKicks,
+  goalAttempts,
+  goalsFor,
   inMatchOrder,
   indexPlayersById,
   matchSeconds,

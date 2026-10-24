@@ -8,7 +8,7 @@ const events = match.events;
 
 describe("parseMatch", () => {
   it("reads the events, teams and squads out of one match file", () => {
-    expect(events).toHaveLength(27);
+    expect(events).toHaveLength(30);
     expect(new Set(Object.keys(match.teams))).toEqual(new Set(["1673", "1625"]));
     expect(match.teams["1673"]?.name).toBe("Huddersfield Town");
     expect(match.teams["1625"]?.name).toBe("Manchester City");

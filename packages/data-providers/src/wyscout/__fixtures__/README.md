@@ -7,12 +7,12 @@ Test-only: `package.json`'s `files: ["dist"]` keeps them out of the tarball.
 
 ## Provenance
 
-| File                        | Source                                                                                                          | Trimming                                                                      |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `match-2499841-sample.json` | `koenvo/wyscout-soccer-match-event-dataset` `processed/files/2499841.json` (Huddersfield Town v Manchester City) | 27 of 1,593 events; both teams kept whole; squads cut to 2 players per side    |
-| `competitions.json`         | figshare `ndownloader.figshare.com/files/15073685`                                                              | None — the real file is 1.4 KB and covers all seven competitions              |
+| File                        | Source                                                                                                           | Trimming                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `match-2499841-sample.json` | `koenvo/wyscout-soccer-match-event-dataset` `processed/files/2499841.json` (Huddersfield Town v Manchester City) | 30 of 1,593 events; both teams kept whole; squads cut to 2 players per side |
+| `competitions.json`         | figshare `ndownloader.figshare.com/files/15073685`                                                               | None — the real file is 1.4 KB and covers all seven competitions            |
 
-## Why these 27 events
+## Why these 30 events
 
 One per case the parsers, selectors and predicates need to be held to. The
 selection is scripted against the full match rather than hand-picked, so
@@ -21,8 +21,14 @@ re-running it reproduces the same set.
 - **A goal (tag 101) — on a `Save attempt`.** This is the fixture's most
   important row. Wyscout tags a goal on the conceding keeper's save as well as
   on the scoring action; across six matches tag 101 sat on 15 shots, 19 save
-  attempts and 3 free kicks. A test pins that `shots(...).filter(isGoal)`
+  attempts and 3 free kicks. A test pins that `goalAttempts(...).filter(isGoal)`
   counts each goal once while the unfiltered feed does not.
+- **All three of the match's goals**, added by event id (209379572, 209379606,
+  209380288): the own goal that put Huddersfield ahead (tag 102 on a City
+  player's `Others on the ball`; the save attempt above is City's keeper's, on that goal),
+  Manchester City's penalty (a `Free Kick`, not a `Shot`) and their winner (a
+  `Shot`). Together they pin that `goalAttempts` plus `isOwnGoal` gives the
+  real score, 1–2, while `shots(...).filter(isGoal)` finds one goal.
 - **Shots with goal-mouth tags** (1215, 1216) and a **blocked** shot (2101) —
   where a shot went is a tag, not a coordinate.
 - **Both shot end-position placeholders**, `(100, 100)` and `(0, 0)`, so the
