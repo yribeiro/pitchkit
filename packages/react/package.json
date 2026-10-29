@@ -73,7 +73,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^5",
-    "happy-dom": "^20.10.6",
+    "happy-dom": "^21.0.4",
     "react": "^19",
     "react-dom": "^19",
     "tsup": "^8",
