@@ -21,6 +21,7 @@
  */
 
 export type {
+  Known,
   PassBodyPart,
   PassHeight,
   PassOutcome,

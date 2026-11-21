@@ -45,6 +45,9 @@ export type { RaceChartProps, RaceSeries, RaceAppearance, RaceHoverRow } from ".
 export { MomentumChart } from "./MomentumChart.js";
 export type {
   MomentumChartProps,
+  MomentumBaseProps,
+  MomentumEventProps,
+  NoMomentumEventProps,
   MomentumAppearance,
   MomentumEventKind,
   MomentumHover,
@@ -84,4 +87,4 @@ export { usePitch } from "./use-pitch.js";
 export { useRaceChart } from "./race-context.js";
 export { useMomentumChart } from "./momentum-context.js";
 export type { RaceChartContextValue, ResolvedRaceSeries } from "./race-context.js";
-export type { TooltipState } from "./context.js";
+export type { PitchContextValue, TooltipState } from "./context.js";
