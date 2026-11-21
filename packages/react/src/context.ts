@@ -9,6 +9,7 @@ export interface TooltipState {
   readonly y: number;
 }
 
+/** What `usePitch()` returns: the pitch's dimensions, viewport and pixel transform. */
 export interface PitchContextValue {
   readonly dimensions: PitchDimensions;
   readonly viewport: Viewport;

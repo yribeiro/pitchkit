@@ -20,7 +20,7 @@
  * to typecheck against next season's data — so the known values give
  * autocomplete while unknown ones remain assignable.
  */
-type Known<T extends string> = T | (string & Record<never, never>);
+export type Known<T extends string> = T | (string & Record<never, never>);
 
 /** StatsBomb's ubiquitous `{ id, name }` reference pair. */
 export interface StatsBombRef<TName extends string = string> {

@@ -49,7 +49,7 @@ export interface MomentumHover<T, E> {
   readonly events: readonly E[];
 }
 
-interface MomentumBaseProps<T, E> {
+export interface MomentumBaseProps<T, E> {
   /**
    * Every sample, in one list, each tagged with its period by `period`: the
    * shape a feed gives. Samples can be at any interval and in any order, and
@@ -95,7 +95,7 @@ interface MomentumBaseProps<T, E> {
   readonly children?: ReactNode;
 }
 
-interface MomentumEventProps<E> {
+export interface MomentumEventProps<E> {
   readonly events: readonly E[];
   /** Match minute of the event, as the feed numbers it. */
   readonly eventTime: Accessor<E, number>;
@@ -114,7 +114,7 @@ interface MomentumEventProps<E> {
   readonly eventLabel?: Accessor<E, string>;
 }
 
-interface NoMomentumEventProps {
+export interface NoMomentumEventProps {
   readonly events?: undefined;
 }
 
