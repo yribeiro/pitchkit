@@ -2,10 +2,24 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import type { Metadata } from "next";
+import type { ComponentProps } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blog, formatPostDate } from "@/lib/source";
 import { SITE_URL, X_HANDLE } from "@/lib/site";
+
+/**
+ * Posts link to finished example files in `public/` (a report, say). The default
+ * MDX link is a client-side Next link, which swallows the click on a path that
+ * isn't a route, so static `.html` files get a plain anchor in a new tab.
+ */
+function PostLink(props: ComponentProps<"a">) {
+  if (props.href?.endsWith(".html")) {
+    return <a {...props} target="_blank" rel="noopener" />;
+  }
+  const DefaultLink = defaultMdxComponents.a;
+  return <DefaultLink {...props} />;
+}
 
 export default async function BlogPost(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params;
@@ -15,7 +29,7 @@ export default async function BlogPost(props: { params: Promise<{ slug: string }
   const MDXContent = post.data.body;
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
+    <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
       <Link href="/blog" className="text-sm text-fd-muted-foreground hover:text-fd-foreground">
         ← Blog
       </Link>
@@ -38,9 +52,9 @@ export default async function BlogPost(props: { params: Promise<{ slug: string }
         </p>
       </header>
       <article className="prose min-w-0 pt-8">
-        <MDXContent components={{ ...defaultMdxComponents, Tab, Tabs, Step, Steps }} />
+        <MDXContent components={{ ...defaultMdxComponents, a: PostLink, Tab, Tabs, Step, Steps }} />
       </article>
-    </main>
+    </div>
   );
 }
 

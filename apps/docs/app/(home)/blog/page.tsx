@@ -30,7 +30,7 @@ export default function BlogIndex() {
   const posts = blogPostsByDate();
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
+    <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
       <div className="flex flex-col gap-3 pb-10">
         <h1 className="text-3xl font-semibold tracking-tight text-fd-foreground">Blog</h1>
         <p className="max-w-2xl text-sm text-fd-muted-foreground">
@@ -62,6 +62,6 @@ export default function BlogIndex() {
           </li>
         ))}
       </ul>
-    </main>
+    </div>
   );
 }
