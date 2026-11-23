@@ -1,32 +1,36 @@
 ---
 title: How to vibe code a post-match report
-description: Six prompts that take a coding agent from an empty folder to a post-match report on the Euro 2024 final, delivered as one HTML file you can send to a coach. For Claude Code and Codex.
+description:
+  Six prompts that take a coding agent from an empty folder to a post-match report on the Euro 2024
+  final, delivered as one HTML file you can send to a coach. For Claude Code and Codex.
 date: "2026-11-23"
 author: Yohahn Ribeiro
 series: Vibe coding football analysis
 part: 1
 ---
 
-This is the report we're going to build. It covers the Euro 2024 final from StatsBomb's free
-event data, and the whole thing is one HTML file:
+This is the report we're going to build. It covers the Euro 2024 final from StatsBomb's free event
+data, and the whole thing is one HTML file:
 
 ![The top of the finished report: score, scorers with the xG of each goal, and the key numbers for Spain and England](/blog/vibe-code-a-post-match-report/report-top.webp)
 
-[Open the finished report](/blog/vibe-code-a-post-match-report/euro-2024-final-report.html) (950 KB). Hover the shots for the player, minute and xG.
+[Open the finished report](/blog/vibe-code-a-post-match-report/euro-2024-final-report.html) (950
+KB). On a laptop, hover a shot to see the player, minute and xG.
 
-A coding agent wrote all of it from six prompts. You don't type any code. You do read what the
-agent says back after each prompt, and that turns out to matter, because both of our test runs
-went wrong somewhere in a way the agent only noticed when it was told to look.
+A coding agent wrote all of it from six prompts. You don't type any code, but you do have to read
+what the agent says back. Both of our test runs went wrong somewhere, and each time the agent only
+noticed once it was told to look.
 
-Below are the prompts in the order you send them, with notes on why each one says what it says.
-They're written for Claude Code. Codex needs two changes, which are shown where they come up.
+Below are the prompts, in order, and why each is worded the way it is. They're written for Claude
+Code. For Codex, the first prompt changes in two places, shown in its tab.
 
 ## What you need
 
 - [Node.js](https://nodejs.org) 22 or newer.
-- Claude Code or Codex, with a plan or API credits. A full run from an empty folder took about
-  ten minutes of agent time.
-- A terminal (Terminal on a Mac, or WSL on Windows) and an empty folder.
+- Claude Code or Codex, with a plan or API credits. A full run from an empty folder took about ten
+  minutes of agent time.
+- A terminal: Terminal on a Mac, or [WSL](https://learn.microsoft.com/windows/wsl/install) on
+  Windows.
 
 <Tabs items={["Claude Code", "Codex"]}>
 <Tab value="Claude Code">
@@ -49,9 +53,13 @@ codex
 </Tab>
 </Tabs>
 
-Send each prompt as a separate message and wait for the agent to finish before sending the next.
-It will ask permission to install packages and run scripts. That's expected, so allow it. If a
-step fails, paste the error back and ask it to fix it.
+Both tools ask you to sign in the first time they start. If `npm install -g` fails with a
+permissions error on a Mac, each tool's install page has an installer that avoids it.
+
+Send each prompt as a separate message and wait for the agent to finish before sending the next. It
+will ask permission to install packages and run scripts, and at step 4 to download a headless
+browser (a copy of Chrome it can drive to take screenshots, a couple of hundred MB). All of that is
+expected, so allow it. If a step fails, paste the error back and ask it to fix it.
 
 ## 1. Set up the project
 
@@ -112,17 +120,17 @@ report yet.
 </Tab>
 </Tabs>
 
-PitchKit is the charting library here, and it's young enough that no model has learned it. Ask
-an agent for a shot map without help and it tends to write mplsoccer's Python API in JSX, using
-components that don't exist. `skills install` copies PitchKit's own instructions for agents into
-the project, matched to the version you installed. Claude Code looks for them in `.claude/skills`
-and Codex in `.agents/skills`, which is the only reason the two prompts differ, apart from the
-name of the brief file.
+PitchKit is the charting library here, and it's young enough that no model has learned it. Ask an
+agent for a shot map without help and it tends to write mplsoccer's Python API in JSX, using
+components that don't exist. `skills install` copies PitchKit's own instructions for agents into the
+project, matched to the version you installed. Claude Code looks for them in `.claude/skills` and
+Codex in `.agents/skills`, which is the only reason the two prompts differ, apart from the name of
+the brief file.
 
-The single-file rule comes first because it changes how everything else is built. PitchKit's
-data loaders fetch from GitHub when the page opens, and a report that does that breaks the moment
-someone opens it on a train. The skill's own data example fetches live, so unless the prompt
-says otherwise, that's what the agent copies.
+The single-file rule is in the first prompt because otherwise the agent builds the page around a
+live fetch. PitchKit's data loaders fetch from GitHub when the page opens, and a report that does
+that breaks the moment someone opens it on a train. The skill's own data example fetches live, so
+unless the prompt says otherwise, that's what the agent copies.
 
 ## 2. Get the data, and look at it
 
@@ -148,15 +156,16 @@ Read this reply properly. You should get back:
 | Shots | 16                                     | 9               |
 | xG    | 1.79                                   | 0.73            |
 
-If your numbers are different, sort it out now. It's a lot easier than finding out from a
-finished page.
+If your numbers are different, sort it out now. It's a lot easier than finding out from a finished
+page.
 
 The agent has read plenty about this match, and the last line of the prompt is there to stop it
-filling gaps from memory. Our runs also turned up the traps you'd hope an analyst would spot.
-StatsBomb counts stoppage time inside the minute, so the first half runs to 47' and the second
-half starts again at 45'. Williams' goal is in the second half even though 47' happened twice.
-Players are listed under their full legal names, so without being told the agent will write
-"Nicholas Williams Arthuer" in the header. The data has a `player_nickname` field for this.
+filling gaps from memory. Both runs also flagged two traps. StatsBomb counts stoppage time inside
+the minute and restarts the clock at 45' for the second half, so this match has two 47ths: one in
+first-half stoppage time and one just after the restart. Williams scored in the second, and an agent
+that sorts by minute alone can put his goal in the wrong half. Players are listed under their full
+legal names, so without being told the agent will write "Nicholas Williams Arthuer" in the header.
+The data has a `player_nickname` field for this.
 
 ## 3. Plan the report
 
@@ -179,34 +188,23 @@ Tell me which PitchKit component each section uses and exactly how every number
 is computed. Don't write code yet; wait for my OK.
 ```
 
-<Tabs items={["Claude Code", "Codex"]}>
-<Tab value="Claude Code">
+Both tools have a plan mode, but you don't need it here. Approving a plan in Claude Code starts the
+build straight away, before you've sent the rules in prompt 4. "Wait for my OK" does the same job in
+either tool.
 
-Press Shift+Tab until the footer says plan mode, then send the prompt. When the plan comes back,
-choose the option to approve it, and Claude will start building.
+Change the list to suit your own reader, but keep the last paragraph. It makes the agent say how
+it's working out each number, instead of picking a method and not telling you. StatsBomb's open data
+doesn't include possession, for example, so an agent asked for possession will invent a formula for
+it. Share of passes is what we can actually count, so that's what the prompt asks for.
 
-</Tab>
-<Tab value="Codex">
+The pass network line has a catch in this match. Rodri went off injured at half-time, so Spain's
+network only covers the first half while England's runs to Kane's substitution on 61'. The plan in
+our second run pointed this out before writing any code. We kept it, and the finished page says the
+two windows are different lengths.
 
-Type `/plan` first, then send the prompt. Codex won't edit anything until you approve.
-
-</Tab>
-</Tabs>
-
-Change the list to suit your own reader, but keep the last paragraph. Asking how each number is
-worked out is how you find the decisions the agent would otherwise make quietly. StatsBomb's
-open data doesn't include possession, for example, so an agent asked for possession will invent
-a formula for it. Share of passes is what we can actually count, so that's what the prompt asks
-for.
-
-The pass network line has a catch in this match. Rodri went off injured at half-time, so
-Spain's network only covers the first half while England's runs to Kane's substitution on 61'.
-The plan in our second run pointed this out before writing any code. We kept it, and the
-finished page says the two windows are different lengths.
-
-If the plan mentions a `<ShotMap>` or `<PassNetwork>` component, stop there. PitchKit doesn't
-have either. A shot map is a pitch with a scatter layer on it, and seeing those names means the
-agent didn't read the skill.
+If the plan mentions a `<ShotMap>` or `<PassNetwork>` component, stop there. PitchKit doesn't have
+either. A shot map is a pitch with a scatter layer on it, and seeing those names means the agent
+didn't read the skill.
 
 ## 4. Build it
 
@@ -221,14 +219,14 @@ it. Check every section shows sensible numbers and nothing is cut off or blank.
 Fix anything wrong before you stop.
 ```
 
-The screenshot is the line to keep. In the first test run we only asked for the type checker and
-the build. Both passed, and the passes row on the page read 0, with a completion rate of NaN%.
-The data was fine, but the code was reading a field that wasn't there. The same screenshot
-showed the xG chart stopping at 90' while the match ran to 94', and labels you couldn't read on
-the dark background. A passing build only tells you the code runs. Looking at the page is how
-you find out whether it's right.
+The screenshot is the line to keep. In the first test run we only asked for the type checker and the
+build. Both passed, and the passes row on the page read 0, with a completion rate of NaN%. The data
+was fine, but the code was reading a field that wasn't there. The same screenshot showed the xG
+chart stopping at 90' while the match ran to 94', and labels you couldn't read on the dark
+background.
 
-When it's done, open `dist/index.html` from your file manager. It won't look like much yet.
+When it's done, open `dist/index.html` from your file manager. Don't judge the look yet. That's the
+next step.
 
 ## 5. Make it look finished
 
@@ -254,16 +252,15 @@ on the pass networks. Fix anything that doesn't read well on a phone, and
 rebuild when you're done.
 ```
 
-Left to describe "clean" on its own, an agent will choose its own colours. Give it the hex values.
-These are PitchKit's. Use your club's instead if you like, as long as the two teams are easy to
-tell apart and goals get a third colour neither team uses.
+Ask for "clean" without saying what that means and the agent picks the colours. Give it hex values.
+These are PitchKit's. Use your club's instead if you like, as long as the two teams are easy to tell
+apart and goals get a third colour neither team uses.
 
-Phones were where this step earned its keep. At 375px the pass networks turned into a pile of
-overlapping circles, because the nodes keep the same pixel size while the pitch shrinks. The
-agent made the nodes smaller on narrow screens, hid the names on the pitch and put a shirt
-number key underneath. It also found that the shirt numbers had disappeared on desktop. They
-take their colour from the pitch lines, which this brand dims to a third. Neither problem shows
-up unless someone looks.
+Most of what this step fixed was on the phone. At 375px the pass networks turned into a pile of
+overlapping circles, because the nodes keep the same pixel size while the pitch shrinks. The agent
+made the nodes smaller on narrow screens, hid the names on the pitch and put a shirt number key
+underneath. It also found that the shirt numbers had disappeared on desktop. They take their colour
+from the pitch lines, which this brand dims to a third.
 
 ## 6. Check it before you send it
 
@@ -283,26 +280,24 @@ summary I can paste into an email with the report attached. Only quote figures
 the check confirmed.
 ```
 
-The checking script mustn't share code with the report, otherwise a bug in one can hide behind
-the same bug in the other. In our second run it compared 50 figures and names with the
-finished page and found nothing wrong.
+The checking script mustn't share code with the report, otherwise a bug in one can hide behind the
+same bug in the other. In our second run it compared 50 figures with the finished page and found
+nothing wrong.
 
-The takeaways were another matter. Both runs had overclaimed. One said "Spain had the ball",
-which is a claim about possession, on a page that only measures passes. The first run said
-"the goals didn't follow the chances" about a game the side with 2.5 times the xG won. Both got
-rewritten at this step. Read the takeaways yourself anyway. They're the part a coach will quote
-back to you.
+The takeaways did need fixing. Both runs had overclaimed. The second said "Spain had the ball",
+which is a claim about possession, on a page that only measures passes. The first said "the goals
+didn't follow the chances", in a game won by the side with 2.5 times the xG. Both got rewritten at
+this step. Read the takeaways yourself anyway. They're the part a coach will quote back to you.
 
 ## Sending it
 
-`dist/index.html` is the report. It has the data and the charts inside it, so it works without
-an internet connection and anyone can open it in a browser.
+`dist/index.html` is the report. It has the data and the charts inside it, so it works without an
+internet connection and anyone can open it in a browser.
 
-How you send it matters more than you'd think. Some company email systems block `.html`
-attachments, and a phone's attachment preview often won't run the page's code, so the
-recipient sees a blank screen. Put the file in a shared drive or a Teams or Slack channel, and
-tell people to download it and open it in Chrome, Safari or Edge. Do a test send to yourself
-first.
+Some company email systems block `.html` attachments, and a phone's attachment preview often won't
+run the page's code, so the recipient sees a blank screen. Put the file in a shared drive or a Teams
+or Slack channel, and tell people to download it and open it in Chrome, Safari or Edge. Do a test
+send to yourself first.
 
 ## Next
 
