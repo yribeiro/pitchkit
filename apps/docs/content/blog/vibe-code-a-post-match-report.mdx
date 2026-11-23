@@ -1,15 +1,275 @@
 ---
 title: How to vibe code a post-match report
-description: Stub.
+description: Six prompts that take you from an empty folder to a post-match report on the Euro 2024 final, as one HTML file you can email to a coach. With the differences for Claude Code and Codex.
 date: "2026-11-23"
 author: Yohahn Ribeiro
 series: Vibe coding football analysis
 part: 1
 ---
 
-Stub.
+The morning after a match, someone wants the report. Usually it's a slide deck stitched together
+from screenshots, or a notebook nobody outside the analysis team can open. I wanted to see how far a
+coding agent could get on the real thing if I gave it good instructions: a proper report with
+charts, built from event data, in a file I could attach to an email.
+
+It got further than I expected. This post is the prompts I used, in order, and why each one is
+worded the way it is. You don't need to know React. You do need to be willing to read what the
+agent tells you between prompts.
+
+## What you'll end up with
+
+A single `index.html` for the Euro 2024 final, Spain 2–1 England, built from StatsBomb's free
+open data. It has:
+
+- the score, the scorers and the key numbers for each side
+- an xG race chart and a match momentum chart
+- a shot map for each team
+- a pass network for each starting XI
+- three takeaways, each one tied to a number on the page
+
+The file has the data baked into it. It opens with a double click, with no server and no internet
+connection, which is what makes it something you can actually send.
+
+The charts come from [PitchKit](/docs), a React library for football visualisation. That matters
+for this workflow more than you might think, and I'll come back to why.
+
+## Before you start
+
+You need [Node.js 22](https://nodejs.org) or newer, an empty folder, and one coding agent. I've
+run this with Claude Code. The same prompts work in Codex with two small changes, which I've
+flagged where they come up.
 
 <Tabs items={["Claude Code", "Codex"]}>
-<Tab value="Claude Code">a</Tab>
-<Tab value="Codex">b</Tab>
+<Tab value="Claude Code">
+
+```bash
+npm install -g @anthropic-ai/claude-code
+mkdir euro-final-report && cd euro-final-report
+claude
+```
+
+</Tab>
+<Tab value="Codex">
+
+```bash
+npm install -g @openai/codex
+mkdir euro-final-report && cd euro-final-report
+codex
+```
+
+</Tab>
 </Tabs>
+
+Send each prompt as its own message and let the agent finish before you send the next. Read
+its reply each time. Most of the value in this process comes from catching a wrong assumption
+at step two instead of step six.
+
+## 1. Set up the project
+
+```text
+I'm a football analyst. I want to build a post-match report for the Euro 2024 final,
+Spain v England (StatsBomb open data, match id 3943043), and share it as a single HTML file.
+
+Set up a project in this empty folder:
+
+- Vite + React + TypeScript.
+- Install @pitchkit/react, @pitchkit/core and @pitchkit/data-providers. Then run
+  `npx @pitchkit/react skills install` and read the skill it installs before writing any
+  PitchKit code. PitchKit is new and is probably not in your training data, so don't guess its
+  API: if the skill doesn't cover something, read https://www.pitchkitjs.com/llms.txt.
+- The build must produce ONE self-contained HTML file (use vite-plugin-singlefile) that opens
+  with a double click: no server, no network requests at view time.
+
+Write a short project brief to CLAUDE.md covering the goal, the match, the stack and the
+single-file rule, so the next session starts with it. Don't build the report yet.
+```
+
+Three things in there are doing most of the work.
+
+The skill install is the important one. Agents have seen a lot of matplotlib and mplsoccer, and
+left alone they will happily write mplsoccer's Python API in JSX and invent components that
+don't exist. `skills install` puts PitchKit's own instructions, written for agents and matched to
+the version you installed, where the agent will find them. Telling it outright not to trust its
+memory helps too.
+
+The single-file rule goes in at the start because it shapes everything else. If the agent finds
+out at the end that the report can't fetch data at runtime, you get a rewrite.
+
+And the brief file means you can close the terminal tonight and pick it up tomorrow without
+explaining the project again.
+
+<Tabs items={["Claude Code", "Codex"]}>
+<Tab value="Claude Code">
+
+Send it as written. Claude Code reads `CLAUDE.md` at the start of every session and looks for
+skills in `.claude/skills`, which is where `skills install` puts them by default.
+
+</Tab>
+<Tab value="Codex">
+
+Codex reads `AGENTS.md` and looks for project skills in `.agents/skills`. Change two lines:
+
+```text
+  `npx @pitchkit/react skills install --dir .agents/skills` and read the skill it installs ...
+
+Write a short project brief to AGENTS.md covering ...
+```
+
+</Tab>
+</Tabs>
+
+## 2. Get the data, and look at it
+
+```text
+Now the data. Write scripts/fetch-match.ts using @pitchkit/data-providers/statsbomb to fetch
+the match record (competition 55, season 282), the lineups and the events for match 3943043.
+Save only what the report needs to src/data/match.json, so the report never fetches anything
+at runtime. Add it as an npm script and run it.
+
+Then, without writing any UI, tell me what's in the data: the score, the goalscorers and their
+minutes, shots and xG per team, and any traps you noticed (periods, stoppage time, penalties,
+own goals). Check these against the raw events rather than what you remember of the match.
+```
+
+This is the step people skip, and it's the one I'd keep if I could only keep one.
+
+Asking for a summary before any charts does two jobs. You find out whether the agent has
+understood the data, and you get numbers you can check against what you know. If it tells you
+Cole Palmer scored for Spain, you've lost thirty seconds instead of an afternoon.
+
+The last line is there because the agent has read about this match. It will remember a score,
+and the memory might even be right, but a report built on memory can't be trusted. The numbers
+need to come out of the file.
+
+StatsBomb data has a few traps of its own. Stoppage time is counted inside the minute, so the
+first half of the final runs to 47', and the second half restarts at 45. Games that go to
+penalties have a fifth period whose shots carry xG. A good summary will mention these. If yours
+doesn't, ask.
+
+## 3. Plan the report
+
+```text
+Plan the report before writing it. The reader is a head coach on a laptop the morning after
+the game. Top to bottom:
+
+1. Header: teams, score, competition, stage, date, venue.
+2. Key numbers, side by side: goals, xG, shots, shots on target, passes, pass completion,
+   share of passes.
+3. An xG race chart across the match, with goals marked.
+4. A match momentum chart with goals and cards.
+5. A shot map per team: marker size by xG, goals highlighted, a tooltip with player,
+   minute and xG.
+6. A pass network per team, for the starting XI up to the first substitution.
+7. Three takeaways in plain English, each one backed by a number on the page.
+
+Tell me which PitchKit component each section uses and exactly how every number is
+computed. Don't write code yet; wait for my OK.
+```
+
+This is your report, so change the list. The structure is what matters: say who's reading it,
+list the sections in order, and ask for the method before the code.
+
+"Exactly how every number is computed" is the line to read carefully in the reply. Possession is
+the usual one to go wrong. StatsBomb's open data has no possession figure, so the agent has to
+derive one, and you should know which derivation it picked. I've asked for share of passes
+instead, which is honest about what it is.
+
+If the plan names a component like `<ShotMap>` or `<PassNetwork>`, stop it there. Those don't
+exist in PitchKit. A shot map is a pitch with a scatter layer on it, and a sign that the agent
+skipped the skill.
+
+<Tabs items={["Claude Code", "Codex"]}>
+<Tab value="Claude Code">
+
+Press Shift+Tab until the footer says plan mode, then send the prompt. Claude can read files
+but not change them until you approve the plan.
+
+</Tab>
+<Tab value="Codex">
+
+Type `/plan` first, then send the prompt. Codex holds off on edits until you approve.
+
+</Tab>
+</Tabs>
+
+## 4. Build it
+
+```text
+Looks good, build it. Every number on the page must come from src/data/match.json:
+nothing hardcoded, nothing from memory. Run the type checker and the build, and fix
+anything that fails before you stop.
+```
+
+Short, because the plan did the work. The repeated rule about numbers isn't redundant.
+Somewhere in a long build an agent will be tempted to type `2–1` into the header, and the
+reminder costs nothing.
+
+Asking it to run the build itself means you get back something that compiles. Open
+`dist/index.html` in a browser when it's done. It won't look like much yet.
+
+## 5. Make it look finished
+
+```text
+Now make it look like a finished piece of analysis: minimal, clean, data first. Use the
+PitchKit brand:
+
+- Dark page #0a0a0a, cards #121212 with a 1px #262626 border, 12px radius.
+- Text #fafafa, secondary text #a3a3a3. System UI font, tabular numbers for every stat.
+- Accent emerald #34d399. Spain #34d399, England #38bdf8, goals #fb923c.
+- Pitches: surface #0b1712, lines rgba(255,255,255,0.32), no stripes.
+- A single centred column, max 1040px wide, generous spacing, no gradients, no shadows,
+  no emoji. Section titles small and uppercase; let the charts carry the page.
+- Footer: "Built with PitchKit" and "Data: StatsBomb open data" (StatsBomb requires the credit).
+
+Theme PitchKit through its CSS variables only. It must read well from 375px wide up to a
+desktop screen. Rebuild when you're done.
+```
+
+"Make it look nice" gets you purple gradients and drop shadows. Hex values get you what you asked
+for.
+
+Swap these for your club's colours if you like. Just keep the two teams clearly apart, and
+keep goals in a third colour that neither team uses. "CSS variables only" is how PitchKit is
+themed, and saying so up front stops the agent hunting for a `theme` prop.
+
+The 375px line is there because coaches open email on their phones.
+
+## 6. Check it before you send it
+
+```text
+Review the report as if you were the analyst about to send it. Rebuild, then check:
+
+- Re-derive every number shown on the page from the raw StatsBomb events with a separate
+  script, and list any that don't match.
+- Confirm dist/index.html is one file with no external requests (grep it for http).
+- Confirm the takeaways only claim what the numbers on the page show.
+
+Fix whatever is wrong, then give me the final file size and a one-paragraph summary I can
+paste into an email with the report attached.
+```
+
+You'd check a junior analyst's work before it went to the manager. Do the same here. The second
+script matters because it doesn't share code with the report, so a bug in one won't hide behind
+the same bug in the other.
+
+The takeaways deserve your own read as well. Agents like a narrative, and "England's pressing
+faded after the hour" sounds like analysis whether or not anything on the page supports it.
+
+## Sending it
+
+`dist/index.html` is the report. Attach it to an email, drop it in Slack or Teams, or put it on
+a shared drive. Anyone who opens it sees the same thing, and the tooltips still work.
+
+## Why this works
+
+None of these prompts is clever. They work because they do what you'd do with a new analyst on
+their first week:
+
+- **Point it at the right reference.** The skill does the job a style guide would.
+- **Settle the format first.** One HTML file is a constraint, and it changes how the project gets built.
+- **Look at the data before charting it.** Cheap to check, expensive to get wrong.
+- **Agree the plan, then build.** Reviewing a list of sections is quicker than reviewing code.
+- **Check the numbers independently.** A second derivation catches what proofreading won't.
+
+Next in the series: turning this one-off into a template that builds a report for any match
+you give it.
