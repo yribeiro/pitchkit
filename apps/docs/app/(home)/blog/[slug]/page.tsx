@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import type { ComponentProps } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DeckEmbed } from "@/components/blog/deck-embed";
 import { blog, formatPostDate } from "@/lib/source";
 import { SITE_URL, X_HANDLE } from "@/lib/site";
 
@@ -52,7 +53,9 @@ export default async function BlogPost(props: { params: Promise<{ slug: string }
         </p>
       </header>
       <article className="prose min-w-0 pt-8">
-        <MDXContent components={{ ...defaultMdxComponents, a: PostLink, Tab, Tabs, Step, Steps }} />
+        <MDXContent
+          components={{ ...defaultMdxComponents, a: PostLink, DeckEmbed, Tab, Tabs, Step, Steps }}
+        />
       </article>
     </div>
   );
