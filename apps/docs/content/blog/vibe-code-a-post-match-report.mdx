@@ -303,7 +303,19 @@ nothing wrong.
 The takeaways were harder. Every run overclaimed somewhere. One said "the goals didn't follow the
 chances", in a game won by the side with 2.5 times the xG. Another said "Spain had the ball", which
 is a claim about possession, in a deck that only measures passes. The check caught that one and
-changed it to "Spain had more of the ball", which is the same claim again. TAKEAWAY_FOLLOWUP
+changed it to "Spain had more of the ball", which is the same claim again.
+
+So we sent one more prompt:
+
+```text
+Takeaway 2 says Spain 'had more of the ball'. The deck measures passes, not
+possession, so that's a claim we can't back up. Reword it so it only says what
+the passing numbers show, then rebuild and re-run the check.
+```
+
+It came back as "Spain made most of the passes at a higher completion rate", and the agent also
+dropped a final-third figure that had wandered in from the momentum slide. That's the version above.
+Read the takeaways yourself even after the check. They're the part a coach will quote back to you.
 
 ## Sending it
 

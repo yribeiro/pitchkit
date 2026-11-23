@@ -14,7 +14,7 @@ export function DeckEmbed({ src, title }: { src: string; title: string }) {
         <iframe src={src} title={title} loading="lazy" className="h-full w-full border-0" />
       </div>
       <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-fd-muted-foreground">
-        <span>Use the arrows or your arrow keys to move through the slides.</span>
+        <span>Swipe, or use the arrows or your arrow keys, to move through the slides.</span>
         <a
           href={src}
           target="_blank"
