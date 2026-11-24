@@ -1,37 +1,37 @@
 ---
 title: How to vibe code a post-match report
 description:
-  Six prompts that take a coding agent from an empty folder to a post-match slide pack on the Euro
-  2024 final, delivered as one HTML file you can send to a coach. For Claude Code and Codex.
-date: "2026-11-23"
+  Ten prompts, one slide at a time, take a coding agent from an empty folder to a post-match deck on
+  the Euro 2024 final that you can send as a single HTML file. For Claude Code and Codex.
+date: "2026-11-24"
 author: Yohahn Ribeiro
 series: Vibe coding football analysis
 part: 1
 report: euro-2024-final-deck.html
 ---
 
-This is the deck we're going to build. It's a post-match report on the Euro 2024 final, made from
-StatsBomb's free event data, and the whole thing is one HTML file. Click into it and use your arrow
-keys, or the arrows underneath the slides.
+This is the report we're going to build: a nine-slide deck on the Euro 2024 final, made from
+StatsBomb's free event data and saved as one HTML file you can send to a coach.
 
 <ReportLink
   slug="vibe-code-a-post-match-report"
   title="Open the finished report"
-  description="Seven slides, one HTML file. Opens here, with a link back."
+  description="Nine slides, one HTML file. Opens here, with a link back to this post."
 />
 
-A coding agent wrote all of it from six prompts. You don't type any code, but you do have to read
-what the agent says back. Every one of our test runs went wrong somewhere, and each time the agent
-only noticed once it was told to look.
+A coding agent writes all of it, from ten prompts, one slide at a time. You don't type any code, but
+you do have to read what the agent says back. We ran this sequence four times from an empty folder
+and rewrote the prompts after each run. Something went wrong on every run, and most of the time the
+agent only caught it because the prompt told it to look.
 
-Below are the prompts, in order, and why each is worded the way it is. They're written for Claude
-Code. For Codex, the first prompt changes in two places, shown in its tab.
+The screenshots below are slides from the finished deck, so they include the fixes from the last
+prompt. The prompts are written for Claude Code, and Codex differs in the first one.
 
 ## What you need
 
 - [Node.js](https://nodejs.org) 22 or newer.
-- Claude Code or Codex, with a plan or API credits. Our runs from an empty folder took between ten
-  and twenty minutes of agent time.
+- Claude Code or Codex, with a plan or API credits. The last full run took 29 minutes of agent time,
+  and most of that was the pass networks and the final check.
 - A terminal: Terminal on a Mac, or [WSL](https://learn.microsoft.com/windows/wsl/install) on
   Windows.
 
@@ -60,99 +60,104 @@ Both tools ask you to sign in the first time they start. If `npm install -g` fai
 permissions error on a Mac, each tool's install page has an installer that avoids it.
 
 Send each prompt as a separate message and wait for the agent to finish before sending the next. It
-will ask permission to install packages and run scripts, and at step 4 to download a headless
-browser (a copy of Chrome it can drive to take screenshots, a couple of hundred MB). All of that is
-expected, so allow it. If a step fails, paste the error back and ask it to fix it.
+will ask permission to install packages and run scripts, and to download a headless browser (a copy
+of Chrome it can drive to take screenshots, a couple of hundred MB). That's all expected, so allow
+it. If a step fails, paste the error back and ask it to fix it.
 
 ## 1. Set up the project
 
 <Tabs items={["Claude Code", "Codex"]}>
 <Tab value="Claude Code">
 
-```text
-I'm a football analyst. I want to build a post-match report for the Euro 2024
-final, Spain v England (StatsBomb open data, match id 3943043), as a slide pack
-I can send as a single HTML file.
+```text title="Prompt"
+I'm a football analyst. I want to build a post-match report for the Euro 2024 final, Spain v England (StatsBomb open data, match id 3943043), as a slide deck I can send as a single HTML file. We'll build it one slide at a time.
 
 Set up a project in this empty folder:
 
 - Vite + React + TypeScript.
-- Install @pitchkit/react, @pitchkit/core and @pitchkit/data-providers. Then run
-  `npx @pitchkit/react skills install` and read the skill it installs before
-  writing any PitchKit code. PitchKit is new and is probably not in your
-  training data, so don't guess its API: if the skill doesn't cover something,
-  read https://www.pitchkitjs.com/llms.txt.
-- The build must produce ONE self-contained HTML file (use
-  vite-plugin-singlefile) that opens with a double click: no server, and no
-  network requests when someone opens it. Remove anything from the starter
-  template that would load from outside the file. The PitchKit data loaders
-  fetch from GitHub, so we'll fetch the data once, save it in the project and
-  bundle it into the page (that's the next step).
+- Install @pitchkit/react, @pitchkit/core and @pitchkit/data-providers. Then run `npx @pitchkit/react skills install` and read the skill it installs before writing any PitchKit code. PitchKit is new and is probably not in your training data, so don't guess its API: if the skill doesn't cover something, read https://www.pitchkitjs.com/llms.txt.
+- The build must produce ONE self-contained HTML file (use vite-plugin-singlefile) that opens with a double click: no server, and no network requests when someone opens it. Remove anything from the starter template that would load from outside the file. The PitchKit data loaders fetch from GitHub, so we'll fetch the data once, save it in the project and bundle it into the page.
 
-Write a short project brief to CLAUDE.md covering the goal, the match, the stack
-and the single-file rule, so the next session starts with it. Don't build the
-report yet.
+Write a short project brief to CLAUDE.md covering the goal, the match, the stack and the single-file rule, so the next session starts with it. Don't build anything else yet.
 ```
 
 </Tab>
 <Tab value="Codex">
 
-```text
-I'm a football analyst. I want to build a post-match report for the Euro 2024
-final, Spain v England (StatsBomb open data, match id 3943043), as a slide pack
-I can send as a single HTML file.
+```text title="Prompt"
+I'm a football analyst. I want to build a post-match report for the Euro 2024 final, Spain v England (StatsBomb open data, match id 3943043), as a slide deck I can send as a single HTML file. We'll build it one slide at a time.
 
 Set up a project in this empty folder:
 
 - Vite + React + TypeScript.
-- Install @pitchkit/react, @pitchkit/core and @pitchkit/data-providers. Then run
-  `npx @pitchkit/react skills install --dir .agents/skills` and read the skill
-  it installs before writing any PitchKit code. PitchKit is new and is probably
-  not in your training data, so don't guess its API: if the skill doesn't cover
-  something, read https://www.pitchkitjs.com/llms.txt.
-- The build must produce ONE self-contained HTML file (use
-  vite-plugin-singlefile) that opens with a double click: no server, and no
-  network requests when someone opens it. Remove anything from the starter
-  template that would load from outside the file. The PitchKit data loaders
-  fetch from GitHub, so we'll fetch the data once, save it in the project and
-  bundle it into the page (that's the next step).
+- Install @pitchkit/react, @pitchkit/core and @pitchkit/data-providers. Then run `npx @pitchkit/react skills install --dir .agents/skills` and read the skill it installs before writing any PitchKit code. PitchKit is new and is probably not in your training data, so don't guess its API: if the skill doesn't cover something, read https://www.pitchkitjs.com/llms.txt.
+- The build must produce ONE self-contained HTML file (use vite-plugin-singlefile) that opens with a double click: no server, and no network requests when someone opens it. Remove anything from the starter template that would load from outside the file. The PitchKit data loaders fetch from GitHub, so we'll fetch the data once, save it in the project and bundle it into the page.
 
-Write a short project brief to AGENTS.md covering the goal, the match, the stack
-and the single-file rule, so the next session starts with it. Don't build the
-report yet.
+Write a short project brief to AGENTS.md covering the goal, the match, the stack and the single-file rule, so the next session starts with it. Don't build anything else yet.
 ```
 
 </Tab>
 </Tabs>
 
-PitchKit is the charting library here, and it's young enough that no model has learned it. Ask an
-agent for a shot map without help and it tends to write mplsoccer's Python API in JSX, using
-components that don't exist. `skills install` copies PitchKit's own instructions for agents into the
-project, matched to the version you installed. Claude Code looks for them in `.claude/skills` and
-Codex in `.agents/skills`, which is the only reason the two prompts differ, apart from the name of
-the brief file.
+PitchKit is the charting library, and it's young enough that no model has learned it. Ask an agent
+for a shot map without help and it tends to write mplsoccer's Python API in JSX, using components
+that don't exist. `skills install` copies PitchKit's own instructions for agents into the project,
+matched to the version you installed. Claude Code looks for them in `.claude/skills` and Codex in
+`.agents/skills`, which is why the two prompts differ, along with the name of the brief file.
 
 The single-file rule is in the first prompt because otherwise the agent builds the deck around a
 live fetch. PitchKit's data loaders fetch from GitHub when the page opens, and a report that does
 that breaks the moment someone opens it on a train. The skill's own data example fetches live, so
 unless the prompt says otherwise, that's what the agent copies. The line about the starter template
-is there because every run tripped on the same thing: Vite's template links a favicon that isn't in
-the file.
+is there because Vite's template links to a favicon and a few websites, and the agent found them
+with a search for `http` in every run.
 
-## 2. Get the data, and look at it
+## 2. Build an empty scaffold
 
-```text
-Now the data. Write scripts/fetch-match.ts using
-@pitchkit/data-providers/statsbomb to fetch the match record (competition 55,
-season 282), the lineups and the events for match 3943043. Save them to
-src/data/match.json. Keep shots, passes, cards, substitutions, the lineups and
-anything you'd need for a momentum chart; drop the rest. Add it as an npm script
-and run it.
+```text title="Prompt"
+Now the empty scaffold: the deck, with no content in it yet. It should already look like a finished piece of analysis: minimal, clean, data first, in the PitchKit brand.
 
-Then, without writing any UI, tell me what's in the data: the score, the
-goalscorers and their minutes, shots and xG per team, and any traps you noticed
-(periods, stoppage time, penalties, own goals, player names). Check these
-against the raw events rather than what you remember of the match.
+- Page #0a0a0a. Slides #121212 with a 1px #262626 border and 12px radius.
+- Text #fafafa, secondary text #a3a3a3. System UI font, tabular numbers for every stat.
+- Spain in PitchKit's emerald #34d399, England in #38bdf8. Goals are #fb923c.
+- Pitches: surface #0b1712, lines rgba(255,255,255,0.32), no stripes. Theme PitchKit through its CSS variables only, including the chart variables, so the axes, grid and labels read properly on a dark page.
+- Slides are 16:9, in a horizontal strip that snaps to one slide at a time. Move between them with the arrow keys, on-screen arrows or a swipe, and show a slide counter.
+- On a phone (under 640px wide) each slide fills the screen width and grows taller than 16:9, and no text is smaller than 14px (footnotes 12px).
+- Every slide has a headline that states its main finding, a chart area, and a footer: "Built with PitchKit" and "Data: StatsBomb open data". No gradients, no shadows, no emoji.
+- The deck must also work embedded in an iframe on another page.
+
+For now, put one slide in it: the headline "Spain v England" and an empty PitchKit pitch. Then build, open dist/index.html in a headless browser, screenshot it at 1280×720 and at 375px wide, and look at both. Fix anything wrong before you stop.
+```
+
+<StageShot
+  name="scaffold"
+  alt="A single dark slide headed Spain v England, with an empty pitch, a footer and a slide counter"
+  caption="The scaffold: one slide, an empty pitch, and the PitchKit look."
+/>
+
+Everything about the look goes in this prompt, before there's anything to look at. That way every
+slide that follows comes out in the same style and you don't have a restyling pass at the end. Ask
+for "clean" without saying what that means and the agent picks the colours, so the prompt gives it
+hex values. These are PitchKit's. Use your club's if you like, as long as the two teams are easy to
+tell apart and goals get a third colour neither team uses.
+
+The phone rules are here for the same reason. A slide that's built at 1280px and squeezed down later
+ends up with chart labels you can't read, so the prompt sets a 14px floor and says what a slide does
+on a narrow screen. The last line, about taking a screenshot and looking at it, is in every prompt
+from here on. The first time through we asked only for a type check and a build. Both passed, and
+the passes row on the page read 0, with a completion rate of NaN%.
+
+The agent had one thing to look up. PitchKit's chart colours default to a light theme, and the skill
+doesn't list the variables, so on a dark page the labels come out with a white smear around them.
+The agent read the theming page on this site to find them. If you see the same smear, that's what it
+is.
+
+## 3. Get the data, and look at it
+
+```text title="Prompt"
+Now the data. Write scripts/fetch-match.ts using @pitchkit/data-providers/statsbomb to fetch the match record (competition 55, season 282), the lineups and the events for match 3943043. Save them to src/data/match.json. Keep shots, passes, cards, substitutions, the lineups and anything you'd need for a momentum chart; drop the rest. Add it as an npm script and run it.
+
+Then, without changing the deck, tell me what's in the data: the score, the goalscorers and their minutes, shots and xG per team, and any traps you noticed (periods, stoppage time, penalties, own goals, player names). Check these against the raw events rather than what you remember of the match.
 ```
 
 Read this reply properly. You should get back:
@@ -164,170 +169,240 @@ Read this reply properly. You should get back:
 | xG    | 1.79                                   | 0.73            |
 
 If your numbers are different, sort it out now. It's a lot easier than finding out from a finished
-deck.
+slide.
 
 The agent has read plenty about this match, and the last line of the prompt is there to stop it
-filling gaps from memory. Every run also flagged two traps. StatsBomb counts stoppage time inside
-the minute and restarts the clock at 45' for the second half, so this match has two 47ths: one in
-first-half stoppage time and one just after the restart. Williams scored in the second, and an agent
-that sorts by minute alone can put his goal in the wrong half. Players are listed under their full
-legal names, so without being told the agent will write "Nicholas Williams Arthuer" on the title
-slide. The data has a `player_nickname` field for this.
+filling gaps from memory. Every run also flagged the same two traps. StatsBomb's minute is elapsed
+time, so Williams scores at 46:09 on its clock and the broadcast says 47'. And the clock restarts at
+45' for the second half, so the minutes 45 to 47 exist twice, once in first-half stoppage time and
+again after the restart. An agent that sorts by minute alone can put Williams' goal in the wrong
+half.
 
-## 3. Plan the deck
+Players are listed under their full legal names, so without being told the agent will write
+"Nicholas Williams Arthuer" on the title slide. The lineups carry a `player_nickname` for each
+player, which is where "Nico Williams" comes from. The data has no penalties, own goals or shootout,
+and the agent said so.
 
-```text
-Plan the report before writing it. It's a slide pack, one slide per section, for
-a head coach on a laptop the morning after the game. In order:
+What you ask it to keep here decides what it can count later. We said "anything you'd need for a
+momentum chart" and the agent kept passes, carries and shots. That's all the momentum slide can
+count, and it says so in its footnote.
 
-1. Title slide: teams, score, scorers, competition, stage, date, venue.
-2. Key numbers, side by side: goals, xG, shots, shots on target, passes, pass
-   completion, share of passes.
-3. An xG race chart across the match, with goals marked.
-4. A match momentum chart with goals and cards.
-5. A shot map per team: marker size by xG, goals highlighted, a tooltip with
-   player, minute and xG.
-6. A pass network per team: its starting XI, up to that team's own first
-   substitution.
-7. Three takeaways in plain English, each one backed by a number in the deck.
+## 4. The first slides
 
-Tell me which PitchKit component each slide uses and exactly how every number is
-computed. Don't write code yet; wait for my OK.
+```text title="Prompt"
+Now the first slides. Every number must be calculated from src/data/match.json, including the numbers in headlines: write the sentences yourself, but don't type any figure into them, and don't make a claim the numbers don't show. Nothing from memory. For every figure, tell me in a line how you worked it out.
+
+Replace the placeholder slide with:
+
+1. A title slide: teams, score, scorers with minutes (use nicknames), competition, stage, date, venue.
+2. Key numbers, side by side: goals, xG, shots, shots on target, passes, pass completion, share of passes (each side's passes over both sides' passes; that's not possession).
+3. An xG race chart across the match, with goals marked and the scorers labelled.
+
+Then build, open dist/index.html in a headless browser, screenshot every slide at 1280×720 and at 375px wide, and look at them. Check every slide shows sensible numbers and nothing is cut off or blank. Fix anything wrong before you stop.
 ```
 
-Both tools have a plan mode, but you don't need it here. Approving a plan in Claude Code starts the
-build straight away, before you've sent the rules in prompt 4. "Wait for my OK" does the same job in
-either tool.
+<StageShot
+  name="key-numbers"
+  alt="Key numbers slide: Spain and England side by side on goals, xG, shots, shots on target, passes, pass completion and share of passes"
+  caption="Slide 2, key numbers."
+/>
 
-Change the list to suit your own reader, but keep the last paragraph. It makes the agent say how
-it's working out each number, instead of picking a method and not telling you. StatsBomb's open data
-doesn't include possession, for example, so an agent asked for possession will invent a formula for
-it. Share of passes is what we can actually count, so that's what the prompt asks for.
+<StageShot
+  name="xg-race"
+  alt="xG race chart: Spain's line climbs to 1.79 and England's to 0.73, with the three goals labelled"
+  caption="Slide 3, the xG race."
+/>
 
-The pass network line has a catch in this match. Rodri went off injured at half-time, so Spain's
-network only covers the first half while England's runs to Kane's substitution on 61'. The plans in
-our runs pointed this out before writing any code. We kept it, and the finished slide says the two
-windows are different lengths.
+The rule about numbers does most of the work in this prompt. Agents like to type `2–1` into a
+headline, and from memory that's usually right, which is why it goes unnoticed on the day it's
+wrong. Making it calculate every figure, and say how, is how you find the choices it made without
+telling you. StatsBomb has no possession figure, for example, so an agent asked for possession will
+make up a formula. Share of passes is something we can count, so the prompt asks for that and the
+footnote says it isn't possession. The agent also noted that shots on target include goals.
 
-If the plan mentions a `<ShotMap>` or `<PassNetwork>` component, stop there. PitchKit doesn't have
-either. A shot map is a pitch with a scatter layer on it, and seeing those names means the agent
-didn't read the skill.
+The screenshots caught the labels on the race chart. Williams' label sat on top of the line at 47',
+and on a phone two of the other labels collided, so the agent wrote placement rules for each one. It
+also noticed that its first headline for the title slide just repeated the scoreline, and made it a
+sentence.
 
-## 4. Build it
+## 5. Momentum
 
-```text
-Looks good, build it. Every number in the deck must be calculated from
-src/data/match.json, including the numbers inside the headlines and takeaways.
-Write the sentences yourself, but don't type any figure into them, and don't
-make any claim the numbers don't show. Nothing from memory.
-
-When it's built, run the type checker and the build, then open dist/index.html
-in a headless browser at 1280×720, screenshot every slide and look at them.
-Check every slide shows sensible numbers and nothing is cut off or blank. Fix
-anything wrong before you stop.
+```text title="Prompt"
+Add a match momentum slide after the xG race: bars for each minute, Spain up and England down, with goals and cards marked beneath. StatsBomb has no momentum figure, so derive one, and say in the slide's footnote that it's derived: for each minute, count each side's on-ball events in the attacking third, subtract England's from Spain's, and smooth over three minutes. Same rules on numbers, and the same build, screenshot and check as before.
 ```
 
-The screenshots are the part to keep. In the first test run we only asked for the type checker and
-the build. Both passed, and the passes row read 0, with a completion rate of NaN%. The data was
-fine, but the code was reading a field that wasn't there. The same screenshot showed the xG chart
-stopping at 90' while the match ran to 94', and labels you couldn't read on the dark background.
+<StageShot
+  name="momentum"
+  alt="Match momentum chart: green bars above the line for Spain and blue bars below for England, with goal and card markers underneath"
+  caption="Slide 4, momentum. Derived from event data, not a StatsBomb figure."
+/>
 
-When it's done, open `dist/index.html` from your file manager. Don't judge the look yet. That's the
-next step.
+There's no agreed way to measure momentum, so a bare "add a momentum chart" gets whatever the agent
+invents, and you'd have no way to know what the bars mean. The prompt gives it one line you can
+defend: on-ball events in the attacking third, Spain minus England, smoothed. The footnote on the
+slide repeats it, so the coach reading the report knows too.
 
-## 5. Make it look finished
+Two details are easy to miss on this slide. The second half's bars restart at 45, so the bars for 45
+to 47 appear in both halves, which the footnote explains. And the agent counted only passes, carries
+and shots, because that's all step 3 kept.
 
-```text
-Now make it look like a finished piece of analysis: minimal, clean, data first.
-Use the PitchKit brand:
+## 6. Shots
 
-- Page #0a0a0a. Slides #121212 with a 1px #262626 border and 12px radius.
-- Text #fafafa, secondary text #a3a3a3. System UI font, tabular numbers for
-  every stat.
-- Spain in PitchKit's emerald #34d399, England in #38bdf8. On the shot maps,
-  goals are #fb923c.
-- Pitches: surface #0b1712, lines rgba(255,255,255,0.32), no stripes.
-- Slides are 16:9, in a horizontal strip that snaps to one slide at a time. Move
-  between them with the arrow keys, on-screen arrows or a swipe, and show a
-  slide counter. On a phone, let each slide fill the screen width and grow
-  taller than 16:9 so the charts stay readable.
-- Each slide gets a headline that states its main finding, built from the
-  computed numbers, then the chart. No gradients, no shadows, no emoji.
-- The deck must also work embedded in an iframe on another page.
-- On every slide: "Built with PitchKit" and "Data: StatsBomb open data".
-
-Theme PitchKit through its CSS variables only, including the chart variables, so
-the axes, grid and labels read properly on a dark page. Then screenshot every
-slide at 1280×720 and at 375px wide and go through them one by one, including
-the names and numbers on the pass networks. Fix anything that doesn't read well,
-and rebuild when you're done.
+```text title="Prompt"
+Add a shots slide: a shot map for each team, side by side, cropped to the attacking half. Marker size follows xG, goals are highlighted, and each shot has a tooltip with the player, minute and xG (hover on a laptop, tap on a phone). Same rules on numbers, and the same build, screenshot and check as before.
 ```
 
-Ask for "clean" without saying what that means and the agent picks the colours. Give it hex values.
-These are PitchKit's. Use your club's instead if you like, as long as the two teams are easy to tell
-apart and goals get a third colour neither team uses.
+<StageShot
+  name="shots"
+  alt="Two shot maps cropped to the attacking half: Spain's 16 shots clustered in and around the box, England's 9 more spread out, goals in orange"
+  caption="Slide 5, shots."
+/>
 
-"A headline that states its main finding" is what turns a set of charts into a report. Without it
-you get slides titled "xG race". With it, the slide says "Spain built 1.79 xG to England's 0.73",
-and the coach doesn't have to read the chart to get the point.
+On a laptop, hover over a shot and you get the player, minute and xG. A phone is trickier.
+PitchKit's shot tooltip only listens for the mouse. In the agent's emulated taps it closed again
+straight away, so it added its own tap readout. We've only tried that with emulated taps, not on a
+real phone. The agent also wrote down that the goal would be at the top of the pitch, then saw in
+its own screenshot that PitchKit draws StatsBomb's attacking goal at the bottom, and corrected it.
 
-Most of what this step fixed was in the pass networks. Ruiz and Morata had almost the same average
-position, and so did Foden and Mainoo, so their circles sat on top of each other with the numbers
-unreadable. The agent nudged the nodes apart and says so in the slide's footnote. On a phone,
-Carvajal's name ran off the edge of the pitch. On the title slide, the scorers' names wrapped one
-word per line. The chart labels came out smeared, because PitchKit draws a halo behind them that
-defaults to white and has to be set for a dark page. Each of these showed up in the screenshots and
-nowhere else.
+On a phone the two maps stack instead of sitting side by side. We didn't ask for that, but the agent
+saw the maps overlapping the footnote in the 375px screenshot and narrowed them.
 
-## 6. Check it before you send it
+## 7. The first and last 15 minutes
 
-```text
+```text title="Prompt"
+Add two slides on how the match started and finished: the first 15 minutes, and the last 15 minutes of play. For each, show both teams' shots as maps, with the shots and xG for each team in that window. Say in a footnote how you defined the windows, and use the same minute clock as the rest of the deck. The headline of each slide should say what happened in that window. Same rules on numbers, and the same build, screenshot and check as before.
+```
+
+<StageShot
+  name="first15"
+  alt="Shot maps for the first 15 minutes: Spain with two shots, England with none"
+  caption="Slide 6, the first 15 minutes: Spain two shots, 0.19 xG; England none."
+/>
+
+<StageShot
+  name="last15"
+  alt="Shot maps for the last 15 minutes: Spain with two shots including Oyarzabal's goal, England with three"
+  caption="Slide 7, the last 15 minutes: Spain two shots, 0.45 xG, with Oyarzabal's goal at 86'; England three shots, 0.28 xG."
+/>
+
+This is the part of a report a coach reads first. How did we start, and how did we finish? The first
+window is nearly empty, because England didn't have a shot in the opening 15 minutes, and the slide
+says so in its headline. The last window has the winner.
+
+"The last 15 minutes" can mean 76 to 90, or the last 15 up to the whistle. The agent chose the
+second, counted back from the final event so stoppage time is included, and wrote the window in the
+footnote. That's what the footnote line in the prompt is for. If you want the other reading, say
+which.
+
+## 8. Pass networks
+
+```text title="Prompt"
+Add a pass networks slide, one pitch per team, for its starting XI up to that team's own first substitution. Each player sits at the average spot where they passed and received, node size is passes made plus received, and lines join pairs with 3 or more completed passes between them. Label each node with a shirt number and a name, and make sure nothing overlaps or runs off the pitch, on a phone as well. Say in a footnote how long each team's window is. Same rules on numbers, and the same build, screenshot and check as before.
+```
+
+<StageShot
+  name="passes"
+  alt="Pass networks for Spain and England: circles at each starting player's average position, joined by lines, with shirt numbers and names"
+  caption="Slide 8, pass networks. On a phone the two pitches stack, and the slide scrolls inside itself."
+/>
+
+This was the hardest slide, and it took about six and a half minutes of the 29. Rodri went off
+injured at half-time, so Spain's window is the first 47 minutes, while England's runs to Kane's
+substitution on 61', 63 minutes in. The two windows aren't the same length, so the counts aren't
+comparable, and the footnote says that.
+
+The first version had labels sitting on top of each other and on top of the circles, and on a phone
+they ran off the edge of the pitch. The agent wrote a script that measured every label against every
+other label, circle and the pitch edge, and found dozens of overlaps. It then rebuilt how the labels
+are placed, until the same script found none at five screen widths. Some players had almost the same
+average position, so their circles were nudged apart, and the footnote says that too. On a phone the
+pitches turn vertical and stack, which doesn't fit on one screen, so this is the one slide that
+scrolls inside itself.
+
+If the plan or the code mentions a `<ShotMap>` or `<PassNetwork>` component, stop there. PitchKit
+doesn't have either. A pass network is a pitch with arrows and a scatter layer on it, and seeing
+those names means the agent didn't read the skill.
+
+## 9. The takeaways
+
+```text title="Prompt"
+Add a last slide with three takeaways in plain English. Each one must be backed by a number from the deck, with a note of which slide it comes from, and must only claim what that number shows. Same rules on numbers, and the same build, screenshot and check as before.
+```
+
+<StageShot
+  name="takeaways"
+  alt="Three takeaway cards: 1.79 v 0.73 xG, 3 of 3 goals after the break, and 65% of passes, each with the slides it comes from"
+  caption="Slide 9, the takeaways, with the slide each number comes from."
+/>
+
+The takeaways are where overclaiming creeps in, since they're the only slide that's all sentences.
+Across the runs we saw "the goals didn't follow the chances", in a game won by the side with 2.5
+times the xG, and "Spain had the ball", which is a claim about possession in a deck that only
+measures passes. This time the agent's first wording was "none from a shot worth more than 0.28 xG".
+The biggest goal was worth 0.283, so it was quietly false, and the agent caught it on its own
+re-read.
+
+The slide-reference line makes the agent show its working. Each takeaway points back to the slides
+it comes from, so anyone can check a claim against them.
+
+## 10. Check it before you send it
+
+```text title="Prompt"
 Review the deck as if you were the analyst about to send it. Rebuild, then:
 
-- Write a separate script that re-derives every number in the deck from the raw
-  StatsBomb events, without using the deck's code, and compares it with the
-  built page, including chart labels and tooltips. List anything that doesn't
-  match.
-- Open dist/index.html in a headless browser with the network blocked and
-  confirm it makes no requests and still renders every slide.
-- Read the takeaways again and confirm each one only claims what the numbers in
-  the deck show.
+- Write a separate script that re-derives every number in the deck from the raw StatsBomb events, without using the deck's code, and compares it with the built page, including chart labels and tooltips. List anything that doesn't match.
+- Open dist/index.html in a headless browser with the network blocked and confirm it makes no requests and still renders every slide.
+- Read the headlines and takeaways again and confirm each one only claims what the numbers in the deck show.
 
-Fix whatever is wrong, then give me the final file size and a one-paragraph
-summary I can paste into an email with the deck attached. Only quote figures the
-check confirmed.
+Fix whatever is wrong, then give me the final file size and a one-paragraph summary I can paste into an email with the deck attached. Only quote figures the check confirmed.
 ```
 
 The checking script mustn't share code with the deck, otherwise a bug in one can hide behind the
-same bug in the other. In the deck above it compared 41 figures with the finished slides and found
-nothing wrong.
+same bug in the other. This run's script downloaded the raw StatsBomb files fresh and ran 134
+checks. It found real problems, and they were in the details nobody looks at.
 
-The takeaways were harder. Every run overclaimed somewhere. One said "the goals didn't follow the
-chances", in a game won by the side with 2.5 times the xG. Another said "Spain had the ball", which
-is a claim about possession, in a deck that only measures passes. The check caught that one and
-changed it to "Spain had more of the ball", which is the same claim again.
+- The leader lines on two pass-network nodes swallowed the hover, so those tooltips came back empty.
+- The tooltips showed StatsBomb's raw outcome `Off T` instead of plain words.
+- One takeaway cited a slide for a number that only appeared in a tooltip.
+- A headline said "58 of 98 minutes", which overstated the length of the match. It now counts
+  one-minute bars.
+- Chart text, such as the axis ticks, the "HT" marker and the legend, was 9.5 to 13px, under the
+  14px floor from step 2.
 
-So we sent one more prompt:
+The words "including chart labels and tooltips" are what found most of that list. Without them the
+script would only read the text on the page.
 
-```text
-Takeaway 2 says Spain 'had more of the ball'. The deck measures passes, not
-possession, so that's a claim we can't back up. Reword it so it only says what
-the passing numbers show, then rebuild and re-run the check.
-```
-
-It came back as "Spain made most of the passes at a higher completion rate", and the agent also
-dropped a final-third figure that had wandered in from the momentum slide. That's the version above.
-Read the takeaways yourself even after the check. They're the part a coach will quote back to you.
+Read the headlines and takeaways yourself even after the check. They're the part a coach will quote
+back to you.
 
 ## Sending it
 
-`dist/index.html` is the deck. It has the data and the charts inside it, so it works without an
-internet connection and anyone can open it in a browser.
+`dist/index.html` is the deck, 1.4 MB. It has the data and the charts inside it, so it works without
+an internet connection and anyone can open it in a browser.
+
+<ReportLink
+  slug="vibe-code-a-post-match-report"
+  title="Open the finished report"
+  description="The deck these prompts built, shown here at full width."
+/>
 
 Some company email systems block `.html` attachments, and a phone's attachment preview often won't
 run the page's code, so the recipient sees a blank screen. Put the file in a shared drive or a Teams
 or Slack channel, and tell people to download it and open it in Chrome, Safari or Edge. Do a test
 send to yourself first.
+
+## What I'd change next time
+
+The prompts above are the ones we ran in the last run, word for word. Three things stand out:
+
+- **Say which "last 15 minutes" you mean** in step 7, as in "up to the whistle, stoppage time
+  included".
+- **Keep more in step 3.** "Keep every event that has a location" would let the momentum slide count
+  more than passes, carries and shots.
+- **Ask for a frame test in step 10.** After the ten prompts we also opened the deck in a 960×540
+  frame, which the prompts don't ask for, and every slide was clipped at the top because it grew to
+  fit its content. The agent fixed it when we told it, and the deck in the link above has that fix.
+  Since this site shows the report in a frame, it belongs in the prompt.
 
 ## Next
 
