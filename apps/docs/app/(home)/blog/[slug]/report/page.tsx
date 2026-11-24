@@ -19,8 +19,10 @@ export default async function ReportPage(props: { params: Promise<{ slug: string
 
   const src = `/blog/${slug}/${post.data.report}`;
 
+  // The site nav is 3.5rem. Filling the rest of the screen exactly means each slide in the
+  // report is one screen tall inside the frame, and the page itself never scrolls.
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex h-[calc(100dvh-3.5rem)] flex-col">
       <div className="flex items-center justify-between gap-4 border-b border-fd-border px-4 py-3 text-sm">
         <Link href={post.url} className="text-fd-muted-foreground hover:text-fd-foreground">
           ← Back to the post
@@ -37,7 +39,7 @@ export default async function ReportPage(props: { params: Promise<{ slug: string
       <iframe
         src={src}
         title={`${post.data.title}: the finished report`}
-        className="min-h-[75dvh] w-full flex-1 border-0 bg-[#0a0a0a]"
+        className="min-h-0 w-full flex-1 border-0 bg-[#0a0a0a]"
       />
     </div>
   );
