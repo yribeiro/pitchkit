@@ -11,27 +11,28 @@ report: euro-2024-final-deck.html
 ---
 
 This is the report we're going to build: a nine-slide deck on the Euro 2024 final, made from
-StatsBomb's free event data and saved as one HTML file you can send to a coach.
+StatsBomb's free event data and saved as one HTML file you can send to a coach. It's a single page
+where each screen is a slide. You scroll, or press the down arrow, to move on.
 
 <ReportLink
   slug="vibe-code-a-post-match-report"
   title="Open the finished report"
-  description="Nine slides, one HTML file. Opens here, with a link back to this post."
+  description="Nine slides, one HTML file. Scroll down, with a link back to this post."
 />
 
 A coding agent writes all of it, from ten prompts, one slide at a time. You don't type any code, but
-you do have to read what the agent says back. We ran this sequence four times from an empty folder
-and rewrote the prompts after each run. Something went wrong on every run, and most of the time the
-agent only caught it because the prompt told it to look.
+you do have to read what the agent says back. We ran this sequence several times from an empty
+folder and rewrote the prompts after each run. Something went wrong on every run, and most of the
+time the agent only caught it because the prompt told it to look.
 
-The screenshots below are slides from the finished deck, so they include the fixes from the last
-prompt. The prompts are written for Claude Code, and Codex differs in the first one.
+Each screenshot below is the slide as the agent left it when that prompt finished. The prompts are
+written for Claude Code, and Codex differs in the first one.
 
 ## What you need
 
 - [Node.js](https://nodejs.org) 22 or newer.
-- Claude Code or Codex, with a plan or API credits. The last full run took 29 minutes of agent time,
-  and most of that was the pass networks and the final check.
+- Claude Code or Codex, with a plan or API credits. The last full run took about 20 minutes of agent
+  time. The longest steps, at around four minutes each, were the pass networks and the final check.
 - A terminal: Terminal on a Mac, or [WSL](https://learn.microsoft.com/windows/wsl/install) on
   Windows.
 
@@ -130,7 +131,7 @@ For now, put one slide in it: the headline "Spain v England" and an empty PitchK
 
 <StageShot
   name="scaffold"
-  alt="A single dark slide headed Spain v England, with an empty pitch, a footer and a slide counter"
+  alt="A single dark slide headed Spain v England, with an empty pitch and a footer, and a progress bar on the right edge"
   caption="The scaffold: one slide, an empty pitch, and the PitchKit look."
 />
 
@@ -140,16 +141,16 @@ for "clean" without saying what that means and the agent picks the colours, so t
 hex values. These are PitchKit's. Use your club's if you like, as long as the two teams are easy to
 tell apart and goals get a third colour neither team uses.
 
-The phone rules are here for the same reason. A slide that's built at 1280px and squeezed down later
-ends up with chart labels you can't read, so the prompt sets a 14px floor and says what a slide does
-on a narrow screen. The last line, about taking a screenshot and looking at it, is in every prompt
-from here on. The first time through we asked only for a type check and a build. Both passed, and
-the passes row on the page read 0, with a completion rate of NaN%.
+The layout is in there too. Each slide is one full screen and the page snaps from one to the next,
+so it reads like a deck without any slide software. The phone rules are here for the same reason. A
+slide built at 1280px and squeezed down later ends up with chart labels you can't read, so the
+prompt sets a 14px floor and says what a slide does on a narrow screen.
 
-The agent had one thing to look up. PitchKit's chart colours default to a light theme, and the skill
-doesn't list the variables, so on a dark page the labels come out with a white smear around them.
-The agent read the theming page on this site to find them. If you see the same smear, that's what it
-is.
+The last line, about taking a screenshot and looking at it, is in every prompt from here on. The
+first time through we asked only for a type check and a build. Both passed, and the passes row on
+the page read 0, with a completion rate of NaN%. Here the screenshots caught that the pitch was
+blank on a laptop, because a CSS sizing rule had collapsed it, and that the footer was in the wrong
+place on a phone.
 
 ## 3. Get the data, and look at it
 
@@ -179,12 +180,14 @@ half.
 
 Players are listed under their full legal names, so without being told the agent will write
 "Nicholas Williams Arthuer" on the title slide. The lineups carry a `player_nickname` for each
-player, which is where "Nico Williams" comes from. The data has no penalties, own goals or shootout,
-and the agent said so.
+player, which is where "Nico Williams" comes from. England's players mostly have none, so those
+names fall back to the registered ones. The data has no penalties, own goals or shootout, and the
+agent said so.
 
-What you ask it to keep here decides what it can count later. We said "anything you'd need for a
-momentum chart" and the agent kept passes, carries and shots. That's all the momentum slide can
-count, and it says so in its footnote.
+What you ask it to keep here decides what it can count later, and this prompt has a flaw. "Every
+event that has a location" sounds thorough, but the final whistle has no location, so it was
+dropped. Nothing complained until step 10, when the check found the last-15-minutes window was a
+minute out. It's on the list at the bottom of the post.
 
 ## 4. The first slides
 
@@ -217,12 +220,13 @@ headline, and from memory that's usually right, which is why it goes unnoticed o
 wrong. Making it calculate every figure, and say how, is how you find the choices it made without
 telling you. StatsBomb has no possession figure, for example, so an agent asked for possession will
 make up a formula. Share of passes is something we can count, so the prompt asks for that and the
-footnote says it isn't possession. The agent also noted that shots on target include goals.
+footnote says it isn't possession. The title slide's headline is a sentence about the result because
+an earlier run just repeated the scoreline under the big numbers.
 
-The screenshots caught the labels on the race chart. Williams' label sat on top of the line at 47',
-and on a phone two of the other labels collided, so the agent wrote placement rules for each one. It
-also noticed that its first headline for the title slide just repeated the scoreline, and made it a
-sentence.
+The screenshots caught the race chart. The end labels came out garbled, because PitchKit's chart
+colours default to a light theme and the skill doesn't list the variables, so on a dark page the
+text gets a white halo. If you see that, it's why. England's scorer label also sat on its own line,
+and on a phone two of the labels collided, so the agent wrote placement rules for each one.
 
 ## 5. Momentum
 
@@ -242,8 +246,10 @@ defend: on-ball events in the attacking third, Spain minus England, smoothed. Th
 slide repeats it, so the coach reading the report knows too.
 
 Two details are easy to miss on this slide. The second half's bars restart at 45, so the bars for 45
-to 47 appear in both halves, which the footnote explains. And the agent counted only passes, carries
-and shots, because that's all step 3 kept.
+to 47 appear in both halves. And "on-ball" is looser than it sounds. The prompt says every event
+with a location and a player, and Pressure events have both but happen off the ball, so the agent
+counted them. It followed the wording, and it's on the list at the bottom. The agent's first
+headline here ran to four lines and squashed the chart, and it saw that in the screenshot.
 
 ## 6. Shots
 
@@ -258,13 +264,10 @@ Add a shots slide: a shot map for each team, cropped to the attacking half, side
 />
 
 On a laptop, hover over a shot and you get the player, minute and xG. A phone is trickier.
-PitchKit's shot tooltip only listens for the mouse. In the agent's emulated taps it closed again
-straight away, so it added its own tap readout. We've only tried that with emulated taps, not on a
-real phone. The agent also wrote down that the goal would be at the top of the pitch, then saw in
-its own screenshot that PitchKit draws StatsBomb's attacking goal at the bottom, and corrected it.
-
-On a phone the two maps stack instead of sitting side by side. We didn't ask for that, but the agent
-saw the maps overlapping the footnote in the 375px screenshot and narrowed them.
+PitchKit's shot tooltip only listens for the mouse, and in the agent's tests it didn't open on a
+tap, so it built its own tap readout, which shows the shot's details under the map. That's why the
+prompt asks for a fallback. We've only tried it with emulated taps, not on a real phone. On a phone
+the two maps stack, which the prompt also asks for.
 
 ## 7. The first and last 15 minutes
 
@@ -284,14 +287,14 @@ Add two slides on how the match started and finished: the first 15 minutes, and 
   caption="Slide 7, the last 15 minutes: Spain two shots, 0.45 xG, with Oyarzabal's goal at 86'; England three shots, 0.28 xG."
 />
 
-This is the part of a report a coach reads first. How did we start, and how did we finish? The first
-window is nearly empty, because England didn't have a shot in the opening 15 minutes, and the slide
-says so in its headline. The last window has the winner.
+This is the part of a report a coach reads first. How did we start, and how did we finish? Spain had
+both shots in the opening 15 minutes, worth 0.19 xG, and England had none, and the headline says so.
+The last window has the winner.
 
-"The last 15 minutes" can mean 76 to 90, or the last 15 up to the whistle. The agent chose the
-second, counted back from the final event so stoppage time is included, and wrote the window in the
-footnote. That's what the footnote line in the prompt is for. If you want the other reading, say
-which.
+"The last 15 minutes" can mean 76 to 90, or the last 15 up to the whistle. The prompt says up to the
+whistle, stoppage time included, and asks for the window in a footnote so a reader can see which one
+you got. If you want the other reading, say which. The first version of this window was a minute
+out, for a reason you'll meet in step 10.
 
 ## 8. Pass networks
 
@@ -302,21 +305,20 @@ Add a pass networks slide, one pitch per team, for its starting XI up to that te
 <StageShot
   name="passes"
   alt="Pass networks for Spain and England: circles at each starting player's average position, joined by lines, with shirt numbers and names"
-  caption="Slide 8, pass networks. On a phone the two pitches stack, and the slide scrolls inside itself."
+  caption="Slide 8, pass networks. On a phone the two pitches stack, and the slide runs longer than the screen."
 />
 
-This was the hardest slide, and it took about six and a half minutes of the 29. Rodri went off
-injured at half-time, so Spain's window is the first 47 minutes, while England's runs to Kane's
-substitution on 61', 63 minutes in. The two windows aren't the same length, so the counts aren't
-comparable, and the footnote says that.
+This was one of the harder slides. Rodri went off injured at half-time, so Spain's window is the
+first 47 minutes, while England's runs to Kane's substitution on 61', 63 minutes in. The two windows
+aren't the same length, so the counts aren't comparable, and the footnote says that.
 
-The first version had labels sitting on top of each other and on top of the circles, and on a phone
-they ran off the edge of the pitch. The agent wrote a script that measured every label against every
-other label, circle and the pitch edge, and found dozens of overlaps. It then rebuilt how the labels
-are placed, until the same script found none at five screen widths. Some players had almost the same
-average position, so their circles were nudged apart, and the footnote says that too. On a phone the
-pitches turn vertical and stack, which doesn't fit on one screen, so this is the one slide that
-scrolls inside itself.
+The first layout had labels without a place to go and pitches that were too small, and the agent
+found that with a script that measured every label against every other label and circle. Two pairs
+of players, Morata and Olmo for Spain and Foden and Mainoo for England, had almost the same average
+position, so their circles were nudged apart and the footnote says so. The prompt says nothing may
+overlap and also that each player sits at their average spot, which can't both be true, and the
+agent settled it that way. On a phone the pitches turn vertical and stack, so the slide runs longer
+than the screen.
 
 If the plan or the code mentions a `<ShotMap>` or `<PassNetwork>` component, stop there. PitchKit
 doesn't have either. A pass network is a pitch with arrows and a scatter layer on it, and seeing
@@ -330,19 +332,19 @@ Add a last slide with three takeaways in plain English. Each one must be backed 
 
 <StageShot
   name="takeaways"
-  alt="Three takeaway cards: 1.79 v 0.73 xG, 3 of 3 goals after the break, and 65% of passes, each with the slides it comes from"
+  alt="Three takeaway cards: 1.79 v 0.73 xG, the winner at 86', and 64.7% of passes, each with the slides it comes from"
   caption="Slide 9, the takeaways, with the slide each number comes from."
 />
 
 The takeaways are where overclaiming creeps in, since they're the only slide that's all sentences.
 Across the runs we saw "the goals didn't follow the chances", in a game won by the side with 2.5
 times the xG, and "Spain had the ball", which is a claim about possession in a deck that only
-measures passes. This time the agent's first wording was "none from a shot worth more than 0.28 xG".
-The biggest goal was worth 0.283, so it was quietly false, and the agent caught it on its own
-re-read.
+measures passes. Another run's first wording was "none from a shot worth more than 0.28 xG". The
+biggest goal was worth 0.283, so it was quietly false, and the agent caught it on its own re-read.
 
 The slide-reference line makes the agent show its working. Each takeaway points back to the slides
-it comes from, so anyone can check a claim against them.
+it comes from, so anyone can check a claim against them. The prompt also says no takeaway may rely
+on a number that only appears in a tooltip, because the run before broke that rule on its first try.
 
 ## 10. Check it before you send it
 
@@ -357,26 +359,28 @@ Fix whatever is wrong, then give me the final file size and a one-paragraph summ
 ```
 
 The checking script mustn't share code with the deck, otherwise a bug in one can hide behind the
-same bug in the other. This run's script downloaded the raw StatsBomb files fresh and ran 134
-checks. It found real problems, and they were in the details nobody looks at.
+same bug in the other. This run's script downloaded the raw StatsBomb files fresh and ran 33 checks,
+including every one of the 25 shot tooltips. It found a real bug. Step 3 had dropped every event
+without a location, and the final whistle has none, so the data didn't know when the match ended.
+The last-15-minutes window was a minute out at both ends. The agent kept the whistle events and
+fixed the window, and the shots in it didn't change, which is why nothing on the slide looked wrong.
 
-- The leader lines on two pass-network nodes swallowed the hover, so those tooltips came back empty.
-- The tooltips showed StatsBomb's raw outcome `Off T` instead of plain words.
-- One takeaway cited a slide for a number that only appeared in a tooltip.
-- A headline said "58 of 98 minutes", which overstated the length of the match. It now counts
-  one-minute bars.
-- Chart text, such as the axis ticks, the "HT" marker and the legend, was 9.5 to 13px, under the
-  14px floor from step 2.
+An earlier run's check found a different set of problems in the details nobody looks at. Tooltips
+showed StatsBomb's raw outcome `Off T`, a takeaway cited a slide for a number you could only see by
+hovering, and chart text was under the 14px floor. The words "including chart labels and tooltips"
+are what found most of that. Without them the script would only read the text on the page.
 
-The words "including chart labels and tooltips" are what found most of that list. Without them the
-script would only read the text on the page.
+The check also opens the deck inside a 960×540 frame, because this site shows the report in one. The
+maps and networks need a bit more height than that, so four slides are taller than the frame and
+scroll inside it. Legible maps and "without being clipped" pull against each other there, and the
+prompt doesn't allow for it.
 
 Read the headlines and takeaways yourself even after the check. They're the part a coach will quote
 back to you.
 
 ## Sending it
 
-`dist/index.html` is the deck, 1.4 MB. It has the data and the charts inside it, so it works without
+`dist/index.html` is the deck, 2.1 MB. It has the data and the charts inside it, so it works without
 an internet connection and anyone can open it in a browser.
 
 <ReportLink
@@ -392,16 +396,14 @@ send to yourself first.
 
 ## What I'd change next time
 
-The prompts above are the ones we ran in the last run, word for word. Three things stand out:
+The prompts above are the ones we ran in the last run, word for word. Four things stand out:
 
-- **Say which "last 15 minutes" you mean** in step 7, as in "up to the whistle, stoppage time
-  included".
-- **Keep more in step 3.** "Keep every event that has a location" would let the momentum slide count
-  more than passes, carries and shots.
-- **Ask for a frame test in step 10.** After the ten prompts we also opened the deck in a 960×540
-  frame, which the prompts don't ask for, and every slide was clipped at the top because it grew to
-  fit its content. The agent fixed it when we told it, and the deck in the link above has that fix.
-  Since this site shows the report in a frame, it belongs in the prompt.
+- **Step 3: keep the final whistle.** Add "and the Half End events" to what it keeps.
+- **Step 5: say what "on-ball" means.** "Every event with a location and a player" includes
+  Pressure, which is off the ball.
+- **Step 8: say what to do when nodes overlap.** "If two nodes would overlap, nudge them apart and
+  say so in the footnote."
+- **Step 10: allow taller slides.** "Slides may be taller than the frame if the maps need it."
 
 ## Next
 
