@@ -2,25 +2,13 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import type { Metadata } from "next";
-import type { ComponentProps } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DeckEmbed } from "@/components/blog/deck-embed";
+import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
+import { ReportLink } from "@/components/blog/report-link";
+import { StageShot } from "@/components/blog/stage-shot";
 import { blog, formatPostDate } from "@/lib/source";
 import { SITE_URL, X_HANDLE } from "@/lib/site";
-
-/**
- * Posts link to finished example files in `public/` (a report, say). The default
- * MDX link is a client-side Next link, which swallows the click on a path that
- * isn't a route, so static `.html` files get a plain anchor in a new tab.
- */
-function PostLink(props: ComponentProps<"a">) {
-  if (props.href?.endsWith(".html")) {
-    return <a {...props} target="_blank" rel="noopener" />;
-  }
-  const DefaultLink = defaultMdxComponents.a;
-  return <DefaultLink {...props} />;
-}
 
 export default async function BlogPost(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params;
@@ -54,7 +42,33 @@ export default async function BlogPost(props: { params: Promise<{ slug: string }
       </header>
       <article className="prose min-w-0 pt-8">
         <MDXContent
-          components={{ ...defaultMdxComponents, a: PostLink, DeckEmbed, Tab, Tabs, Step, Steps }}
+          components={{
+            ...defaultMdxComponents,
+            // Prompts are prose: they wrap instead of scrolling sideways on a phone, and
+            // are set in the body font. Commands (no title) stay monospaced and unwrapped.
+            pre: (props) => {
+              const isPrompt = props.title === "Prompt";
+              return (
+                <CodeBlock {...props}>
+                  <Pre
+                    className={
+                      isPrompt
+                        ? "w-full font-sans text-[15px] leading-relaxed whitespace-pre-wrap break-words [&_code]:font-sans"
+                        : undefined
+                    }
+                  >
+                    {props.children}
+                  </Pre>
+                </CodeBlock>
+              );
+            },
+            ReportLink,
+            StageShot,
+            Tab,
+            Tabs,
+            Step,
+            Steps,
+          }}
         />
       </article>
     </div>

@@ -41,6 +41,11 @@ export const blog = defineCollections({
     series: z.string().optional(),
     /** 1-based position within `series`. */
     part: z.number().int().positive().optional(),
+    /**
+     * A finished HTML file in public/blog/<slug>/ that the post builds toward.
+     * Setting it turns on /blog/<slug>/report, which shows the file in the site.
+     */
+    report: z.string().optional(),
   }),
 });
 
