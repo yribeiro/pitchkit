@@ -20,10 +20,10 @@ where each screen is a slide. You scroll, or press the down arrow, to move on.
   description="Nine slides, one HTML file. Scroll down, with a link back to this post."
 />
 
-A coding agent writes all of it, from ten prompts, one slide at a time. You don't type any code, but
-you do have to read what the agent says back. We ran this sequence several times from an empty
-folder and rewrote the prompts after each run. Something went wrong on every run, and most of the
-time the agent only caught it because the prompt told it to look.
+A coding agent writes all of it, from ten prompts and one follow-up, one slide at a time. You don't
+type any code, but you do have to read what the agent says back. We ran this sequence several times
+from an empty folder and rewrote the prompts after each run. Something went wrong on every run, and
+most of the time the agent only caught it because the prompt told it to look.
 
 Each screenshot below is the slide as the agent left it when that prompt finished. The prompts are
 written for Claude Code, and Codex differs in the first one.
@@ -395,6 +395,22 @@ every slide filled the frame without being clipped.
 
 Read the headlines and takeaways yourself even after the check. They're the part a coach will quote
 back to you.
+
+## One more prompt, for the phone
+
+When we looked at the finished deck on a phone, the slides sat too close to the edges. A follow-up
+prompt fixed it:
+
+```text title="Prompt"
+On a phone the slides sit a little too close to the edges. Increase the padding around them slightly, to 24px at the sides and top. Leave the laptop layout exactly as it is. Rebuild, run the check script and the offline check again, and screenshot every slide at 375px and at 1280×720 to confirm the laptop layout hasn't changed.
+```
+
+"Leave the laptop layout exactly as it is" matters, because a change for one screen size can easily
+spill into the other. The laptop screenshots came out identical to the pixel. The narrower phone
+slides did push one headline onto a third line, past the two-line limit, and the agent gave that
+slide a shorter headline on phones only. That's the version you get from the link above. The stage
+screenshots earlier in the post were taken before this prompt, so the phone ones still show the
+tighter edges.
 
 ## Sending it
 
