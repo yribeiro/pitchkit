@@ -12,6 +12,7 @@ export function StageShot({
   caption,
   desktop = [1280, 720],
   phone = [390, 844],
+  wide = false,
 }: {
   /** File stem under /blog/<slug>/stages, without `-desktop.webp` / `-phone.webp`. */
   name: string;
@@ -19,10 +20,12 @@ export function StageShot({
   caption?: string;
   desktop?: [number, number];
   phone?: [number, number];
+  /** Break out of the text column on large screens, for an image whose labels need the room. */
+  wide?: boolean;
 }) {
   const base = `/blog/vibe-code-a-post-match-report/stages/${name}`;
   return (
-    <figure className="not-prose my-6">
+    <figure className={wide ? "not-prose my-6 lg:-mx-32" : "not-prose my-6"}>
       <picture>
         <source
           media="(max-width: 639px)"
