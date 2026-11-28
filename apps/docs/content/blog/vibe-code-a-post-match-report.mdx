@@ -124,9 +124,9 @@ wrong in our test runs:
 ## 2. Lay out the page
 
 ```text title="Prompt"
-Lay out the empty page, like StatsBomb's one-page match reports: a header, then a grid of empty panels for the charts. On a laptop it's an A4 landscape page. On a phone the panels stack in one column.
+Lay out the empty page, like StatsBomb's one-page match reports: a header, then a grid of empty panels for key numbers, an xG race, both teams' shots, momentum, and a pass network for each team. On a laptop it's an A4 landscape page. On a phone the panels stack in one column, with 24px of space at the sides.
 
-Make it look like PitchKit: dark background (#0a0a0a), white and grey text, Spain green (#10b981), England blue (#3b82f6), goals orange (#ea580c). Keep it minimal: three text sizes, none smaller than 13px (chart labels included), no heavy bold, no shadows. Theme PitchKit through its CSS variables, including the chart ones, so everything reads on a dark page.
+Make it look like PitchKit: dark background (#0a0a0a), white and grey text, Spain in the deep red of their flag (#c8102e), England blue (#3b82f6), goals in deep gold (#ca8a04). Keep it minimal: three text sizes, none smaller than 13px (chart labels included), no heavy bold, no shadows. Theme PitchKit through its CSS variables, including the chart ones, so everything reads on a dark page.
 ```
 
 <StageShot
@@ -214,7 +214,7 @@ agent's work here was placing the scorers' names so they didn't sit on top of th
 ## 6. The shot maps
 
 ```text title="Prompt"
-Add a shot map for each team: bigger circles for bigger chances, goals in orange. Hover on a laptop or tap on a phone to see the player, minute and xG.
+Add a shot map for each team: bigger circles for bigger chances, goals in gold. Hover on a laptop or tap on a phone to see the player, minute and xG, and check that tapping really works.
 ```
 
 <StageShot
@@ -232,7 +232,7 @@ make it test on a phone. It added a version that works with a tap.
 ## 7. Momentum, and how it started and finished
 
 ```text title="Prompt"
-Add a momentum chart: for each minute, Spain's touches in the final third minus England's, smoothed over three minutes. Say in a note that it's our own measure, not a StatsBomb one. Underneath, show shots and xG for each team in the first and last 15 minutes.
+Add a momentum chart: for each minute, Spain's touches (any on-ball event) in the final third minus England's, smoothed over three minutes. Say in a note that it's our own measure, not a StatsBomb one. Underneath, show shots and xG for each team in the first and last 15 minutes.
 ```
 
 <StageShot
@@ -318,20 +318,6 @@ every chance was better.
 
 The PDF came out as a single A4 page, and the report worked with the internet switched off. Read the
 takeaways yourself anyway. They're the part a coach will quote back to you.
-
-## One more prompt, for phones
-
-When we read the report on a phone, it sat too close to the edges of the screen. One more prompt
-fixed it:
-
-```text title="Prompt"
-On a phone the page sits too close to the edges. Give it 24px of space at the sides. Leave the laptop page and the PDF exactly as they are.
-```
-
-Add "leave the rest exactly as it is" whenever you tidy up one screen size, because a fix for one
-can easily spill into another. The agent compared before and after, and the laptop page and the PDF
-came out identical. The phone screenshots in the steps above were taken before this prompt, so they
-show the tighter edges.
 
 ## Sending it
 
