@@ -12,8 +12,8 @@ report: euro-2024-final-report.html
 
 <StageShot
   name="hero"
-  alt="A one-page match report on the Euro 2024 final: Spain 2–1 England, three takeaways, key numbers, the xG race, both shot maps, momentum and both pass networks"
-  desktop={[1280, 919]}
+  alt="A one-page match report on the Euro 2024 final with both teams' flags: Spain 2–1 England, three takeaways, key numbers, the xG race, both shot maps, momentum and both pass networks"
+  desktop={[1280, 905]}
   phone={[390, 844]}
   wide
 />
@@ -40,7 +40,7 @@ comes back. This post gives you the prompts in order and explains what each one 
 - A laptop with [Node.js](https://nodejs.org) 22 or newer installed.
 - Claude Code or Codex. Both need a paid plan or API credits, and both ask you to sign in the first
   time.
-- About half an hour. Our last run from an empty folder took 33 minutes.
+- About half an hour. Our last run from an empty folder took 26 minutes.
 
 Open a terminal (Terminal on a Mac, or [WSL](https://learn.microsoft.com/windows/wsl/install) on
 Windows) and start the agent in a new, empty folder:
@@ -124,29 +124,36 @@ wrong in our test runs:
 ## 2. Lay out the page
 
 ```text title="Prompt"
-Lay out the empty page, like StatsBomb's one-page match reports: a header, then a grid of empty panels for key numbers, an xG race, both teams' shots, momentum, and a pass network for each team. On a laptop it's an A4 landscape page. On a phone the panels stack in one column, with 24px of space at the sides.
+Lay out the empty page, like StatsBomb's one-page match reports: a header, then a grid of empty panels for key numbers, an xG race, both teams' shots, momentum, and a pass network for each team. On a laptop it's an A4 landscape page. On a phone the panels stack in one column, with 24px of space at the sides. If the page gets full later, move notes to a footer and shrink charts rather than drop anything.
 
-Make it look like PitchKit: dark background (#0a0a0a), white and grey text, Spain in the deep red of their flag (#c8102e), England blue (#3b82f6), goals in deep gold (#ca8a04). Keep it minimal: three text sizes, none smaller than 13px (chart labels included), no heavy bold, no shadows. Theme PitchKit through its CSS variables, including the chart ones, so everything reads on a dark page.
+Make it look like PitchKit: dark background (#0a0a0a), white and grey text, Spain in deep yellow (#ca8a04), England blue (#3b82f6), goals in white. Team colours go on chart marks and big text only; small text stays white or grey. Put each team's flag beside its name, from the open-source flag-icons package (Spain is es, England is gb-eng). Keep it minimal: three text sizes, none smaller than 13px (chart labels included), no heavy bold, no shadows. Theme PitchKit through its CSS variables, including the chart ones, so everything reads on a dark page. Credit StatsBomb and flag-icons at the bottom.
 ```
 
 <StageShot
   name="s02"
   alt="The empty page: a header reading Spain v England and seven empty panels, one for each chart"
   caption="The empty page: a header and a panel waiting for each chart."
-  desktop={[1280, 919]}
-  phone={[342, 278]}
+  desktop={[1280, 905]}
+  phone={[342, 320]}
 />
 
 Think of this as building the template. Laying out the empty page first gives every chart a place to
-go, and it means they all come out in the same style. Naming the panels up front matters on a page
-this full, as step 8 shows.
+go, and it means they all come out in the same style. Naming the panels up front, and saying what to
+give up when the page gets full, matters on a page this busy, as steps 7 to 9 show.
 
 The colours and sizes are spelled out because "make it look nice" gets you the agent's taste, which
-runs to big bold headings and tiny chart labels. Spain are in the deep red of their flag and goals
-are in deep gold, and the three colours were checked so that colour-blind readers can tell them
-apart. The 13px minimum is for phones, where chart labels are the first thing to become unreadable.
-PitchKit draws some of its chart labels smaller than that, and the minimum in the prompt is what
-made the agent find them and size them up.
+runs to big bold headings and tiny chart labels. Spain are in deep yellow and England in blue, and
+goals are white so they stand out against both. All three were checked so that colour-blind readers
+can tell them apart. Team colours stay on the charts and the big text, because coloured small text
+is harder to read on a dark page than white or grey. The flags come from flag-icons, a free,
+open-source set that includes England's own St George's cross, and they're bundled into the file
+like the data. The 13px minimum is for phones, where chart labels are the first thing to become
+unreadable. PitchKit draws some of its chart labels smaller than that, and the minimum in the prompt
+is what made the agent find them and size them up.
+
+On a phone, the flags, team names and score didn't fit on one line, so the agent stacked them into a
+two-row scoreboard. It saw the problem in its own phone screenshot, which is the third rule from
+step 1 doing its job.
 
 ## 3. Look at the data
 
@@ -174,25 +181,25 @@ lineups. They're good questions to ask of any new data source.
 ## 4. The header and key numbers
 
 ```text title="Prompt"
-Fill in the header (teams, score, scorers, date, venue) and add a key numbers panel: goals, xG, shots, shots on target, passes, pass completion and share of passes. Call it share of passes, not possession. Tell me how you worked out each number.
+Fill in the header (teams, score, scorers, date, venue, with minutes shown the way broadcasters do, so 46:09 is 47') and add a key numbers panel: goals, xG, shots, shots on target, passes, pass completion and share of passes. Call it share of passes, not possession. Tell me how you worked out each number.
 ```
 
 <StageShot
   name="s04"
   alt="The page with the header filled in and a key numbers panel comparing Spain and England"
   caption="The header and key numbers."
-  desktop={[1280, 919]}
-  phone={[342, 496]}
+  desktop={[1280, 905]}
+  phone={[342, 558]}
 />
 
 "Share of passes, not possession" matters. StatsBomb's free data has no possession figure, and an
 agent asked for possession will invent a formula for it. Share of passes is something we can count,
-and the label says exactly what it is.
+and the label says exactly what it is. The note about minutes is there because StatsBomb counts time
+elapsed: Williams scored 46 minutes and 9 seconds in, which a broadcaster calls the 47th minute.
 
 "Tell me how you worked out each number" is how you find choices like that without reading any code.
-The screenshots did the rest. The pass completion bars ran past the edge of their panel, the colour
-key wrapped onto two lines, and on a phone the date broke in half. Red was also hard to read as
-small text on a dark page, so the numbers stay white and the red goes on the bars.
+The screenshots caught the rest: the dash between the scores went missing, Spain's two scorers
+pushed the score off centre, and a stray separator dot was left hanging on a phone.
 
 ## 5. The xG race
 
@@ -204,37 +211,39 @@ Add an xG race chart across the match, with the goals marked and the scorers nam
   name="s05"
   alt="The page with an xG race chart added: Spain's line climbs to 1.79 and England's to 0.73"
   caption="The xG race."
-  desktop={[1280, 919]}
-  phone={[342, 328]}
+  desktop={[1280, 905]}
+  phone={[342, 344]}
 />
 
 An xG race adds up each team's expected goals, shot by shot, so you can see when a team took control
 of the chances. Spain are ahead from the first shot and pull clear after half-time.
 
-This short prompt took about six minutes, nearly all of it spent stopping the scorers' names from
-landing on the lines and on each other. In the end the chart uses surnames only.
+Most of the agent's work here was placing the scorers' names. Its first attempts landed them on top
+of the end totals, on each other and on the other team's line, so it ended up trying each label in
+several positions and keeping the first clear one.
 
 ## 6. The shot maps
 
 ```text title="Prompt"
-Add a shot map for each team: bigger circles for bigger chances, goals in gold. Hover on a laptop or tap on a phone to see the player, minute and xG, and check that tapping really works.
+Add a shot map for each team: bigger circles for bigger chances, goals in white. Hover on a laptop or tap on a phone to see the player, minute and xG, and check that tapping really works.
 ```
 
 <StageShot
   name="s06"
   alt="The page with shot maps for both teams: Spain's 16 shots mostly inside the box, England's 9 more spread out"
   caption="The shot maps."
-  desktop={[1280, 919]}
-  phone={[342, 486]}
+  desktop={[1280, 905]}
+  phone={[342, 568]}
 />
 
 On a laptop you hover over a shot to see who took it, when, and its xG. Phones can't hover.
-PitchKit's tooltips only respond to a mouse, so the agent built a version that works with a tap, and
-"check that tapping really works" made it test that. We've only tried it with an emulated phone, not
-a real one.
+PitchKit's tooltips only respond to a mouse, so the agent built its own tap target, and "check that
+tapping really works" made it prove it: it tapped all 25 shots on an emulated phone and each opened
+the right one. We haven't tried it on a real phone yet.
 
-PitchKit's vertical pitch puts the goal at the bottom. The agent turned the shots round so the goal
-is at the top, where most people expect it.
+This step also caught a mistake that wouldn't have shown up any other way. On the phone layout the
+maps came out mirrored, with left and right swapped. The agent noticed by checking where Williams'
+goal landed against its position in the raw data.
 
 ## 7. Momentum, and how it started and finished
 
@@ -246,8 +255,8 @@ Add a momentum chart: for each minute, Spain's touches (any on-ball event) in th
   name="s07"
   alt="The page with a momentum chart and a table of shots and xG in the first and last 15 minutes"
   caption="Momentum, with the first and last 15 minutes underneath."
-  desktop={[1280, 919]}
-  phone={[342, 429]}
+  desktop={[1280, 905]}
+  phone={[342, 377]}
 />
 
 There's no official momentum figure in StatsBomb's data, so the prompt defines one in a sentence and
@@ -255,10 +264,12 @@ asks the page to say it's our own. Do the same whenever you invent a measure. A 
 to see how it was made.
 
 The table underneath answers the two questions a coach usually asks first: how did we start, and how
-did we finish? England didn't have a shot in the first 15 minutes. In the last 15, plus stoppage
-time, they had three to Spain's two, but Spain's were worth more, and one of them was Oyarzabal's
-winner. PitchKit marks goals on this chart in the team's colour, which broke the gold rule from step
-2, so the agent drew its own gold lines instead.
+did we finish? England didn't have a shot in the first 15 minutes. In the last 15 they had three to
+Spain's two, but Spain's were worth more, and one of them was Oyarzabal's winner.
+
+With the note inside the panel the chart got squashed, so the agent moved it to a footer, which is
+what step 2 told it to do when the page got full. One thing it left: PitchKit colours the goal icons
+under the momentum chart by team, so those aren't white.
 
 ## 8. The pass networks
 
@@ -270,20 +281,20 @@ Add a pass network for each team: the starting XI, up to that team's first subst
   name="s08"
   alt="The page with a pass network for each team: circles for each starting player, joined by lines for frequent passing pairs"
   caption="The pass networks."
-  desktop={[1280, 919]}
-  phone={[342, 713]}
+  desktop={[1280, 905]}
+  phone={[342, 604]}
 />
 
-Each circle is a starting player, placed at the average spot where they passed the ball, and the
-lines join players who passed to each other often. Rodri went off injured at half-time, so Spain's
-network covers 47 minutes, while England's runs to Kane's substitution after 63. That's why the
-prompt asks for the window in a note: the two pictures don't cover the same amount of the game.
+Each circle is a starting player, placed at the average spot where they passed and received the
+ball, and the lines join players who passed to each other often. Rodri went off injured at
+half-time, so Spain's network covers 47 minutes, while England's runs to Kane's substitution
+after 63. That's why the prompt asks for the window in a note: the two pictures don't cover the same
+amount of the game.
 
-This was the step where the page filled up. With six charts in, the A4 page overflowed, and it took
-the agent four attempts to fit everything. It moved the key numbers into a strip beside the score
-and the explanatory notes into a footer, which is the layout you see at the top of this post. On a
-phone the page had also started scrolling sideways, a two-word surname had been cut to "Normand",
-and two England players' circles sat on top of each other. Its checks caught all of them.
+The names were the hard part. Carvajal's was cut off at the edge, Rodri, Olmo and Morata sat on top
+of each other, and Ruiz's label went missing. The agent wrote a small search that tries a dozen
+spots around each player and picks the one that overlaps least. The longer notes then pushed the
+page past one A4 sheet, so it shortened them.
 
 ## 9. The takeaways
 
@@ -295,14 +306,17 @@ Add three takeaways in plain English, each backed by a number on the page. Only 
   name="s09"
   alt="The finished page with three takeaways across the top"
   caption="The takeaways, along the top of the page."
-  desktop={[1280, 919]}
-  phone={[342, 219]}
+  desktop={[1280, 905]}
+  phone={[342, 175]}
 />
 
 Takeaways are where reports tend to overclaim, because they're the one part written as sentences.
-Tying each one to a number on the page means anyone can check it. Each one here leads with its
-number, such as "1.79 v 0.73 xG", and then says what it means. Even so, the next step found two that
-went too far.
+Tying each one to a number on the page means anyone can check it.
+
+The first place the agent tried for them, a strip across the full width, pushed the page past A4.
+The next squashed the momentum chart. They ended up beside the score in the header, which is where
+you see them at the top of this post. The draft in this screenshot still has a problem, which the
+next step caught.
 
 ## 10. Check it before you send it
 
@@ -318,15 +332,18 @@ This is the check you'd give a junior analyst's work before it went to the manag
 real problems.
 
 The second script works everything out again from StatsBomb's raw files, without using any of the
-report's code, so a mistake in one can't hide behind the same mistake in the other. All 35 numbers
-on the page matched. Its hover test found that the pass-network tooltips hadn't worked since step 8,
-because the shirt numbers sat on top of them. And two takeaways claimed more than the numbers
-showed, so they were reworded.
+report's code, so a mistake in one can't hide behind the same mistake in the other. It made 31
+checks, including every shot's details and every momentum bar, and in the end they all matched. Its
+first two "mismatches" were bugs in the checking script itself, not the report. That's worth
+knowing: when a check disagrees, ask the agent which side is wrong before it changes anything.
 
-The PDF took three tries. The first printed the phone layout, and the second printed the charts at
-the wrong size. Both showed up only when the agent looked at the PDF itself. It now fits on one A4
-page, with the smallest text printing at about 8pt, and the report works with the internet switched
-off. Read the takeaways yourself anyway. They're the part a coach will quote back to you.
+The takeaways needed fixing. The draft said "Spain had the ball", which is a claim about possession
+from a page that only counts passes, and another overstated what "created" could show. Both were
+reworded.
+
+The first PDF came out as two pages in the phone layout, and the agent only found out by looking at
+the PDF itself. It now fits on one A4 page, and the report works with the internet switched off.
+Read the takeaways yourself anyway. They're the part a coach will quote back to you.
 
 ## Sending it
 
@@ -343,19 +360,18 @@ You end up with two files, and they suit different readers:
 - **Another match.** Change the match ID in the first prompt. StatsBomb's free data covers whole
   tournaments and seasons, and the [StatsBomb data page](/docs/data/statsbomb) explains how to find
   IDs.
-- **Your club's colours.** Swap the hex codes in step 2, but keep the two teams easy to tell apart,
-  including for colour-blind readers.
+- **Your club's colours and flags.** Swap the hex codes and flag codes in step 2, but keep the two
+  teams easy to tell apart, including for colour-blind readers.
 - **More panels.** Each new chart is one more short prompt, and the rules from step 1 still apply.
 
 Short prompts leave the agent to make some decisions for you. After this run it told us which ones
 it had to guess, and three are worth writing into the prompts if you want fewer surprises:
 
-- **What to give up when the page is full**, in step 2. For example: "If the page gets full, move
-  notes to a footer and shrink charts before dropping anything."
-- **Where the team colours go**, also in step 2. "Team colours for chart marks and big text, white
-  or grey for small text" saves it working that out.
-- **What "minute" means**: say "show minutes as broadcasters do", because StatsBomb counts time
-  elapsed.
+- **How to print it**, in step 10: "Print it as the laptop layout on one A4 landscape page."
+- **How the pass networks are drawn**, in step 8: where each circle goes, what sets its size, how
+  many passes earn a line, and whether to label names or numbers.
+- **Where the takeaways go**, in step 9. "Put them in the header beside the score" saves the agent
+  two attempts.
 
 ## Next
 
