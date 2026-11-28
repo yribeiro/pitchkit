@@ -23,6 +23,10 @@ export function baseOptions(): BaseLayoutProps {
         url: "/gallery",
       },
       {
+        text: "Blog",
+        url: "/blog",
+      },
+      {
         text: "Contact",
         url: `mailto:${CONTACT_EMAIL}`,
         external: true,
